@@ -145,13 +145,12 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 
-    </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/youtube_content_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-    <FrameLayout
-        android:id="@+id/youtube_content_view"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_marginTop="20dp"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/big_img_text"

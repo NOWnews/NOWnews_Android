@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -24,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmcm.adsdk.banner.CMAdView;
 import com.cmcm.adsdk.banner.CMBannerAdListener;
@@ -33,6 +36,9 @@ import com.facebook.share.widget.LikeView;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherAdView;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
@@ -72,6 +78,9 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private int mHeadlineListSize;
     private boolean useWebBody = false;
     private Handler mHandler;
+    private FragmentManager mFragmentManager;
+    private int mPagePosition;
+    private int mCurrentViewPagerPosition;
 
     private final int VIEW_TYPE_NEWS_INFO = R.layout.widget_video_news_page_news_info_item;
     private final int VIEW_TYPE_CONTENT_TEXT = R.layout.widget_news_page_context_text_item;
@@ -83,15 +92,24 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private final int VIEW_TYPE_WEB_BODY = R.layout.widget_news_page_web_body;
 
     public VideoNewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aContentList, VideosInfoJson aNewsInfo,
-                                            ArrayList<String> aImageUrlList, Handler aHandler){
+                                            ArrayList<String> aImageUrlList, Handler aHandler, FragmentManager aFragmentManager,
+                                            int aCurrentViewPagerPosition, int aPagePosition){
         mContext = aContext;
         mContentList = aContentList;
         mNewsInfo = aNewsInfo;
         mImageUrlList = aImageUrlList;
         mHandler = aHandler;
+        mFragmentManager = aFragmentManager;
+        mCurrentViewPagerPosition = aCurrentViewPagerPosition;
+        mPagePosition = aPagePosition;
         initController();
         initListInfo();
 
+    }
+
+    public void resetPosition(int aCurrentViewPagerPosition){
+        mCurrentViewPagerPosition = aCurrentViewPagerPosition;
+        notifyDataSetChanged();
     }
 
     private void initController(){
@@ -260,7 +278,6 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         return mListSize;
     }
 
-    private int mYoutubeContentViewId;
     public class NewsInfoViewHolder extends RecyclerView.ViewHolder {
 
         private LinearLayout vTopDFP;
@@ -379,13 +396,16 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 vImageLayout.setVisibility(View.GONE);
             }
 
-            if(mHandler!=null){
-                mYoutubeContentViewId = vYoutubeContentView.getId();
-                Message message = new Message();
-                message.what = VideoNewsPageRecyclerViewFragment.KEY_NEWS_INFO_PREPARE_DONE;
-                message.arg1 = mYoutubeContentViewId;
-                mHandler.sendMessage(message);
+            if(mPagePosition==mCurrentViewPagerPosition) {
+                processVideo();
             }
+//            if(mHandler!=null){
+//                mYoutubeContentViewId = vYoutubeContentView.getId();
+//                Message message = new Message();
+//                message.what = VideoNewsPageRecyclerViewFragment.KEY_NEWS_INFO_PREPARE_DONE;
+//                message.arg1 = mYoutubeContentViewId;
+//                mHandler.sendMessage(message);
+//            }
 
         }
 
@@ -462,6 +482,72 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             mContext.startActivity(intent);
         }
 
+        public void processVideo(){
+            Log.v(TAG, "processVideo()" + mPagePosition);
+
+            if(mNewsInfo==null || mNewsInfo.youtubeId==null){
+                return;
+            }
+
+//            removeYoutubeFragment();
+
+            final String mCurrentYoutubeId = mNewsInfo.youtubeId;
+
+            Log.e(TAG, "111111111111111111111");
+            YouTubePlayerSupportFragment youTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
+            Log.e(TAG, "2222222222222");
+            FragmentTransaction transcation = mFragmentManager.beginTransaction();
+            Log.e(TAG, "3333333333333333");
+            transcation.replace(R.id.youtube_content_view, youTubePlayerSupportFragment).commit();
+            Log.e(TAG, "4444444444444444444");
+            setInitializedListener(youTubePlayerSupportFragment, mCurrentYoutubeId);
+            Log.e(TAG, "aaaaaaaaaaaaaa");
+
+        }
+
+        private void setInitializedListener(YouTubePlayerSupportFragment aYouTubePlayerSupportFragment, final String aYoutubeId) {
+            aYouTubePlayerSupportFragment.initialize(UserDataInfo.YOUTUBE_DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+                    if (!wasRestored) {
+                        mYoutubePlayer = youTubePlayer;
+                        if(mPagePosition==mCurrentViewPagerPosition) {
+                            youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+                            youTubePlayer.cueVideo(aYoutubeId);
+                        }
+                    }
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult error) {
+                    String errorMessage = error.toString();
+                    Toast.makeText(mContext, errorMessage, Toast.LENGTH_LONG).show();
+                    if (Utility.DEBUG)Log.d("errorMessage:", errorMessage);
+                }
+            });
+        }
+
+    }
+
+    private YouTubePlayer mYoutubePlayer;
+    public void removeYoutubeFragment(){
+        if (Utility.DEBUG)Log.w(TAG, "removeYoutubeFragment()");
+//        if(!mFragmentManager.beginTransaction().isEmpty()){
+//            Log.e(TAG, "555555555555555555555555555");
+//            YouTubePlayerSupportFragment fragment = (YouTubePlayerSupportFragment) mFragmentManager.findFragmentById(R.id.youtube_content_view);
+//            Log.e(TAG, "6666666666666666666666666666");
+//            if(fragment!=null){
+//                mFragmentManager.beginTransaction().remove(fragment).commit();
+//            }else{
+//                Log.e(TAG, "YouTubePlayerSupportFragment is Null!!");
+//            }
+//        }
+//        Log.e(TAG, "777777777777");
+        if(mYoutubePlayer!=null){
+            Log.e(TAG, "888888888888888");
+            mYoutubePlayer.release();
+        }
+        Log.e(TAG, "99999999999");
     }
 
     public class ContextTextViewHolder extends RecyclerView.ViewHolder {
@@ -885,54 +971,5 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         if(Utility.DEBUG)Log.v(TAG, "mRefTitleTextSize: " + mRefTitleTextSize);
         if(Utility.DEBUG)Log.v(TAG, "mRefCategoryTextSize: " + mRefCategoryTextSize);
     }
-
-//    private YouTubePlayer mYoutubePlayer;
-//    public void processVideo(){
-//
-//        if(mNewsInfo==null || mNewsInfo.youtubeId==null){
-//            return;
-//        }
-//
-//        removeYoutubeFragment();
-//
-//        final String mCurrentYoutubeId = mNewsInfo.youtubeId;
-//
-//        YouTubePlayerSupportFragment youTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
-//        FragmentTransaction transcation = mFragmentManager.beginTransaction();
-//        transcation.add(mYoutubeContentViewId, youTubePlayerSupportFragment).commit();
-//        setInitializedListener(youTubePlayerSupportFragment, mCurrentYoutubeId);
-//
-//    }
-//
-//    private void setInitializedListener(YouTubePlayerSupportFragment aYouTubePlayerSupportFragment, final String aYoutubeId) {
-//        aYouTubePlayerSupportFragment.initialize(UserDataInfo.YOUTUBE_DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
-//            @Override
-//            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
-//                if (!wasRestored) {
-//                    mYoutubePlayer = youTubePlayer;
-//                    if(mOnPageLoadFinishedListener!=null){
-//                        mOnPageLoadFinishedListener.OnYoutubeInitializationSuccess(mContext, mCurrentNewsPosition, youTubePlayer, aYoutubeId);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult error) {
-//                String errorMessage = error.toString();
-//                Toast.makeText(mContext, errorMessage, Toast.LENGTH_LONG).show();
-//                if (Utility.DEBUG)Log.d("errorMessage:", errorMessage);
-//            }
-//        });
-//    }
-//
-//    public void removeYoutubeFragment(){
-//        if (Utility.DEBUG)Log.w(TAG, "removeYoutubeFragment()");
-//        if(!mFragmentManager.beginTransaction().isEmpty()){
-//            mFragmentManager.beginTransaction().remove(mFragmentManager.findFragmentById(R.id.youtube_content_view)).commit();
-//        }
-//        if(mYoutubePlayer!=null){
-//            mYoutubePlayer.release();
-//        }
-//    }
 
 }

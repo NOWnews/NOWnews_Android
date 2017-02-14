@@ -100,41 +100,6 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
     public final static String KEY_CONTEXT_IMAGE = "context_image";
     public final static String KEY_CONTEXT_IMAGE_TEXT = "context_image_text";
 
-
-    private AdListener mDfpAdListener = new AdListener() {
-
-        @Override
-        public void onAdClosed() {
-            if (Utility.DEBUG) Log.e(TAG, "onAdClosed");
-            super.onAdClosed();
-        }
-
-        @Override
-        public void onAdFailedToLoad(int errorCode) {
-            if (Utility.DEBUG) Log.e(TAG, "onAdFailedToLoad");
-            super.onAdFailedToLoad(errorCode);
-        }
-
-        @Override
-        public void onAdLeftApplication() {
-            if (Utility.DEBUG) Log.e(TAG, "onAdLeftApplication");
-            super.onAdLeftApplication();
-        }
-
-        @Override
-        public void onAdLoaded() {
-            if (Utility.DEBUG) Log.e(TAG, "onAdLoaded");
-            super.onAdLoaded();
-        }
-
-        @Override
-        public void onAdOpened() {
-            if (Utility.DEBUG) Log.e(TAG, "onAdOpened");
-            super.onAdOpened();
-        }
-
-    };
-
     public final static int KEY_NEWS_INFO_PREPARE_DONE = 0x456;
     private Handler mHandler = new Handler() {
 
@@ -163,6 +128,7 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
                 case ParameterSet.SOCKET_TIME_OUT:
                     Utility.openSocketTimeoutDialog(getActivity());
                     break;
+
                 case KEY_NEWS_INFO_PREPARE_DONE:
                     mYoutubeContentViewId = msg.arg1;
                     if(mOnPageLoadFinishedListener!=null){
@@ -308,9 +274,10 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
     private LinearLayoutManager mLinearLayoutManager;
     private void processRecyclerView(){
 
+        int currentViewPagerPosition = ((VideoNewsPage)getActivity()).getCurrentPage();
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         vContentRecyclerView.setLayoutManager(mLinearLayoutManager);
-        VideoNewsPageRecyclerViewAdapter mAdapter = new VideoNewsPageRecyclerViewAdapter(getActivity(), mContentList, mVideoNewsInfo, mImageUrlList, mHandler);
+        VideoNewsPageRecyclerViewAdapter mAdapter = new VideoNewsPageRecyclerViewAdapter(getActivity(), mContentList, mVideoNewsInfo, mImageUrlList, mHandler, getChildFragmentManager(), currentViewPagerPosition, mCurrentNewsPosition);
         vContentRecyclerView.setAdapter(mAdapter);
 
     }
@@ -318,18 +285,23 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
     private YouTubePlayer mYoutubePlayer;
     public void processVideo(){
 
-        if(mVideoNewsInfo==null || mVideoNewsInfo.youtubeId==null){
-            return;
+        if(vContentRecyclerView!=null && vContentRecyclerView.getAdapter()!=null){
+            int currentViewPagerPosition = ((VideoNewsPage)getActivity()).getCurrentPage();
+            ((VideoNewsPageRecyclerViewAdapter)vContentRecyclerView.getAdapter()).resetPosition(currentViewPagerPosition);
         }
 
-        removeYoutubeFragment();
-
-        final String mCurrentYoutubeId = mVideoNewsInfo.youtubeId;
-
-        YouTubePlayerSupportFragment youTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
-        FragmentTransaction transcation = getChildFragmentManager().beginTransaction();
-        transcation.add(mYoutubeContentViewId, youTubePlayerSupportFragment).commit();
-        setInitializedListener(youTubePlayerSupportFragment, mCurrentYoutubeId);
+//        if(mVideoNewsInfo==null || mVideoNewsInfo.youtubeId==null){
+//            return;
+//        }
+//
+//        removeYoutubeFragment();
+//
+//        final String mCurrentYoutubeId = mVideoNewsInfo.youtubeId;
+//
+//        YouTubePlayerSupportFragment youTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
+//        FragmentTransaction transcation = getChildFragmentManager().beginTransaction();
+//        transcation.add(mYoutubeContentViewId, youTubePlayerSupportFragment).commit();
+//        setInitializedListener(youTubePlayerSupportFragment, mCurrentYoutubeId);
 
     }
 
@@ -524,7 +496,6 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
     public void onPause() {
         if (Utility.DEBUG) Log.e(TAG, TAG + " onPause()");
         isOnPause = true;
-        removeYoutubeFragment();
         super.onPause();
     }
 
@@ -560,17 +531,10 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
     }
 
     public void removeYoutubeFragment(){
-        if (Utility.DEBUG)Log.w(TAG, "removeYoutubeFragment()");
-        if(!getChildFragmentManager().beginTransaction().isEmpty()){
-            getChildFragmentManager().beginTransaction().remove(getChildFragmentManager().findFragmentById(R.id.youtube_content_view)).commit();
-        }
-        if(mYoutubePlayer!=null){
-            mYoutubePlayer.release();
+        if(vContentRecyclerView!=null && vContentRecyclerView.getAdapter()!=null){
+            ((VideoNewsPageRecyclerViewAdapter)vContentRecyclerView.getAdapter()).removeYoutubeFragment();
         }
     }
 
-    public void newsInfoLoadFinished(){
-
-    }
 
 }
