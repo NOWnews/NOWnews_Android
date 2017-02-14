@@ -1,0 +1,287 @@
+package com.nownews.mobile.Splash;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.nownews.R;
+import com.nownews.mobile.NewHome;
+import com.nownews.mobile.Api.ParameterSet;
+import com.nownews.mobile.Api.WebAPIUrl;
+import com.nownews.mobile.Common.GoogleAnalyticsFunction;
+import com.nownews.mobile.Common.SharedPreferencesMethods;
+import com.nownews.mobile.Common.UserDataInfo;
+import com.nownews.mobile.Common.Utility;
+import com.nownews.mobile.Controller.ApiController;
+import com.nownews.mobile.Controller.BitmapController;
+import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
+import com.nownews.mobile.Json.SplashImageJson;
+
+public class SplashActivity extends Activity {
+
+    public final static int GET_SPLASH_INFO = 0x572;
+    public final static int NETWORK_SLOW_OK_CLICK = 0x213;
+    private final String TAG = getClass().getSimpleName();
+    private final int GOTO_HOME = 0x654;
+    private ImageView vSplashImage;
+    private ApiController mApiController;
+    private BitmapController mBitmapController;
+    private SharedPreferencesMethods mPreferencesMethods;
+    private String mSplashImageUrl;
+    private Bitmap mSplashImage;
+    private boolean isAllreadyCallGoHome = false;
+    private Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+                case ParameterSet.GET_SPLASH_IMAGE_DONE:
+                    SplashImageJson splashImageInfo = (SplashImageJson) msg.obj;
+                    if (splashImageInfo == null) {
+                        mHandler.sendEmptyMessageDelayed(GOTO_HOME, 2000);
+                        break;
+                    }
+                    mSplashImageUrl = splashImageInfo.url;
+                    int screenHeight = Utility.getScreenHeight(SplashActivity.this);
+                    int screenWidth = Utility.getScreenWidth(SplashActivity.this);
+                    mSplashImageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, screenHeight, Utility.IMG_QUALITY, mSplashImageUrl);
+                    processImage();
+                    break;
+                case ParameterSet.GET_SPLASH_IMAGE_FAILED:
+                case GOTO_HOME:
+                    Intent intent = new Intent();
+                    intent.setClass(SplashActivity.this, NewHome.class);
+//                    intent.setClass(SplashActivity.this, VideoNewsCategoryFragment.class);
+//                    intent.putExtra(VideoNewsCategoryFragment.KEY_POSITION, 0);
+                    startActivity(intent);
+                    finish();
+                    break;
+                case GET_SPLASH_INFO:
+                    mSplashImage = (Bitmap) msg.obj;
+                    if (mSplashImage != null) {
+                        vSplashImage.setImageBitmap(mSplashImage);
+                    } else {
+                        vSplashImage.setImageResource(R.drawable.default_img);
+                    }
+                    if (!Utility.showNetworkSlowDialog(SplashActivity.this, mHandler, true)) {
+                        getSplashImage();
+                    }
+                    break;
+                case NETWORK_SLOW_OK_CLICK:
+                    getSplashImage();
+                    break;
+                case ParameterSet.SOCKET_TIME_OUT:
+                    if (Utility.DEBUG) Log.d(TAG, "SOCKET_TIME_OUT!!!");
+                    Utility.openSocketTimeoutDialog(SplashActivity.this);
+                    break;
+            }
+
+        }
+
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+
+        changeSharePreferenceTextSize();
+        initController();
+        processView();
+        mBitmapController.loadImageFromFile(vSplashImage, UserDataInfo.ThumbnailPath + "Splash.jpg", mHandler);
+
+    }
+
+    private void changeSharePreferenceTextSize() {
+        mPreferencesMethods = new SharedPreferencesMethods(this);
+        String textSize = mPreferencesMethods.getNewsContentTextSize();
+        boolean isAlreadyChange = mPreferencesMethods.getAlreadyChangeTextSizeText();
+        if (Utility.DEBUG) Log.e(TAG, "111 isAlreadyChange: " + isAlreadyChange);
+        if (isAlreadyChange) {
+            return;
+        }
+        if (textSize.equals(getString(R.string.old_max))) {
+            mPreferencesMethods.saveNewsContentTextSize(getString(R.string.max));
+        } else if (textSize.equals(getString(R.string.old_mid))) {
+            mPreferencesMethods.saveNewsContentTextSize(getString(R.string.mid));
+        } else if (textSize.equals(getString(R.string.old_small))) {
+            mPreferencesMethods.saveNewsContentTextSize(getString(R.string.small));
+        }
+        mPreferencesMethods.saveAlreadyChangeTextSizeText(true);
+        if (Utility.DEBUG) Log.e(TAG, "222 isAlreadyChange: " + isAlreadyChange);
+    }
+
+    private void initController() {
+        mApiController = ApiController.getInstance();
+        mBitmapController = BitmapController.getInstance(this);
+//        mBitmapController = new BitmapController(this);
+    }
+
+    private void processView() {
+        vSplashImage = (ImageView) findViewById(R.id.splash_img);
+    }
+
+    private void getSplashImage() {
+        if (mApiController != null) {
+            mApiController.getSplashImage(mHandler);
+        }
+    }
+
+    private void processImage() {
+        if (mSplashImageUrl != null
+                && !mSplashImageUrl.trim().equals("")) {
+
+//			ImageLoader.getInstance().displayImage(mSplashImageUrl, vSplashImage, Utility.getOptions(), new com.nostra13.universalimageloader.core.listener.ImageLoadingListener() {
+//				
+//				@Override
+//				public void onLoadingStarted(String arg0, View arg1) {
+//					
+//				}
+//				
+//				@Override
+//				public void onLoadingFailed(String arg0, View arg1, FailReason arg2) {
+//					mHandler.sendEmptyMessageDelayed(GOTO_HOME, 5000);
+//				}
+//				
+//				@Override
+//				public void onLoadingComplete(String arg0, View arg1, Bitmap arg2) {
+//					mHandler.sendEmptyMessageDelayed(GOTO_HOME, 5000);
+//				}
+//				
+//				@Override
+//				public void onLoadingCancelled(String arg0, View arg1) {
+//					
+//				}
+//			});
+
+//			mSplashImageUrl = "http://s.nownews.com/w/upload/splash_android.?t=1447064854018";
+            mBitmapController.loadImageWithOriginalSize(mSplashImageUrl, vSplashImage, BitmapController.IMAGE_SRC, 0, 0, new ImageLoadingListener() {
+
+                @Override
+                public void onProgressUpdate(String aImageUrl, int aProgress, int max) {
+
+                }
+
+                @Override
+                public void onLoadingStart(String aImageUrl, View aView) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String aImageUrl, View aView,
+                                            Exception aException) {
+
+                    if (!isAllreadyCallGoHome) {
+                        isAllreadyCallGoHome = true;
+                        mHandler.sendEmptyMessageDelayed(GOTO_HOME, 2000);
+                    }
+
+                }
+
+                @Override
+                public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
+
+                    if (aBitmap != null) {
+                        mBitmapController.convertBitmapToFile(UserDataInfo.ThumbnailPath, "Splash.jpg", aBitmap);
+                    }
+                    if (!isAllreadyCallGoHome) {
+                        isAllreadyCallGoHome = true;
+                        mHandler.sendEmptyMessageDelayed(GOTO_HOME, 2000);
+                    }
+
+                }
+
+                @Override
+                public void onLoadingCancelled() {
+
+                }
+            });
+        } else {
+            mHandler.sendEmptyMessageDelayed(GOTO_HOME, 2000);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        GoogleAnalyticsFunction.setScreenName(this, "開場畫面");
+        UserDataInfo.activityResumed(this);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        UserDataInfo.activityPaused();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        UserDataInfo.activityDestroy(this);
+
+        //clear bitmapcontroller
+        if (mBitmapController != null) {
+            mBitmapController.clearCache();
+            mBitmapController.closeBitmapController();
+            mBitmapController.unregistBitmapController(this);
+        }
+
+        //clear vSplashImage
+        Drawable drawable = vSplashImage.getDrawable();
+        if (Utility.DEBUG)
+            Log.e(TAG, "drawable is null or not?? " + (drawable == null ? "true" : "false"));
+        drawable.setCallback(null);
+        drawable = null;
+        vSplashImage.setImageDrawable(null);
+
+        if (Utility.DEBUG)
+            Log.e(TAG, "drawable is null or not?? " + (drawable == null ? "true" : "false"));
+        if(mApiController!=null){
+//            mApiController.removeCallbacks(null);
+            mApiController = null;
+        }
+
+        if(mHandler!=null){
+            mHandler.removeCallbacks(null);
+            mHandler = null;
+        }
+
+        if(mPreferencesMethods!=null){
+            mPreferencesMethods.unRegistContext(this);
+        }
+
+        if(mSplashImage!=null){
+            mSplashImage = null;
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mHandler != null) {
+            mHandler.removeMessages(GOTO_HOME);
+        }
+        super.onBackPressed();
+    }
+
+    public void reload() {
+
+        changeSharePreferenceTextSize();
+        initController();
+        processView();
+        mBitmapController.loadImageFromFile(vSplashImage, UserDataInfo.ThumbnailPath + "Splash.jpg", mHandler);
+
+    }
+
+}

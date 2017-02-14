@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/prev_news_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ileopard_ad"
+        android:background="#eaeaea">
+
+        <TextView
+            android:id="@+id/prev_news"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/prev_news_selector"
+            android:duplicateParentState="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:text="上一頁"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/prev_news_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/prev_news"
+            android:layout_alignTop="@+id/prev_news"
+            android:layout_toRightOf="@+id/prev_news"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:paddingRight="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="15dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/next_news_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prev_news_group"
+        android:background="#eaeaea">
+
+        <TextView
+            android:id="@+id/next_news"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/next_news_selector"
+            android:duplicateParentState="true"
+            android:gravity="center_vertical|right"
+            android:paddingRight="10dp"
+            android:text="下一頁"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/next_news_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/next_news"
+            android:layout_alignTop="@+id/next_news"
+            android:layout_toLeftOf="@+id/next_news"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:paddingLeft="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="15dp" />
+    </RelativeLayout>
+
+</LinearLayout>

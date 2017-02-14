@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="toolbar_color">#242424</color>
+    <color name="menu_content_category_bg">#4c4c4c</color>
+    <color name="fab_color_shadow">#44000000</color>
+    <color name="style_color_accent">#01bcd5</color>
+    <color name="tab_bar_background_color">#000000</color>
+    <color name="photos_tab_bar_background_color">#00234d</color>
+    <color name="videos_tab_bar_background_color">#420073</color>
+    <color name="news_list_category_text_color">#18a5ff</color>
+    <color name="bottom_tab_active_color">#0083ff</color>
+    <color name="bottom_tab_inactive_color">#b0b0b0</color>
+    <color name="special_news_category_bar">#cf9c00</color>
+    <color name="light_gray">#e0e0e0</color>
+    <color name="light_gray_tran">#AAb0b0b0</color>
+    <color name="cstv_dialog_background_color">#00000000</color>
+
+
+</resources>

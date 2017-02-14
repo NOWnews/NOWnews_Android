@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vpon_all_page">8a808182447617bf0144963439ac1230</string>
+    <string-array name="vpon_key_list">
+        <item>8a80818257ff669e01580a3edaca120b</item>
+        <item>8a80818257ff669e01580a3f0def1212</item>
+        <item>8a80818257ff669e01580a3f4ccb1219</item>
+        <item>8a80818257ff669e01580a3f85581220</item>
+        <item>8a80818257ff669e01580a3fbb921227</item>
+        <item>8a80818257ff669e01580a3ff25e1228</item>
+        <item>8a80818257ff669e01580a40207a122f</item>
+    </string-array>
+</resources>

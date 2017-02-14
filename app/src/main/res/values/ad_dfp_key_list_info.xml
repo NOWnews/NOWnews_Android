@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dfp_news_info_top">/5799246/Admob_Nownews_APP_news_300x250_T_android</string> <!-- 新聞內頁最上方廣告 -->
+    <string name="dfp_news_info_bottom">/5799246/nownews_app_300x250_ALL_android</string> <!-- 新聞內頁文末廣告 -->
+    <string name="dfp_news_info_under_title">/5799246/nownews_app_320x50_ALL_android</string> <!-- 新聞內頁標題下方廣告 -->
+    <string name="dfp_interstitial">/5799246/nownews_app_interstitial_android</string> <!-- 蓋版廣告 -->
+    <string-array name="dfp_key_list"> <!-- 新聞列表廣告 -->
+        <item>/5799246/Admob_Nownews_APP_list_300x250_android_1</item>
+        <item>/5799246/Admob_Nownews_APP_list_300x250_android_2</item>
+        <item>/5799246/Admob_Nownews_APP_list_300x250_android_3</item>
+        <item>/5799246/Admob_Nownews_APP_list_300x250_android_4</item>
+        <item>/5799246/Admob_Nownews_APP_list_300x250_android_5</item>
+        <item>/5799246/Admob_Nownews_APP_list_300x250_android_6</item>
+        <item>/5799246/Admob_Nownews_APP_list_300x250_android_7</item>
+    </string-array>
+</resources>

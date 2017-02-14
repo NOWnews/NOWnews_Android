@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="search_keywords">
+        <item>柯P</item>
+        <item>柯文哲</item>
+        <item>柯南</item>
+        <item>柯震東</item>
+        <item>柯佳嬿</item>
+        <item>柯賜海</item>
+        <item>Nownews</item>
+        <item>阿帕契</item>
+        <item>阿信</item>
+        <item>阿里山</item>
+        <item>阿里雲</item>
+        <item>阿里巴巴</item>
+        <item>阿扁</item>
+        <item>阿拉斯加</item>
+        <item>遠雄</item>
+        <item>遠傳</item>
+        <item>哈孝遠</item>
+        <item>珣珣</item>
+        <item>榮總</item>
+        <item>榮民</item>
+        <item>復興航空</item>
+        <item>復興高中</item>
+        <item>復興美工</item>
+        <item>復仇者聯盟</item>
+        <item>復仇者聯盟2</item>
+        <item>地震</item>
+        <item>地球</item>
+        <item>尼泊爾</item>
+        <item>小S</item>
+        <item>小甜甜</item>
+        <item>小蘋果</item>
+        <item>小米</item>
+        <item>石門水庫</item>
+        <item>武媚娘</item>
+        <item>武則天</item>
+    </string-array>
+
+</resources>

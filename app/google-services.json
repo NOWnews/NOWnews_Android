@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "581106378067",
+    "firebase_url": "https://spry-smithy-96510.firebaseio.com",
+    "project_id": "spry-smithy-96510",
+    "storage_bucket": "spry-smithy-96510.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581106378067:android:295206f99c21aead",
+        "android_client_info": {
+          "package_name": "com.nownews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "581106378067-7opkkpm4patamn1217059r9df4b8k41c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nownews",
+            "certificate_hash": "55CD6642EEAC3163E804C6B65E74BD8782884DFE"
+          }
+        },
+        {
+          "client_id": "581106378067-5f6bior1b5fp1s3le459h8rj59m1brfm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv9-SRnfQ1ZX8O-jUllrSPf6vi6VFiN-A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "581106378067-5f6bior1b5fp1s3le459h8rj59m1brfm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "581106378067-rjums6j1f1fq6giflr7l852sp9hik8nl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nownews.news"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

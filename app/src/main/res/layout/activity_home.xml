@@ -1,0 +1,209 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/toolbar_color" />
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drw_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tool_bar">
+
+        <!-- Main Content -->
+
+        <RelativeLayout
+            android:id="@+id/main_body"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/quick_news"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#f8e7c3"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/instant_news"
+                    android:textColor="@android:color/black"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/instant_news"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/hint"
+                    android:layout_alignTop="@+id/hint"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/hint"
+                    android:gravity="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="15dp" />
+            </RelativeLayout>
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/quick_news">
+
+                <ScrollView
+                    android:id="@+id/content_scrollview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:descendantFocusability="blocksDescendants"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="225dp">
+
+                            <android.support.v4.view.ViewPager
+                                android:id="@+id/big3_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                            <ImageButton
+                                android:id="@+id/btn_right"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:background="#22000000"
+                                android:src="@drawable/ic_keyboard_arrow_right_white_24dp" />
+
+                            <ImageButton
+                                android:id="@+id/btn_left"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:background="#22000000"
+                                android:src="@drawable/ic_keyboard_arrow_left_white_24dp" />
+                        </RelativeLayout>
+
+                        <!--
+                        <RelativeLayout
+                            android:id="@+id/big3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" >
+
+                            <com.nownews.mobile.widget.CustomImageTopcrop
+                                android:id="@+id/big3_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="225dp"
+                                android:scaleType="centerCrop" />
+
+                            <TextView
+                                android:id="@+id/big3_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_alignParentBottom="true"
+                                android:background="#55000000"
+                                android:gravity="center|left"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:textColor="@android:color/white" />
+                        </RelativeLayout>
+                        -->
+
+                        <TextView
+                            android:id="@+id/news_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:background="#f8e7c3"
+                            android:gravity="center|left"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="@string/news"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp" />
+
+                        <com.nownews.mobile.Widget.CustomGridView
+                            android:id="@+id/news_grid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:horizontalSpacing="10dp"
+                            android:numColumns="2"
+                            android:verticalSpacing="10dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp" />
+
+                        <TextView
+                            android:id="@+id/album_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:background="#f8e7c3"
+                            android:gravity="center|left"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="@string/album"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp" />
+
+                        <com.nownews.mobile.Widget.CustomGridView
+                            android:id="@+id/album_grid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:horizontalSpacing="10dp"
+                            android:numColumns="2"
+                            android:verticalSpacing="10dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp" />
+                    </LinearLayout>
+                </ScrollView>
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <RelativeLayout
+                android:id="@+id/bottom_ad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@android:color/black"
+                android:gravity="center"></RelativeLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llv_left_drawer"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="#fafbfe"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/menu_content"
+                layout="@layout/widget_menu_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </android.support.v4.widget.DrawerLayout>
+
+</RelativeLayout>

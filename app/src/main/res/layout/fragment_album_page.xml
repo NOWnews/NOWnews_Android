@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <RelativeLayout
+        android:id="@+id/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/image_loading_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/image_loading"
+            android:textColor="@android:color/white"
+            android:textSize="15dp" />
+
+        <ProgressBar
+            android:id="@+id/image_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/image_loading_txt"
+            android:layout_alignRight="@+id/image_loading_txt"
+            android:layout_below="@+id/image_loading_txt"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/anim_progressbar"
+            style="@style/IndeterminateProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:layout_alignLeft="@+id/image_loading_txt"
+            android:layout_alignRight="@+id/image_loading_txt"
+            android:layout_below="@+id/image_loading_txt"
+            android:indeterminate="true"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+    <com.nownews.mobile.Widget.ZoomImageView
+        android:id="@+id/album_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/album_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#AA000000"
+        android:padding="20dp"
+        android:textColor="@android:color/white"
+        android:textSize="18dp" />
+
+</RelativeLayout>

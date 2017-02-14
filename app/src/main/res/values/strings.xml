@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">今日新聞</string>
+    <string name="nownews">NOWnews今日新聞</string>
+    <string name="instant">即時</string>
+    <string name="open">Open</string>
+    <string name="close">關閉</string>
+    <string name="news">新聞</string>
+    <string name="album">圖輯</string>
+    <string name="live">直播</string>
+    <string name="category_setting">分類設定/</string>
+    <string name="choose_category">選擇你感興趣的分類吧</string>
+
+    <!-- Menu -->
+    <string name="return_home">回首頁</string>
+    <string name="favorite_album">最愛圖集</string>
+    <string name="my_bookmark">我的書籤</string>
+    <string name="view_history">瀏覽紀錄</string>
+    <string name="broke_the_news">我要爆料</string>
+    <string name="setting">設定</string>
+    <string name="version">版本資訊</string>
+    <string name="notification_setting">推播通知</string>
+    <string name="theme">佈景主題</string>
+    <string name="clear_cache">清除緩存</string>
+    <string name="category_edit">編輯分類</string>
+    <string name="about">關於NOWnews</string>
+    <string name="nowvote">議題票選</string>
+    <string-array name="menu_list">
+        <item>@string/return_home</item>
+        <item>@string/album</item>
+        <item>@string/favorite_album</item>
+        <item>@string/nowvote</item>
+        <item>@string/setting</item>
+        <item>@string/version</item>
+        <item>@string/notification_setting</item>
+        <item>@string/about</item>
+    </string-array>
+
+    <string name="go_reading">閱讀</string>
+    <string name="seconds_ago">秒鐘前</string>
+    <string name="minutes_ago">分鐘前</string>
+    <string name="hours_ago">小時前</string>
+    <string name="days_ago">天前</string>
+
+    <string name="sending_message">NOWnews 新聞搶先報：\n\n%1$s\n\n%2$s\n\nAndroid版app:https://goo.gl/ba3uGK\niOS版app:https://goo.gl/g4u1kN</string>
+    <string name="sending_message_no_title">NOWnews 新聞搶先報：\n\n%1$s\n\nAndroid版app:https://goo.gl/ba3uGK\niOS版app:https://goo.gl/g4u1kN</string>
+    <string name="album_sending_message">NOWnews 勁爆圖片搶先看：\n\n%1$s\n\n%2$s\n\nAndroid版app:https://goo.gl/ba3uGK\niOS版app:https://goo.gl/g4u1kN</string>
+    <string name="album_sending_message_no_title">NOWnews 勁爆圖片搶先看：\n\n%1$s\n\nAndroid版app:https://goo.gl/ba3uGK\niOS版app:https://goo.gl/g4u1kN</string>
+    <string name="share_message_end">NOWnews今日新聞APP</string>
+    <string name="share_tag">#NOWnews今日新闻#</string>
+    <string name="image_loading">圖片載入中...請稍候...</string>
+    <string name="news_list_loading">新聞列表載入中...請稍候...</string>
+    <string name="web_loading">網頁載入中...請稍候...</string>
+    <string name="news_info_loading">新聞載入中...請稍候...</string>
+
+    <string name="new_version">NEW!!</string>
+    <string name="update_dialog_title">更新通知!</string>
+    <string name="current_version">目前版本:%1$d</string>
+    <string name="newest_version">最新版本:%1$s</string>
+    <string name="update_dialog_message">我們有新版本更新囉，為提供更好的服務品質，請至Google Play更新版本！</string>
+    <string name="go_now">立即前往</string>
+    <string name="next_time">下次再說</string>
+    <string name="ok">確定</string>
+    <string name="search_hint">請輸入關鍵字</string>
+    <string name="search_history">最近搜尋</string>
+
+    <string name="special">特輯</string>
+    <string name="category_chooser_hint">您尚未選擇您感興趣的分類喔!</string>
+    <string name="click_me_to_add">點我新增</string>
+    <string name="reference_news">相關新聞</string>
+    <string name="reference_error">喔喔...連結已失效，請選擇其他相關新聞</string>
+    <string name="start_use_nownews">開始使用NOWnews今日新聞</string>
+    <string name="no_search_resourt">抱歉!沒有搜尋到您要的 %1$s 的新聞喔</string>
+    <string name="google_play">Google Play 商店</string>
+    <string name="download_one">下載點1</string>
+    <string name="download_two">下載點2</string>
+    <string name="downloading">下載中...請稍候...</string>
+    <string name="url_error">連結已失效</string>
+    <string name="data_error">資料錯誤</string>
+    <string name="less_pass_value">缺少傳入參數</string>
+    <string name="choose_text_size">請選擇字體大小</string>
+    <string name="max">超大</string>
+    <string name="mid">大</string>
+    <string name="small">正常</string>
+    <string name="old_max">大</string>
+    <string name="old_mid">中</string>
+    <string name="old_small">小</string>
+    <string-array name="text_size_list">
+        <item>@string/max</item>
+        <item>@string/mid</item>
+        <item>@string/small</item>
+    </string-array>
+    <string name="max_text_size">28</string>
+    <string name="mid_text_size">23</string>
+    <string name="small_text_size">18</string>
+    <string name="title_max_text_size">35</string>
+    <string name="title_mid_text_size">30</string>
+    <string name="title_small_text_size">25</string>
+    <string name="ref_title_max_text_size">25</string>
+    <string name="ref_title_mid_text_size">20</string>
+    <string name="ref_title_small_text_size">15</string>
+    <string name="ref_category_max_text_size">23</string>
+    <string name="ref_category_mid_text_size">18</string>
+    <string name="ref_category_small_text_size">13</string>
+
+    <string name="eco">財經</string>
+    <string name="warning">警告</string>
+    <string name="network_warning">糟糕!您的網路出了點問題!請至網路設定頁面重新連線!</string>
+    <string name="goto_network_setting">前往網路設定頁面</string>
+    <string name="sorry">抱歉</string>
+    <string name="socket_timout_error_message">NOWnews伺服器繁忙，請稍後再試。\n造成您的不便，敬請見諒!</string>
+    <string name="retry">重試</string>
+    <string name="hint">提醒</string>
+    <string name="ok_i_know">好我知道了</string>
+    <string name="exit">離開</string>
+    <string name="weibosdk_demo_toast_share_success">分享成功</string>
+    <string name="weibosdk_demo_toast_share_failed">分享失败</string>
+    <string name="weibosdk_demo_toast_share_canceled">取消分享</string>
+    <string name="weibosdk_demo_cancel_download_weibo">取消下载</string>
+    <string name="understand">我了解了</string>
+
+    <string name="headline_news">頭條新聞</string>
+    <string name="headline">頭條</string>
+    <string name="hot_news">熱門</string>
+    <string name="instant_news">速報</string>
+    <string name="food">旅食樂</string>
+    <string name="health">健康百科</string>
+    <string name="nearbynews">附近的人在看</string>
+    <string name="non_category">不分類</string>
+    <string name="video">影音</string>
+    <string name="sponsored">Sponsored</string>
+    <string name="facebook_app_id">132863386747341</string>
+    <string name="api_loading_error">資料讀取錯誤，錯誤代碼：%1$d</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="press_again_to_exit">再按一次退出</string>
+    <string name="cstv_download_hint">本直播功能僅提供試看頻道\n欲收看更多精彩內容可前往下載\nNOWnews昕電視</string>
+    <string name="cstv_watch_now">立即試看</string>
+    <string name="cstv_download_now">立即下載</string>
+</resources>
