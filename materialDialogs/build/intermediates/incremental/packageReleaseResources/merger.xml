@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3" xmlns:ns1="http://schemas.android.com/tools"><dataSet config="main$Generated" generated="true"><source path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res"/><source path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\build\generated\res\rs\release"/><source path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\build\generated\res\resValues\release"/></dataSet><dataSet config="release$Generated" generated="true"><source path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\release\res"/></dataSet><dataSet config="main" generated-set="main$Generated"><source path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res"><file name="decelerate_cubic" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\anim\decelerate_cubic.xml" qualifiers="" type="anim"/><file name="popup_enter" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\anim\popup_enter.xml" qualifiers="" type="anim"/><file name="popup_exit" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\anim\popup_exit.xml" qualifiers="" type="anim"/><file name="md_btn_selected" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_btn_selected.xml" qualifiers="" type="drawable"/><file name="md_btn_selected_dark" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_btn_selected_dark.xml" qualifiers="" type="drawable"/><file name="md_btn_selector" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_btn_selector.xml" qualifiers="" type="drawable"/><file name="md_btn_selector_dark" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_btn_selector_dark.xml" qualifiers="" type="drawable"/><file name="md_dialog_background" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_dialog_background.xml" qualifiers="" type="drawable"/><file name="md_dialog_background_dark" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_dialog_background_dark.xml" qualifiers="" type="drawable"/><file name="md_item_selected" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_item_selected.xml" qualifiers="" type="drawable"/><file name="md_item_selected_dark" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_item_selected_dark.xml" qualifiers="" type="drawable"/><file name="md_selector" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_selector.xml" qualifiers="" type="drawable"/><file name="md_selector_dark" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_selector_dark.xml" qualifiers="" type="drawable"/><file name="md_transparent" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable\md_transparent.xml" qualifiers="" type="drawable"/><file name="ic_launcher" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable-hdpi\ic_launcher.png" qualifiers="hdpi-v4" type="drawable"/><file name="ic_launcher" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable-mdpi\ic_launcher.png" qualifiers="mdpi-v4" type="drawable"/><file name="md_btn_selector_ripple" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable-v21\md_btn_selector_ripple.xml" qualifiers="v21" type="drawable"/><file name="md_btn_selector_ripple_dark" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable-v21\md_btn_selector_ripple_dark.xml" qualifiers="v21" type="drawable"/><file name="md_btn_shape" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable-v21\md_btn_shape.xml" qualifiers="v21" type="drawable"/><file name="ic_launcher" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable-xhdpi\ic_launcher.png" qualifiers="xhdpi-v4" type="drawable"/><file name="ic_launcher" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\drawable-xxhdpi\ic_launcher.png" qualifiers="xxhdpi-v4" type="drawable"/><file name="md_dialog_basic" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_dialog_basic.xml" qualifiers="" type="layout"/><file name="md_dialog_custom" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_dialog_custom.xml" qualifiers="" type="layout"/><file name="md_dialog_input" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_dialog_input.xml" qualifiers="" type="layout"/><file name="md_dialog_list" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_dialog_list.xml" qualifiers="" type="layout"/><file name="md_dialog_progress" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_dialog_progress.xml" qualifiers="" type="layout"/><file name="md_dialog_progress_indeterminate" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_dialog_progress_indeterminate.xml" qualifiers="" type="layout"/><file name="md_listitem" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_listitem.xml" qualifiers="" type="layout"/><file name="md_listitem_multichoice" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_listitem_multichoice.xml" qualifiers="" type="layout"/><file name="md_listitem_singlechoice" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_listitem_singlechoice.xml" qualifiers="" type="layout"/><file name="md_simplelist_item" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_simplelist_item.xml" qualifiers="" type="layout"/><file name="md_stub_actionbuttons" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_stub_actionbuttons.xml" qualifiers="" type="layout"/><file name="md_stub_inputpref" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_stub_inputpref.xml" qualifiers="" type="layout"/><file name="md_stub_progress" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_stub_progress.xml" qualifiers="" type="layout"/><file name="md_stub_progress_indeterminate" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_stub_progress_indeterminate.xml" qualifiers="" type="layout"/><file name="md_stub_titleframe" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout\md_stub_titleframe.xml" qualifiers="" type="layout"/><file name="md_listitem_multichoice" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout-ldrtl\md_listitem_multichoice.xml" qualifiers="ldrtl-v17" type="layout"/><file name="md_listitem_singlechoice" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout-ldrtl\md_listitem_singlechoice.xml" qualifiers="ldrtl-v17" type="layout"/><file name="md_simplelist_item" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\layout-ldrtl\md_simplelist_item.xml" qualifiers="ldrtl-v17" type="layout"/><file name="main" path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\menu\main.xml" qualifiers="" type="menu"/><file path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\values\attrs.xml" qualifiers=""><attr format="boolean" name="md_icon_limit_icon_to_default_size"/><attr format="enum" name="md_items_gravity">
+        <enum name="start" value="0"/>
+        <enum name="center" value="1"/>
+        <enum name="end" value="2"/>
+    </attr><declare-styleable name="MDRootLayout">
+        <attr format="boolean" name="md_reduce_padding_no_title_no_buttons"/>
+    </declare-styleable><attr format="color" name="md_neutral_color"/><attr format="reference" name="md_list_selector"/><attr format="enum" name="md_btnstacked_gravity">
+        <enum name="start" value="0"/>
+        <enum name="center" value="1"/>
+        <enum name="end" value="2"/>
+    </attr><attr format="color" name="md_positive_color"/><attr format="color" name="md_divider_color"/><attr format="color" name="md_content_color"/><attr format="color" name="md_item_color"/><attr format="reference" name="md_btn_negative_selector"/><attr format="enum" name="md_buttons_gravity">
+        <enum name="start" value="0"/>
+        <enum name="center" value="1"/>
+        <enum name="end" value="2"/>
+    </attr><attr format="dimension" name="md_icon_max_size"/><attr format="reference" name="md_btn_positive_selector"/><attr format="reference" name="md_icon"/><attr format="color" name="md_background_color"/><attr format="boolean" name="md_dark_theme"/><attr format="color" name="md_negative_color"/><attr format="color" name="md_title_color"/><attr format="color" name="md_widget_color"/><attr format="reference" name="md_btn_stacked_selector"/><attr format="enum" name="md_content_gravity">
+        <enum name="start" value="0"/>
+        <enum name="center" value="1"/>
+        <enum name="end" value="2"/>
+    </attr><attr format="color" name="md_divider"/><attr format="enum" name="md_title_gravity">
+        <enum name="start" value="0"/>
+        <enum name="center" value="1"/>
+        <enum name="end" value="2"/>
+    </attr><attr format="reference" name="md_btn_neutral_selector"/></file><file path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\values\colors.xml" qualifiers=""><color name="md_material_blue_800">#1565C0</color><color name="md_btn_selected">#33969696</color><color name="md_material_blue_600">#1E88E5</color><color name="md_divider_black">#10000000</color><color name="md_divider_white">#10FFFFFF</color><color name="md_btn_selected_dark">#40CBCBCB</color></file><file path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\values\dimens.xml" qualifiers=""><dimen name="md_icon_max_size">48dp</dimen><dimen name="md_title_textsize">20sp</dimen><dimen name="md_content_padding_bottom">8dp</dimen><dimen name="md_listitem_height">48dp</dimen><dimen name="md_neutral_button_margin">12dp</dimen><dimen name="md_simplelistitem_padding_top">8dp</dimen><dimen name="md_button_textpadding_horizontal">1dp</dimen><dimen name="md_button_frame_vertical_padding">8dp</dimen><dimen name="md_notitle_vertical_padding">16dp</dimen><dimen name="md_listitem_textsize">16sp</dimen><dimen name="md_divider_height">1dp</dimen><dimen name="md_button_inset_horizontal">4dp</dimen><dimen name="md_simplelist_icon">40dp</dimen><dimen name="md_button_padding_frame_side">12dp</dimen><dimen name="md_listitem_control_margin">6dp</dimen><dimen name="md_title_frame_margin_bottom">12dp</dimen><dimen name="md_button_inset_vertical">6dp</dimen><dimen name="md_content_textsize">16sp</dimen><dimen name="md_content_padding_top">8dp</dimen><dimen name="md_button_min_width">72dp</dimen><dimen name="md_button_height">48dp</dimen><dimen name="md_listitem_margin_left">24dp</dimen><dimen name="md_button_textsize">14sp</dimen><dimen name="md_icon_margin">16dp</dimen><dimen name="md_action_corner_radius">2dp</dimen><dimen name="md_button_padding_horizontal">8dp</dimen><dimen name="md_button_padding_horizontal_internalexternal">32dp</dimen><dimen name="md_dialog_frame_margin">24dp</dimen><dimen name="md_simplelist_icon_margin">16dp</dimen><dimen name="md_button_padding_vertical">4dp</dimen></file><file path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\values\strings.xml" qualifiers=""><string name="hello_world">Hello world!</string><string name="action_settings">Settings</string><string name="app_name">MaterialDialogs</string></file><file path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\values\styles.xml" qualifiers=""><style name="MD_ActionButtonStacked" ns1:ignore="NewApi" parent="@style/MD_ActionButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingLeft">@dimen/md_button_padding_horizontal_internalexternal</item>
+        <item name="android:paddingStart">@dimen/md_button_padding_horizontal_internalexternal
+        </item>
+        <item name="android:paddingRight">@dimen/md_button_padding_horizontal_internalexternal
+        </item>
+        <item name="android:paddingEnd">@dimen/md_button_padding_horizontal_internalexternal</item>
+    </style><style name="MD_Light" parent="Theme.AppCompat.Light.Dialog">
+        <item name="md_divider">@color/md_divider_black</item>
+        <item name="md_list_selector">@drawable/md_selector</item>
+        <item name="md_btn_stacked_selector">@drawable/md_selector</item>
+        <item name="md_btn_positive_selector">@drawable/md_btn_selector</item>
+        <item name="md_btn_neutral_selector">@drawable/md_btn_selector</item>
+        <item name="md_btn_negative_selector">@drawable/md_btn_selector</item>
+
+        <item name="android:windowBackground">@drawable/md_dialog_background</item>
+        <item name="android:windowAnimationStyle">@style/MD_WindowAnimation</item>
+    </style><style name="MD_Dark" parent="Theme.AppCompat.Dialog">
+        <item name="md_divider">@color/md_divider_white</item>
+        <item name="md_list_selector">@drawable/md_selector_dark</item>
+        <item name="md_btn_stacked_selector">@drawable/md_selector_dark</item>
+        <item name="md_btn_positive_selector">@drawable/md_btn_selector_dark</item>
+        <item name="md_btn_neutral_selector">@drawable/md_btn_selector_dark</item>
+        <item name="md_btn_negative_selector">@drawable/md_btn_selector_dark</item>
+
+        <item name="android:windowBackground">@drawable/md_dialog_background_dark</item>
+        <item name="android:windowAnimationStyle">@style/MD_WindowAnimation</item>
+    </style><style name="MD_ActionButton.Text" ns1:ignore="NewApi">
+        <item name="android:textSize">@dimen/md_button_textsize</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@null</item>
+        <item name="android:minWidth">@dimen/md_button_min_width</item>
+        <item name="android:paddingLeft">@dimen/md_button_textpadding_horizontal</item>
+        <item name="android:paddingRight">@dimen/md_button_textpadding_horizontal</item>
+    </style><style name="MD_WindowAnimation">
+        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/popup_exit</item>
+    </style><style name="MD_ActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/md_button_height</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:focusable">true</item>
+    </style></file><file path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\values-v11\styles.xml" qualifiers="v11"><style name="MD_Light" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+
+        <item name="md_divider">@color/md_divider_black</item>
+        <item name="md_list_selector">@drawable/md_selector</item>
+        <item name="md_btn_stacked_selector">@drawable/md_selector</item>
+        <item name="md_btn_positive_selector">@drawable/md_btn_selector</item>
+        <item name="md_btn_neutral_selector">@drawable/md_btn_selector</item>
+        <item name="md_btn_negative_selector">@drawable/md_btn_selector</item>
+
+        <item name="android:actionModeBackground">@color/primary_material_dark</item>
+        <item name="android:actionModeCloseDrawable">@drawable/abc_ic_ab_back_mtrl_am_alpha</item>
+
+        <item name="android:windowBackground">@drawable/md_dialog_background</item>
+        <item name="android:windowAnimationStyle">@style/MD_WindowAnimation</item>
+    </style><style name="MD_Dark" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+
+        <item name="md_divider">@color/md_divider_white</item>
+        <item name="md_list_selector">@drawable/md_selector_dark</item>
+        <item name="md_btn_stacked_selector">@drawable/md_selector_dark</item>
+        <item name="md_btn_positive_selector">@drawable/md_btn_selector_dark</item>
+        <item name="md_btn_neutral_selector">@drawable/md_btn_selector_dark</item>
+        <item name="md_btn_negative_selector">@drawable/md_btn_selector_dark</item>
+
+        <item name="android:actionModeBackground">@color/primary_material_dark</item>
+        <item name="android:actionModeCloseDrawable">@drawable/abc_ic_ab_back_mtrl_am_alpha</item>
+
+        <item name="android:windowBackground">@drawable/md_dialog_background_dark</item>
+        <item name="android:windowAnimationStyle">@style/MD_WindowAnimation</item>
+    </style></file><file path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\values-v21\styles.xml" qualifiers="v21"><style name="MD_Light" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+
+        <item name="md_divider">@color/md_divider_black</item>
+        <item name="md_list_selector">?android:selectableItemBackground</item>
+        <item name="md_btn_stacked_selector">?android:selectableItemBackground</item>
+        <item name="md_btn_positive_selector">@drawable/md_btn_selector_ripple</item>
+        <item name="md_btn_neutral_selector">@drawable/md_btn_selector_ripple</item>
+        <item name="md_btn_negative_selector">@drawable/md_btn_selector_ripple</item>
+    </style><style name="MD_Dark" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+
+        <item name="md_divider">@color/md_divider_white</item>
+        <item name="md_list_selector">?android:selectableItemBackground</item>
+        <item name="md_btn_stacked_selector">?android:selectableItemBackground</item>
+        <item name="md_btn_positive_selector">@drawable/md_btn_selector_ripple_dark</item>
+        <item name="md_btn_neutral_selector">@drawable/md_btn_selector_ripple_dark</item>
+        <item name="md_btn_negative_selector">@drawable/md_btn_selector_ripple_dark</item>
+    </style></file><file path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\main\res\values-w820dp\dimens.xml" qualifiers="w820dp-v13"><dimen name="activity_horizontal_margin">64dp</dimen></file></source><source path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\build\generated\res\rs\release"/><source path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\build\generated\res\resValues\release"/></dataSet><dataSet config="release" generated-set="release$Generated"><source path="E:\Cindy\Android_Studio_Temp_Project\NowNews_Mobile_V3\materialDialogs\src\release\res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="MDRootLayout"><attr format="boolean" name="md_reduce_padding_no_title_no_buttons"/></declare-styleable></configuration></mergedItems></merger>
