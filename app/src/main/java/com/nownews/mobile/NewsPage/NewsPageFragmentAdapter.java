@@ -23,7 +23,6 @@ import java.util.List;
 public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
 
     private final String TAG = getClass().getSimpleName();
-    private Context mContext;
     private List<NewsContent> mNewsList;
     private List<NewsContent> mHeadlineNewsList;
     private List<NewsContent> mInstantNewsContent;
@@ -33,16 +32,14 @@ public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
     private int mNewsId;
     private FragmentManager mFragmentManager;
 
-    public NewsPageFragmentAdapter(Context aContext, FragmentManager fm, List<NewsContent> aNewsList) {
+    public NewsPageFragmentAdapter(FragmentManager fm, List<NewsContent> aNewsList) {
         super(fm);
-        mContext = aContext;
         mNewsList = aNewsList;
         mFragmentManager = fm;
     }
 
-    public NewsPageFragmentAdapter(Context aContext, FragmentManager fm, List<?> aNewsList, int aType) {
+    public NewsPageFragmentAdapter(FragmentManager fm, List<?> aNewsList, int aType) {
         super(fm);
-        mContext = aContext;
         switch (aType) {
             case NewsPage.TYPE_HEADLINE_NEWS:
                 mHeadlineNewsList = (List<NewsContent>) aNewsList;
@@ -58,9 +55,8 @@ public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
         }
     }
 
-    public NewsPageFragmentAdapter(NewsPage aContext, FragmentManager fm, Object aValue, SingalNewsType aType) {
+    public NewsPageFragmentAdapter(FragmentManager fm, Object aValue, SingalNewsType aType) {
         super(fm);
-        mContext = aContext;
         if (aType == SingalNewsType.url) {
             mNewsUrl = (String) aValue;
         } else if (aType == SingalNewsType.id) {

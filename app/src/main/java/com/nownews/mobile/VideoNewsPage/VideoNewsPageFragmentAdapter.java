@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
@@ -14,22 +17,20 @@ import com.nownews.mobile.Json.VideosListJson.VideosContent;
 import java.util.HashMap;
 import java.util.List;
 
-public class VideoNewsPageFragmentAdapter extends FragmentPagerAdapter {
+public class VideoNewsPageFragmentAdapter extends FragmentStatePagerAdapter {
 
     private final String TAG = getClass().getSimpleName();
     private final String KEY_FRAGMENT_INDEX = "fragment_";
-    private Context mContext;
     private List<VideosContent> mNewsList;
-    private HashMap<String, VideoNewsPageRecyclerViewFragment> mNewsPageFragmentList;
+//    private HashMap<String, VideoNewsPageRecyclerViewFragment> mNewsPageFragmentList;
     private String mNewsUrl;
     private int mNewsId;
-    private VideoNewsPageRecyclerViewFragment.OnPageLoadFinishedListener mOnPageLoadFinishedListener;
+    private FragmentManager mFragmentManager;
 
-    public VideoNewsPageFragmentAdapter(Context aContext, FragmentManager fm, List<VideosContent> aNewsList, VideoNewsPageRecyclerViewFragment.OnPageLoadFinishedListener aOnPageLoadFinishedListener) {
+    public VideoNewsPageFragmentAdapter(FragmentManager fm, List<VideosContent> aNewsList) {
         super(fm);
-        mContext = aContext;
+        mFragmentManager = fm;
         mNewsList = aNewsList;
-        mOnPageLoadFinishedListener = aOnPageLoadFinishedListener;
     }
 
     @Override
@@ -47,33 +48,32 @@ public class VideoNewsPageFragmentAdapter extends FragmentPagerAdapter {
             }
         }
 
-        if (mNewsPageFragmentList == null) {
-            mNewsPageFragmentList = new HashMap<String, VideoNewsPageRecyclerViewFragment>();
-        } else {
-            if (mNewsPageFragmentList.size() > 0) {
-                boolean isFragmentExist = false;
-                for (String key : mNewsPageFragmentList.keySet()) {
-                    if (key.equals(KEY_FRAGMENT_INDEX + position)) {
-                        isFragmentExist = true;
-                        break;
-                    }
-                }
-                if (isFragmentExist) {
-                    newsPageFragment = mNewsPageFragmentList.get(KEY_FRAGMENT_INDEX + position);
-                    if (newsPageFragment != null) {
-                        return newsPageFragment;
-                    }
-                }
-            }
-        }
+//        if (mNewsPageFragmentList == null) {
+//            mNewsPageFragmentList = new HashMap<String, VideoNewsPageRecyclerViewFragment>();
+//        } else {
+//            if (mNewsPageFragmentList.size() > 0) {
+//                boolean isFragmentExist = false;
+//                for (String key : mNewsPageFragmentList.keySet()) {
+//                    if (key.equals(KEY_FRAGMENT_INDEX + position)) {
+//                        isFragmentExist = true;
+//                        break;
+//                    }
+//                }
+//                if (isFragmentExist) {
+//                    newsPageFragment = mNewsPageFragmentList.get(KEY_FRAGMENT_INDEX + position);
+//                    if (newsPageFragment != null) {
+//                        return newsPageFragment;
+//                    }
+//                }
+//            }
+//        }
 
         newsPageFragment = new VideoNewsPageRecyclerViewFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(VideoNewsPageFragment.KEY_NEWS_ID, newsId);
         bundle.putInt(VideoNewsPageFragment.KEY_NEWS_POSITION, position);
         newsPageFragment.setArguments(bundle);
-        newsPageFragment.setOnPageLoadFinishedListener(mOnPageLoadFinishedListener);
-        mNewsPageFragmentList.put(KEY_FRAGMENT_INDEX + position, newsPageFragment);
+//        mNewsPageFragmentList.put(KEY_FRAGMENT_INDEX + position, newsPageFragment);
         return newsPageFragment;
     }
 
@@ -86,11 +86,14 @@ public class VideoNewsPageFragmentAdapter extends FragmentPagerAdapter {
         return count;
     }
 
-    public void clearFragmentList() {
-        if (mNewsPageFragmentList != null) {
-            mNewsPageFragmentList.clear();
-            mNewsPageFragmentList = null;
-        }
-    }
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
 
+        if(Utility.DEBUG)Log.v(TAG, TAG + "$$$destroyItem");
+        FragmentTransaction trans = mFragmentManager.beginTransaction();
+        trans.remove((Fragment)object);
+        trans.commit();
+
+        super.destroyItem(container, position, object);
+    }
 }

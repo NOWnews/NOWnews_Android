@@ -35,7 +35,7 @@ import com.nownews.mobile.Widget.CustomViewPager;
 
 import java.util.List;
 
-public class VideoNewsPage extends AppCompatActivity implements InterstitialAdListener, VideoNewsPageRecyclerViewFragment.OnPageLoadFinishedListener {
+public class VideoNewsPage extends AppCompatActivity implements InterstitialAdListener{
 
     public static final String KEY_NEWS_ID = "newsId";
     public static final String KEY_NEWS_URL = "newsUrl";
@@ -87,31 +87,32 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
             }
 
             mNewsIndex = position;
-            if (mSharedPref == null) {
-                mSharedPref = new SharedPreferencesMethods(VideoNewsPage.this);
+            if(mTempVideoNewsPageRecyclerViewFragment!=null){
+                if (Utility.DEBUG)Log.d(TAG, "mTempVideoNewsPageRecyclerViewFragment!=null");
+                mTempVideoNewsPageRecyclerViewFragment.removeYoutubeFragment();
             }
-            String textSize = mSharedPref.getNewsContentTextSize();
             int currentPage = vViewPager.getCurrentItem();
-            VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.getItem(currentPage);
+            VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, currentPage);
             if (newsPageFragment != null) {
-                newsPageFragment.changeTextSize(textSize);
-                newsPageFragment.setHitInfo(mNewsCategory);
-                if(mTempVideoNewsPageRecyclerViewFragment!=null){
-                    if (Utility.DEBUG)Log.d(TAG, "mTempVideoNewsPageRecyclerViewFragment!=null");
-                    mTempVideoNewsPageRecyclerViewFragment.removeYoutubeFragment();
+                if (mSharedPref == null) {
+                    mSharedPref = new SharedPreferencesMethods(VideoNewsPage.this);
                 }
+                String textSize = mSharedPref.getNewsContentTextSize();
                 newsPageFragment.processVideo();
+                newsPageFragment.changeTextSize(textSize);
+                newsPageFragment.notifyVideoNewsPageRecyclerViewAdapter();
+                newsPageFragment.setHitInfo(mNewsCategory);
             }
             mTempVideoNewsPageRecyclerViewFragment = newsPageFragment;
         }
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            if (Utility.DEBUG) Log.e(TAG, "onPageScrolled");
+//            if (Utility.DEBUG) Log.e(TAG, "onPageScrolled");
             if (checkDirection) {
-                if (Utility.DEBUG) Log.d(TAG, "position: " + position);
-                if (Utility.DEBUG) Log.d(TAG, "thresholdOffset: " + thresholdOffset);
-                if (Utility.DEBUG) Log.d(TAG, "positionOffset: " + positionOffset);
+//                if (Utility.DEBUG) Log.d(TAG, "position: " + position);
+//                if (Utility.DEBUG) Log.d(TAG, "thresholdOffset: " + thresholdOffset);
+//                if (Utility.DEBUG) Log.d(TAG, "positionOffset: " + positionOffset);
                 if (positionOffset == 0.0) {
                     if (position == 0) {
                         Toast.makeText(VideoNewsPage.this, "這是第一則新聞喔~", Toast.LENGTH_LONG).show();
@@ -186,11 +187,11 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
 
     private void processListener() {
 
-        mAdapter = new VideoNewsPageFragmentAdapter(VideoNewsPage.this, getSupportFragmentManager(), mNewsList, this);
+        mAdapter = new VideoNewsPageFragmentAdapter(getSupportFragmentManager(), mNewsList);
         vViewPager.setAdapter(mAdapter);
         vViewPager.setCurrentItem(mNewsIndex);
         vViewPager.addOnPageChangeListener(mViewPagerChangeListener);
-        VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.getItem(mNewsIndex);
+        VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, mNewsIndex);
         mTempVideoNewsPageRecyclerViewFragment = newsPageFragment;
 
     }
@@ -278,7 +279,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
                         GoogleAnalyticsFunction.sendHitInfo(VideoNewsPage.this, "字體大小", (String) text, "");
 
                         int currentPage = vViewPager.getCurrentItem();
-                        VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.getItem(currentPage);
+                        VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, currentPage);
                         if (newsPageFragment != null) {
                             newsPageFragment.changeTextSize((String) text);
                         }
@@ -305,10 +306,6 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     @Override
     public void onBackPressed() {
         int currentPage = vViewPager.getCurrentItem();
-        VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.getItem(currentPage);
-        if (mAdapter != null) {
-            mAdapter.clearFragmentList();
-        }
         if (mAd2ictionInterstitial != null) {
             mAd2ictionInterstitial.destroy();
             mAd2ictionInterstitial = null;
@@ -405,9 +402,6 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     @Override
     protected void onDestroy() {
         UserDataInfo.activityDestroy(this);
-        if (mAdapter != null) {
-            mAdapter.clearFragmentList();
-        }
         if (mAd2ictionInterstitial != null) {
             mAd2ictionInterstitial.destroy();
             mAd2ictionInterstitial = null;
@@ -424,7 +418,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
 
     public void reload() {
         if (mAdapter != null) {
-            VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.getItem(mNewsIndex);
+            VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, mNewsIndex);
             if (newsPageFragment != null) {
                 newsPageFragment.reload();
             }
@@ -458,6 +452,12 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     private String getTitleInList(int aIndex) {
         String title = null;
         title = mNewsList.get(aIndex).title;
+        if(title!=null && title.contains("▲")){
+            title = title.replaceAll("▲", "");
+        }
+        if(title!=null && title.contains("▼")){
+            title = title.replaceAll("▼", "");
+        }
         return title;
     }
 
@@ -489,28 +489,5 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     }
 
     public enum SingalNewsType {url, id}
-
-    @Override
-    public void OnPageLoadFinished(VideoNewsPageRecyclerViewFragment aCurrentFragment, int aCurrentFragmentPosition) {
-        int currentPage = vViewPager.getCurrentItem();
-        if (Utility.DEBUG)Log.w(TAG, "@@@ currentPage: " + currentPage);
-        if (Utility.DEBUG)Log.w(TAG, "@@@ aCurrentFragmentPosition: " + aCurrentFragmentPosition);
-        if(currentPage==aCurrentFragmentPosition){
-            if (Utility.DEBUG)Log.e(TAG, "@@@ OnPageLoadFinished!!!");
-            aCurrentFragment.processVideo();
-        }
-    }
-
-    @Override
-    public void OnYoutubeInitializationSuccess(VideoNewsPageRecyclerViewFragment aCurrentFragment, int aCurrentFragmentPosition, YouTubePlayer youTubePlayer, String aYoutubeId) {
-        int currentPage = vViewPager.getCurrentItem();
-        if (Utility.DEBUG)Log.w(TAG, "@@@ currentPage: " + currentPage);
-        if (Utility.DEBUG)Log.w(TAG, "@@@ aCurrentFragmentPosition: " + aCurrentFragmentPosition);
-        if(currentPage==aCurrentFragmentPosition){
-            if (Utility.DEBUG)Log.e(TAG, "@@@ OnYoutubeInitializationSuccess!!!");
-            youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-            youTubePlayer.cueVideo(aYoutubeId); // Plays https://www.youtube.com/watch?v=fhWaJi1Hsfo
-        }
-    }
 
 }

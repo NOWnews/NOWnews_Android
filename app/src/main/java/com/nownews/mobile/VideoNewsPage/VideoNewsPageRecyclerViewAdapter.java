@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
@@ -77,7 +75,6 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private int mHeadlineListStartPosition = -1;
     private int mHeadlineListSize;
     private boolean useWebBody = false;
-    private Handler mHandler;
     private FragmentManager mFragmentManager;
     private int mPagePosition;
     private int mCurrentViewPagerPosition;
@@ -92,13 +89,12 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private final int VIEW_TYPE_WEB_BODY = R.layout.widget_news_page_web_body;
 
     public VideoNewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aContentList, VideosInfoJson aNewsInfo,
-                                            ArrayList<String> aImageUrlList, Handler aHandler, FragmentManager aFragmentManager,
+                                            ArrayList<String> aImageUrlList, FragmentManager aFragmentManager,
                                             int aCurrentViewPagerPosition, int aPagePosition){
         mContext = aContext;
         mContentList = aContentList;
         mNewsInfo = aNewsInfo;
         mImageUrlList = aImageUrlList;
-        mHandler = aHandler;
         mFragmentManager = aFragmentManager;
         mCurrentViewPagerPosition = aCurrentViewPagerPosition;
         mPagePosition = aPagePosition;
@@ -108,8 +104,10 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     }
 
     public void resetPosition(int aCurrentViewPagerPosition){
+        if(Utility.DEBUG)Log.v(TAG, "resetPosition");
+        if(Utility.DEBUG)Log.v(TAG, "aCurrentViewPagerPosition: " + aCurrentViewPagerPosition);
+        if(Utility.DEBUG)Log.v(TAG, "mPagePosition: " + mPagePosition);
         mCurrentViewPagerPosition = aCurrentViewPagerPosition;
-        notifyDataSetChanged();
     }
 
     private void initController(){
@@ -329,7 +327,14 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
             //Title
             if(mNewsInfo.title!=null && !mNewsInfo.title.isEmpty()){
-                vTitle.setText(mNewsInfo.title);
+                String title = mNewsInfo.title;
+                if(title!=null && title.contains("▲")){
+                    title = title.replaceAll("▲", "");
+                }
+                if(title!=null && title.contains("▼")){
+                    title = title.replaceAll("▼", "");
+                }
+                vTitle.setText(title);
                 vTitle.setTextSize(mTitleTextSize);
             }
 
@@ -399,13 +404,6 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             if(mPagePosition==mCurrentViewPagerPosition) {
                 processVideo();
             }
-//            if(mHandler!=null){
-//                mYoutubeContentViewId = vYoutubeContentView.getId();
-//                Message message = new Message();
-//                message.what = VideoNewsPageRecyclerViewFragment.KEY_NEWS_INFO_PREPARE_DONE;
-//                message.arg1 = mYoutubeContentViewId;
-//                mHandler.sendMessage(message);
-//            }
 
         }
 
@@ -493,15 +491,10 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
             final String mCurrentYoutubeId = mNewsInfo.youtubeId;
 
-            Log.e(TAG, "111111111111111111111");
             YouTubePlayerSupportFragment youTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
-            Log.e(TAG, "2222222222222");
             FragmentTransaction transcation = mFragmentManager.beginTransaction();
-            Log.e(TAG, "3333333333333333");
             transcation.replace(R.id.youtube_content_view, youTubePlayerSupportFragment).commit();
-            Log.e(TAG, "4444444444444444444");
             setInitializedListener(youTubePlayerSupportFragment, mCurrentYoutubeId);
-            Log.e(TAG, "aaaaaaaaaaaaaa");
 
         }
 
@@ -532,22 +525,9 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private YouTubePlayer mYoutubePlayer;
     public void removeYoutubeFragment(){
         if (Utility.DEBUG)Log.w(TAG, "removeYoutubeFragment()");
-//        if(!mFragmentManager.beginTransaction().isEmpty()){
-//            Log.e(TAG, "555555555555555555555555555");
-//            YouTubePlayerSupportFragment fragment = (YouTubePlayerSupportFragment) mFragmentManager.findFragmentById(R.id.youtube_content_view);
-//            Log.e(TAG, "6666666666666666666666666666");
-//            if(fragment!=null){
-//                mFragmentManager.beginTransaction().remove(fragment).commit();
-//            }else{
-//                Log.e(TAG, "YouTubePlayerSupportFragment is Null!!");
-//            }
-//        }
-//        Log.e(TAG, "777777777777");
         if(mYoutubePlayer!=null){
-            Log.e(TAG, "888888888888888");
             mYoutubePlayer.release();
         }
-        Log.e(TAG, "99999999999");
     }
 
     public class ContextTextViewHolder extends RecyclerView.ViewHolder {
@@ -939,10 +919,11 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     public void changeTextSize(String aTextSize) {
         if(Utility.DEBUG)Log.v(TAG, "changeTextSize aTextSize: " + aTextSize);
         initTextSize(aTextSize);
-        notifyDataSetChanged();
     }
 
     public void initTextSize(String aTextSize){
+        if(Utility.DEBUG)Log.v(TAG, "initTextSize() aTextSize: " + aTextSize);
+
         mContentTextSize = Integer.valueOf(mContext.getString(R.string.small_text_size));
         mTitleTextSize = Integer.valueOf(mContext.getString(R.string.title_small_text_size));
         mRefTitleTextSize = Integer.valueOf(mContext.getString(R.string.ref_title_small_text_size));
@@ -970,6 +951,11 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         if(Utility.DEBUG)Log.v(TAG, "mTitleTextSize: " + mTitleTextSize);
         if(Utility.DEBUG)Log.v(TAG, "mRefTitleTextSize: " + mRefTitleTextSize);
         if(Utility.DEBUG)Log.v(TAG, "mRefCategoryTextSize: " + mRefCategoryTextSize);
+    }
+
+    public void notifyAdapter(){
+        if(Utility.DEBUG)Log.v(TAG, "notifyAdapter()");
+        notifyDataSetChanged();
     }
 
 }

@@ -1,65 +1,32 @@
 package com.nownews.mobile.VideoNewsPage;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.StyleSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.cmcm.adsdk.banner.CMAdView;
-import com.cmcm.adsdk.banner.CMBannerAdListener;
-import com.cmcm.adsdk.banner.CMBannerAdSize;
-import com.cmcm.adsdk.banner.CMNativeBannerView;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
-import com.google.android.gms.ads.doubleclick.PublisherAdView;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
-import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
-import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
-import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
-import com.nownews.mobile.FavoriteAlbum.FavoriteAlbumPage;
-import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Json.VideosInfoJson;
 import com.nownews.mobile.NewsPage.NewsPageRecyclerViewAdapter;
-import com.nownews.mobile.Widget.CustomImageTopcrop;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -67,9 +34,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VideoNewsPageRecyclerViewFragment extends Fragment{
@@ -79,45 +45,52 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
     public final static String KEY_NEWS_POSITION = "newsPosition";
     private final String TAG = getClass().getSimpleName();
     public boolean isOnPause = false;
-    private RelativeLayout vLoadingLayout;
-    private ImageView vBigImage;
-    private LinearLayout vBody;
-    private SwipeRefreshLayout vRefreshLayout;
-    private TextView vError;
-    private RecyclerView vContentRecyclerView;
     private ApiController mApiController;
     private BitmapController mBitmapController;
     private String mNewsUrl;
     private int mNewsId;
     private VideosInfoJson mVideoNewsInfo;
     private ArrayList<String> mImageUrlList;
-    private HashMap<Integer, SoftReference<ImageView>> mImageViewList;
     private SharedPreferencesMethods mSharedPref;
     private boolean isRefereshing = false;
+
+    //New View
+    private TextView vError;
+    private RecyclerView vContentRecyclerView;
+    private RelativeLayout vLoadingLayout;
+    private SwipeRefreshLayout vRefreshLayout;
 
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
     public final static String KEY_CONTEXT_TEXT = "context_text";
     public final static String KEY_CONTEXT_IMAGE = "context_image";
     public final static String KEY_CONTEXT_IMAGE_TEXT = "context_image_text";
 
-    public final static int KEY_NEWS_INFO_PREPARE_DONE = 0x456;
-    private Handler mHandler = new Handler() {
+    private ApiHandler mHandler;
+    private static class ApiHandler extends Handler{
+
+        private final WeakReference<VideoNewsPageRecyclerViewFragment> mFragment;
+
+        public ApiHandler(VideoNewsPageRecyclerViewFragment aFragment){
+            mFragment = new WeakReference<VideoNewsPageRecyclerViewFragment>(aFragment);
+        }
 
         @Override
         public void handleMessage(Message msg) {
 
+            VideoNewsPageRecyclerViewFragment fragment = mFragment.get();
+
             switch (msg.what) {
                 case ParameterSet.GET_VIDEOS_INFO_DONE:
-                    if (isRefereshing) {
+                    if (fragment.isRefereshing) {
                         // Stop refresh animation
-                        isRefereshing = false;
-                        vRefreshLayout.setRefreshing(false);
+                        fragment.isRefereshing = false;
+                        fragment.vRefreshLayout.setRefreshing(false);
                     }
-                    mVideoNewsInfo = (VideosInfoJson) msg.obj;
-                    if (mVideoNewsInfo != null) {
+                    fragment.mVideoNewsInfo = (VideosInfoJson) msg.obj;
+                    if (fragment.mVideoNewsInfo != null) {
                         while (true) {
-                            if (isAdded()) {
-                                processNews();
+                            if (fragment.isAdded()) {
+                                fragment.processNews();
                                 break;
                             }
                         }
@@ -126,22 +99,15 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
                 case ParameterSet.GET_VIDEOS_INFO_FAILED:
                     break;
                 case ParameterSet.SOCKET_TIME_OUT:
-                    Utility.openSocketTimeoutDialog(getActivity());
+                    Utility.openSocketTimeoutDialog(fragment.getActivity());
                     break;
 
-                case KEY_NEWS_INFO_PREPARE_DONE:
-                    mYoutubeContentViewId = msg.arg1;
-                    if(mOnPageLoadFinishedListener!=null){
-                        mOnPageLoadFinishedListener.OnPageLoadFinished(VideoNewsPageRecyclerViewFragment.this, mCurrentNewsPosition);
-                    }
-                    break;
             }
 
         }
 
     };
 
-    private int mYoutubeContentViewId = -1;
     public VideoNewsPageRecyclerViewFragment() {
         //DO NOTHING...
     }
@@ -217,6 +183,7 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
         mBitmapController.closeBitmapController();
         mBitmapController.clearCache();
         mSharedPref = new SharedPreferencesMethods(getActivity());
+        mHandler = new ApiHandler(this);
     }
 
     private void getVideoNewsInfo() {
@@ -277,53 +244,21 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
         int currentViewPagerPosition = ((VideoNewsPage)getActivity()).getCurrentPage();
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         vContentRecyclerView.setLayoutManager(mLinearLayoutManager);
-        VideoNewsPageRecyclerViewAdapter mAdapter = new VideoNewsPageRecyclerViewAdapter(getActivity(), mContentList, mVideoNewsInfo, mImageUrlList, mHandler, getChildFragmentManager(), currentViewPagerPosition, mCurrentNewsPosition);
+        VideoNewsPageRecyclerViewAdapter mAdapter = new VideoNewsPageRecyclerViewAdapter(getActivity(), mContentList, mVideoNewsInfo, mImageUrlList, getChildFragmentManager(), currentViewPagerPosition, mCurrentNewsPosition);
         vContentRecyclerView.setAdapter(mAdapter);
 
     }
 
-    private YouTubePlayer mYoutubePlayer;
     public void processVideo(){
+        if(Utility.DEBUG)Log.v(TAG, "processVideo()");
 
         if(vContentRecyclerView!=null && vContentRecyclerView.getAdapter()!=null){
             int currentViewPagerPosition = ((VideoNewsPage)getActivity()).getCurrentPage();
             ((VideoNewsPageRecyclerViewAdapter)vContentRecyclerView.getAdapter()).resetPosition(currentViewPagerPosition);
+        }else{
+            if(Utility.DEBUG)Log.v(TAG, "I am here!!!");
         }
 
-//        if(mVideoNewsInfo==null || mVideoNewsInfo.youtubeId==null){
-//            return;
-//        }
-//
-//        removeYoutubeFragment();
-//
-//        final String mCurrentYoutubeId = mVideoNewsInfo.youtubeId;
-//
-//        YouTubePlayerSupportFragment youTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
-//        FragmentTransaction transcation = getChildFragmentManager().beginTransaction();
-//        transcation.add(mYoutubeContentViewId, youTubePlayerSupportFragment).commit();
-//        setInitializedListener(youTubePlayerSupportFragment, mCurrentYoutubeId);
-
-    }
-
-    private void setInitializedListener(YouTubePlayerSupportFragment aYouTubePlayerSupportFragment, final String aYoutubeId) {
-        aYouTubePlayerSupportFragment.initialize(UserDataInfo.YOUTUBE_DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
-            @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
-                if (!wasRestored) {
-                    mYoutubePlayer = youTubePlayer;
-                    if(mOnPageLoadFinishedListener!=null){
-                        mOnPageLoadFinishedListener.OnYoutubeInitializationSuccess(VideoNewsPageRecyclerViewFragment.this, mCurrentNewsPosition, youTubePlayer, aYoutubeId);
-                    }
-                }
-            }
-
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult error) {
-                String errorMessage = error.toString();
-                Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
-                if (Utility.DEBUG)Log.d("errorMessage:", errorMessage);
-            }
-        });
     }
 
     private void processBody(String body) {
@@ -418,62 +353,38 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
     public void onDestroyView() {
         if (Utility.DEBUG) Log.e(TAG, "onDestroyView()");
 
-        if (vBigImage != null) {
-            Drawable drawable = vBigImage.getDrawable();
-            if (Utility.DEBUG)
-                Log.e(TAG, "drawable is null or not?? " + (drawable == null ? "true" : "false"));
-            if (drawable != null) {
-                drawable.setCallback(null);
-                drawable = null;
-            }
-            if (Utility.DEBUG)
-                Log.e(TAG, "drawable is null or not?? " + (drawable == null ? "true" : "false"));
-            vBigImage.setImageDrawable(null);
-            vBigImage = null;
-        }
-
-        if (mImageViewList != null) {
-            for (int key : mImageViewList.keySet()) {
-                if (Utility.DEBUG) Log.e(TAG, "key: " + key);
-                SoftReference<ImageView> value = mImageViewList.get(key);
-                ImageView imageView = value.get();
-                if (imageView != null) {
-                    Drawable imgDrawable = imageView.getDrawable();
-                    if (Utility.DEBUG)
-                        Log.e(TAG, "drawable is null or not?? " + (imgDrawable == null ? "true" : "false"));
-                    if (imgDrawable != null) {
-                        imgDrawable.setCallback(null);
-                        imgDrawable = null;
-                    }
-                    if (Utility.DEBUG)
-                        Log.e(TAG, "drawable is null or not?? " + (imgDrawable == null ? "true" : "false"));
-                    imageView.setImageDrawable(null);
-                    imageView = null;
-                }
-            }
-            mImageViewList.clear();
-            mImageViewList = null;
-        }
-
         if (mImageUrlList != null) {
             mImageUrlList.clear();
             mImageUrlList = null;
         }
 
-        if (vBody != null) {
-            vBody.removeAllViews();
-            vBody = null;
+        if(vContentRecyclerView!=null && vContentRecyclerView.getAdapter()!=null){
+            ((VideoNewsPageRecyclerViewAdapter)vContentRecyclerView.getAdapter()).destory();
+            ((VideoNewsPageRecyclerViewAdapter)vContentRecyclerView.getAdapter()).unRegistContext(getActivity());
+            vContentRecyclerView.getRecycledViewPool().clear();
+            vContentRecyclerView.setLayoutManager(null);
+            vContentRecyclerView.setAdapter(null);
+            vContentRecyclerView = null;
         }
 
         if(mSharedPref!=null){
             mSharedPref.unRegistContext(getActivity());
         }
+
+        if(mHandler!=null){
+            mHandler.removeCallbacks(null);
+            mHandler = null;
+        }
         super.onDestroyView();
     }
 
     public void changeTextSize(String aTextSize) {
+        if(Utility.DEBUG)Log.v(TAG, "changeTextSize() aTextSize: " + aTextSize);
+
         if(vContentRecyclerView!=null && vContentRecyclerView.getAdapter()!=null){
             ((VideoNewsPageRecyclerViewAdapter)vContentRecyclerView.getAdapter()).changeTextSize(aTextSize);
+        }else{
+            if(Utility.DEBUG)Log.v(TAG, "I am here!!!");
         }
         if(mSharedPref!=null){
             mSharedPref.saveNewsContentTextSize(aTextSize);
@@ -481,6 +392,8 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
     }
 
     public void setHitInfo(String aNewsCategory) {
+        if(Utility.DEBUG)Log.v(TAG, "setHitInfo() aNewsCategory: " + aNewsCategory);
+
         String url = null;
         if (mNewsUrl != null && mNewsUrl.startsWith("/n/")) {
             url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsUrl;
@@ -520,21 +433,20 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
         return null;
     }
 
-    private OnPageLoadFinishedListener mOnPageLoadFinishedListener;
-    public void setOnPageLoadFinishedListener(OnPageLoadFinishedListener aOnPageLoadFinishedListener){
-        mOnPageLoadFinishedListener = aOnPageLoadFinishedListener;
-    }
-
-    public interface OnPageLoadFinishedListener{
-        public void OnPageLoadFinished(VideoNewsPageRecyclerViewFragment aCurrentFragment, int aCurrentFragmentPosition);
-        public void OnYoutubeInitializationSuccess(VideoNewsPageRecyclerViewFragment aCurrentFragment, int aCurrentFragmentPosition, YouTubePlayer aYouTubePlayer, String aYoutubeId);
-    }
-
     public void removeYoutubeFragment(){
         if(vContentRecyclerView!=null && vContentRecyclerView.getAdapter()!=null){
             ((VideoNewsPageRecyclerViewAdapter)vContentRecyclerView.getAdapter()).removeYoutubeFragment();
         }
     }
 
+    public void notifyVideoNewsPageRecyclerViewAdapter() {
+        if(Utility.DEBUG)Log.v(TAG, "notifyVideoNewsPageRecyclerViewAdapter()");
+
+        if(vContentRecyclerView!=null && vContentRecyclerView.getAdapter()!=null){
+            ((VideoNewsPageRecyclerViewAdapter)vContentRecyclerView.getAdapter()).notifyAdapter();
+        }else{
+            if(Utility.DEBUG)Log.v(TAG, "I am here!!!");
+        }
+    }
 
 }

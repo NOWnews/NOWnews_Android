@@ -242,24 +242,24 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
 
         switch (mNewsType) {
             case TYPE_HEADLINE_NEWS:
-                mAdapter = new NewsPageFragmentAdapter(NewsPage.this, getSupportFragmentManager(), mHeadlineNewsList, TYPE_HEADLINE_NEWS);
+                mAdapter = new NewsPageFragmentAdapter(getSupportFragmentManager(), mHeadlineNewsList, TYPE_HEADLINE_NEWS);
                 break;
             case TYPE_NORMAL_NEWS:
-                mAdapter = new NewsPageFragmentAdapter(NewsPage.this, getSupportFragmentManager(), mNewsList);
+                mAdapter = new NewsPageFragmentAdapter(getSupportFragmentManager(), mNewsList);
                 break;
             case TYPE_SEARCH_NEWS:
-                mAdapter = new NewsPageFragmentAdapter(NewsPage.this, getSupportFragmentManager(), mSearchList, TYPE_SEARCH_NEWS);
+                mAdapter = new NewsPageFragmentAdapter(getSupportFragmentManager(), mSearchList, TYPE_SEARCH_NEWS);
                 break;
             case TYPE_REFERENCE_NEWS:
-                mAdapter = new NewsPageFragmentAdapter(NewsPage.this, getSupportFragmentManager(), mReferenceNewsList, TYPE_REFERENCE_NEWS);
+                mAdapter = new NewsPageFragmentAdapter(getSupportFragmentManager(), mReferenceNewsList, TYPE_REFERENCE_NEWS);
                 break;
             case TYPE_SINGAL_NEWS:
                 if (mNewsId == -1 && mNewsUrl != null) {
                     if (Utility.DEBUG) Log.d(TAG, "mNewsId==null && mNewsUrl!=null");
-                    mAdapter = new NewsPageFragmentAdapter(NewsPage.this, getSupportFragmentManager(), mNewsUrl, SingalNewsType.url);
+                    mAdapter = new NewsPageFragmentAdapter(getSupportFragmentManager(), mNewsUrl, SingalNewsType.url);
                 } else if (mNewsId != -1 && mNewsUrl == null) {
                     if (Utility.DEBUG) Log.d(TAG, "mNewsId!=null && mNewsUrl==null");
-                    mAdapter = new NewsPageFragmentAdapter(NewsPage.this, getSupportFragmentManager(), mNewsId, SingalNewsType.id);
+                    mAdapter = new NewsPageFragmentAdapter(getSupportFragmentManager(), mNewsId, SingalNewsType.id);
                 }
                 break;
         }

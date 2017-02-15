@@ -42,6 +42,7 @@ import com.nownews.mobile.Search.SearchActivity;
 import com.nownews.mobile.Service.NetworkType;
 import com.nownews.mobile.Splash.SplashActivity;
 import com.nownews.mobile.VideoNewsCategory.VideoNewsCategoryColor;
+import com.nownews.mobile.VideoNewsPage.VideoNewsPage;
 import com.nownews.mobile.Widget.WebActivity;
 
 import java.io.File;
@@ -1093,10 +1094,9 @@ public class Utility {
         }
         if (mCurrentContext instanceof SplashActivity) {
             ((SplashActivity) mCurrentContext).reload();
+        }else if (mCurrentContext instanceof VideoNewsPage) {
+            ((VideoNewsPage) mCurrentContext).reload();
         }
-//        else if (mCurrentContext instanceof VideoNewsCategoryFragment) {
-//            ((VideoNewsCategoryFragment) mCurrentContext).reload();
-//        }
 //        else if (mCurrentContext instanceof AlbumCategoryFragment) {
 //            ((AlbumCategoryFragment) mCurrentContext).reload();
 //        }
