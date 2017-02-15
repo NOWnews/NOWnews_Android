@@ -2,14 +2,12 @@ package com.nownews.mobile.AlbumCategory;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,14 +16,10 @@ import com.nownews.mobile.AlbumPage.AlbumPage;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.Utility;
-import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
-import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
 import com.nownews.mobile.Json.PhotosListJson.PhotosContent;
 import com.nownews.mobile.Widget.CustomImageTopcrop;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class AlbumGridFragmentAdapter extends RecyclerView.Adapter<AlbumGridFragmentAdapter.ViewHolder> {
@@ -118,6 +112,19 @@ public class AlbumGridFragmentAdapter extends RecyclerView.Adapter<AlbumGridFrag
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_album_grid_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
+    }
+
+    public void clearBitmapController() {
+        if (mBitmapController != null) {
+            mBitmapController.clearCache();
+            mBitmapController.closeBitmapController();
+        }
+    }
+
+    public void unRegistContext(Context aContext) {
+        if(mContext==aContext){
+            mContext = null;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

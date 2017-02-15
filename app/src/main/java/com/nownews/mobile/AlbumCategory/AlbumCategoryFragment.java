@@ -39,7 +39,6 @@ public class AlbumCategoryFragment extends Fragment {
     private SlidingTabLayout vTab;
     private ViewPager vViewPager;
     private TextView vErrorMessage;
-    private ArrayList<String> mAlbumCategoryList;
     private AlbumCategoryFragmentAdapter mAdapter;
     private int mPosition;
     private SharedPreferencesMethods mSharedPref;
@@ -51,7 +50,7 @@ public class AlbumCategoryFragment extends Fragment {
         @Override
         public void onPageSelected(int position) {
             if (Utility.DEBUG) Log.e(TAG, "onPageSelected()");
-            String categoryName = mAlbumCategoryList.get(position);
+            String categoryName = mPhotoCategoryContent.get(position).name;
             categoryName = categoryName.substring(categoryName.lastIndexOf("_") + 1, categoryName.length());
             GoogleAnalyticsFunction.sendHitInfo(getActivity(), "圖集列表", "切換至" + categoryName + "圖集", "");
         }
@@ -153,12 +152,8 @@ public class AlbumCategoryFragment extends Fragment {
 
     private void setTab() {
 
-        mAlbumCategoryList = mSharedPref.getHomeAlbumItems();
-        if (mAlbumCategoryList != null && mAlbumCategoryList.size() == 0) {
+        if (mPhotoCategoryContent == null && mPhotoCategoryContent.size() == 0) {
 
-            if (mAdapter != null) {
-                mAdapter.clearFragmentList();
-            }
             if (vViewPager != null) {
                 vViewPager.setAdapter(null);
             }
@@ -167,11 +162,11 @@ public class AlbumCategoryFragment extends Fragment {
             }
             return;
 
-        } else if (mAlbumCategoryList != null && mAlbumCategoryList.size() > 0) {
+        } else if (mPhotoCategoryContent != null && mPhotoCategoryContent.size() > 0) {
             if (mAdapter == null) {
-                mAdapter = new AlbumCategoryFragmentAdapter(getActivity(), getChildFragmentManager(), mAlbumCategoryList, mAlbumCategoryList.size(), mUiHandler);
+                mAdapter = new AlbumCategoryFragmentAdapter(getActivity(), getChildFragmentManager(), mPhotoCategoryContent, mPhotoCategoryContent.size(), mUiHandler);
             } else {
-                mAdapter.setData(mAlbumCategoryList, mAlbumCategoryList.size());
+                mAdapter.setData(mPhotoCategoryContent, mPhotoCategoryContent.size());
             }
             vViewPager.setAdapter(mAdapter);
             vViewPager.setCurrentItem(mPosition);
@@ -238,7 +233,6 @@ public class AlbumCategoryFragment extends Fragment {
                     isApiLoadingSuccess = true;
                     mRetryCount = 0;
                     mPhotoCategoryContent = (List<PhotosCategoryJson.CategoryInfo>) msg.obj;
-                    UserDataInfo.setPhotosCategoryContent(mPhotoCategoryContent);
                     processCategory();
                     setTab();
                     break;

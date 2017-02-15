@@ -23,6 +23,7 @@ import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Json.PhotosListJson.PhotosContent;
 import com.nownews.mobile.NewsCategory.NewsCategoryFragment;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,6 @@ public class AlbumGridFragment extends Fragment {
     private ApiController mApiController;
     private List<PhotosContent> mAlbumList;
     private LinearLayoutManager mLinearLayoutManager;
-    private AlbumGridFragmentAdapter mAdapter;
     private RelativeLayout vLoadingLayout;
     private TextView vErrorMessage;
     private Handler mAdHandler;
@@ -48,69 +48,79 @@ public class AlbumGridFragment extends Fragment {
     private ArrayList<String> mAlbumImageList;
     private int mAlbumImageListCount;
     private int mRetryCount;
-    private final int RELOAD_API = 0x159;
+    private final static int RELOAD_API = 0x159;
     public boolean isApiLoadingSuccess;
-    private Handler mHandler = new Handler() {
+    private ApiHandler mApiHandler;
+    private static class ApiHandler extends Handler{
+
+        private String TAG = getClass().getSimpleName();
+        private final WeakReference<AlbumGridFragment> mFragment;
+
+        public ApiHandler(AlbumGridFragment aFragment){
+            mFragment = new WeakReference<AlbumGridFragment>(aFragment);
+        }
 
         @Override
         public void handleMessage(Message msg) {
 
+            AlbumGridFragment fragment = mFragment.get();
+
             switch (msg.what) {
                 case ParameterSet.GET_PHOTOS_LIST_DONE:
-                    isApiLoadingSuccess = true;
-                    mRetryCount = 0;
-                    if (mCurrentPage > 1) {
-                        mAlbumList.addAll((List<PhotosContent>) msg.obj);
-                        if (mAdHandler != null) {
-                            mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
+                    fragment.isApiLoadingSuccess = true;
+                    fragment.mRetryCount = 0;
+                    if (fragment.mCurrentPage > 1) {
+                        fragment.mAlbumList.addAll((List<PhotosContent>) msg.obj);
+                        if (fragment.mAdHandler != null) {
+                            fragment.mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
                         }
                     } else {
-                        mAlbumList = (List<PhotosContent>) msg.obj;
+                        fragment.mAlbumList = (List<PhotosContent>) msg.obj;
                     }
-                    if (isRefereshing) {
+                    if (fragment.isRefereshing) {
                         // Stop refresh animation
-                        isRefereshing = false;
-                        vRefreshLayout.setRefreshing(false);
+                        fragment.isRefereshing = false;
+                        fragment.vRefreshLayout.setRefreshing(false);
                     }
-                    processList();
+                    fragment.processList();
                     break;
                 case ParameterSet.GET_PHOTOS_LIST_FAILED:
 
-                    if (Utility.DEBUG)Log.e(TAG, "mRetryCount: " + mRetryCount);
-                    isApiLoadingSuccess = false;
-                    if(mRetryCount<5){
-                        mRetryCount++;
+                    if (Utility.DEBUG)Log.e(TAG, "mRetryCount: " + fragment.mRetryCount);
+                    fragment.isApiLoadingSuccess = false;
+                    if(fragment.mRetryCount<5){
+                        fragment.mRetryCount++;
                         if(hasMessages(RELOAD_API)){
                             removeMessages(RELOAD_API);
                         }
                         sendEmptyMessage(RELOAD_API);
                         break;
                     }else{
-                        mRetryCount = 0;
-                        if (isRefereshing) {
+                        fragment.mRetryCount = 0;
+                        if (fragment.isRefereshing) {
                             // Stop refresh animation
-                            isRefereshing = false;
-                            vRefreshLayout.setRefreshing(false);
+                            fragment.isRefereshing = false;
+                            fragment.vRefreshLayout.setRefreshing(false);
                         }
-                        if (isScrollToBottom) {
-                            if (mAdHandler != null) {
-                                mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
+                        if (fragment.isScrollToBottom) {
+                            if (fragment.mAdHandler != null) {
+                                fragment.mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
                             }
-                            mCurrentPage--;
-                            isScrollToBottom = false;
+                            fragment.mCurrentPage--;
+                            fragment.isScrollToBottom = false;
                         }else{
-                            vLoadingLayout.setVisibility(View.GONE);
-                            vList.setVisibility(View.GONE);
-                            vErrorMessage.setVisibility(View.VISIBLE);
-                            vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_PHOTOS_LIST_FAILED));
+                            fragment.vLoadingLayout.setVisibility(View.GONE);
+                            fragment.vList.setVisibility(View.GONE);
+                            fragment.vErrorMessage.setVisibility(View.VISIBLE);
+                            fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_PHOTOS_LIST_FAILED));
                         }
                     }
                     break;
                 case ParameterSet.SOCKET_TIME_OUT:
-                    Utility.openSocketTimeoutDialog(getActivity());
+                    Utility.openSocketTimeoutDialog(fragment.getActivity());
                     break;
                 case RELOAD_API:
-                    getAlbumsList();
+                    fragment.getAlbumsList();
                     break;
 
             }
@@ -135,11 +145,11 @@ public class AlbumGridFragment extends Fragment {
             if (Utility.DEBUG)Log.d(TAG, "onScrolled");
             int findLastVisibleItemPosition = mLinearLayoutManager.findLastVisibleItemPosition();
 
-            if(Utility.DEBUG)Log.v(TAG, "mAdapter.getItemCount(): " + mAdapter.getItemCount());
+            if(Utility.DEBUG)Log.v(TAG, "mAdapter.getItemCount(): " + vList.getAdapter().getItemCount());
             if(Utility.DEBUG)Log.v(TAG, "findLastVisibleItemPosition: " + findLastVisibleItemPosition);
 
-            if (mAdapter != null) {
-                if (findLastVisibleItemPosition == mAdapter.getItemCount() - 1) {
+            if (vList != null && vList.getAdapter() != null) {
+                if (findLastVisibleItemPosition == vList.getAdapter().getItemCount() - 1) {
                     if (!isScrollToBottom && mAlbumList != null && mAlbumList.size() > 0) {
                         isScrollToBottom = true;
                         if(Utility.DEBUG)Log.e(TAG, "滑到底了!!");
@@ -159,10 +169,12 @@ public class AlbumGridFragment extends Fragment {
         // Do nothing...
     }
 
-    public void setData(int aNewsCategoryId, Handler aAdHandler, String aCategoryName) {
+    private RecyclerView.RecycledViewPool mPool;
+    public void setData(int aNewsCategoryId, Handler aAdHandler, String aCategoryName, RecyclerView.RecycledViewPool aPool) {
         mCategoryId = aNewsCategoryId;
         mAdHandler = aAdHandler;
         mCategoryName = aCategoryName;
+        mPool = aPool;
     }
 
     @Override
@@ -199,12 +211,13 @@ public class AlbumGridFragment extends Fragment {
         }
         vErrorMessage.setVisibility(View.GONE);
         if (mApiController != null) {
-            mApiController.getPhotosList(mHandler, mCategoryId, mCurrentPage);
+            mApiController.getPhotosList(mApiHandler, mCategoryId, mCurrentPage);
         }
     }
 
     private void initController() {
         mApiController = ApiController.getInstance();
+        mApiHandler = new ApiHandler(this);
     }
 
     private void processView() {
@@ -212,13 +225,8 @@ public class AlbumGridFragment extends Fragment {
         View view = getView();
 
         vList = (RecyclerView) view.findViewById(R.id.list);
-//		mLinearLayoutManager = new LinearLayoutManager(getActivity());
-//		mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//		vList.setLayoutManager(mLinearLayoutManager);
-
         vLoadingLayout = (RelativeLayout) view.findViewById(R.id.loading_layout);
         vErrorMessage = (TextView) view.findViewById(R.id.error_message);
-
         vRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         vRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 
@@ -243,14 +251,18 @@ public class AlbumGridFragment extends Fragment {
             isScrollToBottom = false;
         }
 
-        if(mAdapter==null){
+        if(vList.getAdapter()==null){
             mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            mLinearLayoutManager.setRecycleChildrenOnDetach(true);
             vList.setLayoutManager(mLinearLayoutManager);
-            mAdapter = new AlbumGridFragmentAdapter(getActivity(), mAlbumList, mCategoryName);
-            vList.setAdapter(mAdapter);
+            if(mPool!=null){
+                vList.setRecycledViewPool(mPool);
+            }
+            AlbumGridFragmentAdapter adapter = new AlbumGridFragmentAdapter(getActivity(), mAlbumList, mCategoryName);
+            vList.setAdapter(adapter);
             vList.addOnScrollListener(mListScrollListener);
         }else{
-            mAdapter.setData(mAlbumList, mCategoryName);
+            ((AlbumGridFragmentAdapter)vList.getAdapter()).setData(mAlbumList, mCategoryName);
         }
 
         vLoadingLayout.setVisibility(View.GONE);
@@ -267,8 +279,16 @@ public class AlbumGridFragment extends Fragment {
     public void onDestroyView() {
         if (Utility.DEBUG) Log.e(TAG, "onDestroyView()");
         super.onDestroyView();
-        if(mAdapter!=null){
-            mAdapter.destoryView();
+        if(vList != null && vList.getAdapter() != null){
+            ((AlbumGridFragmentAdapter)vList.getAdapter()).clearBitmapController();
+            ((AlbumGridFragmentAdapter)vList.getAdapter()).unRegistContext(getActivity());
+            vList.setLayoutManager(null);
+            vList.setAdapter(null);
+            vList = null;
+        }
+        if(mApiHandler !=null){
+            mApiHandler.removeCallbacks(null);
+            mApiHandler = null;
         }
     }
 }

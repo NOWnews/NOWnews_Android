@@ -155,7 +155,6 @@ public class NewsCategoryFragment extends Fragment {
                     fragment.mRetryCount = 0;
                     fragment.mNewsCategoryContent = (List<CategoryInfo>) msg.obj;
                     fragment.processCategory();
-//                    UserDataInfo.setNewsCategoryContent(mNewsCategoryContent);
                     fragment.setTab();
                     break;
                 case ParameterSet.GET_NEWS_CATEGORY_FAILED:
@@ -249,7 +248,6 @@ public class NewsCategoryFragment extends Fragment {
 
     private void setTab() {
 
-//        mNewsCategoryList = mSharedPref.getHomeNewsItems();
         if (mNewsCategoryContent == null || mNewsCategoryContent.size() == 0) {
 
             if (vViewPager != null) {

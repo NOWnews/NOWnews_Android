@@ -6,54 +6,53 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
+import com.nownews.mobile.Json.PhotosCategoryJson;
 import com.nownews.mobile.Json.PhotosCategoryJson.CategoryInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AlbumCategoryFragmentAdapter extends FragmentPagerAdapter {
+public class AlbumCategoryFragmentAdapter extends FragmentStatePagerAdapter {
 
     private final String TAG = getClass().getSimpleName();
     private final String KEY_FRAGMENT_INDEX = "fragment_";
     private Context mContext;
-    private ArrayList<String> mNewsCategoryList;
     private List<CategoryInfo> mCategoryContent;
     private String mNewsUrlFormat;
     private int mPageCount;
-    private HashMap<String, AlbumGridFragment> mAlbumGridFragmentList;
+//    private HashMap<String, AlbumGridFragment> mAlbumGridFragmentList;
     private Handler mHandler;
+    private RecyclerView.RecycledViewPool mPool = new RecyclerView.RecycledViewPool();
+    private FragmentManager mFragmentManager;
 
-    public AlbumCategoryFragmentAdapter(Context aContext, FragmentManager fm, ArrayList<String> aNewsCategoryList, int aPageCount, Handler aHandler) {
+    public AlbumCategoryFragmentAdapter(Context aContext, FragmentManager fm, List<PhotosCategoryJson.CategoryInfo> aCategoryContent, int aPageCount, Handler aHandler) {
         super(fm);
         if (Utility.DEBUG) Log.e(TAG, "AlbumCategoryFragmentAdapter%%%%%");
         mContext = aContext;
-        mNewsCategoryList = aNewsCategoryList;
+        mFragmentManager = fm;
+        mCategoryContent = aCategoryContent;
         mPageCount = aPageCount;
         mHandler = aHandler;
-        init();
     }
 
-    public void setData(ArrayList<String> aNewsCategoryList, int aPageCount) {
-        mNewsCategoryList = aNewsCategoryList;
+    public void setData(List<PhotosCategoryJson.CategoryInfo> aCategoryContent, int aPageCount) {
+        mCategoryContent = aCategoryContent;
         mPageCount = aPageCount;
         notifyDataSetChanged();
     }
 
-    private void init() {
-        mCategoryContent = UserDataInfo.getPhotosCategoryContent();
-        if (mCategoryContent == null) {
-            return;
-        }
-    }
-
     @Override
     public CharSequence getPageTitle(int position) {
-        String mTitle = mNewsCategoryList.get(position);
+        String mTitle = mCategoryContent.get(position).name;
         mTitle = "	" + mTitle.substring(mTitle.lastIndexOf("_") + 1, mTitle.length()) + "	";
         return mTitle;
     }
@@ -63,26 +62,26 @@ public class AlbumCategoryFragmentAdapter extends FragmentPagerAdapter {
         if (Utility.DEBUG) Log.e(TAG, "getItem::: " + position);
         AlbumGridFragment albumGridFragment;
         int id = -1;
-        if (mAlbumGridFragmentList == null) {
-            mAlbumGridFragmentList = new HashMap<String, AlbumGridFragment>();
-        } else {
-            if (mAlbumGridFragmentList.size() > 0) {
-                boolean isFragmentExist = false;
-                for (String key : mAlbumGridFragmentList.keySet()) {
-                    if (key.equals(KEY_FRAGMENT_INDEX + position)) {
-                        isFragmentExist = true;
-                        break;
-                    }
-                }
-                if (isFragmentExist) {
-                    albumGridFragment = mAlbumGridFragmentList.get(KEY_FRAGMENT_INDEX + position);
-                    if (albumGridFragment != null) {
-                        return albumGridFragment;
-                    }
-                }
-            }
-        }
-        String itemName = mNewsCategoryList.get(position);
+//        if (mAlbumGridFragmentList == null) {
+//            mAlbumGridFragmentList = new HashMap<String, AlbumGridFragment>();
+//        } else {
+//            if (mAlbumGridFragmentList.size() > 0) {
+//                boolean isFragmentExist = false;
+//                for (String key : mAlbumGridFragmentList.keySet()) {
+//                    if (key.equals(KEY_FRAGMENT_INDEX + position)) {
+//                        isFragmentExist = true;
+//                        break;
+//                    }
+//                }
+//                if (isFragmentExist) {
+//                    albumGridFragment = mAlbumGridFragmentList.get(KEY_FRAGMENT_INDEX + position);
+//                    if (albumGridFragment != null) {
+//                        return albumGridFragment;
+//                    }
+//                }
+//            }
+//        }
+        String itemName = mCategoryContent.get(position).name;
         itemName = itemName.substring(itemName.lastIndexOf("_") + 1, itemName.length());
         if (Utility.DEBUG) Log.e(TAG, "itemName: " + itemName);
         if (mCategoryContent != null) {
@@ -100,8 +99,8 @@ public class AlbumCategoryFragmentAdapter extends FragmentPagerAdapter {
             }
         }
         albumGridFragment = new AlbumGridFragment();
-        albumGridFragment.setData(id, mHandler, itemName);
-        mAlbumGridFragmentList.put(KEY_FRAGMENT_INDEX + position, albumGridFragment);
+        albumGridFragment.setData(id, mHandler, itemName, mPool);
+//        mAlbumGridFragmentList.put(KEY_FRAGMENT_INDEX + position, albumGridFragment);
         return albumGridFragment;
     }
 
@@ -110,16 +109,14 @@ public class AlbumCategoryFragmentAdapter extends FragmentPagerAdapter {
         return mPageCount;
     }
 
-    public void clearFragmentList() {
-        if (Utility.DEBUG) Log.e(TAG, "clearFragmentList 111");
-        if (mAlbumGridFragmentList != null && mAlbumGridFragmentList.size() >= 0) {
-            if (Utility.DEBUG)
-                Log.e(TAG, "mAlbumGridFragmentList.size(): " + mAlbumGridFragmentList.size());
-            mAlbumGridFragmentList.clear();
-            if (Utility.DEBUG)
-                Log.e(TAG, "mAlbumGridFragmentList.size(): " + mAlbumGridFragmentList.size());
-            mAlbumGridFragmentList = null;
-        }
-    }
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
 
+        if(Utility.DEBUG)Log.v(TAG, TAG + "$$$destroyItem");
+        FragmentTransaction trans = mFragmentManager.beginTransaction();
+        trans.remove((Fragment)object);
+        trans.commit();
+
+        super.destroyItem(container, position, object);
+    }
 }

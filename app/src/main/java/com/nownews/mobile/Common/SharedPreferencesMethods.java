@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class SharedPreferencesMethods {
 
-    public final static String HOME_ALBUM_ITEMS = "album_item_";
     public final static String GCM_REGIST_ID = "RegistId";
     private static final String LAST_APP_VERSION = "appVersion";
     private final String TAG = getClass().getSimpleName();
@@ -42,42 +41,6 @@ public class SharedPreferencesMethods {
         if(mContext==aContext){
             mContext = null;
         }
-    }
-
-    public boolean saveHomeAlbumItems(String aKey, boolean needToShow) {
-        mEditor.putBoolean(aKey, needToShow);
-        return mEditor.commit();
-    }
-
-    public ArrayList<String> getHomeAlbumItems() {
-
-        ArrayList<Integer> mSortList = new ArrayList<Integer>();
-        ArrayList<String> mList = new ArrayList<String>();
-        Map map = mPreferences.getAll();
-        for (Object key : map.keySet()) {
-            if (((String) key).contains(HOME_ALBUM_ITEMS)) {
-                boolean needToShow = mPreferences.getBoolean((String) key, false);
-                if (needToShow) {
-                    int sort = Integer.parseInt(((String) key).substring(0, ((String) key).indexOf("_")));
-                    mSortList.add(sort);
-                }
-            }
-        }
-        Collections.sort(mSortList);
-        if (Utility.DEBUG) Log.e(TAG, "mSortList: " + mSortList);
-        for (int sort : mSortList) {
-            for (Object key : map.keySet()) {
-                if (((String) key).contains(HOME_ALBUM_ITEMS)) {
-                    int startIndex = Integer.parseInt(((String) key).substring(0, ((String) key).indexOf("_")));
-                    if (startIndex == sort) {
-                        String itemName = ((String) key);
-                        mList.add(itemName);
-                        break;
-                    }
-                }
-            }
-        }
-        return mList;
     }
 
     public boolean isFavoriteIdExist(String aImageId) {
