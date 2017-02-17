@@ -13,13 +13,13 @@ public class WebAPIUrl {
     //endregion
 
     // -Nownews Mobile Web首頁
-    public final static String NOWNEWS_MOBIEL_WEB_DOMAIN = "http://m.nownews.com/";
+    public final static String NOWNEWS_MOBIEL_WEB_DOMAIN = "https://m.nownews.com/";
     // -Nownews Mobile Web新聞內頁
-    public final static String NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN = "http://m.nownews.com/news/";
+    public final static String NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN = "https://m.nownews.com/news/";
     // -Nownews Mobile Web圖集內頁
-    public final static String NOWNEWS_MOBIEL_WEB_PHOTO_DOMAIN = "http://m.nownews.com/photo/";
+    public final static String NOWNEWS_MOBIEL_WEB_PHOTO_DOMAIN = "https://m.nownews.com/photo/";
     // -Nownews Mobile Web影音內頁
-    public final static String NOWNEWS_MOBIEL_WEB_VIDEO_DOMAIN = "http://m.nownews.com/video/";
+    public final static String NOWNEWS_MOBIEL_WEB_VIDEO_DOMAIN = "https://m.nownews.com/video/";
     // -首頁進入圖
     public final static String NOWNEWS_SPLASH_IMAGE = "http://v2.api.nownews.com/splash";
     // -取得版本號

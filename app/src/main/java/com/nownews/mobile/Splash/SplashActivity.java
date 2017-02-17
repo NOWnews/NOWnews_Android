@@ -28,12 +28,14 @@ import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
 import com.nownews.mobile.Json.SplashImageJson;
 
+import java.lang.ref.WeakReference;
+
 public class SplashActivity extends Activity {
 
     public final static int GET_SPLASH_INFO = 0x572;
     public final static int NETWORK_SLOW_OK_CLICK = 0x213;
     private final String TAG = getClass().getSimpleName();
-    private final int GOTO_HOME = 0x654;
+    private final static int GOTO_HOME = 0x654;
     private ImageView vSplashImage;
     private ApiController mApiController;
     private BitmapController mBitmapController;
@@ -41,50 +43,60 @@ public class SplashActivity extends Activity {
     private String mSplashImageUrl;
     private Bitmap mSplashImage;
     private boolean isAllreadyCallGoHome = false;
-    private Handler mHandler = new Handler() {
+    private ApiHandler mHandler;
+    private static class ApiHandler extends Handler {
+
+        private String TAG = getClass().getSimpleName();
+        private WeakReference<SplashActivity> mSplash;
+
+        private ApiHandler(SplashActivity aSplash){
+            mSplash = new WeakReference<SplashActivity>(aSplash);
+        }
 
         @Override
         public void handleMessage(Message msg) {
+
+            SplashActivity splash = mSplash.get();
 
             switch (msg.what) {
                 case ParameterSet.GET_SPLASH_IMAGE_DONE:
                     SplashImageJson splashImageInfo = (SplashImageJson) msg.obj;
                     if (splashImageInfo == null) {
-                        mHandler.sendEmptyMessageDelayed(GOTO_HOME, 2000);
+                        splash.mHandler.sendEmptyMessageDelayed(GOTO_HOME, 2000);
                         break;
                     }
-                    mSplashImageUrl = splashImageInfo.url;
-                    int screenHeight = Utility.getScreenHeight(SplashActivity.this);
-                    int screenWidth = Utility.getScreenWidth(SplashActivity.this);
-                    mSplashImageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, screenHeight, Utility.IMG_QUALITY, mSplashImageUrl);
-                    processImage();
+                    splash.mSplashImageUrl = splashImageInfo.url;
+                    int screenHeight = Utility.getScreenHeight(splash);
+                    int screenWidth = Utility.getScreenWidth(splash);
+                    splash.mSplashImageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, screenHeight, Utility.IMG_QUALITY, splash.mSplashImageUrl);
+                    splash.processImage();
                     break;
                 case ParameterSet.GET_SPLASH_IMAGE_FAILED:
                 case GOTO_HOME:
                     Intent intent = new Intent();
-                    intent.setClass(SplashActivity.this, NewHome.class);
+                    intent.setClass(splash, NewHome.class);
 //                    intent.setClass(SplashActivity.this, VideoNewsCategoryFragment.class);
 //                    intent.putExtra(VideoNewsCategoryFragment.KEY_POSITION, 0);
-                    startActivity(intent);
-                    finish();
+                    splash.startActivity(intent);
+                    splash.finish();
                     break;
                 case GET_SPLASH_INFO:
-                    mSplashImage = (Bitmap) msg.obj;
-                    if (mSplashImage != null) {
-                        vSplashImage.setImageBitmap(mSplashImage);
+                    splash.mSplashImage = (Bitmap) msg.obj;
+                    if (splash.mSplashImage != null) {
+                        splash.vSplashImage.setImageBitmap(splash.mSplashImage);
                     } else {
-                        vSplashImage.setImageResource(R.drawable.default_img);
+                        splash.vSplashImage.setImageResource(R.drawable.default_img);
                     }
-                    if (!Utility.showNetworkSlowDialog(SplashActivity.this, mHandler, true)) {
-                        getSplashImage();
+                    if (!Utility.showNetworkSlowDialog(splash, splash.mHandler, true)) {
+                        splash.getSplashImage();
                     }
                     break;
                 case NETWORK_SLOW_OK_CLICK:
-                    getSplashImage();
+                    splash.getSplashImage();
                     break;
                 case ParameterSet.SOCKET_TIME_OUT:
                     if (Utility.DEBUG) Log.d(TAG, "SOCKET_TIME_OUT!!!");
-                    Utility.openSocketTimeoutDialog(SplashActivity.this);
+                    Utility.openSocketTimeoutDialog(splash);
                     break;
             }
 
@@ -100,7 +112,43 @@ public class SplashActivity extends Activity {
         changeSharePreferenceTextSize();
         initController();
         processView();
-        mBitmapController.loadImageFromFile(vSplashImage, UserDataInfo.ThumbnailPath + "Splash.jpg", mHandler);
+//        mBitmapController.loadImageFromFile(vSplashImage, UserDataInfo.ThumbnailPath + "Splash.jpg", mHandler);
+        String thumbnailPath = UserDataInfo.ThumbnailPath + "Splash.jpg";
+        Log.d(TAG, "thumbnailPath: " + thumbnailPath);
+        mBitmapController.loadImageWithGlide(thumbnailPath,
+                vSplashImage, BitmapController.IMAGE_SRC, 0, 0, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStart(String aImageUrl, View aView) {
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String aImageUrl, View aView, Exception aException) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
+                        if (aBitmap != null) {
+                            vSplashImage.setImageBitmap(aBitmap);
+                        } else {
+                            vSplashImage.setImageResource(R.drawable.default_img);
+                        }
+                        if (!Utility.showNetworkSlowDialog(getApplicationContext(), mHandler, true)) {
+                            getSplashImage();
+                        }
+                    }
+
+                    @Override
+                    public void onLoadingCancelled() {
+
+                    }
+
+                    @Override
+                    public void onProgressUpdate(String aImageUrl, int aProgress, int max) {
+
+                    }
+                }, 0x568);
 
     }
 
@@ -127,6 +175,7 @@ public class SplashActivity extends Activity {
         mApiController = ApiController.getInstance();
         mBitmapController = BitmapController.getInstance(this);
 //        mBitmapController = new BitmapController(this);
+        mHandler = new ApiHandler(this);
     }
 
     private void processView() {
@@ -194,6 +243,7 @@ public class SplashActivity extends Activity {
                 public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
 
                     if (aBitmap != null) {
+                        Log.v(TAG, "onLoadingComplete && aBitmpa is not null");
                         mBitmapController.convertBitmapToFile(UserDataInfo.ThumbnailPath, "Splash.jpg", aBitmap);
                     }
                     if (!isAllreadyCallGoHome) {
@@ -253,6 +303,7 @@ public class SplashActivity extends Activity {
         }
 
         if(mHandler!=null){
+            mHandler.removeMessages(GOTO_HOME);
             mHandler.removeCallbacks(null);
             mHandler = null;
         }
@@ -262,8 +313,10 @@ public class SplashActivity extends Activity {
         }
 
         if(mSplashImage!=null){
+            mSplashImage.recycle();
             mSplashImage = null;
         }
+
         super.onDestroy();
     }
 

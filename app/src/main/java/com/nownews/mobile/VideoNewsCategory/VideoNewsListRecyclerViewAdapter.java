@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -365,14 +366,14 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
             }
         });
-//        VpadnAdRequest adRequest = new VpadnAdRequest();
-//        HashSet<String> testDevicesImeiSet = new HashSet<>();
-//        testDevicesImeiSet.add(Utility.getAdvertisingId());
-//        adRequest.setTestDevices(testDevicesImeiSet);
-//        nativeAd.loadAd(adRequest);
+        VpadnAdRequest adRequest = new VpadnAdRequest();
+        HashSet<String> testDevicesImeiSet = new HashSet<>();
+        testDevicesImeiSet.add(Utility.getAdvertisingId());
+        adRequest.setTestDevices(testDevicesImeiSet);
+        nativeAd.loadAd(adRequest);
 
         //正式
-        nativeAd.loadAd();
+//        nativeAd.loadAd();
 
     }
 
@@ -433,6 +434,19 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         mFirstVisibleItem = firstVisibleItem;
         mLastVisibleItem = visibleItemCount;
 //        notifyDataSetChanged();
+    }
+
+    public void clearBitmapController() {
+        if (mBitmapController != null) {
+            mBitmapController.clearCache();
+            mBitmapController.closeBitmapController();
+        }
+    }
+
+    public void unRegistContext(Context aContext){
+        if(mContext==aContext){
+            mContext = null;
+        }
     }
 
     class NormalViewHolder extends RecyclerView.ViewHolder {

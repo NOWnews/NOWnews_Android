@@ -1272,7 +1272,9 @@ public class Utility {
     public static String getAdvertisingId (Context aContext){
         try{
             AdvertisingIdClient.Info info = AdvertisingIdClient.getAdvertisingIdInfo(aContext);
-            mAdvertisingId = info.getId();
+            if(info!=null){
+                mAdvertisingId = info.getId();
+            }
         } catch (GooglePlayServicesNotAvailableException e){
             e.printStackTrace();
         } catch (GooglePlayServicesRepairableException e){

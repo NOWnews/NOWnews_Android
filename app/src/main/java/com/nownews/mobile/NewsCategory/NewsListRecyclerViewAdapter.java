@@ -398,14 +398,14 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
             }
         });
-//        VpadnAdRequest adRequest = new VpadnAdRequest();
-//        HashSet<String> testDevicesImeiSet = new HashSet<>();
-//        testDevicesImeiSet.add(Utility.getAdvertisingId());
-//        adRequest.setTestDevices(testDevicesImeiSet);
-//        nativeAd.loadAd(adRequest);
+        VpadnAdRequest adRequest = new VpadnAdRequest();
+        HashSet<String> testDevicesImeiSet = new HashSet<>();
+        testDevicesImeiSet.add(Utility.getAdvertisingId());
+        adRequest.setTestDevices(testDevicesImeiSet);
+        nativeAd.loadAd(adRequest);
 
         //正式
-        nativeAd.loadAd();
+//        nativeAd.loadAd();
 
     }
 

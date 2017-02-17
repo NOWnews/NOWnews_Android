@@ -210,7 +210,7 @@ public class BitmapController {
 
     }
 
-    private void loadImageWithGlide(final String aUrl, final View aView, final int aImageType, final int aImgW,
+    public void loadImageWithGlide(final String aUrl, final View aView, final int aImageType, final int aImgW,
                                     final int aImgH, final ImageLoadingListener aImageLoadingListener, final int aImageLoadType){
         Glide.with(mContext)
                 .load(aUrl)
@@ -647,8 +647,12 @@ public class BitmapController {
     //TODO clearCache()
     public void clearCache() {
         if (Utility.DEBUG) Log.v(TAG, "===clearCache()===");
-        mImageCache.evictAll();
-        mImageSizeInfo.clear();
+        if(mImageCache!=null){
+            mImageCache.evictAll();
+        }
+        if(mImageSizeInfo!=null){
+            mImageSizeInfo.clear();
+        }
 //        Glide.get(mContext).clearMemory();
 //        try {
 //            if (mImageCache != null) {

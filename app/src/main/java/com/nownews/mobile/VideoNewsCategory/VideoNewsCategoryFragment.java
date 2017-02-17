@@ -23,8 +23,10 @@ import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Json.VideosCategoryJson.CategoryInfo;
 import com.nownews.mobile.NewHome;
+import com.nownews.mobile.NewsCategory.NewsCategoryFragment;
 import com.nownews.mobile.Widget.SlidingTabLayout;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class VideoNewsCategoryFragment extends Fragment {
@@ -92,29 +94,26 @@ public class VideoNewsCategoryFragment extends Fragment {
     private boolean isLadingLayoutVisible = false;
     private ApiController mApiController;
     private List<CategoryInfo> mVideoNewsCategoryContent;
-    private Handler mUiHandler = new Handler() {
+    private UiHandler mUiHandler;
+    private static class UiHandler extends Handler {
+
+        private final WeakReference<VideoNewsCategoryFragment> mFragment;
+
+        public UiHandler(VideoNewsCategoryFragment aFragment){
+            mFragment = new WeakReference<VideoNewsCategoryFragment>(aFragment);
+        }
 
         @Override
         public void handleMessage(Message msg) {
 
+            VideoNewsCategoryFragment fragment = mFragment.get();
+
             switch (msg.what) {
                 case LOAD_PAGE_START:
-                    ((NewHome)getActivity()).showSnackBar();
-//                    if (!isLadingLayoutVisible) {
-//                        //show ad
-//                        vLoadingPageLayout.setVisibility(View.VISIBLE);
-//                        vLoadingPageLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
-//                        isLadingLayoutVisible = true;
-//                    }
+                    ((NewHome)fragment.getActivity()).showSnackBar();
                     break;
                 case LOAD_PAGE_END:
-                    ((NewHome)getActivity()).dissmissSnackBar();
-//                    if (isLadingLayoutVisible) {
-//                        //hide ad
-//                        vLoadingPageLayout.setVisibility(View.GONE);
-//                        vLoadingPageLayout.animate().translationY(vLoadingPageLayout.getHeight()).setInterpolator(new AccelerateInterpolator(2));
-//                        isLadingLayoutVisible = false;
-//                    }
+                    ((NewHome)fragment.getActivity()).dissmissSnackBar();
                     break;
 
             }
@@ -124,37 +123,47 @@ public class VideoNewsCategoryFragment extends Fragment {
     };
 
     private int mRetryCount;
-    private final int RELOAD_API = 0x159;
+    private final static int RELOAD_API = 0x159;
     public boolean isApiLoadingSuccess;
-    private Handler mApiHandler = new Handler() {
+    private ApiHandler mApiHandler;
+    private static class ApiHandler extends Handler{
+
+        private String TAG = getClass().getSimpleName();
+        private final WeakReference<VideoNewsCategoryFragment> mFragment;
+
+        public ApiHandler(VideoNewsCategoryFragment aFragment){
+            mFragment = new WeakReference<VideoNewsCategoryFragment>(aFragment);
+        }
+
         @Override
         public void handleMessage(Message msg) {
 
+            VideoNewsCategoryFragment fragment = mFragment.get();
+
             switch (msg.what) {
                 case ParameterSet.GET_VIDEOS_CATEGORY_DONE:
-                    isApiLoadingSuccess = true;
-                    mRetryCount = 0;
-                    mVideoNewsCategoryContent = (List<CategoryInfo>) msg.obj;
-                    UserDataInfo.setVideosCategoryContent(mVideoNewsCategoryContent);
-                    setTab();
+                    fragment.isApiLoadingSuccess = true;
+                    fragment.mRetryCount = 0;
+                    fragment.mVideoNewsCategoryContent = (List<CategoryInfo>) msg.obj;
+                    fragment.setTab();
                     break;
                 case ParameterSet.GET_VIDEOS_CATEGORY_FAILED:
-                    if (Utility.DEBUG)Log.e(TAG, "mRetryCount: " + mRetryCount);
-                    isApiLoadingSuccess = false;
-                    if(mRetryCount<5){
-                        mRetryCount++;
+                    if (Utility.DEBUG)Log.e(TAG, "mRetryCount: " + fragment.mRetryCount);
+                    fragment.isApiLoadingSuccess = false;
+                    if(fragment.mRetryCount<5){
+                        fragment.mRetryCount++;
                         if(hasMessages(RELOAD_API)){
                             removeMessages(RELOAD_API);
                         }
                         sendEmptyMessage(RELOAD_API);
                         break;
                     }else{
-                        mRetryCount = 0;
-                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_VIDEOS_CATEGORY_FAILED));
+                        fragment.mRetryCount = 0;
+                        fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_VIDEOS_CATEGORY_FAILED));
                     }
                     break;
                 case RELOAD_API:
-                    getVideoNewsCategory();
+                    fragment.getVideoNewsCategory();
                     break;
             }
 
@@ -185,12 +194,12 @@ public class VideoNewsCategoryFragment extends Fragment {
     }
 
     private void processData(){
-        mVideoNewsCategoryContent = UserDataInfo.getVideosCategoryContent();
-        if(mVideoNewsCategoryContent ==null){
+//        mVideoNewsCategoryContent = UserDataInfo.getVideosCategoryContent();
+//        if(mVideoNewsCategoryContent ==null){
             getVideoNewsCategory();
-        }else{
-            setTab();
-        }
+//        }else{
+//            setTab();
+//        }
     }
 
     private void getVideoNewsCategory() {
@@ -202,6 +211,8 @@ public class VideoNewsCategoryFragment extends Fragment {
 
     private void initController() {
         mApiController = ApiController.getInstance();
+        mUiHandler = new UiHandler(this);
+        mApiHandler = new ApiHandler(this);
     }
 
     private void processArgument() {
@@ -231,9 +242,6 @@ public class VideoNewsCategoryFragment extends Fragment {
 
         if (mVideoNewsCategoryContent != null && mVideoNewsCategoryContent.size() == 0) {
 
-            if (mAdapter != null) {
-                mAdapter.clearFragmentList();
-            }
             if (vViewPager != null) {
                 vViewPager.setAdapter(null);
             }
@@ -274,7 +282,29 @@ public class VideoNewsCategoryFragment extends Fragment {
         super.onResume();
     }
 
+    @Override
+    public void onDestroyView() {
+
+        if(mUiHandler!=null){
+            mUiHandler.removeCallbacks(null);
+            mUiHandler = null;
+        }
+
+        if(mApiHandler!=null){
+            mApiHandler.removeCallbacks(null);
+            mApiHandler = null;
+        }
+
+        super.onDestroyView();
+    }
+
     public void reload() {
+        if(Utility.DEBUG)Log.v(TAG, "reload");
+
+        mRetryCount = 0;
+        if(mApiHandler!=null && mApiHandler.hasMessages(RELOAD_API)){
+            mApiHandler.removeMessages(RELOAD_API);
+        }
         startFragment();
     }
 

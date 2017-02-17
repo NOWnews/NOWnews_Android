@@ -383,7 +383,13 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             }
 
             //BigImage
-            if (mNewsInfo.image != null
+            if(mNewsInfo.youtubeId!=null && !mNewsInfo.youtubeId.trim().isEmpty()){
+
+                if(mPagePosition==mCurrentViewPagerPosition) {
+                    processVideo();
+                }
+
+            }else if (mNewsInfo.image != null
                     && !mNewsInfo.image.trim().isEmpty()) {
                 String bigImgUrl = mNewsInfo.image;
                 if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
@@ -399,10 +405,6 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
             } else {
                 vImageLayout.setVisibility(View.GONE);
-            }
-
-            if(mPagePosition==mCurrentViewPagerPosition) {
-                processVideo();
             }
 
         }

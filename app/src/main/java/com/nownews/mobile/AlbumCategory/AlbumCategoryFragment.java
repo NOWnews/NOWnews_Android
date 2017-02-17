@@ -113,12 +113,12 @@ public class AlbumCategoryFragment extends Fragment {
     }
 
     private void processData(){
-        mPhotoCategoryContent = UserDataInfo.getPhotosCategoryContent();
-        if(mPhotoCategoryContent==null){
+//        mPhotoCategoryContent = UserDataInfo.getPhotosCategoryContent();
+//        if(mPhotoCategoryContent==null){
             getPhotosCategory();
-        }else{
-            setTab();
-        }
+//        }else{
+//            setTab();
+//        }
     }
 
     private ApiController mApiController;

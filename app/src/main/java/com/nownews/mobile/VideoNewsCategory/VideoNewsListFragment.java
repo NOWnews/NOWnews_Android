@@ -22,6 +22,7 @@ import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Json.VideosListJson.VideosContent;
 import com.nownews.mobile.NewsCategory.NewsCategoryFragment;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class VideoNewsListFragment extends Fragment {
@@ -35,7 +36,6 @@ public class VideoNewsListFragment extends Fragment {
 
     private List<VideosContent> mVideoNewsList;
     //	private NewsListFragmentAdapter mAdapter;
-    private VideoNewsListRecyclerViewAdapter mAdapter;
     private RelativeLayout vLoadingLayout;
     private TextView vErrorMessage;
     private Handler mAdHandler;
@@ -45,71 +45,81 @@ public class VideoNewsListFragment extends Fragment {
     private boolean isScrollToBottom = false;
     private boolean isOnDestroy = false;
     private int mRetryCount;
-    private final int RELOAD_API = 0x159;
+    private final static int RELOAD_API = 0x159;
     public boolean isApiLoadingSuccess;
-    private Handler mHandler = new Handler() {
+    private ApiHandler mApiHandler;
+    private static class ApiHandler extends Handler {
+
+        private String TAG = getClass().getSimpleName();
+        private final WeakReference<VideoNewsListFragment> mFragment;
+
+        public ApiHandler(VideoNewsListFragment aFragment){
+            mFragment = new WeakReference<VideoNewsListFragment>(aFragment);
+        }
 
         @Override
         public void handleMessage(Message msg) {
 
+            VideoNewsListFragment fragment = mFragment.get();
+
             switch (msg.what) {
                 case ParameterSet.GET_VIDEOS_LIST_DONE:
-                    isApiLoadingSuccess = true;
-                    mRetryCount = 0;
-                    if (mCurrentPage > 1) {
-                        mVideoNewsList.addAll((List<VideosContent>) msg.obj);
-                        if (mAdHandler != null) {
-                            mAdHandler.sendEmptyMessage(VideoNewsCategoryFragment.LOAD_PAGE_END);
+                    fragment.isApiLoadingSuccess = true;
+                    fragment.mRetryCount = 0;
+                    if (fragment.mCurrentPage > 1) {
+                        fragment.mVideoNewsList.addAll((List<VideosContent>) msg.obj);
+                        if (fragment.mAdHandler != null) {
+                            fragment.mAdHandler.sendEmptyMessage(VideoNewsCategoryFragment.LOAD_PAGE_END);
                         }
                     } else {
-                        mVideoNewsList = (List<VideosContent>) msg.obj;
+                        fragment.mVideoNewsList = (List<VideosContent>) msg.obj;
                     }
-                    if (isRefereshing) {
+                    if (fragment.isRefereshing) {
                         // Stop refresh animation
-                        isRefereshing = false;
-                        vRefreshLayout.setRefreshing(false);
+                        fragment.isRefereshing = false;
+                        fragment.vRefreshLayout.setRefreshing(false);
                     }
-                    if (!isOnDestroy) {
-                        processList();
+                    if (!fragment.isOnDestroy) {
+                        fragment.processList();
                     }
                     break;
                 case ParameterSet.GET_VIDEOS_LIST_FAILED:
 
-                    if (Utility.DEBUG)Log.e(TAG, "mRetryCount: " + mRetryCount);
-                    isApiLoadingSuccess = false;
-                    if(mRetryCount<5){
-                        mRetryCount++;
+                    if (Utility.DEBUG)Log.e(TAG, "mRetryCount: " + fragment.mRetryCount);
+                    fragment.isApiLoadingSuccess = false;
+                    if(fragment.mRetryCount<5){
+                        fragment.mRetryCount++;
                         if(hasMessages(RELOAD_API)){
                             removeMessages(RELOAD_API);
                         }
                         sendEmptyMessage(RELOAD_API);
                         break;
                     }else{
-                        mRetryCount = 0;
-                        if (isRefereshing) {
+                        fragment.mRetryCount = 0;
+                        if (fragment.isRefereshing) {
                             // Stop refresh animation
-                            isRefereshing = false;
-                            vRefreshLayout.setRefreshing(false);
+                            fragment.isRefereshing = false;
+                            fragment.vRefreshLayout.setRefreshing(false);
                         }
-                        if (isScrollToBottom) {
-                            if (mAdHandler != null) {
-                                mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
+                        if (fragment.isScrollToBottom) {
+                            if (fragment.mAdHandler != null) {
+                                fragment.mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
                             }
-                            mCurrentPage--;
-                            isScrollToBottom = false;
+                            fragment.mCurrentPage--;
+                            fragment.isScrollToBottom = false;
                         }else{
-                            vLoadingLayout.setVisibility(View.GONE);
-                            vList.setVisibility(View.GONE);
-                            vErrorMessage.setVisibility(View.VISIBLE);
-                            vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_VIDEOS_LIST_FAILED));
+                            fragment.vLoadingLayout.setVisibility(View.GONE);
+                            fragment.vList.setVisibility(View.GONE);
+                            fragment.vErrorMessage.setVisibility(View.VISIBLE);
+                            fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_VIDEOS_LIST_FAILED));
                         }
                     }
                     break;
                 case ParameterSet.SOCKET_TIME_OUT:
-                    Utility.openSocketTimeoutDialog(getActivity());
+                    Utility.openSocketTimeoutDialog(fragment.getActivity());
                     break;
                 case RELOAD_API:
-                    getNewsList();
+                    fragment.getNewsList();
                     break;
             }
 
@@ -121,10 +131,12 @@ public class VideoNewsListFragment extends Fragment {
         // Do nothing...
     }
 
-    public void setData(int aNewsCategoryId, Handler aAdHandler, String aCategoryName) {
+    private RecyclerView.RecycledViewPool mPool;
+    public void setData(int aNewsCategoryId, Handler aAdHandler, String aCategoryName, RecyclerView.RecycledViewPool aPool) {
         mNewsCategoryId = aNewsCategoryId;
         mAdHandler = aAdHandler;
         mCategoryName = aCategoryName;
+        mPool = aPool;
     }
 
     @Override
@@ -136,10 +148,6 @@ public class VideoNewsListFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        if (mAdapter != null) {
-            mAdapter = null;
-        }
 
         initController();
         processView();
@@ -159,12 +167,13 @@ public class VideoNewsListFragment extends Fragment {
         }
         vErrorMessage.setVisibility(View.GONE);
         if (mApiController != null) {
-            mApiController.getVideosList(mHandler, mNewsCategoryId, mCurrentPage);
+            mApiController.getVideosList(mApiHandler, mNewsCategoryId, mCurrentPage);
         }
     }
 
     private void initController() {
         mApiController = ApiController.getInstance();
+        mApiHandler = new ApiHandler(this);
     }
 
     private void processView() {
@@ -203,14 +212,18 @@ public class VideoNewsListFragment extends Fragment {
 //		mAdapter = new NewsListFragmentAdapter(getActivity(), mVideoNewsList);
 //		vList.setAdapter(mAdapter);
 
-        if (mAdapter == null) {
+        if (vList.getAdapter() == null) {
             mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            mLinearLayoutManager.setRecycleChildrenOnDetach(true);
             vList.setLayoutManager(mLinearLayoutManager);
-            mAdapter = new VideoNewsListRecyclerViewAdapter(getActivity(), mVideoNewsList, mCategoryName, getChildFragmentManager());
-            vList.setAdapter(mAdapter);
+            if(mPool!=null){
+                vList.setRecycledViewPool(mPool);
+            }
+            VideoNewsListRecyclerViewAdapter adapter = new VideoNewsListRecyclerViewAdapter(getActivity(), mVideoNewsList, mCategoryName, getChildFragmentManager());
+            vList.setAdapter(adapter);
             vList.addOnScrollListener(mListScrollListener);
         } else {
-            mAdapter.setData(mVideoNewsList, getChildFragmentManager());
+            ((VideoNewsListRecyclerViewAdapter)vList.getAdapter()).setData(mVideoNewsList, getChildFragmentManager());
         }
 
         vLoadingLayout.setVisibility(View.GONE);
@@ -231,8 +244,8 @@ public class VideoNewsListFragment extends Fragment {
 
             if(newState==RecyclerView.SCROLL_STATE_IDLE){
                 if (Utility.DEBUG)Log.d(TAG, "onScrollStateChanged!!! " + newState);
-                if (mAdapter != null) {
-                    mAdapter.setPosition(findFirstVisibleItemPosition, findLastVisibleItemPosition);
+                if (vList != null && vList.getAdapter() != null) {
+                    ((VideoNewsListRecyclerViewAdapter)vList.getAdapter()).setPosition(findFirstVisibleItemPosition, findLastVisibleItemPosition);
                 }
             }
 
@@ -245,13 +258,13 @@ public class VideoNewsListFragment extends Fragment {
             if (Utility.DEBUG)Log.d(TAG, "onScrolled");
             int findLastVisibleItemPosition = mLinearLayoutManager.findLastVisibleItemPosition();
 
-            if (mAdapter != null) {
-                if (findLastVisibleItemPosition == mAdapter.getItemCount() - 1) {
+            if (vList.getAdapter() != null) {
+                if (findLastVisibleItemPosition == vList.getAdapter().getItemCount() - 1) {
                     if (!isScrollToBottom && mVideoNewsList != null && mVideoNewsList.size() > 0) {
                         isScrollToBottom = true;
 //						if(Utility.DEBUG)Log.e(TAG, "滑到底了!!");
                         if (mAdHandler != null) {
-                            mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_START);
+                            mAdHandler.sendEmptyMessage(VideoNewsCategoryFragment.LOAD_PAGE_START);
                         }
                         mCurrentPage++;
                         getNewsList();
@@ -272,6 +285,17 @@ public class VideoNewsListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         if (Utility.DEBUG) Log.e(TAG, "onDestroyView()");
+        if(vList != null && vList.getAdapter() != null){
+            ((VideoNewsListRecyclerViewAdapter)vList.getAdapter()).clearBitmapController();
+            ((VideoNewsListRecyclerViewAdapter)vList.getAdapter()).unRegistContext(getActivity());
+            vList.setLayoutManager(null);
+            vList.setAdapter(null);
+            vList = null;
+        }
+        if(mApiHandler !=null){
+            mApiHandler.removeCallbacks(null);
+            mApiHandler = null;
+        }
         super.onDestroyView();
     }
 
