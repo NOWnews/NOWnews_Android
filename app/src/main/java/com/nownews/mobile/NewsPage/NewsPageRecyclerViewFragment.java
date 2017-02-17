@@ -230,7 +230,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         if (mNewsInfo.image != null
                 && mNewsInfo.image.thumbnail != null
                 && !mNewsInfo.image.thumbnail.trim().isEmpty()) {
-            String bigImgUrl = mNewsInfo.image.thumbnail;
+            String bigImgUrl = mNewsInfo.image.url;
             if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
             mImageUrlList.add(bigImgUrl);
         } else if (mCategoryName.contains(getString(R.string.eco))) {

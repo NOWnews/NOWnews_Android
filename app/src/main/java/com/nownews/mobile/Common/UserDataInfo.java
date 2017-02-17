@@ -21,8 +21,8 @@ import java.util.Stack;
 
 public class UserDataInfo {
 
-    public final static String PROJECT_FOLDER_PATH = Environment.getExternalStorageDirectory() + "/NOWNews/";
-    public final static String JSON_FOLDER_PATH = Environment.getExternalStorageDirectory() + "/NOWNews/JS/";
+    public final static String PROJECT_FOLDER_PATH = Environment.getExternalStorageDirectory() + "/NOWnews/";
+    public final static String JSON_FOLDER_PATH = Environment.getExternalStorageDirectory() + "/NOWnews/JS/";
     public final static String ThumbnailPath = PROJECT_FOLDER_PATH + "thumbnail/";
     //    public final static String SENDER_ID = "399608812512"; //old
     public final static String SENDER_ID = "581106378067";

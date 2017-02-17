@@ -85,8 +85,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private final int VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS = R.layout.widget_reference_news_item;
     private final int VIEW_TYPE_WEB_BODY = R.layout.widget_news_page_web_body;
 
-    public NewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aContentList, NewsInfoJson aNewsInfo,
-                                       ArrayList<String> aImageUrlList){
+    public NewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aContentList, NewsInfoJson aNewsInfo, ArrayList<String> aImageUrlList){
         mContext = aContext;
         if(Utility.DEBUG)Log.i(TAG, "mContext is null nor not?? " + (mContext==null? "true":"false"));
         mContentList = aContentList;
@@ -432,6 +431,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                     //show image page
                     if (Utility.DEBUG) Log.e(TAG, "image click!!!");
                     if (Utility.DEBUG) Log.v(TAG, "aImgUrl: " + aImgUrl);
+                    if (Utility.DEBUG) Log.v(TAG, "mImageUrlList: " + mImageUrlList);
 
                     int position = mImageUrlList.indexOf(aImgUrl);
                     if(position!=-1){
@@ -484,18 +484,17 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             public void onLoadingCancelled() {
             }
         };
+    }
 
-        private void goToNewsAlbumPage(int position) {
-            Intent intent = new Intent();
-            intent.setClass(mContext, FavoriteAlbumPage.class);
-            intent.putExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_POSITION, position);
-            intent.putStringArrayListExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_LIST, mImageUrlList);
-            intent.putExtra(FavoriteAlbumPage.KEY_TYPE, FavoriteAlbumPage.TYPE_NEWS_IMAGES);
-            intent.putExtra(FavoriteAlbumPage.KEY_IMAGE_TITLE, mNewsInfo.title);
-            intent.putExtra(FavoriteAlbumPage.KEY_NEWS_URL, WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + mNewsInfo.nodeId);
-            mContext.startActivity(intent);
-        }
-
+    private void goToNewsAlbumPage(int position) {
+        Intent intent = new Intent();
+        intent.setClass(mContext, FavoriteAlbumPage.class);
+        intent.putExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_POSITION, position);
+        intent.putStringArrayListExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_LIST, mImageUrlList);
+        intent.putExtra(FavoriteAlbumPage.KEY_TYPE, FavoriteAlbumPage.TYPE_NEWS_IMAGES);
+        intent.putExtra(FavoriteAlbumPage.KEY_IMAGE_TITLE, mNewsInfo.title);
+        intent.putExtra(FavoriteAlbumPage.KEY_NEWS_URL, WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + mNewsInfo.nodeId);
+        mContext.startActivity(intent);
     }
 
     public class ContextTextViewHolder extends RecyclerView.ViewHolder {
@@ -558,6 +557,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
         private CustomImageTopcrop vImage;
         private TextView vImageText;
+        private String mCurrentImageUrl;
 
         public ContextImageViewHolder(View itemView) {
             super(itemView);
@@ -580,6 +580,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             ConcurrentHashMap<String, Object> map = mContentList.get(realPosition);
             if(map.get(NewsPageFragment.KEY_CONTEXT_IMAGE)!=null){
                 String imageUrl = (String) map.get(NewsPageFragment.KEY_CONTEXT_IMAGE);
+                mCurrentImageUrl = imageUrl;
 //                imageUrl = Utility.getSrcFromImgapi(imageUrl);
                 mBitmapController.loadImageWithOriginalSize(imageUrl, vImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE, 0, 0, null);
                 String imageText = (String) map.get(NewsPageFragment.KEY_CONTEXT_IMAGE_TEXT);
@@ -596,6 +597,14 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
         @Override
         public void onClick(View view) {
+
+            int position = mImageUrlList.indexOf(mCurrentImageUrl);
+            if(position!=-1){
+                //gotoNewsAlbumPage
+                goToNewsAlbumPage(position);
+            }else{
+                return;
+            }
 
         }
     }
