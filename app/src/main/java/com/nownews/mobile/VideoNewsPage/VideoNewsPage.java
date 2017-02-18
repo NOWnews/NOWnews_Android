@@ -243,7 +243,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
                 }
                 newsTitle = mNewsList.get(vViewPager.getCurrentItem()).title;
                 newsId = mNewsList.get(vViewPager.getCurrentItem()).nodeId;
-                newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId;
+                newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_VIDEO_DOMAIN + newsId;
 
                 String shareMessage = Utility.getShareMessage(VideoNewsPage.this, newsUrl, newsTitle, Utility.ShareType.news);
                 Utility.shareToSNS(this, shareMessage);
