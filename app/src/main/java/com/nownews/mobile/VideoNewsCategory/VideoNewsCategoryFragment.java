@@ -61,6 +61,13 @@ public class VideoNewsCategoryFragment extends Fragment {
             String categoryName = mVideoNewsCategoryContent.get(position).name;
             categoryName = categoryName.substring(categoryName.lastIndexOf("_") + 1, categoryName.length());
             GoogleAnalyticsFunction.sendHitInfo(getActivity(), "影音新聞列表", "切換至" + categoryName + "新聞", "");
+
+
+            int currentPage = vViewPager.getCurrentItem();
+            VideoNewsListFragment fragment = (VideoNewsListFragment) mAdapter.instantiateItem(vViewPager, currentPage);
+            ((VideoNewsListFragment)fragment).destroyAD2();
+
+
         }
 
         @Override

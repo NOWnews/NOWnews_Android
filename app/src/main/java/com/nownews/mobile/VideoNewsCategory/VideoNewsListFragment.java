@@ -299,4 +299,10 @@ public class VideoNewsListFragment extends Fragment {
         super.onDestroyView();
     }
 
+    public void destroyAD2() {
+        if(vList != null && vList.getAdapter() != null){
+            ((VideoNewsListRecyclerViewAdapter)vList.getAdapter()).destroyAD2();
+        }
+    }
+
 }

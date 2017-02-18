@@ -47,6 +47,7 @@ public class NewsListFragment extends Fragment {
     private final static int RELOAD_API = 0x159;
     public boolean isApiLoadingSuccess;
     private ApiHandler mApiHandler;
+
     private static class ApiHandler extends Handler {
 
         private String TAG = getClass().getSimpleName();
@@ -301,6 +302,12 @@ public class NewsListFragment extends Fragment {
             mApiHandler = null;
         }
         super.onDestroyView();
+    }
+
+    public void destroyAD2() {
+        if(vList != null && vList.getAdapter() != null){
+            ((NewsListRecyclerViewAdapter)vList.getAdapter()).destroyAD2();
+        }
     }
 
 }

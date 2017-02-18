@@ -410,7 +410,14 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     private String mAd2Native;
+    private Ad2ictionNative vAD2Native;
     private void processAD2(final RelativeLayout aAdView, final int aPosition) {
+
+        if(vAD2Native!=null){
+            vAD2Native.destroy();
+            vAD2Native = null;
+        }
+
         mAd2Native = mContext.getString(R.string.ad2_native);
         if (Utility.DEBUG) Log.e(TAG, "===mAd2Native: " + mAd2Native);
 
@@ -438,14 +445,14 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
                 if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
                 if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
-                if (aPosition >= mFirstVisibleItem && aPosition <= mLastVisibleItem) {
+//                if (aPosition >= mFirstVisibleItem && aPosition <= mLastVisibleItem) {
                     if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
                     if (Utility.DEBUG) Log.e(TAG, "arg0 is null or not??" + arg0.toString());
                     View mAD2View = null;
                     mAD2View = helper.getAdView(mAD2View, aAdView, arg0, viewBinder, null);
                     aAdView.addView(mAD2View);
                     aAdView.setVisibility(View.VISIBLE);
-                }
+//                }
             }
 
             @Override
@@ -455,8 +462,9 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
         RequestParameters requestParameters = new RequestParameters.Builder().build();
 
-        Ad2ictionNative vAD2Native = new Ad2ictionNative(mContext, mAd2Native, "native", listener);
+        vAD2Native = new Ad2ictionNative(mContext, mAd2Native, "native", listener);
         vAD2Native.makeRequest(requestParameters);
+
     }
 
     private int mFirstVisibleItem;
@@ -472,6 +480,13 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         if (mBitmapController != null) {
             mBitmapController.clearCache();
             mBitmapController.closeBitmapController();
+        }
+    }
+
+    public void destroyAD2(){
+        if(vAD2Native!=null){
+            vAD2Native.destroy();
+            vAD2Native = null;
         }
     }
 

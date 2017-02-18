@@ -3,6 +3,7 @@ package com.nownews.mobile.NewsCategory;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -142,5 +143,19 @@ public class NewsCategoryFragmentAdapter extends FragmentStatePagerAdapter {
         trans.commit();
 
         super.destroyItem(container, position, object);
+    }
+
+    @Override
+    public Parcelable saveState() {
+        return null;
+    }
+
+    @Override
+    public void finishUpdate(ViewGroup container) {
+        try{
+            super.finishUpdate(container);
+        } catch (NullPointerException nullPointerException){
+            System.out.println("Catch the NullPointerException in FragmentPagerAdapter.finishUpdate");
+        }
     }
 }

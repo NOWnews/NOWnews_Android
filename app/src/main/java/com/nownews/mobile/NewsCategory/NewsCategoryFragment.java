@@ -67,6 +67,14 @@ public class NewsCategoryFragment extends Fragment {
             categoryName = categoryName.substring(categoryName.lastIndexOf("_") + 1, categoryName.length());
             GoogleAnalyticsFunction.sendHitInfo(getActivity(), "新聞列表", "切換至" + categoryName + "新聞", "");
 
+            int currentPage = vViewPager.getCurrentItem();
+            Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
+            if(fragment instanceof NewsListFragment){
+                ((NewsListFragment)fragment).destroyAD2();
+            }else if(fragment instanceof OtherNewsListFragment){
+                ((OtherNewsListFragment)fragment).destroyAD2();
+            }
+
         }
 
         @Override

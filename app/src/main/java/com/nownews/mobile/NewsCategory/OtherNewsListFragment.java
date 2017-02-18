@@ -435,4 +435,10 @@ public class OtherNewsListFragment extends Fragment {
         super.onDestroyView();
     }
 
+    public void destroyAD2() {
+        if(vList != null && vList.getAdapter() != null){
+            ((NewsListRecyclerViewAdapter)vList.getAdapter()).destroyAD2();
+        }
+    }
+
 }
