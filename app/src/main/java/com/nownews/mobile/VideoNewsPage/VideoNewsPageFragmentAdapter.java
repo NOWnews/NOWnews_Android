@@ -25,12 +25,15 @@ public class VideoNewsPageFragmentAdapter extends FragmentStatePagerAdapter {
 //    private HashMap<String, VideoNewsPageRecyclerViewFragment> mNewsPageFragmentList;
     private String mNewsUrl;
     private int mNewsId;
+    private int mNewsType;
     private FragmentManager mFragmentManager;
 
-    public VideoNewsPageFragmentAdapter(FragmentManager fm, List<VideosContent> aNewsList) {
+    public VideoNewsPageFragmentAdapter(FragmentManager fm, List<VideosContent> aNewsList, int aNewsType, int aNewsId) {
         super(fm);
         mFragmentManager = fm;
         mNewsList = aNewsList;
+        mNewsType = aNewsType;
+        mNewsId = aNewsId;
     }
 
     @Override
@@ -39,7 +42,9 @@ public class VideoNewsPageFragmentAdapter extends FragmentStatePagerAdapter {
         VideoNewsPageRecyclerViewFragment newsPageFragment = null;
         String newsUrl = null;
         int newsId = -1;
-        if (mNewsList != null) {
+        if(mNewsType==VideoNewsPage.TYPE_SINGAL_NEWS && mNewsId!=-1){
+            newsId = mNewsId;
+        }else if (mNewsList != null) {
             List<VideosContent> newsInfoList = UserDataInfo.getVideoNewsList();
             if (newsInfoList != null
                     && newsInfoList.get(position) != null
@@ -80,6 +85,9 @@ public class VideoNewsPageFragmentAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         int count = 0;
+        if(mNewsType==VideoNewsPage.TYPE_SINGAL_NEWS && mNewsId!=-1){
+            count = 1;
+        }
         if (mNewsList != null) {
             count = mNewsList.size();
         }

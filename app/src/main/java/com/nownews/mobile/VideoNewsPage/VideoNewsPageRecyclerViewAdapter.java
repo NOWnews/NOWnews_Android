@@ -228,7 +228,7 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        Log.e(TAG, "position: " + position);
+        Log.e(TAG, "onBindViewHolder position: " + position);
         if(position<0){
             return;
         }

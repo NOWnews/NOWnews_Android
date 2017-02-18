@@ -41,6 +41,8 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     public static final String KEY_NEWS_URL = "newsUrl";
     public static final String KEY_NEWS_INDEX = "index";
     public static final String KEY_NEWS_CATEGORY = "newsCategory";
+    public static final String KEY_NEWS_TYPE = "newsType";
+    public static final int TYPE_SINGAL_NEWS = 0x777;
     //For AD2 Page AD Start
 //	public static final String PUB_ID_INTERSTITIAL = "355b3228-c16b-11e3-ade5-f23c91dba5f7";
     public static final String PUB_ID_INTERSTITIAL = "e94d08f0-6817-11e5-8e01-f23c9173ed43"; //2015-10-01 add
@@ -50,6 +52,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     private Toolbar vToolbar;
     private CustomViewPager vViewPager;
     private int mNewsId = -1;
+    private int mNewsType = -1;
     private String mNewsUrl;
     private int mNewsIndex;
     private List<VideosContent> mNewsList;
@@ -161,17 +164,18 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
         if (getIntent() != null) {
 
             Intent intent = getIntent();
-            String action = intent.getAction();
 
             mNewsId = intent.getIntExtra(KEY_NEWS_ID, -1);
             mNewsUrl = intent.getStringExtra(KEY_NEWS_URL);
             mNewsCategory = intent.getStringExtra(KEY_NEWS_CATEGORY);
             mNewsIndex = intent.getIntExtra(KEY_NEWS_INDEX, 0);
+            mNewsType = intent.getIntExtra(KEY_NEWS_TYPE, -1);
 
             if (Utility.DEBUG) Log.e(TAG, "mNewsId: " + mNewsId);
             if (Utility.DEBUG) Log.e(TAG, "mNewsUrl: " + mNewsUrl);
             if (Utility.DEBUG) Log.e(TAG, "mNewsCategory: " + mNewsCategory);
             if (Utility.DEBUG) Log.e(TAG, "mNewsIndex: " + mNewsIndex);
+            if (Utility.DEBUG) Log.e(TAG, "mNewsType: " + mNewsType);
 
             mNewsList = UserDataInfo.getVideoNewsList();
 
@@ -187,7 +191,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
 
     private void processListener() {
 
-        mAdapter = new VideoNewsPageFragmentAdapter(getSupportFragmentManager(), mNewsList);
+        mAdapter = new VideoNewsPageFragmentAdapter(getSupportFragmentManager(), mNewsList, mNewsType, mNewsId);
         vViewPager.setAdapter(mAdapter);
         vViewPager.setCurrentItem(mNewsIndex);
         vViewPager.addOnPageChangeListener(mViewPagerChangeListener);

@@ -53,6 +53,7 @@
     <string name="news_list_loading">新聞列表載入中...請稍候...</string>
     <string name="web_loading">網頁載入中...請稍候...</string>
     <string name="news_info_loading">新聞載入中...請稍候...</string>
+    <string name="loading">載入中...請稍候...</string>
 
     <string name="new_version">NEW!!</string>
     <string name="update_dialog_title">更新通知!</string>

@@ -116,7 +116,9 @@ public class BitmapController {
         if (mBitmapControllerInstance == null) {
             mBitmapControllerInstance = new BitmapController(aContext.getApplicationContext());
         } else {
-            mBitmapControllerInstance.mContext = aContext.getApplicationContext();
+            if(aContext!=null){
+                mBitmapControllerInstance.mContext = aContext.getApplicationContext();
+            }
         }
 //        Glide.get(mBitmapControllerInstance.mContext).clearMemory();
         return mBitmapControllerInstance;

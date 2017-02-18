@@ -61,6 +61,9 @@ public class NewsListFragment extends Fragment {
         public void handleMessage(Message msg) {
 
             NewsListFragment fragment = mFragment.get();
+            if(fragment==null || !fragment.isAdded()){
+                return;
+            }
 
             switch (msg.what) {
                 case ParameterSet.GET_NEWS_LIST_DONE:
@@ -79,7 +82,7 @@ public class NewsListFragment extends Fragment {
                         fragment.isRefereshing = false;
                         fragment.vRefreshLayout.setRefreshing(false);
                     }
-                    if (!fragment.isOnDestroy) {
+                    if (!fragment.isOnDestroy && fragment.isAdded()) {
                         fragment.processList();
                     }
                     break;

@@ -40,7 +40,7 @@ public class ApiController {
     public final static int THREAD_INTERRUPTED_EXCEPTION = 0x123;
     public final static int CLEAR_API_SCHEDULER_DONE = 0x321;
     public final static int RESTART_API_SCHEDULER = 0x428;
-    public static BlockingQueue<Runnable> mApiQueue = new LinkedBlockingQueue<Runnable>(20);
+    public static BlockingQueue<Runnable> mApiQueue = new LinkedBlockingQueue<Runnable>(30);
     public static ApiController mApiControllerInstance;
     private final String TAG = getClass().getSimpleName();
     public ApiScheduler mApiScheduler;

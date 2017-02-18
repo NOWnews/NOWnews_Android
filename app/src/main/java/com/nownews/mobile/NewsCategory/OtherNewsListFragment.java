@@ -63,6 +63,9 @@ public class OtherNewsListFragment extends Fragment {
         public void handleMessage(Message msg) {
 
             OtherNewsListFragment fragment = mFragment.get();
+            if(fragment==null || !fragment.isAdded()){
+                return;
+            }
 
             switch (msg.what) {
                 case ParameterSet.GET_HEADLINE_NEWS_DONE:
@@ -117,14 +120,20 @@ public class OtherNewsListFragment extends Fragment {
                 case CHECK_LIST:
                     if (fragment.isGetHeadLineDone && fragment.mNewsList != null) {
                         UserDataInfo.setHeadlineContent(fragment.mNewsList);
-                        fragment.processList();
+                        if(fragment.isAdded()){
+                            fragment.processList();
+                        }
                         break;
                     } else if (fragment.isGetHotNewsDone && fragment.mNewsList != null) {
                         UserDataInfo.setHotNewsContent(fragment.mNewsList);
-                        fragment.processList();
+                        if(fragment.isAdded()) {
+                            fragment.processList();
+                        }
                         break;
                     } else if ((fragment.isGetInstantNewsDone || fragment.isGetNearByNewsDone) && fragment.mNewsList != null) {
-                        fragment.processList();
+                        if(fragment.isAdded()) {
+                            fragment.processList();
+                        }
                         break;
                     } else {
                         sendEmptyMessageDelayed(CHECK_LIST, 1000);
