@@ -868,7 +868,7 @@ public class VideoNewsPageFragment extends Fragment{
         intent.putStringArrayListExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_LIST, mImageUrlList);
         intent.putExtra(FavoriteAlbumPage.KEY_TYPE, FavoriteAlbumPage.TYPE_NEWS_IMAGES);
         intent.putExtra(FavoriteAlbumPage.KEY_IMAGE_TITLE, mVideoNewsInfo.title);
-        intent.putExtra(FavoriteAlbumPage.KEY_NEWS_URL, WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + mVideoNewsInfo._id);
+        intent.putExtra(FavoriteAlbumPage.KEY_NEWS_URL, WebAPIUrl.NOWNEWS_MOBIEL_WEB_VIDEO_DOMAIN + mVideoNewsInfo._id);
         startActivity(intent);
     }
 

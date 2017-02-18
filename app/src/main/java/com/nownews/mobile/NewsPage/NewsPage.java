@@ -318,7 +318,6 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                         }
                         newsTitle = mHeadlineNewsList.get(vViewPager.getCurrentItem()).field_short_title.value;
                         newsId = mHeadlineNewsList.get(vViewPager.getCurrentItem())._id;
-                        newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId;
                         break;
                     case TYPE_NORMAL_NEWS:
                         if (mNewsList == null) {
@@ -326,7 +325,6 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                         }
                         newsTitle = mNewsList.get(vViewPager.getCurrentItem()).field_short_title.value;
                         newsId = mNewsList.get(vViewPager.getCurrentItem())._id;
-                        newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId;
                         break;
                     case TYPE_SEARCH_NEWS:
                         if (mSearchList == null) {
@@ -334,7 +332,6 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                         }
                         newsTitle = mSearchList.get(vViewPager.getCurrentItem()).field_short_title.value;
                         newsId = mSearchList.get(vViewPager.getCurrentItem())._id;
-                        newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId;
                         break;
                     case TYPE_REFERENCE_NEWS:
                         if (mReferenceNewsList == null) {
@@ -342,7 +339,6 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                         }
                         newsTitle = mReferenceNewsList.get(vViewPager.getCurrentItem()).title;
                         newsId = mReferenceNewsList.get(vViewPager.getCurrentItem())._id;
-                        newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId;
                         break;
                     case TYPE_SINGAL_NEWS:
                         NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.getItem(vViewPager.getCurrentItem());
@@ -352,11 +348,12 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                         }
                         newsTitle = newsInfo.title;
                         newsId = newsInfo.nodeId;
-                        newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId;
                         break;
                 }
 
-
+                if(newsId!=-1){
+                    newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId;
+                }
                 String shareMessage = Utility.getShareMessage(NewsPage.this, newsUrl, newsTitle, Utility.ShareType.news);
                 Utility.shareToSNS(this, shareMessage);
                 break;

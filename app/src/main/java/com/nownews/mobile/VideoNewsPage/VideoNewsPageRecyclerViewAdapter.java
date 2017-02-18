@@ -478,7 +478,7 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             intent.putStringArrayListExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_LIST, mImageUrlList);
             intent.putExtra(FavoriteAlbumPage.KEY_TYPE, FavoriteAlbumPage.TYPE_NEWS_IMAGES);
             intent.putExtra(FavoriteAlbumPage.KEY_IMAGE_TITLE, mNewsInfo.title);
-            intent.putExtra(FavoriteAlbumPage.KEY_NEWS_URL, WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + mNewsInfo._id);
+            intent.putExtra(FavoriteAlbumPage.KEY_NEWS_URL, WebAPIUrl.NOWNEWS_MOBIEL_WEB_VIDEO_DOMAIN + mNewsInfo._id);
             mContext.startActivity(intent);
         }
 
