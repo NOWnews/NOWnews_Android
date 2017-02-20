@@ -7,7 +7,7 @@
         android:id="@+id/error_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"/>
+        android:gravity="center" />
 
     <RelativeLayout
         android:id="@+id/loading_layout"
@@ -41,7 +41,16 @@
             android:id="@+id/content_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:descendantFocusability="blocksDescendants"/>
+            android:descendantFocusability="blocksDescendants" />
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <FrameLayout
+        android:id="@+id/youtube_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/menu_content_category_bg_tran"
+        android:visibility="gone">
+
+    </FrameLayout>
 
 </RelativeLayout>

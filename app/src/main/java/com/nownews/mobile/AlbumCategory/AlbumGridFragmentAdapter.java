@@ -142,12 +142,4 @@ public class AlbumGridFragmentAdapter extends RecyclerView.Adapter<AlbumGridFrag
 
     }
 
-    public void destoryView(){
-        if(mBitmapController!=null){
-            mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
-            mBitmapController.unregistBitmapController(mContext);
-        }
-    }
-
 }

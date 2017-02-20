@@ -2,6 +2,7 @@
 <resources>
     <color name="toolbar_color">#242424</color>
     <color name="menu_content_category_bg">#4c4c4c</color>
+    <color name="menu_content_category_bg_tran">#AA4c4c4c</color>
     <color name="fab_color_shadow">#44000000</color>
     <color name="style_color_accent">#01bcd5</color>
     <color name="tab_bar_background_color">#000000</color>

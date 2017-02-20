@@ -243,6 +243,18 @@ public class BitmapController {
                         if (aImageLoadingListener != null) {
                             aImageLoadingListener.onLoadingFailed(aUrl, aView, null);
                         }
+                        if (Utility.DEBUG) Log.e(TAG, "aView is null or not??: " + (aView==null? "true":"false"));
+                        if (Utility.DEBUG) Log.e(TAG, "errorDrawable is null or not??: " + (errorDrawable==null? "true":"false"));
+                        if(aView!=null && errorDrawable!=null){
+                            if(aView instanceof CustomImageTopcrop){
+                                ((CustomImageTopcrop)aView).setCenterCrop();
+                                ((CustomImageTopcrop)aView).setImageDrawable(errorDrawable);
+                            }else{
+                                ((ImageView)aView).setImageDrawable(errorDrawable);
+                            }
+                        }else if(aView!=null && errorDrawable==null){
+                            ((ImageView)aView).setImageResource(R.drawable.default_img);
+                        }
                         super.onLoadFailed(e, errorDrawable);
                     }
                 });

@@ -101,7 +101,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
                     mSharedPref = new SharedPreferencesMethods(VideoNewsPage.this);
                 }
                 String textSize = mSharedPref.getNewsContentTextSize();
-                newsPageFragment.processVideo();
+                newsPageFragment.closeVideoFrame();
                 newsPageFragment.changeTextSize(textSize);
                 newsPageFragment.notifyVideoNewsPageRecyclerViewAdapter();
                 newsPageFragment.setHitInfo(mNewsCategory);
@@ -310,6 +310,11 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     @Override
     public void onBackPressed() {
         int currentPage = vViewPager.getCurrentItem();
+        VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, currentPage);
+        if(newsPageFragment!=null && newsPageFragment.isVideoFrameLayoutVisibile()){
+            newsPageFragment.closeVideoFrame();
+            return;
+        }
         if (mAd2ictionInterstitial != null) {
             mAd2ictionInterstitial.destroy();
             mAd2ictionInterstitial = null;

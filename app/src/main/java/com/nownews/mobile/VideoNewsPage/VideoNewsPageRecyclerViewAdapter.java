@@ -75,11 +75,8 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private int mHeadlineListStartPosition = -1;
     private int mHeadlineListSize;
     private boolean useWebBody = false;
-    private FragmentManager mFragmentManager;
-    private int mPagePosition;
-    private int mCurrentViewPagerPosition;
 
-    private final int VIEW_TYPE_NEWS_INFO = R.layout.widget_video_news_page_news_info_item;
+    public final static int VIEW_TYPE_NEWS_INFO = R.layout.widget_video_news_page_news_info_item;
     private final int VIEW_TYPE_CONTENT_TEXT = R.layout.widget_news_page_context_text_item;
     private final int VIEW_TYPE_CONTENT_IMAGE = R.layout.widget_news_page_context_image_item;
     private final int VIEW_TYPE_BOTTOM_AD = R.layout.widget_news_page_ad_item;
@@ -89,25 +86,15 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private final int VIEW_TYPE_WEB_BODY = R.layout.widget_news_page_web_body;
 
     public VideoNewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aContentList, VideosInfoJson aNewsInfo,
-                                            ArrayList<String> aImageUrlList, FragmentManager aFragmentManager,
-                                            int aCurrentViewPagerPosition, int aPagePosition){
+                                            ArrayList<String> aImageUrlList, OnVideoPlayButtonClick aListener){
         mContext = aContext;
         mContentList = aContentList;
         mNewsInfo = aNewsInfo;
         mImageUrlList = aImageUrlList;
-        mFragmentManager = aFragmentManager;
-        mCurrentViewPagerPosition = aCurrentViewPagerPosition;
-        mPagePosition = aPagePosition;
+        mListener = aListener;
         initController();
         initListInfo();
 
-    }
-
-    public void resetPosition(int aCurrentViewPagerPosition){
-        if(Utility.DEBUG)Log.v(TAG, "resetPosition");
-        if(Utility.DEBUG)Log.v(TAG, "aCurrentViewPagerPosition: " + aCurrentViewPagerPosition);
-        if(Utility.DEBUG)Log.v(TAG, "mPagePosition: " + mPagePosition);
-        mCurrentViewPagerPosition = aCurrentViewPagerPosition;
     }
 
     private void initController(){
@@ -291,7 +278,6 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         private ProgressBar vImageProgressBar;
         private CustomImageTopcrop vBigImage;
         private TextView vBigImgageText;
-        private FrameLayout vYoutubeContentView;
 
         public NewsInfoViewHolder(View itemView) {
             super(itemView);
@@ -314,24 +300,25 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             vBigImage = (CustomImageTopcrop) itemView.findViewById(R.id.big_img);
             vBigImgageText = (TextView) itemView.findViewById(R.id.big_img_text);
             vBigImgageText.setVisibility(View.GONE);
-            vYoutubeContentView = (FrameLayout) itemView.findViewById(R.id.youtube_content_view);
 
         }
 
-        public void bind(int position){
+        public void bind(int position) {
 
             //DFP
-            if(Utility.DEBUG)Log.i(TAG, "vTopDFP is null nor not?? " + (vTopDFP==null? "true":"false"));
-            if(Utility.DEBUG)Log.i(TAG, "mContext is null nor not?? " + (mContext==null? "true":"false"));
+            if (Utility.DEBUG)
+                Log.i(TAG, "vTopDFP is null nor not?? " + (vTopDFP == null ? "true" : "false"));
+            if (Utility.DEBUG)
+                Log.i(TAG, "mContext is null nor not?? " + (mContext == null ? "true" : "false"));
             addDFPAD(vTopDFP, mContext.getString(R.string.dfp_news_info_top));
 
             //Title
-            if(mNewsInfo.title!=null && !mNewsInfo.title.isEmpty()){
+            if (mNewsInfo.title != null && !mNewsInfo.title.isEmpty()) {
                 String title = mNewsInfo.title;
-                if(title!=null && title.contains("▲")){
+                if (title != null && title.contains("▲")) {
                     title = title.replaceAll("▲", "");
                 }
-                if(title!=null && title.contains("▼")){
+                if (title != null && title.contains("▼")) {
                     title = title.replaceAll("▼", "");
                 }
                 vTitle.setText(title);
@@ -341,9 +328,9 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             //Category
             //有可能有兩個或兩個以上
             if (mNewsInfo.categories != null) {
-                for(int i = 0; i<mNewsInfo.categories.size(); i++){
+                for (int i = 0; i < mNewsInfo.categories.size(); i++) {
                     String categoryName = mNewsInfo.categories.get(i).name;
-                    switch(i){
+                    switch (i) {
                         case 0:
                             vCategory.setText(categoryName);
                             vCategory.setVisibility(View.VISIBLE);
@@ -383,19 +370,13 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             }
 
             //BigImage
-            if(mNewsInfo.youtubeId!=null && !mNewsInfo.youtubeId.trim().isEmpty()){
-
-                if(mPagePosition==mCurrentViewPagerPosition) {
-                    processVideo();
-                }
-
-            }else if (mNewsInfo.image != null
+            if (mNewsInfo.image != null
                     && !mNewsInfo.image.trim().isEmpty()) {
                 String bigImgUrl = mNewsInfo.image;
                 if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
 //                bigImgUrl = Utility.getSrcFromImgapi(bigImgUrl);
                 mBitmapController.loadImageWithOriginalSize(bigImgUrl, vBigImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE, 0, 0, mBigImgLoadingListener);
-                setImageClickListener(vBigImage, bigImgUrl);
+                setImageClickListener(vBigImage, mNewsInfo.youtubeId);
 
                 //For Share
                 mShareImgUrl = mNewsInfo.image;
@@ -409,7 +390,7 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
         }
 
-        private void setImageClickListener(ImageView aImgView, final String aImgUrl) {
+        private void setImageClickListener(ImageView aImgView, final String aYoutubeId) {
             aImgView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -417,18 +398,12 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
                     //show image page
                     if (Utility.DEBUG) Log.e(TAG, "image click!!!");
-                    if (Utility.DEBUG) Log.v(TAG, "aImgUrl: " + aImgUrl);
+                    if (Utility.DEBUG) Log.v(TAG, "aYoutubeId: " + aYoutubeId);
 
-                    int position = mImageUrlList.indexOf(aImgUrl);
-                    if(position!=-1){
-                        //gotoNewsAlbumPage
-                        goToNewsAlbumPage(position);
-                    }else{
-                        return;
-                    }
+                    goToPlayYoutube(aYoutubeId);
 
-                    GoogleAnalyticsFunction.sendHitInfo(mContext, "新聞內頁", "點擊新聞圖片", "");
-                    GoogleAnalyticsFunction.sendHitInfo(mContext, "新聞圖片", aImgUrl, "");
+                    GoogleAnalyticsFunction.sendHitInfo(mContext, "新聞內頁", "點擊新聞影片", "");
+                    GoogleAnalyticsFunction.sendHitInfo(mContext, "影音新聞ID", mNewsInfo.youtubeId, "");
 
                 }
             });
@@ -440,7 +415,7 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             public void onProgressUpdate(String aImageUrl, int aProgress, int max) {
 //			if(Utility.DEBUG)Log.v(TAG, "aProgress: " + aProgress);
                 if (vLoadingLayout.getVisibility() == View.GONE) {
-                    ((Activity)mContext).runOnUiThread(new Runnable() {
+                    ((Activity) mContext).runOnUiThread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -462,7 +437,7 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
             @Override
             public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
-                if(Utility.DEBUG)Log.e(TAG, "onLoadingComplete!!!");
+                if (Utility.DEBUG) Log.e(TAG, "onLoadingComplete!!!");
                 vLoadingLayout.setVisibility(View.GONE);
             }
 
@@ -471,64 +446,10 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             }
         };
 
-        private void goToNewsAlbumPage(int position) {
-            Intent intent = new Intent();
-            intent.setClass(mContext, FavoriteAlbumPage.class);
-            intent.putExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_POSITION, position);
-            intent.putStringArrayListExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_LIST, mImageUrlList);
-            intent.putExtra(FavoriteAlbumPage.KEY_TYPE, FavoriteAlbumPage.TYPE_NEWS_IMAGES);
-            intent.putExtra(FavoriteAlbumPage.KEY_IMAGE_TITLE, mNewsInfo.title);
-            intent.putExtra(FavoriteAlbumPage.KEY_NEWS_URL, WebAPIUrl.NOWNEWS_MOBIEL_WEB_VIDEO_DOMAIN + mNewsInfo._id);
-            mContext.startActivity(intent);
-        }
-
-        public void processVideo(){
-            Log.v(TAG, "processVideo()" + mPagePosition);
-
-            if(mNewsInfo==null || mNewsInfo.youtubeId==null){
-                return;
+        private void goToPlayYoutube(String aYoutubeId) {
+            if (mListener != null) {
+                mListener.onVideoPlayButtonClick(aYoutubeId);
             }
-
-//            removeYoutubeFragment();
-
-            final String mCurrentYoutubeId = mNewsInfo.youtubeId;
-
-            YouTubePlayerSupportFragment youTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
-            FragmentTransaction transcation = mFragmentManager.beginTransaction();
-            transcation.replace(R.id.youtube_content_view, youTubePlayerSupportFragment).commit();
-            setInitializedListener(youTubePlayerSupportFragment, mCurrentYoutubeId);
-
-        }
-
-        private void setInitializedListener(YouTubePlayerSupportFragment aYouTubePlayerSupportFragment, final String aYoutubeId) {
-            aYouTubePlayerSupportFragment.initialize(UserDataInfo.YOUTUBE_DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
-                @Override
-                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
-                    if (!wasRestored) {
-                        mYoutubePlayer = youTubePlayer;
-                        if(mPagePosition==mCurrentViewPagerPosition) {
-                            youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-                            youTubePlayer.cueVideo(aYoutubeId);
-                        }
-                    }
-                }
-
-                @Override
-                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult error) {
-                    String errorMessage = error.toString();
-                    Toast.makeText(mContext, errorMessage, Toast.LENGTH_LONG).show();
-                    if (Utility.DEBUG)Log.d("errorMessage:", errorMessage);
-                }
-            });
-        }
-
-    }
-
-    private YouTubePlayer mYoutubePlayer;
-    public void removeYoutubeFragment(){
-        if (Utility.DEBUG)Log.w(TAG, "removeYoutubeFragment()");
-        if(mYoutubePlayer!=null){
-            mYoutubePlayer.release();
         }
     }
 
@@ -958,6 +879,11 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     public void notifyAdapter(){
         if(Utility.DEBUG)Log.v(TAG, "notifyAdapter()");
         notifyDataSetChanged();
+    }
+
+    private OnVideoPlayButtonClick mListener;
+    public interface OnVideoPlayButtonClick{
+        public void onVideoPlayButtonClick(final String aYoutubeId);
     }
 
 }
