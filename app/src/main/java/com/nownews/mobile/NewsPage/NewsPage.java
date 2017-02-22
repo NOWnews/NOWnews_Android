@@ -37,6 +37,7 @@ import com.vpadn.ads.VpadnAdListener;
 import com.vpadn.ads.VpadnAdRequest;
 import com.vpadn.ads.VpadnInterstitialAd;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class NewsPage extends AppCompatActivity implements InterstitialAdListener /**, IWeiboHandler.Response*/
@@ -524,14 +525,17 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
         }
     }
 
+    private boolean isInterstitialAdReady;
     private VpadnInterstitialAd mVpadnAd;
     private void preloadVponPageAD(){
-        if (Utility.DEBUG) Log.i(TAG, "showVponPageAD()");
+        if (Utility.DEBUG) Log.i(TAG, "preloadVponPageAD()");
+        final String TAG = "preloadVponPageAD";
         mVpadnAd = new VpadnInterstitialAd(this, getString(R.string.vpon_all_page), "TW");
         mVpadnAd.setAdListener(new VpadnAdListener() {
             @Override
             public void onVpadnReceiveAd(VpadnAd vpadnAd) {
                 if (Utility.DEBUG) Log.i(TAG, "onVpadnReceiveAd");
+                isInterstitialAdReady = true;
             }
 
             @Override
@@ -555,13 +559,17 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             }
         });
         VpadnAdRequest request = new VpadnAdRequest();
+        HashSet<String> testDevicesImeiSet = new HashSet<>();
+        testDevicesImeiSet.add(Utility.getAdvertisingId());
+        request.setTestDevices(testDevicesImeiSet);
         mVpadnAd.loadAd(request);
     }
 
     private void showVponPageAD(){
         if (Utility.DEBUG) Log.i(TAG, "showVponPageAD()");
-        if(mVpadnAd.isReady()){
+        if(isInterstitialAdReady && mVpadnAd.isReady()){
             mVpadnAd.show();
+            isInterstitialAdReady = false;
         }
     }
 

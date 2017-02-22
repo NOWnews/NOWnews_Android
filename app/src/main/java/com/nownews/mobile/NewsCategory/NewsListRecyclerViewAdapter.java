@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -170,7 +171,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             int positionInAdList = (position-5)/4;
             processVPON(positionInAdList, position,
                     ((ADViewHolder)holder).vNewsCategory, ((ADViewHolder)holder).vNewsTitle,
-                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vAdGroup);
+                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vAdGroup, ((ADViewHolder)holder).vCallToAction);
             processDFP(((ADViewHolder)holder).vAdGroup, positionInAdList, position);
 
         } else {
@@ -349,7 +350,8 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         vDfpAdView.loadAd(requestBuild.build());
     }
 
-    private void processVPON(int aPositionInAdList, final int aPosition, final TextView aCategory, final TextView aTitle, final ImageView aImage, final RelativeLayout aAdGroup){
+    private void processVPON(int aPositionInAdList, final int aPosition, final TextView aCategory, final TextView aTitle,
+                             final ImageView aImage, final RelativeLayout aAdGroup, final Button aCallToAction){
 
         final VpadnNativeAd nativeAd = new VpadnNativeAd((Activity)mContext, mVPONIdList[aPositionInAdList], "TW");
         nativeAd.setAdListener(new VpadnAdListener() {
@@ -364,39 +366,29 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
                 if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
                 if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
-//                if (aPosition >= mFirstVisibleItem && aPosition <= mLastVisibleItem) {
-                    nativeAd.unregisterView();
-                    aCategory.setText(mContext.getString(R.string.sponsored));
-                    aCategory.setTextColor(mContext.getResources().getColor(android.R.color.black));
-                    aTitle.setText(nativeAd.getAdTitle());
-                    VpadnNativeAd.Image adCoverImage = nativeAd.getAdCoverImage();
-                    VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
 
-                    nativeAd.registerViewForInteraction(aAdGroup);
-
-//                }
+                nativeAd.unregisterView();
+                aCategory.setText(mContext.getString(R.string.sponsored));
+                aCategory.setTextColor(mContext.getResources().getColor(android.R.color.black));
+                aTitle.setText(nativeAd.getAdTitle());
+                aCallToAction.setText(nativeAd.getAdCallToAction());
+                VpadnNativeAd.Image adCoverImage = nativeAd.getAdCoverImage();
+                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
+                nativeAd.registerViewForInteraction(aAdGroup);
 
             }
 
             @Override
-            public void onVpadnFailedToReceiveAd(VpadnAd vpadnAd, VpadnAdRequest.VpadnErrorCode vpadnErrorCode) {
-
-            }
+            public void onVpadnFailedToReceiveAd(VpadnAd vpadnAd, VpadnAdRequest.VpadnErrorCode vpadnErrorCode) { }
 
             @Override
-            public void onVpadnPresentScreen(VpadnAd vpadnAd) {
-
-            }
+            public void onVpadnPresentScreen(VpadnAd vpadnAd) { }
 
             @Override
-            public void onVpadnDismissScreen(VpadnAd vpadnAd) {
-
-            }
+            public void onVpadnDismissScreen(VpadnAd vpadnAd) { }
 
             @Override
-            public void onVpadnLeaveApplication(VpadnAd vpadnAd) {
-
-            }
+            public void onVpadnLeaveApplication(VpadnAd vpadnAd) { }
         });
         VpadnAdRequest adRequest = new VpadnAdRequest();
         HashSet<String> testDevicesImeiSet = new HashSet<>();
@@ -529,6 +521,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         private ImageView vNewsImage;
         private TextView vNewsCategory;
         private TextView vNewsTitle;
+        private Button vCallToAction;
 
         public ADViewHolder(View itemView) {
             super(itemView);
@@ -539,6 +532,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             vNewsImage = (ImageView) itemView.findViewById(R.id.news_img);
             vNewsCategory = (TextView) itemView.findViewById(R.id.news_category);
             vNewsTitle = (TextView) itemView.findViewById(R.id.news_title);
+            vCallToAction = (Button) itemView.findViewById(R.id.call_to_action);
 
         }
 

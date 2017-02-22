@@ -2,6 +2,10 @@ apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
+    //comscore
+    maven{
+        url 'https://comscore.bintray.com/Analytics'
+    }
     flatDir {
         dirs 'libs'
     }
@@ -14,8 +18,8 @@ android {
         applicationId "com.nownews"
         minSdkVersion 15
         targetSdkVersion 20
-        versionCode 2017021901
-        versionName "8.2.3"
+        versionCode 2017022001
+        versionName "8.2.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -56,6 +60,7 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.google.firebase:firebase-invites:10.0.1'
     testCompile 'junit:junit:4.12'
+    compile 'com.comscore:android-analytics:5.+'
 }
 
 apply plugin: 'com.google.gms.google-services'

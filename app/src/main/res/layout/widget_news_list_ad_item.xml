@@ -40,7 +40,24 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:textColor="@android:color/black"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                android:maxLines="1"/>
+
+            <Button
+                android:id="@+id/call_to_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/news_category"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="20dp"
+                android:layout_alignParentRight="true"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:background="@null"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:layout_alignBottom="@+id/news_title"/>
 
         </RelativeLayout>
 
@@ -50,6 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/news_item"
             android:gravity="center"
+            android:layout_marginTop="10dp"
             android:padding="10dp"
             android:visibility="gone">
 

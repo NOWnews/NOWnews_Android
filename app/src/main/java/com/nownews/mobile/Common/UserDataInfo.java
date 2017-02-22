@@ -3,9 +3,11 @@ package com.nownews.mobile.Common;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
+import com.comscore.Analytics;
 import com.nownews.mobile.Json.LiveListJson;
 import com.nownews.mobile.Json.NewsCategoryJson.CategoryInfo;
 import com.nownews.mobile.Json.NewsInfoJson.ReferenceNewsInfo;
@@ -186,6 +188,9 @@ public class UserDataInfo {
         if (Utility.DEBUG) Log.e(TAG, "activityResumed() " + aContext.getClass().getSimpleName());
         setCurrentContext(aContext);
         activityVisible = true;
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+            Analytics.notifyEnterForeground();
+        }
     }
 
     public static void activityPaused() {
@@ -193,6 +198,9 @@ public class UserDataInfo {
         activityVisible = false;
         if (Utility.mNetworkErrordialog != null && Utility.mNetworkErrordialog.isShowing()) {
             Utility.mNetworkErrordialog.cancel();
+        }
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+            Analytics.notifyExitForeground();
         }
     }
 

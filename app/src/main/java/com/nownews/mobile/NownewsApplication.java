@@ -1,11 +1,14 @@
 package com.nownews.mobile;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.cmcm.adsdk.CMAdManager;
+import com.comscore.Analytics;
+import com.comscore.PublisherConfiguration;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.nownews.R;
@@ -41,6 +44,13 @@ public class NownewsApplication extends MultiDexApplication {
         //雪豹
         CMAdManager.applicationInit(this, getString(R.string.ileopard_mid));
 
+        //comscore
+        PublisherConfiguration myPublisherConfig = new PublisherConfiguration.Builder()
+                .publisherId(getString(R.string.comscore_publisher_id))
+                .publisherSecret(getString(R.string.comscore_publisher_secret))
+                .build();
+        Analytics.getConfiguration().addClient(myPublisherConfig);
+        Analytics.start(this);
     }
 
     @Override

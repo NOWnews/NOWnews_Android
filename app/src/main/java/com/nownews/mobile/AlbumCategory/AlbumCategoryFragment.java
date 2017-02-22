@@ -283,7 +283,6 @@ public class AlbumCategoryFragment extends Fragment {
 
     @Override
     public void onPause() {
-        UserDataInfo.activityPaused();
         super.onPause();
     }
 
