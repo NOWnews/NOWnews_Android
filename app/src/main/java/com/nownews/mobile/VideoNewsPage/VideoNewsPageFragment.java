@@ -201,12 +201,12 @@ public class VideoNewsPageFragment extends Fragment{
                     }
                     mVideoNewsInfo = (VideosInfoJson) msg.obj;
                     if (mVideoNewsInfo != null) {
-                        while (true) {
+//                        while (true) {
                             if (isAdded()) {
                                 processNews();
                                 break;
                             }
-                        }
+//                        }
                     }
                     break;
                 case ParameterSet.GET_VIDEOS_INFO_FAILED:

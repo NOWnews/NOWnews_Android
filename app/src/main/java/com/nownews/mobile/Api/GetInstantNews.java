@@ -63,7 +63,7 @@ public class GetInstantNews implements Runnable {
         } finally {
             if (mHandler != null)
                 mHandler.sendMessage(message);
-            ApiController.mApiControllerInstance.getApiQueueSize();
+//            ApiController.mApiControllerInstance.getApiQueueSize();
         }
         if (Utility.DEBUG) Log.d(TAG, "######### " + TAG + " END!! #########");
     }

@@ -28,6 +28,7 @@ import com.cmcm.adsdk.banner.CMAdView;
 import com.cmcm.adsdk.banner.CMBannerAdListener;
 import com.cmcm.adsdk.banner.CMBannerAdSize;
 import com.cmcm.adsdk.banner.CMNativeBannerView;
+import com.facebook.FacebookException;
 import com.facebook.share.widget.LikeView;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
@@ -375,6 +376,12 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 vLikeView.setObjectIdAndType(url, LikeView.ObjectType.PAGE);
                 vLikeView.setAuxiliaryViewPosition(LikeView.AuxiliaryViewPosition.INLINE);
                 vLikeView.setHorizontalAlignment(LikeView.HorizontalAlignment.RIGHT);
+                vLikeView.setOnErrorListener(new LikeView.OnErrorListener() {
+                    @Override
+                    public void onError(FacebookException error) {
+                        Log.e(TAG, error.getMessage(), error);
+                    }
+                });
             }
 
             //BigImage

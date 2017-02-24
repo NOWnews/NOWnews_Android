@@ -182,7 +182,7 @@ public class FavoriteAlbum extends AppCompatActivity {
 
     public void reload() {
 
-        if (Utility.DEBUG) Log.e(TAG, "reload()");
+        if (Utility.DEBUG) Log.e(TAG, "startSplashActivity()");
         initController();
         processView();
         processToolbar();

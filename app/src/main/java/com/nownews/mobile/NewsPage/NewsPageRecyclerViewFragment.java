@@ -80,6 +80,9 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         public void handleMessage(Message msg) {
 
             NewsPageRecyclerViewFragment fragment = mFragment.get();
+            if(fragment==null || !fragment.isAdded()){
+                return;
+            }
 
             switch (msg.what) {
                 case ParameterSet.GET_NEWS_INFO_DONE:
@@ -91,12 +94,12 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                     fragment.mNewsInfo = (NewsInfoJson) msg.obj;
                     if (fragment.mNewsInfo != null) {
                         fragment.isNewsInfoLoadSucess = true;
-                        while (true) {
+//                        while (true) {
                             if (fragment.isAdded()) {
                                 fragment.processNews();
                                 break;
                             }
-                        }
+//                        }
                     }
                     break;
                 case ParameterSet.GET_NEWS_INFO_FAILED:

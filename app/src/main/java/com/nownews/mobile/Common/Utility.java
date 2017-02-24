@@ -85,6 +85,7 @@ public class Utility {
     public static Dialog mSocketTimoutDialog;
     public static boolean isNetworkSlow = false;
     public static boolean isUserKnowNetworkSlow = false;
+    public static boolean isVponTestMode = false;
 
     //TODO getOptions()
 //    public static DisplayImageOptions getOptions(){
@@ -1093,12 +1094,12 @@ public class Utility {
             return;
         }
         if (mCurrentContext instanceof SplashActivity) {
-            ((SplashActivity) mCurrentContext).reload();
+            ((SplashActivity) mCurrentContext).startSplashActivity();
         }else if (mCurrentContext instanceof VideoNewsPage) {
             ((VideoNewsPage) mCurrentContext).reload();
         }
 //        else if (mCurrentContext instanceof AlbumCategoryFragment) {
-//            ((AlbumCategoryFragment) mCurrentContext).reload();
+//            ((AlbumCategoryFragment) mCurrentContext).startSplashActivity();
 //        }
         else if (mCurrentContext instanceof NewsPage) {
             ((NewsPage) mCurrentContext).reload();
@@ -1115,7 +1116,7 @@ public class Utility {
         }
         //Not ready
 //		else if(mCurrentContext instanceof NotificationDialog){
-//			((NotificationDialog)mCurrentContext).reload();
+//			((NotificationDialog)mCurrentContext).startSplashActivity();
 //		}
     }
 

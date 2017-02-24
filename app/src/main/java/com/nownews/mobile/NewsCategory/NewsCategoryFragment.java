@@ -125,6 +125,9 @@ public class NewsCategoryFragment extends Fragment {
         public void handleMessage(Message msg) {
 
             NewsCategoryFragment fragment = mFragment.get();
+            if(fragment==null || !fragment.isAdded()){
+                return;
+            }
 
             switch (msg.what) {
                 case LOAD_PAGE_START:
@@ -156,6 +159,9 @@ public class NewsCategoryFragment extends Fragment {
         public void handleMessage(Message msg) {
 
             NewsCategoryFragment fragment = mFragment.get();
+            if(fragment==null || !fragment.isAdded()){
+                return;
+            }
 
             switch (msg.what) {
                 case ParameterSet.GET_NEWS_CATEGORY_DONE:
@@ -319,7 +325,7 @@ public class NewsCategoryFragment extends Fragment {
     }
 
     public void reload() {
-        if(Utility.DEBUG)Log.v(TAG, "reload");
+        if(Utility.DEBUG)Log.v(TAG, "startSplashActivity");
 
         mRetryCount = 0;
         if(mApiHandler!=null && mApiHandler.hasMessages(RELOAD_API)){

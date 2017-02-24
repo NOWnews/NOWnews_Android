@@ -1,20 +1,21 @@
 package com.nownews.mobile.Splash;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.nownews.R;
 import com.nownews.mobile.NewHome;
 import com.nownews.mobile.Api.ParameterSet;
@@ -27,7 +28,10 @@ import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
 import com.nownews.mobile.Json.SplashImageJson;
+import com.nownews.mobile.Service.GetSplashImageService;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 public class SplashActivity extends Activity {
@@ -109,46 +113,7 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        changeSharePreferenceTextSize();
-        initController();
-        processView();
-//        mBitmapController.loadImageFromFile(vSplashImage, UserDataInfo.ThumbnailPath + "Splash.jpg", mHandler);
-        String thumbnailPath = UserDataInfo.ThumbnailPath + "Splash.jpg";
-        Log.d(TAG, "thumbnailPath: " + thumbnailPath);
-        mBitmapController.loadImageWithGlide(thumbnailPath,
-                vSplashImage, BitmapController.IMAGE_SRC, 0, 0, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStart(String aImageUrl, View aView) {
-
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String aImageUrl, View aView, Exception aException) {
-
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
-                        if (aBitmap != null) {
-                            vSplashImage.setImageBitmap(aBitmap);
-                        } else {
-                            vSplashImage.setImageResource(R.drawable.default_img);
-                        }
-                        if (!Utility.showNetworkSlowDialog(getApplicationContext(), mHandler, true)) {
-                            getSplashImage();
-                        }
-                    }
-
-                    @Override
-                    public void onLoadingCancelled() {
-
-                    }
-
-                    @Override
-                    public void onProgressUpdate(String aImageUrl, int aProgress, int max) {
-
-                    }
-                }, 0x568);
+        startSplashActivity();
 
     }
 
@@ -183,9 +148,16 @@ public class SplashActivity extends Activity {
     }
 
     private void getSplashImage() {
-        if (mApiController != null) {
-            mApiController.getSplashImage(mHandler);
-        }
+
+        Log.v(TAG, "getSplashImage");
+
+        Intent intent = new Intent();
+        intent.setClass(this, GetSplashImageService.class);
+        startService(intent);
+        mHandler.sendEmptyMessageDelayed(GOTO_HOME, 2000);
+//        if (mApiController != null) {
+//            mApiController.getSplashImage(mHandler);
+//        }
     }
 
     private void processImage() {
@@ -328,12 +300,81 @@ public class SplashActivity extends Activity {
         super.onBackPressed();
     }
 
-    public void reload() {
+    public void startSplashActivity() {
 
         changeSharePreferenceTextSize();
         initController();
         processView();
-        mBitmapController.loadImageFromFile(vSplashImage, UserDataInfo.ThumbnailPath + "Splash.jpg", mHandler);
+//        mBitmapController.loadImageFromFile(vSplashImage, UserDataInfo.ThumbnailPath + "Splash.jpg", mHandler);
+        String thumbnailPath = UserDataInfo.ThumbnailPath + "Splash.jpg";
+        Log.d(TAG, "thumbnailPath: " + thumbnailPath);
+        Glide.with(this)
+                .load(thumbnailPath)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .error(R.drawable.default_img)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+
+                        if (resource != null) {
+                            vSplashImage.setImageBitmap(resource);
+                        } else {
+                            vSplashImage.setImageResource(R.drawable.default_img);
+                        }
+                        if (!Utility.showNetworkSlowDialog(getApplicationContext(), mHandler, true)) {
+                            getSplashImage();
+                        }
+
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+
+                        vSplashImage.setImageDrawable(errorDrawable);
+                        if (!Utility.showNetworkSlowDialog(getApplicationContext(), mHandler, true)) {
+                            getSplashImage();
+                        }
+
+                        super.onLoadFailed(e, errorDrawable);
+                    }
+                });
+
+//        mBitmapController.loadImageWithGlide(thumbnailPath,
+//                vSplashImage, BitmapController.IMAGE_SRC, 0, 0, new ImageLoadingListener() {
+//                    @Override
+//                    public void onLoadingStart(String aImageUrl, View aView) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onLoadingFailed(String aImageUrl, View aView, Exception aException) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
+//                        if (aBitmap != null) {
+//                            vSplashImage.setImageBitmap(aBitmap);
+//                        } else {
+//                            vSplashImage.setImageResource(R.drawable.default_img);
+//                        }
+//                        if (!Utility.showNetworkSlowDialog(getApplicationContext(), mHandler, true)) {
+//                            getSplashImage();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onLoadingCancelled() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onProgressUpdate(String aImageUrl, int aProgress, int max) {
+//
+//                    }
+//                }, 0x568);
 
     }
 

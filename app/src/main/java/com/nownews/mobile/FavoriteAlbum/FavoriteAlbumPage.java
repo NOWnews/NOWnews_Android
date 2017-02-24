@@ -316,7 +316,7 @@ public class FavoriteAlbumPage extends AppCompatActivity {
     }
 
     public void reload() {
-        if (Utility.DEBUG) Log.e(TAG, "reload()");
+        if (Utility.DEBUG) Log.e(TAG, "startSplashActivity()");
         if (mAdapter != null) {
             FavoritePageFragment favoritePageFragment = (FavoritePageFragment) mAdapter.getItem(mIndex);
             if (favoritePageFragment != null) {

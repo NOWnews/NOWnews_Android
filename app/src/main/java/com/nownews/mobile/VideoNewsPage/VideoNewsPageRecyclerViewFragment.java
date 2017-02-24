@@ -87,6 +87,9 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
         public void handleMessage(Message msg) {
 
             VideoNewsPageRecyclerViewFragment fragment = mFragment.get();
+            if(fragment==null || !fragment.isAdded()){
+                return;
+            }
 
             switch (msg.what) {
                 case ParameterSet.GET_VIDEOS_INFO_DONE:
@@ -97,12 +100,12 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
                     }
                     fragment.mVideoNewsInfo = (VideosInfoJson) msg.obj;
                     if (fragment.mVideoNewsInfo != null) {
-                        while (true) {
+//                        while (true) {
                             if (fragment.isAdded()) {
                                 fragment.processNews();
                                 break;
                             }
-                        }
+//                        }
                     }
                     break;
                 case ParameterSet.GET_VIDEOS_INFO_FAILED:

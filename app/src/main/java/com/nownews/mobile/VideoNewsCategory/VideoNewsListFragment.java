@@ -61,6 +61,9 @@ public class VideoNewsListFragment extends Fragment {
         public void handleMessage(Message msg) {
 
             VideoNewsListFragment fragment = mFragment.get();
+            if(fragment==null || !fragment.isAdded()){
+                return;
+            }
 
             switch (msg.what) {
                 case ParameterSet.GET_VIDEOS_LIST_DONE:

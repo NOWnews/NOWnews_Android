@@ -22,6 +22,7 @@ import com.ad2iction.nativeads.NativeErrorCode;
 import com.ad2iction.nativeads.NativeResponse;
 import com.ad2iction.nativeads.RequestParameters;
 import com.ad2iction.nativeads.ViewBinder;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
@@ -45,6 +46,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
+import static com.nownews.mobile.Common.Utility.isVponTestMode;
 
 /**
  * Created by cindy on 2016/11/28.
@@ -171,7 +174,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             int positionInAdList = (position-5)/4;
             processVPON(positionInAdList, position,
                     ((ADViewHolder)holder).vNewsCategory, ((ADViewHolder)holder).vNewsTitle,
-                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vAdGroup, ((ADViewHolder)holder).vCallToAction);
+                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction);
             processDFP(((ADViewHolder)holder).vAdGroup, positionInAdList, position);
 
         } else {
@@ -351,7 +354,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     private void processVPON(int aPositionInAdList, final int aPosition, final TextView aCategory, final TextView aTitle,
-                             final ImageView aImage, final RelativeLayout aAdGroup, final Button aCallToAction){
+                             final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction){
 
         final VpadnNativeAd nativeAd = new VpadnNativeAd((Activity)mContext, mVPONIdList[aPositionInAdList], "TW");
         nativeAd.setAdListener(new VpadnAdListener() {
@@ -373,13 +376,27 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 aTitle.setText(nativeAd.getAdTitle());
                 aCallToAction.setText(nativeAd.getAdCallToAction());
                 VpadnNativeAd.Image adCoverImage = nativeAd.getAdCoverImage();
-                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
-                nativeAd.registerViewForInteraction(aAdGroup);
+                Log.i(TAG, "adCoverImage.getWidth(): " + adCoverImage.getWidth());
+                Log.i(TAG, "adCoverImage.getHeight(): " + adCoverImage.getHeight());
+                int screenWidth = Utility.getScreenWidth(mContext);
+                float scale = (float)screenWidth / (float)adCoverImage.getWidth();
+                int newHeight = (int)(adCoverImage.getHeight() * scale);
+                Log.i(TAG, "screenWidth: " + screenWidth);
+                Log.i(TAG, "scale: " + scale);
+                Log.i(TAG, "newHeight: " + newHeight);
+                Glide.with(mContext).load(adCoverImage.getUrl()).override(screenWidth, newHeight).into(aImage);
+//                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
+                nativeAd.registerViewForInteraction(aNewsItem);
 
             }
 
             @Override
-            public void onVpadnFailedToReceiveAd(VpadnAd vpadnAd, VpadnAdRequest.VpadnErrorCode vpadnErrorCode) { }
+            public void onVpadnFailedToReceiveAd(VpadnAd vpadnAd, VpadnAdRequest.VpadnErrorCode vpadnErrorCode) {
+                Log.e(TAG, "onVpadnFailedToReceiveAd!! vpadnErrorCode: " + vpadnErrorCode);
+                if(aNewsItem!=null){
+                    aNewsItem.setVisibility(View.GONE);
+                }
+            }
 
             @Override
             public void onVpadnPresentScreen(VpadnAd vpadnAd) { }
@@ -390,14 +407,18 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             @Override
             public void onVpadnLeaveApplication(VpadnAd vpadnAd) { }
         });
-        VpadnAdRequest adRequest = new VpadnAdRequest();
-        HashSet<String> testDevicesImeiSet = new HashSet<>();
-        testDevicesImeiSet.add(Utility.getAdvertisingId());
-        adRequest.setTestDevices(testDevicesImeiSet);
-        nativeAd.loadAd(adRequest);
 
-        //正式
-//        nativeAd.loadAd();
+        if(isVponTestMode){
+            VpadnAdRequest adRequest = new VpadnAdRequest();
+            HashSet<String> testDevicesImeiSet = new HashSet<>();
+            testDevicesImeiSet.add(Utility.getAdvertisingId());
+            adRequest.setTestDevices(testDevicesImeiSet);
+            nativeAd.loadAd(adRequest);
+        }else{
+            //正式
+            nativeAd.loadAd();
+        }
+
 
     }
 

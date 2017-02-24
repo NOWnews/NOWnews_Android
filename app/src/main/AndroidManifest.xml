@@ -154,6 +154,7 @@
 
         <service android:name=".mobile.Service.DetectNetworkFlowService" />
         <service android:name=".mobile.Service.SignalService" />
+        <service android:name=".mobile.Service.GetSplashImageService" />
 
         <receiver android:name=".mobile.BroadcastReceiver.DetectWifi">
             <intent-filter>

@@ -142,7 +142,7 @@ public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
         if(Utility.DEBUG)Log.v(TAG, TAG + "$$$destroyItem");
         FragmentTransaction trans = mFragmentManager.beginTransaction();
         trans.remove((Fragment)object);
-        trans.commit();
+        trans.commitAllowingStateLoss();
 
         super.destroyItem(container, position, object);
     }

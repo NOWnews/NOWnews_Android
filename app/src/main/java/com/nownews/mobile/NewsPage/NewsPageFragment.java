@@ -222,12 +222,12 @@ public class NewsPageFragment extends Fragment {
                     mNewsInfo = (NewsInfoJson) msg.obj;
                     if (mNewsInfo != null) {
                         isNewsInfoLoadSucess = true;
-                        while (true) {
+//                        while (true) {
                             if (isAdded()) {
                                 processNews();
                                 break;
                             }
-                        }
+//                        }
                     }
                     break;
                 case ParameterSet.GET_NEWS_INFO_FAILED:

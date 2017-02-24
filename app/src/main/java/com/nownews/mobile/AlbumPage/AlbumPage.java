@@ -340,7 +340,7 @@ public class AlbumPage extends AppCompatActivity {
     }
 
     public void reload() {
-        if (Utility.DEBUG) Log.e(TAG, "reload()");
+        if (Utility.DEBUG) Log.e(TAG, "startSplashActivity()");
         if (mAdapter != null) {
             AlbumPageFragment albumPageFragment = (AlbumPageFragment) mAdapter.getItem(mIndex);
             if (albumPageFragment != null) {

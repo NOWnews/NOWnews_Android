@@ -40,6 +40,8 @@ import com.vpadn.ads.VpadnInterstitialAd;
 import java.util.HashSet;
 import java.util.List;
 
+import static com.nownews.mobile.Common.Utility.isVponTestMode;
+
 public class NewsPage extends AppCompatActivity implements InterstitialAdListener /**, IWeiboHandler.Response*/
 {
 
@@ -559,9 +561,11 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             }
         });
         VpadnAdRequest request = new VpadnAdRequest();
-        HashSet<String> testDevicesImeiSet = new HashSet<>();
-        testDevicesImeiSet.add(Utility.getAdvertisingId());
-        request.setTestDevices(testDevicesImeiSet);
+        if(isVponTestMode){
+            HashSet<String> testDevicesImeiSet = new HashSet<>();
+            testDevicesImeiSet.add(Utility.getAdvertisingId());
+            request.setTestDevices(testDevicesImeiSet);
+        }
         mVpadnAd.loadAd(request);
     }
 

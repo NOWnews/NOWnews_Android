@@ -46,6 +46,8 @@ import com.vpadn.ads.VpadnNativeAd;
 import java.util.HashSet;
 import java.util.List;
 
+import static com.nownews.mobile.Common.Utility.isVponTestMode;
+
 /**
  * Created by cindy on 2016/11/28.
  */
@@ -366,14 +368,17 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
             }
         });
-        VpadnAdRequest adRequest = new VpadnAdRequest();
-        HashSet<String> testDevicesImeiSet = new HashSet<>();
-        testDevicesImeiSet.add(Utility.getAdvertisingId());
-        adRequest.setTestDevices(testDevicesImeiSet);
-        nativeAd.loadAd(adRequest);
 
-        //正式
-//        nativeAd.loadAd();
+        if(isVponTestMode){
+            VpadnAdRequest adRequest = new VpadnAdRequest();
+            HashSet<String> testDevicesImeiSet = new HashSet<>();
+            testDevicesImeiSet.add(Utility.getAdvertisingId());
+            adRequest.setTestDevices(testDevicesImeiSet);
+            nativeAd.loadAd(adRequest);
+        }else{
+            //正式
+            nativeAd.loadAd();
+        }
 
     }
 

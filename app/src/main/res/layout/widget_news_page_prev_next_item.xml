@@ -8,7 +8,6 @@
         android:id="@+id/prev_news_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ileopard_ad"
         android:background="#eaeaea">
 
         <TextView
@@ -25,17 +24,15 @@
 
         <TextView
             android:id="@+id/prev_news_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/prev_news"
-            android:layout_alignTop="@+id/prev_news"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/prev_news"
             android:layout_toRightOf="@+id/prev_news"
             android:ellipsize="end"
-            android:gravity="center_vertical"
             android:maxLines="1"
             android:paddingRight="10dp"
             android:textColor="@android:color/black"
-            android:textSize="15dp" />
+            android:textSize="15dp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -60,13 +57,11 @@
 
         <TextView
             android:id="@+id/next_news_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/next_news"
-            android:layout_alignTop="@+id/next_news"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/next_news"
+            android:layout_alignBaseline="@+id/next_news"
             android:ellipsize="end"
-            android:gravity="center_vertical"
             android:maxLines="1"
             android:paddingLeft="10dp"
             android:textColor="@android:color/black"
