@@ -403,7 +403,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, 50, mShareImgUrl);
                 if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
                 mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
-            } else if (categoryName.contains(mContext.getString(R.string.eco))) {
+            } else if (categoryName!=null && categoryName.contains(mContext.getString(R.string.eco))) {
                 int newsId = mNewsInfo.nodeId;
                 int digit = newsId % 10;
                 int imagePosition = digit % 5;
