@@ -18,9 +18,11 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.nownews.R;
+import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Json.LiveListJson;
+import com.nownews.mobile.NewHome;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +57,7 @@ public class LivePlayer extends Activity {
         processIntent();
         processView();
         processMenu();
+        startTimer();
         play();
 
     }
@@ -134,6 +137,48 @@ public class LivePlayer extends Activity {
         }
     };
 
+    private long startTime;
+    private Handler mTimeCounterHandler = new Handler();
+    private void startTimer(){
+
+        startTime = System.currentTimeMillis();
+        if(mTimeCounterHandler!=null){
+            mTimeCounterHandler.removeCallbacks(mTimeCounterRunnable);
+            mTimeCounterHandler.post(mTimeCounterRunnable);
+        }
+
+    }
+
+    private Runnable mTimeCounterRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            long currentTime = System.currentTimeMillis();
+            long spentTime = currentTime - startTime;
+            //已過分鐘數
+            long minutes = (spentTime/1000)/60;
+            //已過秒數
+            long seconds = (spentTime/1000)%60;
+            if(Utility.DEBUG)Log.d(TAG, "時間已過: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
+
+            if(minutes>0 && minutes%20==0){ //20分鐘到
+//            if(minutes>0 && minutes%1==0){ //20分鐘到
+                if(Utility.DEBUG)Log.e(TAG, "20分鐘到");
+//                if(Utility.DEBUG)Log.e(TAG, "1分鐘到");
+                SharedPreferencesMethods sharedPreferencesMethods = new SharedPreferencesMethods(LivePlayer.this);
+                sharedPreferencesMethods.setLiveStopWatchingTime(currentTime);
+                sharedPreferencesMethods.unRegistContext(LivePlayer.this);
+                setResult(NewHome.RESULT_CODE_FROM_LIVE);
+                finish();
+            }else{
+                if(mTimeCounterHandler!=null){
+                    mTimeCounterHandler.postDelayed(this, 1000);
+                }
+            }
+
+        }
+    };
+
     private void play(){
 
         vLivePlayer.setOnTouchListener(new View.OnTouchListener() {
@@ -188,6 +233,12 @@ public class LivePlayer extends Activity {
                 mTimerHandler.post(mTimerRunnable);
             }else{
                 mTimerHandler.removeCallbacks(mTimerRunnable);
+                mTimerHandler = null;
+                if(mTimeCounterHandler!=null){
+                    mTimeCounterHandler.removeCallbacks(mTimeCounterRunnable);
+                    mTimeCounterRunnable = null;
+                    mTimeCounterHandler = null;
+                }
                 super.onBackPressed();
             }
         }else{

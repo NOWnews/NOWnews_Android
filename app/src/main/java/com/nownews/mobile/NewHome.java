@@ -25,7 +25,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -84,6 +83,7 @@ public class NewHome extends AppCompatActivity {
     private ImageView vCsmuse;
     public final static int REQUEST_CODE = 0x123;
     public final static int RESULT_CODE = 0x321;
+    public final static int RESULT_CODE_FROM_LIVE = 0x159;
     private final int SHOW_DFP_AD_PAGE = 0x951;
 
     @Override
@@ -493,7 +493,7 @@ public class NewHome extends AppCompatActivity {
     private SpecialNewsCategoryFragment mSpecialNewsCategoryFragment;
     private VideoNewsCategoryFragment mVideoNewsCategoryFragment;
     private LiveFragment mLiveFragment;
-    private Fragment mTempFragment;
+    private Fragment mCurrentFragment;
     private AHBottomNavigation.OnTabSelectedListener mBottomTabSelectListener = new AHBottomNavigation.OnTabSelectedListener(){
 
         @Override
@@ -610,18 +610,18 @@ public class NewHome extends AppCompatActivity {
 
     private void switchFragment(Fragment fragment) {
 
-        if (mTempFragment==null) {
+        if (mCurrentFragment ==null) {
             getSupportFragmentManager().beginTransaction().add(R.id.main_body, fragment).commit();
-        } else if (fragment != mTempFragment) {
+        } else if (fragment != mCurrentFragment) {
             if (!fragment.isAdded()) {
-                getSupportFragmentManager().beginTransaction().hide(mTempFragment)
+                getSupportFragmentManager().beginTransaction().hide(mCurrentFragment)
                         .add(R.id.main_body, fragment).commit();
             } else {
-                getSupportFragmentManager().beginTransaction().hide(mTempFragment)
+                getSupportFragmentManager().beginTransaction().hide(mCurrentFragment)
                         .show(fragment).commit();
             }
         }
-        mTempFragment = fragment;
+        mCurrentFragment = fragment;
     }
 
     @Override
@@ -630,6 +630,10 @@ public class NewHome extends AppCompatActivity {
 
         if (resultCode == RESULT_CODE) {
             showAllPageDFPAD();
+        }else if(resultCode == RESULT_CODE_FROM_LIVE){
+            if(mCurrentFragment!=null && mCurrentFragment instanceof LiveFragment){
+                ((LiveFragment) mCurrentFragment).openDownloadDialog(0);
+            }
         }
 
     }

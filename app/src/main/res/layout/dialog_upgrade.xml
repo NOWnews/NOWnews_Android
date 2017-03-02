@@ -56,28 +56,24 @@
                     <Button
                         android:id="@+id/watch_now"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="@string/cstv_watch_now"
                         android:textSize="15dp"
                         android:textColor="@android:color/black"
-                        android:background="@android:color/darker_gray"
-                        style="@style/Widget.AppCompat.Button.Borderless"/>
-
-                    <requestFocus />
+                        android:background="@android:color/darker_gray"/>
 
                     <Button
                         android:id="@+id/download_now"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:layout_marginLeft="2dp"
                         android:layout_toRightOf="@+id/watch_now"
                         android:text="@string/cstv_download_now"
                         android:textSize="15dp"
                         android:textColor="@android:color/black"
-                        android:background="@android:color/darker_gray"
-                        style="@style/Widget.AppCompat.Button.Borderless" />
+                        android:background="@android:color/darker_gray" />
                 </LinearLayout>
             </RelativeLayout>
         </android.support.v7.widget.CardView>

@@ -28,6 +28,7 @@ public class SharedPreferencesMethods {
     private final String NOTIFICATION_STATUS = "notification_status";
     private final String ALREADY_ASK_OPEN_NOTIFICATION = "already_ask_open_notification";
     private final String KEY_IS_V3_VERSION = "is_v3_version";
+    private final String KEY_LIVE_STOP_WATCHING_TIME = "live_stop_watching_time";
     private final SharedPreferences mPreferences;
     private final SharedPreferences.Editor mEditor;
 
@@ -206,6 +207,15 @@ public class SharedPreferencesMethods {
 
     public void setIsV3Version(){
         mEditor.putBoolean(KEY_IS_V3_VERSION, true);
+        mEditor.commit();
+    }
+
+    public long getLiveStopWatchingTime(){
+        return mPreferences.getLong(KEY_LIVE_STOP_WATCHING_TIME, -1);
+    }
+
+    public void setLiveStopWatchingTime(long aLiveStopWatchingTime){
+        mEditor.putLong(KEY_LIVE_STOP_WATCHING_TIME, aLiveStopWatchingTime);
         mEditor.commit();
     }
 

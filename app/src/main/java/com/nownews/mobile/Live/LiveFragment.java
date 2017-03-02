@@ -158,7 +158,7 @@ public class LiveFragment extends Fragment {
     };
 
     private CSTVDownloadDialog mCSTVDownloadDialog;
-    private void openDownloadDialog(int position){
+    public void openDownloadDialog(int position){
         if(mCSTVDownloadDialog!=null && mCSTVDownloadDialog.isShowing()){
             return;
         }
@@ -182,4 +182,5 @@ public class LiveFragment extends Fragment {
         mApiHandler.removeCallbacks(null);
         super.onDestroyView();
     }
+
 }

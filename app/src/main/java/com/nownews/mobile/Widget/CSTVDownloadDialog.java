@@ -2,9 +2,11 @@ package com.nownews.mobile.Widget;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -17,10 +19,12 @@ import android.widget.TextView;
 
 import com.nownews.R;
 import com.nownews.mobile.Common.ReSizeLayoutParams;
+import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Json.LiveListJson;
 import com.nownews.mobile.Live.LivePlayer;
+import com.nownews.mobile.NewHome;
 
 import java.util.List;
 
@@ -49,6 +53,7 @@ public class CSTVDownloadDialog extends Dialog {
     private String mPath;
     private int mCategoryIndex;
     private int mChannelIndex;
+    private boolean isCountdownType;
 
     public CSTVDownloadDialog(Context context, String aTitle, List<LiveListJson.Data> aLiveList, String aPath, int aCategoryIndex, int aChannelIndex) {
         super(context, R.style.FullScreenDialogStyle);
@@ -58,6 +63,9 @@ public class CSTVDownloadDialog extends Dialog {
         mPath = aPath;
         mCategoryIndex = aCategoryIndex;
         mChannelIndex = aChannelIndex;
+        if(mChannelIndex==-1){
+            isCountdownType = true;
+        }
 
         setCancelable(true);
         setCanceledOnTouchOutside(true);
@@ -80,10 +88,82 @@ public class CSTVDownloadDialog extends Dialog {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initController();
         processView();
         processListener();
+        checkTime();
+        if(isCountdownType){
+            vWatchNow.setEnabled(false);
+            startCountdownTimer();
+        }
 
     }
+
+    private SharedPreferencesMethods sharedPreferencesMethods;
+    private long stopWatchingTime;
+    private long enableWatchingTime;
+    private void initController(){
+        sharedPreferencesMethods = new SharedPreferencesMethods(mContext);
+    }
+
+//    private final int mIntervalHours = 2;
+    private final int mIntervalMinutes = 30;
+    private void checkTime(){
+
+        stopWatchingTime = sharedPreferencesMethods.getLiveStopWatchingTime();
+        Log.e(TAG, "stopWatchingTime: " + stopWatchingTime);
+        sharedPreferencesMethods.unRegistContext(mContext);
+        if(stopWatchingTime==-1){
+            return;
+        }
+        long currentTime = System.currentTimeMillis();
+        long spentTime = currentTime - stopWatchingTime;
+        long minutes = (spentTime/1000)/60;
+        Log.e(TAG, "currentTime: " + currentTime);
+        Log.e(TAG, "spentTime: " + spentTime);
+        Log.e(TAG, "minutes: " + minutes);
+//        if(minutes>=mIntervalHours*60){
+        if(minutes>=mIntervalMinutes){ // for test
+            isCountdownType = false;
+        }else{
+            isCountdownType = true;
+        }
+
+    }
+
+    private Handler mCountdownTimer = new Handler();
+    private void startCountdownTimer(){
+
+//        enableWatchingTime = stopWatchingTime + (mIntervalHours*60*60*1000);
+        enableWatchingTime = stopWatchingTime + (mIntervalMinutes*60*1000); // for test
+        Log.e(TAG, "enableWatchingTime: " + enableWatchingTime);
+        if(mCountdownTimer!=null){
+            mCountdownTimer.removeCallbacks(mCountdownRunnalbe);
+            mCountdownTimer.post(mCountdownRunnalbe);
+        }
+
+    }
+
+    private Runnable mCountdownRunnalbe = new Runnable() {
+        @Override
+        public void run() {
+
+            long currentTime = System.currentTimeMillis();
+            long leftTime = Math.abs(currentTime - enableWatchingTime);
+            long minutes = (leftTime/1000)/60;
+            long seconds = (leftTime/1000)%60;
+            if(minutes>0 || (minutes==0 && seconds>0)){
+                if(Utility.DEBUG)Log.d(TAG, "時間剩下: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
+                vWatchNow.setText("距離下次收看還剩\n" + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
+                mCountdownTimer.postDelayed(this, 1000);
+            }else{
+                if(Utility.DEBUG)Log.e(TAG, "時間到!!");
+                vWatchNow.setEnabled(true);
+                vWatchNow.setText(mContext.getString(R.string.cstv_watch_now));
+            }
+
+        }
+    };
 
     private void processView(){
 
@@ -173,11 +253,34 @@ public class CSTVDownloadDialog extends Dialog {
             intent.putExtra(LivePlayer.KEY_PLAY_URL, mPath);
             intent.putExtra(LivePlayer.KEY_CATEGORY_INDEX, mCategoryIndex);
             intent.putExtra(LivePlayer.KEY_CHANNEL_INDEX, mChannelIndex);
-            mContext.startActivity(intent);
+            ((NewHome)mContext).startActivityForResult(intent, NewHome.RESULT_CODE_FROM_LIVE);
 
             dismiss();
 
         }
     };
 
+    @Override
+    public void setOnCancelListener(OnCancelListener listener) {
+        super.setOnCancelListener(listener);
+        if(mCountdownTimer!=null){
+            mCountdownTimer.removeCallbacks(mCountdownRunnalbe);
+        }
+    }
+
+    @Override
+    public void setOnDismissListener(OnDismissListener listener) {
+        super.setOnDismissListener(listener);
+        if(mCountdownTimer!=null){
+            mCountdownTimer.removeCallbacks(mCountdownRunnalbe);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(mCountdownTimer!=null){
+            mCountdownTimer.removeCallbacks(mCountdownRunnalbe);
+        }
+    }
 }
