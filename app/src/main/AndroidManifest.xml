@@ -114,26 +114,22 @@
         </activity>
         <activity
             android:name=".mobile.NewHome"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".mobile.NewsPage.NewsPage"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".mobile.VideoNewsPage.VideoNewsPage"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".mobile.AlbumPage.AlbumPage"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".mobile.FavoriteAlbum.FavoriteAlbum"
             android:screenOrientation="portrait" />
         <activity
             android:name=".mobile.FavoriteAlbum.FavoriteAlbumPage"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".mobile.Search.SearchActivity"
             android:screenOrientation="portrait" />
@@ -162,10 +158,13 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".mobile.BroadcastReceiver.ExternalLinkOpen"
+        <activity
+            android:name=".mobile.BroadcastReceiver.ExternalLinkOpen"
+            android:screenOrientation="landscape"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -174,6 +173,26 @@
                     android:scheme="https" />
                 <data
                     android:host="www.nownews.com"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".mobile.Invite.InviteCodeInputPage"
+            android:screenOrientation="landscape"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="qv5h4.app.goo.gl"
+                    android:scheme="https" />
+
+                <data
+                    android:host="qv5h4.app.goo.gl"
                     android:scheme="http" />
             </intent-filter>
         </activity>
@@ -296,8 +315,8 @@
         <activity
             android:name="com.vpadn.widget.VpadnActivity"
             android:configChanges="orientation|keyboardHidden|navigation|keyboard|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:theme="@android:style/Theme.Translucent"
-            android:hardwareAccelerated="true"/>
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent" />
 
     </application>
 

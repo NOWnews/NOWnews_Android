@@ -119,7 +119,6 @@ public class AlbumActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                GoogleAnalyticsFunction.sendHitInfo(AlbumActivity.this, getString(R.string.album), "點擊Menu", "");
                 vMenuContent.getVersionInfo();
             }
 
@@ -165,8 +164,6 @@ public class AlbumActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_search: //action bar上的search鈕
-
-                GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.album), "點擊搜尋", "");
 
                 Intent intent = new Intent();
                 intent.setClass(AlbumActivity.this, SearchActivity.class);

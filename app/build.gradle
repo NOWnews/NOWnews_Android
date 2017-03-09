@@ -19,7 +19,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 20
         versionCode 2017022401
-        versionName "8.2.7"
+        versionName "8.2.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true

@@ -31,7 +31,7 @@ public class GetSplashImage implements Runnable {
             String webApiUrl = WebAPIUrl.NOWNEWS_SPLASH_IMAGE;
 
             String jsonValue = WebApi.DoGet(webApiUrl, false);
-//			if(Utility.DEBUG)Log.e(TAG, "jsonValue: " + jsonValue);
+			if(Utility.DEBUG)Log.e(TAG, "jsonValue: " + jsonValue);
             SplashImageJson jsonValueClb = new Gson().fromJson(jsonValue, SplashImageJson.class);
 
             Utility.writeJsonToFile(TAG, jsonValue);

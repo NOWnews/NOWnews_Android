@@ -6,6 +6,7 @@ public class NewsInfoJson {
 
     public int nodeId;
     public String title;
+    public String shortTitle;
     public String url;
     public TopImageInfo image;
     public String summary;

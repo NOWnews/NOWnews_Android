@@ -207,7 +207,6 @@ public class SearchActivity extends Activity {
     }
 
     private void startSearch(String searchKeyWords) {
-        GoogleAnalyticsFunction.sendHitInfo(this, "搜尋頁面", "搜尋" + searchKeyWords, "");
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(vSearchView.getWindowToken(), 0);
         vSearchView.isKeyboardShowing = false;

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Json.VideosListJson.VideosContent;
+import com.nownews.mobile.NewsPage.NewsPageRecyclerViewFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +77,7 @@ public class VideoNewsPageFragmentAdapter extends FragmentStatePagerAdapter {
         newsPageFragment = new VideoNewsPageRecyclerViewFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(VideoNewsPageFragment.KEY_NEWS_ID, newsId);
+        bundle.putString(VideoNewsPageRecyclerViewFragment.KEY_NEWS_CATEGORY, mNewsCategory);
         bundle.putInt(VideoNewsPageFragment.KEY_NEWS_POSITION, position);
         newsPageFragment.setArguments(bundle);
 //        mNewsPageFragmentList.put(KEY_FRAGMENT_INDEX + position, newsPageFragment);
@@ -103,5 +105,10 @@ public class VideoNewsPageFragmentAdapter extends FragmentStatePagerAdapter {
         trans.commitAllowingStateLoss();
 
         super.destroyItem(container, position, object);
+    }
+
+    private String mNewsCategory;
+    public void setCategory(String aNewsCategory) {
+        mNewsCategory = aNewsCategory;
     }
 }

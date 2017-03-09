@@ -26,6 +26,7 @@
     <string name="category_edit">編輯分類</string>
     <string name="about">關於NOWnews</string>
     <string name="nowvote">議題票選</string>
+    <string name="share_app">分享App</string>
     <string-array name="menu_list">
         <item>@string/return_home</item>
         <item>@string/album</item>
@@ -35,6 +36,7 @@
         <item>@string/version</item>
         <item>@string/notification_setting</item>
         <item>@string/about</item>
+        <item>@string/share_app</item>
     </string-array>
 
     <string name="go_reading">閱讀</string>
@@ -141,6 +143,22 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="press_again_to_exit">再按一次退出</string>
     <string name="cstv_download_hint">本直播功能僅提供試看頻道\n欲收看更多精彩內容可前往下載\nNOWnews昕電視</string>
+    <string name="cstv_download_hint2">Oops!!您的免費收視時間到囉~~\n您可以等待30分鐘或是透過分享NOWnews App來繼續觀看精彩直播!!</string>
     <string name="cstv_watch_now">立即試看</string>
     <string name="cstv_download_now">立即下載</string>
+
+    <string name="dynamic_links_scheme">https</string>
+    <string name="dynamic_links_app_code">qv5h4</string>
+    <string name="dynamic_links_domain">.app.goo.gl</string>
+    <string name="dynamic_links_address">https://qv5h4.app.goo.gl/V9Hh</string>
+    <string name="deeplink_address">https://nownews.app.invite/deeplinks</string>
+    <string name="left_menu">左側選單</string>
+    <string name="cloud_message">推播</string>
+    <string name="cloud_message_regist">註冊Token</string>
+    <string name="cloud_message_open">推播開</string>
+    <string name="cloud_message_close">推播關</string>
+    <string name="cloud_message_reveive">收到推播</string>
+    <string name="cloud_message_click">點擊推播</string>
+    <string name="gcm_dialog_lets_go">立即前往</string>
+    <string name="click_me_share">點我分享</string>
 </resources>

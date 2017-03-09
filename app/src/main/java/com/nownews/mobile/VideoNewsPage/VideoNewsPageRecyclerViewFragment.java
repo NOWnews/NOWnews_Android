@@ -47,14 +47,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class VideoNewsPageRecyclerViewFragment extends Fragment{
 
-    public final static String KEY_NEWS_URL = "newsUrl";
     public final static String KEY_NEWS_ID = "newsId";
+    public final static String KEY_NEWS_CATEGORY = "newsCategory";
     public final static String KEY_NEWS_POSITION = "newsPosition";
     private final String TAG = getClass().getSimpleName();
     public boolean isOnPause = false;
     private ApiController mApiController;
     private BitmapController mBitmapController;
-    private String mNewsUrl;
+    private String mNewsCategory;
     private int mNewsId;
     private VideosInfoJson mVideoNewsInfo;
     private ArrayList<String> mImageUrlList;
@@ -154,38 +154,14 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
         Bundle bundle = getArguments();
         if (bundle != null) {
 
-            String aNewsUrl = bundle.getString(KEY_NEWS_URL);
-            int aNewsId = bundle.getInt(KEY_NEWS_ID, -1);
+            mNewsId = bundle.getInt(KEY_NEWS_ID, -1);
+            mNewsCategory = bundle.getString(KEY_NEWS_CATEGORY);
             mCurrentNewsPosition = bundle.getInt(KEY_NEWS_POSITION, -1);
 
             if (Utility.DEBUG) Log.e(TAG, "VideoNewsPageFragment");
-            if (Utility.DEBUG) Log.e(TAG, "aNewsUrl: " + aNewsUrl);
-            if (Utility.DEBUG) Log.e(TAG, "aNewsId: " + aNewsId);
+            if (Utility.DEBUG) Log.e(TAG, "mNewsId: " + mNewsId);
             if (Utility.DEBUG) Log.e(TAG, "mCurrentNewsPosition: " + mCurrentNewsPosition);
-
-            mNewsUrl = aNewsUrl;
-            mNewsId = aNewsId;
-            if (Utility.DEBUG)Log.d(TAG, "mNewsUrl: " + mNewsUrl);
-            if (mNewsUrl != null && (mNewsUrl.startsWith("/n/")
-                    || mNewsUrl.contains("/news/")
-                    || mNewsUrl.contains("/photo/"))) {
-                mNewsId = Integer.parseInt(mNewsUrl.substring(mNewsUrl.lastIndexOf("/") + 1));
-            } else if (mNewsUrl != null) {
-                mNewsId = Integer.parseInt(mNewsUrl.substring(mNewsUrl.lastIndexOf("/") + 1, mNewsUrl.lastIndexOf("?")));
-            }
         }
-    }
-
-    public void setData(String aNewsUrl) {
-
-        mNewsUrl = aNewsUrl;
-        if (mNewsUrl.startsWith("/n/")) {
-            mNewsId = Integer.parseInt(mNewsUrl.substring(mNewsUrl.lastIndexOf("/") + 1));
-        } else {
-            mNewsId = Integer.parseInt(mNewsUrl.substring(mNewsUrl.lastIndexOf("/") + 1, mNewsUrl.lastIndexOf("?")));
-        }
-        getVideoNewsInfo();
-
     }
 
     private void initController() {
@@ -225,6 +201,8 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
     }
 
     private void processNews() {
+
+        setHitInfo();
 
         if (mImageUrlList != null) {
             mImageUrlList.clear();
@@ -485,18 +463,27 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
         }
     }
 
-    public void setHitInfo(String aNewsCategory) {
-        if(Utility.DEBUG)Log.v(TAG, "setHitInfo() aNewsCategory: " + aNewsCategory);
-
+    public void setHitInfo() {
         String url = null;
-        if (mNewsUrl != null && mNewsUrl.startsWith("/n/")) {
-            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsUrl;
-        } else if (mNewsUrl != null) {
-            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsUrl.substring(mNewsUrl.indexOf("/n/"), mNewsUrl.lastIndexOf("?"));
+        String title = null;
+        String label = null;
+        if(mVideoNewsInfo!=null && mVideoNewsInfo.url!=null && !mVideoNewsInfo.url.trim().isEmpty()){
+            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mVideoNewsInfo.url;
         }
-        if (url != null) {
-            GoogleAnalyticsFunction.sendHitInfo(getActivity(), aNewsCategory, url, "");
+        if(mVideoNewsInfo!=null && mVideoNewsInfo.title!=null && !mVideoNewsInfo.title.isEmpty()){
+            title = mVideoNewsInfo.title;
+            if (title != null && title.contains("▲")) {
+                title = title.replaceAll("▲", "");
+            }
+            if (title != null && title.contains("▼")) {
+                title = title.replaceAll("▼", "");
+            }
         }
+        if(url!=null && title!=null){
+            label = title + " " + url;
+        }
+        Log.d(TAG, "label: " + label);
+        GoogleAnalyticsFunction.sendHitInfo(getActivity(), getString(R.string.video), mNewsCategory, label);
     }
 
     @Override

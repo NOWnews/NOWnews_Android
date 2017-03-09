@@ -272,11 +272,11 @@ public class NewsListFragment extends Fragment {
             if(mPool!=null){
                 vList.setRecycledViewPool(mPool);
             }
-            NewsListRecyclerViewAdapter adapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryName, getChildFragmentManager());
+            NewsListRecyclerViewAdapter adapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
             vList.setAdapter(adapter);
             vList.addOnScrollListener(mListScrollListener);
         }else{
-            ((NewsListRecyclerViewAdapter)vList.getAdapter()).setData(mNewsList, mCategoryName, getChildFragmentManager());
+            ((NewsListRecyclerViewAdapter)vList.getAdapter()).setData(mNewsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
         }
 
         vLoadingLayout.setVisibility(View.GONE);

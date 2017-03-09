@@ -12,6 +12,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -27,6 +28,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialog.ButtonCallback;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.nownews.R;
 import com.nownews.mobile.AlbumCategory.AlbumActivity;
 import com.nownews.mobile.FavoriteAlbum.FavoriteAlbum;
@@ -83,7 +85,6 @@ public class MenuContent extends RelativeLayout {
         @Override
         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
             //dismiss
-            GoogleAnalyticsFunction.sendHitInfo(mContext, "版本資訊", "點擊下次再說", "");
         }
     };
     private MaterialDialog vDownloadProgressDialog;
@@ -113,7 +114,6 @@ public class MenuContent extends RelativeLayout {
         @Override
         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-            GoogleAnalyticsFunction.sendHitInfo(mContext, "版本資訊", "點擊立即前往", "");
             final MaterialSimpleListAdapter adapter = new MaterialSimpleListAdapter(new MaterialSimpleListAdapter.Callback() {
                 @Override
                 public void onMaterialListItemSelected(MaterialDialog dialog, int index, MaterialSimpleListItem item) {
@@ -122,7 +122,6 @@ public class MenuContent extends RelativeLayout {
                         Intent MyIntent = new Intent(Intent.ACTION_VIEW,
                                 Uri.parse("market://details?id=com.nownews"));
                         mContext.startActivity(MyIntent);
-                        GoogleAnalyticsFunction.sendHitInfo(mContext, "更新方式", mContext.getString(R.string.google_play), "");
                     } else if (item.getContent().toString().equals(mContext.getString(R.string.download_one))) {
                         //download
                         String fileUrl = "http://210.242.196.110/NowNews_Mobile.apk";
@@ -133,7 +132,6 @@ public class MenuContent extends RelativeLayout {
                         }
                         AppController appController = AppController.getInstance(mContext);
                         appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mHandler);
-                        GoogleAnalyticsFunction.sendHitInfo(mContext, "更新方式", mContext.getString(R.string.download_one), "");
                     } else if (item.getContent().toString().equals(mContext.getString(R.string.download_two))) {
                         //download
                         String fileUrl = "http://legacy.nownews.com/events/adtips/mobile_app/NowNews_Mobile.apk";
@@ -144,7 +142,6 @@ public class MenuContent extends RelativeLayout {
                         }
                         AppController appController = AppController.getInstance(mContext);
                         appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mHandler);
-                        GoogleAnalyticsFunction.sendHitInfo(mContext, "更新方式", mContext.getString(R.string.download_two), "");
                     }
                     dialog.dismiss();
 
@@ -218,39 +215,34 @@ public class MenuContent extends RelativeLayout {
             String itemName = (String) map.get(MenuContent.KEY_TITLE);
             String category = (String) map.get(MenuContent.KEY_CATEGORY);
 
+            if(itemName!=null && !itemName.equals(mContext.getString(R.string.setting))){
+                GoogleAnalyticsFunction.sendHitInfo(mContext, mContext.getString(R.string.left_menu), itemName, "");
+            }
+
             if (itemName != null && itemName.equals(mContext.getString(R.string.return_home))) {
                 //要判斷目前是不是首頁
                 if (mContext instanceof NewHome) {
                     //do nothing
                 } else {
-                    GoogleAnalyticsFunction.sendHitInfo(mContext, "Menu", "點擊" + itemName, "");
                     goHome();
                 }
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.album))) {
-                GoogleAnalyticsFunction.sendHitInfo(mContext, "Menu", "點擊" + itemName, "");
                 gotoAlbum();
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.favorite_album))) {
-                GoogleAnalyticsFunction.sendHitInfo(mContext, "Menu", "點擊" + itemName, "");
                 gotoFavoriteAlbum();
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.version))) {
-                GoogleAnalyticsFunction.sendHitInfo(mContext, "Menu", "點擊" + itemName, "");
                 getVersion(isHasNewVersion);
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.category_edit))) {
-                GoogleAnalyticsFunction.sendHitInfo(mContext, "Menu", "點擊" + itemName, "");
                 openNewsPreference();
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.notification_setting))) {
-//				Toast.makeText(mContext, "notification_setting", Toast.LENGTH_LONG).show();
-                GoogleAnalyticsFunction.sendHitInfo(mContext, "Menu", "點擊" + itemName, "");
                 showNotificationSwicherDialog();
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.about))) {
-//				Toast.makeText(mContext, "notification_setting", Toast.LENGTH_LONG).show();
-                GoogleAnalyticsFunction.sendHitInfo(mContext, "Menu", "點擊" + itemName, "");
                 String url = "http://m.nownews.com/about";
                 Intent intent = new Intent();
                 intent.setClass(mContext, WebActivity.class);
@@ -258,18 +250,40 @@ public class MenuContent extends RelativeLayout {
                 mContext.startActivity(intent);
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.nowvote))) {
-//				Toast.makeText(mContext, "notification_setting", Toast.LENGTH_LONG).show();
-                GoogleAnalyticsFunction.sendHitInfo(mContext, "Menu", "點擊" + itemName, "");
                 String url = "http://vote.nownews.com/";
                 Intent intent = new Intent();
                 intent.setClass(mContext, WebActivity.class);
                 intent.putExtra(WebActivity.KEY_URL, url);
                 mContext.startActivity(intent);
                 vDrawerLayout.closeDrawers();
+            } else if (itemName != null && itemName.equals(mContext.getString(R.string.share_app))) {
+                Uri deeplink = createDeepLink();
+                Log.d(TAG, "deeplink: " + deeplink.toString());
+                Intent intent = new AppInviteInvitation.IntentBuilder("分享NOWnews今日新聞")
+                        .setMessage("NOWnews今日新聞94狂!!\n最新最快最勁爆的新聞都在這!!\n還有免費直播讓你看!!\n還不趕快下載!!")
+                        .setDeepLink(Uri.parse("https://qv5h4.app.goo.gl/V9Hh"))
+                        .setCallToActionText("點我下載")
+                        .build();
+                ((Activity)mContext).startActivityForResult(intent, 0x789);
             }
 
         }
     };
+
+    private Uri createDeepLink(){
+        String scheme = mContext.getString(R.string.dynamic_links_scheme);
+        String appCode = mContext.getString(R.string.dynamic_links_app_code);
+        String domain = mContext.getString(R.string.dynamic_links_domain);
+        String deeplinkAddress = mContext.getString(R.string.deeplink_address);
+        Uri.Builder builder = new Uri.Builder()
+                .scheme(scheme)
+                .authority(appCode + domain)
+                .path("/")
+                .appendQueryParameter("link", deeplinkAddress)
+                .appendQueryParameter("apn", mContext.getPackageName())
+                .appendQueryParameter("amv", Integer.toString(Utility.getAppVersionCode(mContext)));
+        return builder.build();
+    }
 
     public MenuContent(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -328,6 +342,8 @@ public class MenuContent extends RelativeLayout {
                 iconId = R.drawable.notification;
             } else if (item.equals(getResources().getString(R.string.about))) {
                 iconId = R.drawable.now;
+            } else if (item.equals(getResources().getString(R.string.share_app))) {
+                iconId = R.drawable.ic_share_white_36dp;
             }
 //			else if(item.equals(getResources().getString(R.string.theme))){
 //				iconId = R.drawable.brightness;
@@ -372,6 +388,8 @@ public class MenuContent extends RelativeLayout {
                     public void onPositive(MaterialDialog dialog) {
                         mSharedPref.setNotificationStatus(isNotificationOpen);
                         mMenuContentAdapter.notifyDataSetChanged();
+                        GoogleAnalyticsFunction.sendHitInfo(mContext, mContext.getString(R.string.cloud_message),
+                                (isNotificationOpen? mContext.getString(R.string.cloud_message_open):mContext.getString(R.string.cloud_message_close)), "");
                         super.onPositive(dialog);
                     }
 
@@ -442,7 +460,6 @@ public class MenuContent extends RelativeLayout {
         }
         if (isHasNewVersion) {
 
-            GoogleAnalyticsFunction.sendHitInfo(mContext, "版本資訊", "有更新", "");
             new MaterialDialog.Builder(mContext)
                     .title(mContext.getString(R.string.update_dialog_title))
                     .content(currentVersionText + "\n" + mContext.getString(R.string.update_dialog_message))

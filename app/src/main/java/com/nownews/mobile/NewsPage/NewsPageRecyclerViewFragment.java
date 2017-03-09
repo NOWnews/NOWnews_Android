@@ -23,6 +23,7 @@ import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
+import com.nownews.mobile.GCM.GcmIntentService;
 import com.nownews.mobile.Json.NewsInfoJson;
 import com.nownews.mobile.Json.NewsInfoJson.MobileBody;
 
@@ -38,13 +39,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class NewsPageRecyclerViewFragment extends Fragment {
 
-    public final static String KEY_NEWS_URL = "newsUrl";
     public final static String KEY_NEWS_ID = "newsId";
+    public final static String KEY_NEWS_CATEGORY = "newsCategory";
+    public final static String KEY_NEWS_BIG_CATEGORY = "bigCategory";
     private final String TAG = getClass().getSimpleName();
     public boolean isOnPause = false;
     private ApiController mApiController;
     private BitmapController mBitmapController;
-    private String mNewsUrl;
+    private String mNewsCategory;
+    private String mBigCategory;
     private int mNewsId;
     private NewsInfoJson mNewsInfo;
     private ArrayList<String> mImageUrlList;
@@ -157,23 +160,15 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
 
-            String aNewsUrl = bundle.getString(KEY_NEWS_URL);
-            int aNewsId = bundle.getInt(KEY_NEWS_ID, -1);
+            mNewsId = bundle.getInt(KEY_NEWS_ID, -1);
+            mNewsCategory = bundle.getString(KEY_NEWS_CATEGORY);
+            mBigCategory = bundle.getString(KEY_NEWS_BIG_CATEGORY);
 
             if (Utility.DEBUG) Log.e(TAG, "VideoNewsPageFragment");
-            if (Utility.DEBUG) Log.e(TAG, "aNewsUrl: " + aNewsUrl);
-            if (Utility.DEBUG) Log.e(TAG, "aNewsId: " + aNewsId);
+            if (Utility.DEBUG) Log.e(TAG, "mNewsId: " + mNewsId);
+            if (Utility.DEBUG) Log.e(TAG, "mNewsCategory: " + mNewsCategory);
+            if (Utility.DEBUG) Log.e(TAG, "mBigCategory: " + mBigCategory);
 
-            mNewsUrl = aNewsUrl;
-            mNewsId = aNewsId;
-            Log.d(TAG, "mNewsUrl: " + mNewsUrl);
-            if (mNewsUrl != null && (mNewsUrl.startsWith("/n/")
-                    || mNewsUrl.contains("/news/")
-                    || mNewsUrl.contains("/photo/"))) {
-                mNewsId = Integer.parseInt(mNewsUrl.substring(mNewsUrl.lastIndexOf("/") + 1));
-            } else if (mNewsUrl != null) {
-                mNewsId = Integer.parseInt(mNewsUrl.substring(mNewsUrl.lastIndexOf("/") + 1, mNewsUrl.lastIndexOf("?")));
-            }
         }
     }
 
@@ -221,6 +216,8 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
     private LinearLayoutManager mLinearLayoutManager;
     private void processNews() {
+
+        setHitInfo();
 
         if (mImageUrlList != null) {
             mImageUrlList.clear();
@@ -471,16 +468,21 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         }
     }
 
-    public void setHitInfo(String aNewsCategory) {
+    public void setHitInfo() {
         String url = null;
-        if (mNewsUrl != null && mNewsUrl.startsWith("/n/")) {
-            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsUrl;
-        } else if (mNewsUrl != null) {
-            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsUrl.substring(mNewsUrl.indexOf("/n/"), mNewsUrl.lastIndexOf("?"));
+        String title = null;
+        String label = null;
+        if(mNewsInfo!=null && mNewsInfo.url!=null && !mNewsInfo.url.trim().isEmpty()){
+            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsInfo.url;
         }
-        if (url != null) {
-            GoogleAnalyticsFunction.sendHitInfo(getActivity(), aNewsCategory, url, "");
+        if(mNewsInfo!=null && mNewsInfo.shortTitle!=null && !mNewsInfo.shortTitle.isEmpty()){
+            title = mNewsInfo.shortTitle;
         }
+        if(url!=null && title!=null){
+            label = title + " " + url;
+        }
+        Log.d(TAG, "label: " + label);
+        GoogleAnalyticsFunction.sendHitInfo(getActivity(), mBigCategory, mNewsCategory, label);
     }
 
     @Override

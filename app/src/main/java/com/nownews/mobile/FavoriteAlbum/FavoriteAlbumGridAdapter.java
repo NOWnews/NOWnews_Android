@@ -69,7 +69,6 @@ public class FavoriteAlbumGridAdapter extends RecyclerView.Adapter<FavoriteAlbum
 //		intent.putStringArrayListExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_TITLE_LIST, mFavoriteImageTitleList);
         String url = mFavoriteImageList.get(position);
         ((Activity) mContext).startActivityForResult(intent, mRequestCode);
-        GoogleAnalyticsFunction.sendHitInfo(mContext, "最愛圖集", url, "");
     }
 
 

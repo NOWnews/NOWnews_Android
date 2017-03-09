@@ -118,7 +118,7 @@ public class Utility {
     public static String processGCMRegisterId(Context aContext, String aNewToken) {
         if (Utility.DEBUG) Log.v(TAG, "@@@ aNewToken: " + aNewToken);
         storeRegistrationId(aContext, aNewToken);
-        sendRegisterId(aNewToken);
+        sendRegisterId(aContext, aNewToken);
         return aNewToken;
     }
 
@@ -132,7 +132,8 @@ public class Utility {
     }
 
     //通知GCM推播ID使用
-    private static void sendRegisterId(String regId) {
+    private static void sendRegisterId(Context aContext, String regId) {
+        Log.v(TAG, "sendRegisterId()");
         HttpURLConnection Conn = null;
         try {
             String BuildSERIAL = android.os.Build.SERIAL;
@@ -141,11 +142,15 @@ public class Utility {
             Date date = new Date();
             String dts = sdf.format(date);
             URL url = new URL(WebAPIUrl.REGIST_ID_RETURN + "?token=" + regId + "&uid=" + BuildSERIAL + "&platform=android&date=" + dts);
-            if (Utility.DEBUG) Log.d(TAG, "url: " + url.toString());
+            if (Utility.DEBUG) Log.d(TAG, TAG + " url: " + url.toString());
             Conn = (HttpURLConnection) url.openConnection();
+            Conn.setRequestProperty(WebAPIUrl.HEADER_KEY, WebAPIUrl.HEADER_VALUE);
             Conn.connect();
             int responeseCode = Conn.getResponseCode();
             if (Utility.DEBUG) Log.e(TAG, "responeseCode: " + responeseCode);
+            if(responeseCode==HttpURLConnection.HTTP_OK){
+                GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message), aContext.getString(R.string.cloud_message_regist), regId);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -433,9 +438,6 @@ public class Utility {
     public static void shareToFacebook(Context aContext, String aShareUrl) {
         if (Utility.DEBUG) Log.e(TAG, "Facebook click");
 
-//		GoogleAnalyticsFunction.sendSocialInteractions(aContext, "Facebook", "Share", aShareUrl);
-        GoogleAnalyticsFunction.sendHitInfo(aContext, "Facebook分享", aShareUrl, "");
-
         if (isPackageExisted(aContext, "com.facebook.katana")) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
@@ -451,9 +453,6 @@ public class Utility {
     //TODO shareToLine()
     public static void shareToLine(Context aContext, String aShareUrl, String aShareText, ShareType aShareType) {
         if (Utility.DEBUG) Log.e(TAG, "Line click");
-
-//		GoogleAnalyticsFunction.sendSocialInteractions(aContext, "Line", "Share", aShareUrl);
-        GoogleAnalyticsFunction.sendHitInfo(aContext, "Line分享", aShareUrl, "");
 
         String sendingMessageFormat;
         String sendingMessage = null;

@@ -61,6 +61,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private List<NewsListJson.NewsContent> mNewsList;
     private String mCategoryName;
+    private String mBigCategory;
     private FragmentManager mChidFragmentManger;
     private BitmapController mBitmapController;
     private LayoutInflater inflater;
@@ -68,17 +69,20 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     private String[] mDFPIdList;
     private String[] mVPONIdList;
 
-    public NewsListRecyclerViewAdapter(Context aContext, List<NewsListJson.NewsContent> aNewsList, String aCategoryName, FragmentManager aChidFragmentManger) {
+    public NewsListRecyclerViewAdapter(Context aContext, List<NewsListJson.NewsContent> aNewsList,
+                                       String aCategoryName, FragmentManager aChidFragmentManger, String aBigCategory) {
         mContext = aContext;
         mNewsList = aNewsList;
         mCategoryName = aCategoryName;
+        mBigCategory = aBigCategory;
         mChidFragmentManger = aChidFragmentManger;
         init();
     }
 
-    public void setData(List<NewsListJson.NewsContent> aNewsList, String aCategoryName, FragmentManager aChidFragmentManger) {
+    public void setData(List<NewsListJson.NewsContent> aNewsList, String aCategoryName, FragmentManager aChidFragmentManger, String aBigCategory) {
         mNewsList = aNewsList;
         mCategoryName = aCategoryName;
+        mBigCategory = aBigCategory;
         mChidFragmentManger = aChidFragmentManger;
         notifyDataSetChanged();
     }
@@ -280,14 +284,13 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
         int newsId = mNewsList.get(position)._id;
         String shortTitle = mNewsList.get(position).field_short_title.value;
-        String eventAction = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId + " " + shortTitle;
-        GoogleAnalyticsFunction.sendHitInfo(mContext, mCategoryName + "新聞", eventAction, "");
         Intent intent = new Intent();
         intent.setClass(mContext, NewsPage.class);
         intent.putExtra(NewsPage.KEY_NEWS_ID, newsId);
         intent.putExtra(NewsPage.KEY_NEWS_INDEX, position);
         intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_NORMAL_NEWS);
-        intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, mCategoryName + "新聞");
+        intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, mCategoryName);
+        intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, mBigCategory);
         UserDataInfo.setNewsList(mNewsList);
         UserDataInfo.isSingalNewsFromAction = false;
         ((Activity)mContext).startActivityForResult(intent, NewHome.RESULT_CODE);

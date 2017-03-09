@@ -24,6 +24,7 @@ import com.nownews.mobile.Json.NewsListJson.NewsContent;
 import com.nownews.mobile.Json.SpecialNewsCategoryJson.CategoryInfo;
 import com.nownews.mobile.NewsCategory.NewsListRecyclerViewAdapter;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class SpecialNewsCategoryFragment extends Fragment {
@@ -47,86 +48,93 @@ public class SpecialNewsCategoryFragment extends Fragment {
     private boolean isOnDestroy = false;
     private List<CategoryInfo> mCategoryInfo;
     private int mRetryCount;
-    private final int RELOAD_SPECIAL_NEWS_LIST_API = 0x159;
-    private final int RELOAD_SPECIAL_NEWS_CATEGORY_API = 0x357;
+    private final static int RELOAD_SPECIAL_NEWS_LIST_API = 0x159;
+    private final static int RELOAD_SPECIAL_NEWS_CATEGORY_API = 0x357;
     public boolean isApiLoadingSuccess;
+    private ApiHandler mApiHandler;
+    private static class ApiHandler extends Handler {
 
-    private Handler mHandler = new Handler() {
+        private WeakReference<SpecialNewsCategoryFragment> mFragment;
+
+        private ApiHandler(SpecialNewsCategoryFragment aFragment){
+            mFragment = new WeakReference<SpecialNewsCategoryFragment>(aFragment);
+        }
 
         @Override
         public void handleMessage(Message msg) {
 
+            SpecialNewsCategoryFragment fragment = mFragment.get();
+
             switch (msg.what) {
                 case ParameterSet.GET_SPECIAL_NEWS_CATEGORY_DONE:
-                    isApiLoadingSuccess = true;
-                    mRetryCount = 0;
-                    mCategoryInfo = (List<CategoryInfo>) msg.obj;
-                    processCategoryList();
+                    fragment.isApiLoadingSuccess = true;
+                    fragment.mRetryCount = 0;
+                    fragment.mCategoryInfo = (List<CategoryInfo>) msg.obj;
+                    fragment.processCategoryList();
                     break;
                 case ParameterSet.GET_SPECIAL_NEWS_CATEGORY_FAILED:
-                    isApiLoadingSuccess = false;
-                    if(mRetryCount<5){
-                        mRetryCount++;
-                        if(hasMessages(RELOAD_SPECIAL_NEWS_CATEGORY_API)){
-                            removeMessages(RELOAD_SPECIAL_NEWS_CATEGORY_API);
+                    fragment.isApiLoadingSuccess = false;
+                    if(fragment.mRetryCount<5){
+                        fragment.mRetryCount++;
+                        if(hasMessages(fragment.RELOAD_SPECIAL_NEWS_CATEGORY_API)){
+                            removeMessages(fragment.RELOAD_SPECIAL_NEWS_CATEGORY_API);
                         }
-                        sendEmptyMessage(RELOAD_SPECIAL_NEWS_CATEGORY_API);
+                        sendEmptyMessage(fragment.RELOAD_SPECIAL_NEWS_CATEGORY_API);
                         break;
                     }else {
-                        mRetryCount = 0;
-                        vLoadingLayout.setVisibility(View.GONE);
-                        vErrorMessage.setVisibility(View.VISIBLE);
-                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_CATEGORY_FAILED));
+                        fragment.mRetryCount = 0;
+                        fragment.vLoadingLayout.setVisibility(View.GONE);
+                        fragment.vErrorMessage.setVisibility(View.VISIBLE);
+                        fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_CATEGORY_FAILED));
                     }
                     break;
 
                 case ParameterSet.GET_SPECIAL_NEWS_LIST_DONE:
-                    isApiLoadingSuccess = true;
-                    mRetryCount = 0;
-                    mNewsList = (List<NewsContent>) msg.obj;
-                    if (isRefereshing) {
+                    fragment.isApiLoadingSuccess = true;
+                    fragment.mRetryCount = 0;
+                    fragment.mNewsList = (List<NewsContent>) msg.obj;
+                    if (fragment.isRefereshing) {
                         // Stop refresh animation
-                        isRefereshing = false;
-                        vRefreshLayout.setRefreshing(false);
+                        fragment.isRefereshing = false;
+                        fragment.vRefreshLayout.setRefreshing(false);
                     }
-                    if (!isOnDestroy) {
-                        processList();
+                    if (!fragment.isOnDestroy) {
+                        fragment.processList();
                     }
-                    vLoadingLayout.setVisibility(View.GONE);
+                    fragment.vLoadingLayout.setVisibility(View.GONE);
                     break;
                 case ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED:
-                    if (Utility.DEBUG)Log.e(TAG, "mRetryCount: " + mRetryCount);
-                    isApiLoadingSuccess = false;
-                    if(mRetryCount<5){
-                        mRetryCount++;
-                        if(hasMessages(RELOAD_SPECIAL_NEWS_LIST_API)){
-                            removeMessages(RELOAD_SPECIAL_NEWS_LIST_API);
+                    fragment.isApiLoadingSuccess = false;
+                    if(fragment.mRetryCount<5){
+                        fragment.mRetryCount++;
+                        if(hasMessages(fragment.RELOAD_SPECIAL_NEWS_LIST_API)){
+                            removeMessages(fragment.RELOAD_SPECIAL_NEWS_LIST_API);
                         }
-                        sendEmptyMessage(RELOAD_SPECIAL_NEWS_LIST_API);
+                        sendEmptyMessage(fragment.RELOAD_SPECIAL_NEWS_LIST_API);
                         break;
                     }else {
-                        if (isRefereshing) {
+                        if (fragment.isRefereshing) {
                             // Stop refresh animation
-                            isRefereshing = false;
-                            vRefreshLayout.setRefreshing(false);
+                            fragment.isRefereshing = false;
+                            fragment.vRefreshLayout.setRefreshing(false);
                         }
-                        mRetryCount = 0;
-                        vLoadingLayout.setVisibility(View.GONE);
-                        vErrorMessage.setVisibility(View.VISIBLE);
-                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
+                        fragment.mRetryCount = 0;
+                        fragment.vLoadingLayout.setVisibility(View.GONE);
+                        fragment.vErrorMessage.setVisibility(View.VISIBLE);
+                        fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
                     }
                     break;
 
                 case ParameterSet.SOCKET_TIME_OUT:
-                    Utility.openSocketTimeoutDialog(getActivity());
+                    Utility.openSocketTimeoutDialog(fragment.getActivity());
                     break;
 
                 case RELOAD_SPECIAL_NEWS_LIST_API:
-                    getSpecialNewsList(mCurrentItem);
+                    fragment.getSpecialNewsList(fragment.mCurrentItem);
                     break;
 
                 case RELOAD_SPECIAL_NEWS_CATEGORY_API:
-                    getSpecialNewsCategory();
+                    fragment.getSpecialNewsCategory();
                     break;
             }
 
@@ -164,7 +172,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
         if(mNewsList!=null){
             mNewsList.clear();
             if(mAdapter!=null){
-                mAdapter.setData(mNewsList, getActivity().getString(R.string.special), getChildFragmentManager());
+                mAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).name, getChildFragmentManager(), getActivity().getString(R.string.special));
             }
         }
     }
@@ -196,7 +204,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
 
     private void getSpecialNewsCategory() {
         if (mApiController != null) {
-            mApiController.getSpecialNewsCategory(mHandler);
+            mApiController.getSpecialNewsCategory(mApiHandler);
         }
     }
 
@@ -204,12 +212,13 @@ public class SpecialNewsCategoryFragment extends Fragment {
         vLoadingLayout.setVisibility(View.VISIBLE);
         vErrorMessage.setVisibility(View.GONE);
         if (mApiController != null) {
-            mApiController.getSpecialNewsList(mHandler, aNewsCategoryId);
+            mApiController.getSpecialNewsList(mApiHandler, aNewsCategoryId);
         }
     }
 
     private void initController() {
         mApiController = ApiController.getInstance();
+        mApiHandler = new ApiHandler(this);
     }
 
     private void processView() {
@@ -280,10 +289,10 @@ public class SpecialNewsCategoryFragment extends Fragment {
         if (mAdapter == null) {
             mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             vList.setLayoutManager(mLinearLayoutManager);
-            mAdapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, getActivity().getString(R.string.special), getChildFragmentManager());
+            mAdapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryInfo.get(mCurrentItem).name, getChildFragmentManager(), getString(R.string.special));
             vList.setAdapter(mAdapter);
         } else {
-            mAdapter.setData(mNewsList, getActivity().getString(R.string.special), getChildFragmentManager());
+            mAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).name, getChildFragmentManager(), getString(R.string.special));
         }
 
         vLoadingLayout.setVisibility(View.GONE);
@@ -296,6 +305,10 @@ public class SpecialNewsCategoryFragment extends Fragment {
         super.onDestroy();
         if (Utility.DEBUG) Log.e(TAG, "onDestroy()");
         isOnDestroy = true;
+        if(mApiHandler!=null){
+            mApiHandler.removeCallbacks(null);
+            mApiHandler = null;
+        }
     }
 
     @Override

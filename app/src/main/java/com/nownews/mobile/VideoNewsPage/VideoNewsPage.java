@@ -43,6 +43,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     public static final String KEY_NEWS_CATEGORY = "newsCategory";
     public static final String KEY_NEWS_TYPE = "newsType";
     public static final int TYPE_SINGAL_NEWS = 0x777;
+    public static final int TYPE_NORMAL_NEWS = 0x888;
     //For AD2 Page AD Start
 //	public static final String PUB_ID_INTERSTITIAL = "355b3228-c16b-11e3-ade5-f23c91dba5f7";
     public static final String PUB_ID_INTERSTITIAL = "e94d08f0-6817-11e5-8e01-f23c9173ed43"; //2015-10-01 add
@@ -104,7 +105,6 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
                 newsPageFragment.closeVideoFrame();
                 newsPageFragment.changeTextSize(textSize);
                 newsPageFragment.notifyVideoNewsPageRecyclerViewAdapter();
-                newsPageFragment.setHitInfo(mNewsCategory);
             }
             mTempVideoNewsPageRecyclerViewFragment = newsPageFragment;
         }
@@ -192,6 +192,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     private void processListener() {
 
         mAdapter = new VideoNewsPageFragmentAdapter(getSupportFragmentManager(), mNewsList, mNewsType, mNewsId);
+        mAdapter.setCategory(mNewsCategory);
         vViewPager.setAdapter(mAdapter);
         vViewPager.setCurrentItem(mNewsIndex);
         vViewPager.addOnPageChangeListener(mViewPagerChangeListener);
@@ -233,7 +234,6 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
         switch (item.getItemId()) {
             case R.id.action_text: //字體大小
                 if (Utility.DEBUG) Log.e(TAG, "Text Size");
-                GoogleAnalyticsFunction.sendHitInfo(this, "新聞內頁", "點擊字體大小", "");
                 showTextSizeDialog();
                 break;
             case R.id.action_share: //分享
@@ -279,8 +279,6 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
 
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-
-                        GoogleAnalyticsFunction.sendHitInfo(VideoNewsPage.this, "字體大小", (String) text, "");
 
                         int currentPage = vViewPager.getCurrentItem();
                         VideoNewsPageRecyclerViewFragment newsPageFragment = (VideoNewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, currentPage);

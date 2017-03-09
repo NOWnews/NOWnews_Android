@@ -109,7 +109,8 @@ public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
         }
         newsPageFragment = new NewsPageRecyclerViewFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(NewsPageRecyclerViewFragment.KEY_NEWS_URL, newsUrl);
+        bundle.putString(NewsPageRecyclerViewFragment.KEY_NEWS_CATEGORY, mNewsCategory);
+        bundle.putString(NewsPageRecyclerViewFragment.KEY_NEWS_BIG_CATEGORY, mBigCategory);
         bundle.putInt(NewsPageRecyclerViewFragment.KEY_NEWS_ID, newsId);
         newsPageFragment.setArguments(bundle);
         return newsPageFragment;
@@ -145,5 +146,12 @@ public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
         trans.commitAllowingStateLoss();
 
         super.destroyItem(container, position, object);
+    }
+
+    private String mNewsCategory;
+    private String mBigCategory;
+    public void setCategory(String aBigCategory, String aNewsCategory) {
+        mBigCategory = aBigCategory;
+        mNewsCategory = aNewsCategory;
     }
 }

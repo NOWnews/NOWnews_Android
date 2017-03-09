@@ -12,6 +12,7 @@ public class VideosInfoJson {
     public String src;
     public String createdAt;
     public List<CategoryInfo> categories;
+    public String url;
 
     public class Body {
         public String value;

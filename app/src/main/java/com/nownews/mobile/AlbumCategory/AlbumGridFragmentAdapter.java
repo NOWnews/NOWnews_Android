@@ -98,8 +98,6 @@ public class AlbumGridFragmentAdapter extends RecyclerView.Adapter<AlbumGridFrag
     protected void gotoAlbumPage(int position) {
         int albumId = mAlbumList.get(position).nodeId;
         if (Utility.DEBUG) Log.e(TAG, "albumId: " + albumId);
-        String eventAction = WebAPIUrl.NOWNEWS_MOBIEL_WEB_PHOTO_DOMAIN + albumId;
-        GoogleAnalyticsFunction.sendHitInfo(mContext, mCategoryName + mContext.getString(R.string.album), eventAction, "");
         Intent intent = new Intent();
         intent.setClass(mContext, AlbumPage.class);
         intent.putExtra(AlbumPage.KEY_ALBUM_ID, albumId);

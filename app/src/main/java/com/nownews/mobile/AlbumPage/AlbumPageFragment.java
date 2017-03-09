@@ -214,7 +214,6 @@ public class AlbumPageFragment extends Fragment {
     public void setHitInfo(String aAlbumCategory) {
         String url = mImageInfo.thumbnail;
         url = Utility.getSrcFromImgapi(url);
-        GoogleAnalyticsFunction.sendHitInfo(getActivity(), aAlbumCategory + "圖集", url, "");
     }
 
     @Override

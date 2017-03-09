@@ -25,7 +25,7 @@ public class NetworkStatusDetector extends Service {
 
             int connectType = getConnectType();
             if (connectType == ConnectivityManager.TYPE_WIFI) {
-                WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 int linkSpeed = wifiManager.getConnectionInfo().getLinkSpeed();
                 boolean isWifiSlow = isWifiSlow(linkSpeed);
             } else if (connectType == ConnectivityManager.TYPE_MOBILE) {

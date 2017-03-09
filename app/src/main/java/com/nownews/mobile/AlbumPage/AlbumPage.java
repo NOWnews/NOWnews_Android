@@ -37,6 +37,7 @@ public class AlbumPage extends AppCompatActivity {
     public static final String KEY_ALBUM_URL = "albumUrl";
     public static final String KEY_ALBUM_LIST = "albumList";
     public static final String KEY_ALBUM_CATEGORY = "albumCategory";
+    public static final String KEY_FROM_WHERE = "fromWhere";
     private final String TAG = getClass().getSimpleName();
     private Toolbar vToolbar;
     private TextView vToolbarText;
@@ -44,6 +45,7 @@ public class AlbumPage extends AppCompatActivity {
     private String mAlbumUrl;
     private int mAlbumId;
     private int mIndex;
+    private String mFromWhere;
 
     private AlbumPageFragmentAdapter mAdapter;
     private ApiController mApiController;
@@ -183,6 +185,8 @@ public class AlbumPage extends AppCompatActivity {
 
     private void processViewPager() {
 
+        setHitInfo();
+
         String imageId = null;
         if (mAlbumInfo != null
                 && mAlbumInfo.collectionImages != null
@@ -203,6 +207,24 @@ public class AlbumPage extends AppCompatActivity {
         vViewPager.addOnPageChangeListener(mViewPagerChangeListener);
         vToolbarText.setText("1/" + mAlbumInfo.collectionImages.size());
 
+    }
+
+    private void setHitInfo(){
+          if(mAlbumInfo!=null){
+              String title = mAlbumInfo.title;
+              if (title != null && title.contains("▲")) {
+                  title = title.replaceAll("▲", "");
+              }
+              if (title != null && title.contains("▼")) {
+                  title = title.replaceAll("▼", "");
+              }
+              String url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mAlbumInfo.url;
+              if(mFromWhere!=null && mFromWhere.equals("GcmIntentService")){
+                  GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.cloud_message), getString(R.string.cloud_message_click), title + " " + url);
+              }else{
+                  GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.album), mAlbumCategory, title + " " + url);
+              }
+          }
     }
 
     public void processToolbar() {
@@ -227,7 +249,6 @@ public class AlbumPage extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_share: //分享
-                GoogleAnalyticsFunction.sendHitInfo(this, "圖片內頁", "點擊分享", "");
                 if (mAlbumInfo == null) {
                     break;
                 }
@@ -256,8 +277,6 @@ public class AlbumPage extends AppCompatActivity {
 //            imageUrl = Utility.getSrcFromImgapi(imageUrl);
             String title = mAlbumInfo.collectionImages.get(currentFragmentIndex).cite;
             String newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_PHOTO_DOMAIN + imageId;
-
-            GoogleAnalyticsFunction.sendHitInfo(this, "圖片內頁-加入最愛圖片(" + mAlbumCategory + "圖集)", imageUrl, "");
 
             if (Utility.DEBUG) Log.e(TAG, "imageId: " + imageId);
             if (Utility.DEBUG) Log.e(TAG, "imageUrl: " + imageUrl);

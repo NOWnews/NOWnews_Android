@@ -24,13 +24,8 @@ public class WebAPIUrl {
     public final static String NOWNEWS_MOBIEL_WEB_PHOTO_DOMAIN = "https://m.nownews.com/photo/";
     // -Nownews Mobile Web影音內頁
     public final static String NOWNEWS_MOBIEL_WEB_VIDEO_DOMAIN = "https://m.nownews.com/video/";
-    // -首頁進入圖
-    public final static String NOWNEWS_SPLASH_IMAGE = "http://v2.api.nownews.com/splash";
     // -取得版本號
     public final static String GET_CURRENT_APP_VERSION = "http://e.nownews.com/api/android/version";
-    // -推播ID回傳Server
-    public final static String REGIST_ID_RETURN = "http://v2.api.nownews.com/mobile/notification";
-    //    public final static String REGIST_ID_RETURN = "http://rev.nownews.com:86/mobile/notification";
     // -縮圖
     public final static String SCALE_IMAGE = "http://imgapi.nownews.com/?w=%s&h=%s&q=%s&src=%s";
     //旅食樂
@@ -41,6 +36,11 @@ public class WebAPIUrl {
     private final static String HOST = "http://v3.api.nownews.com";
 //    private final static String HOST = "http://61.67.121.26";
 
+    // -推播ID回傳Server
+    public final static String REGIST_ID_RETURN = HOST + "/devicetoken";
+    //    public final static String REGIST_ID_RETURN = "http://rev.nownews.com:86/mobile/notification";
+    // -首頁進入圖
+    public final static String NOWNEWS_SPLASH_IMAGE = HOST + "/headimage/android";
     // -頭條新聞
     public final static String BIG_3_SMALL_6 = HOST + "/news/headline";
     // -熱門新聞

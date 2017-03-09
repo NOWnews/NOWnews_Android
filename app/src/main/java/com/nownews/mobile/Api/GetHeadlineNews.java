@@ -72,7 +72,8 @@ public class GetHeadlineNews implements Runnable {
         Iterator<NewsContent> iterator = aData.iterator();
         while (iterator.hasNext()) {
             NewsContent content = iterator.next();
-            if (content.field_short_title == null
+            if (content==null
+                    || content.field_short_title == null
                     || content.field_short_title.value == null
                     || content.field_short_title.value.trim().isEmpty()
                     || content.image == null

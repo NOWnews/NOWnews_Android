@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.nownews.R;
 import com.nownews.mobile.AlbumPage.AlbumPage;
 import com.nownews.mobile.Api.WebAPIUrl;
+import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
@@ -29,6 +30,7 @@ import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
 import com.nownews.mobile.Json.GetNotificationInfo;
 import com.nownews.mobile.NewsPage.NewsPage;
+import com.nownews.mobile.Widget.WebActivity;
 
 import java.util.Map;
 
@@ -239,7 +241,6 @@ public class GcmIntentService extends FirebaseMessagingService {
             mBitmapController = BitmapController.getInstance(this);
 //            final BitmapController mBitmapController = new BitmapController(this);
             mImageUrl = Utility.getSrcFromImgapi(mImageUrl);
-            final int screenWidth = Utility.getScreenWidth(this);
             mCurrentLoadingType = "smallImage";
             mImageLoadingListener = new ImageLoadingListener() {
 
@@ -292,10 +293,10 @@ public class GcmIntentService extends FirebaseMessagingService {
         String url = mNotificationInfo.url;
         int id = -1;
         if (url != null && !url.isEmpty()) {
-            if (url.contains("/n/")) {
+            if (url.contains("/n/") || url.contains("/news/")) {
                 type = "news";
                 id = Integer.parseInt(url.substring(url.lastIndexOf("/") + 1));
-            } else if (url.contains("/p/")) {
+            } else if (url.contains("/p/") || url.contains("/photo/")) {
                 type = "album";
                 id = Integer.parseInt(url.substring(url.lastIndexOf("/") + 1));
             }
@@ -305,28 +306,37 @@ public class GcmIntentService extends FirebaseMessagingService {
         if (Utility.DEBUG && id != -1) Log.d(TAG, "id: " + id);
 
         if (type.equalsIgnoreCase("news")) {
-            Log.w(TAG, "news!!!!!");
+            if(Utility.DEBUG)Log.w(TAG, "news!!!!!");
             intent = new Intent();
             intent.setClass(this, NewsPage.class);
             intent.putExtra(NewsPage.KEY_NEWS_ID, (mNotificationInfo.id.equals("") ? id : mNotificationInfo.id));
             intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_SINGAL_NEWS);
-            intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, "推播新聞");
+            intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, getString(R.string.cloud_message));
+            intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, getString(R.string.cloud_message_reveive));
             UserDataInfo.isSingalNewsFromAction = true;
         } else if (type.equalsIgnoreCase("album")) {
-            Log.w(TAG, "album!!!!!");
+            if(Utility.DEBUG)Log.w(TAG, "album!!!!!");
             intent = new Intent();
             intent.setClass(this, AlbumPage.class);
             intent.putExtra(AlbumPage.KEY_ALBUM_ID, (mNotificationInfo.id.equals("") ? id : mNotificationInfo.id));
-            intent.putExtra(AlbumPage.KEY_ALBUM_CATEGORY, "推播圖集");
+            intent.putExtra(AlbumPage.KEY_FROM_WHERE, GcmIntentService.this.getClass().getSimpleName());
         } else if (type.equalsIgnoreCase("normal")) {
-            Log.w(TAG, "normal!!!!!");
-            if (mNotificationInfo.title != null && mNotificationInfo.summary != null) {
-                intent = new Intent();
-                intent.setClass(this, GcmDialog.class);
-                intent.putExtra(GcmDialog.KEY_TITLE, mNotificationInfo.title);
-                intent.putExtra(GcmDialog.KEY_SUMMARY, mNotificationInfo.summary);
-            }
+            if(Utility.DEBUG)Log.w(TAG, "normal!!!!!");
+            intent = new Intent();
+            intent.setClass(this, GcmDialog.class);
+            intent.putExtra(GcmDialog.KEY_TITLE, mNotificationInfo.title);
+            intent.putExtra(GcmDialog.KEY_SUMMARY, mNotificationInfo.summary);
+            intent.putExtra(GcmDialog.KEY_URL, mNotificationInfo.url);
+            intent.putExtra(GcmDialog.KEY_FROM_WHERE, GcmIntentService.this.getClass().getSimpleName());
         }
+        String action = null;
+        if(mNotificationInfo.title!=null){
+            action = mNotificationInfo.title;
+        }
+        if(mNotificationInfo.url!=null){
+            action = action + " " + mNotificationInfo.url;
+        }
+        GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.cloud_message), getString(R.string.cloud_message_reveive), action);
 
         return intent;
     }

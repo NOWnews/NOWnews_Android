@@ -2,7 +2,6 @@ package com.nownews.mobile.Widget;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -92,11 +91,21 @@ public class CSTVDownloadDialog extends Dialog {
         processView();
         processListener();
         checkTime();
+        checkShareAppStatus();
         if(isCountdownType){
             vWatchNow.setEnabled(false);
+            vMessage.setText(mContext.getString(R.string.cstv_download_hint2));
             startCountdownTimer();
         }
 
+    }
+
+    private boolean isShareAppSuccess;
+    private void checkShareAppStatus(){
+        isShareAppSuccess = sharedPreferencesMethods.isShareAppSuccess();
+        if(isShareAppSuccess){
+            isCountdownType = false;
+        }
     }
 
     private SharedPreferencesMethods sharedPreferencesMethods;
@@ -112,7 +121,6 @@ public class CSTVDownloadDialog extends Dialog {
 
         stopWatchingTime = sharedPreferencesMethods.getLiveStopWatchingTime();
         Log.e(TAG, "stopWatchingTime: " + stopWatchingTime);
-        sharedPreferencesMethods.unRegistContext(mContext);
         if(stopWatchingTime==-1){
             return;
         }
@@ -154,7 +162,16 @@ public class CSTVDownloadDialog extends Dialog {
             long seconds = (leftTime/1000)%60;
             if(minutes>0 || (minutes==0 && seconds>0)){
                 if(Utility.DEBUG)Log.d(TAG, "時間剩下: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
-                vWatchNow.setText("距離下次收看還剩\n" + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
+                vMessage.setText(mContext.getString(R.string.cstv_download_hint2) + "\n距離下次收看還剩\n" + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
+                vWatchNow.setText(mContext.getString(R.string.click_me_share));
+                vWatchNow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+
+                    }
+                });
                 mCountdownTimer.postDelayed(this, 1000);
             }else{
                 if(Utility.DEBUG)Log.e(TAG, "時間到!!");
@@ -263,24 +280,27 @@ public class CSTVDownloadDialog extends Dialog {
     @Override
     public void setOnCancelListener(OnCancelListener listener) {
         super.setOnCancelListener(listener);
-        if(mCountdownTimer!=null){
-            mCountdownTimer.removeCallbacks(mCountdownRunnalbe);
-        }
+        destroy();
     }
 
     @Override
     public void setOnDismissListener(OnDismissListener listener) {
         super.setOnDismissListener(listener);
-        if(mCountdownTimer!=null){
-            mCountdownTimer.removeCallbacks(mCountdownRunnalbe);
-        }
+        destroy();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        destroy();
+    }
+
+    private void destroy(){
         if(mCountdownTimer!=null){
             mCountdownTimer.removeCallbacks(mCountdownRunnalbe);
+        }
+        if(sharedPreferencesMethods!=null){
+            sharedPreferencesMethods.unRegistContext(mContext);
         }
     }
 }

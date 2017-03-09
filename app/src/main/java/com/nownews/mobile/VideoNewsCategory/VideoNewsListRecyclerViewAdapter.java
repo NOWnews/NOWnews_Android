@@ -247,15 +247,12 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         if (Utility.DEBUG) Log.i(TAG, "title: " + title);
 
         int newsId = mVideoNewsList.get(position).nodeId;
-        String shortTitle = mVideoNewsList.get(position).title;
-        String eventAction = WebAPIUrl.NOWNEWS_MOBIEL_WEB_VIDEO_DOMAIN + newsId + " " + shortTitle;
-        GoogleAnalyticsFunction.sendHitInfo(mContext, mCategoryName + "新聞", eventAction, "");
         Intent intent = new Intent();
         intent.setClass(mContext, VideoNewsPage.class);
-        intent.putExtra(NewsPage.KEY_NEWS_ID, newsId);
-        intent.putExtra(NewsPage.KEY_NEWS_INDEX, position);
-        intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_NORMAL_NEWS);
-        intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, mCategoryName + "新聞");
+        intent.putExtra(VideoNewsPage.KEY_NEWS_ID, newsId);
+        intent.putExtra(VideoNewsPage.KEY_NEWS_INDEX, position);
+        intent.putExtra(VideoNewsPage.KEY_NEWS_TYPE, VideoNewsPage.TYPE_NORMAL_NEWS);
+        intent.putExtra(VideoNewsPage.KEY_NEWS_CATEGORY, mCategoryName);
         UserDataInfo.setVideoNewsList(mVideoNewsList);
         ((Activity)mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
 

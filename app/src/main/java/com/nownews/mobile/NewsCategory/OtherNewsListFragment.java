@@ -413,7 +413,7 @@ public class OtherNewsListFragment extends Fragment {
         if(mPool!=null){
             vList.setRecycledViewPool(mPool);
         }
-        NewsListRecyclerViewAdapter adapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryName, getChildFragmentManager());
+        NewsListRecyclerViewAdapter adapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
         vList.setAdapter(adapter);
         vList.setVisibility(View.VISIBLE);
         vLoadingLayout.setVisibility(View.GONE);

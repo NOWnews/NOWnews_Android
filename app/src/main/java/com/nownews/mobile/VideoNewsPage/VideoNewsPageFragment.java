@@ -842,9 +842,6 @@ public class VideoNewsPageFragment extends Fragment{
                 if (Utility.DEBUG) Log.e(TAG, "image click!!!");
                 if (Utility.DEBUG) Log.v(TAG, "aImgUrl: " + aImgUrl);
 
-                GoogleAnalyticsFunction.sendHitInfo(getActivity(), "新聞內頁", "點擊新聞圖片", "");
-                GoogleAnalyticsFunction.sendHitInfo(getActivity(), "新聞圖片", aImgUrl, "");
-
                 int position = 0;
                 for (int i = 0; i < mImageUrlList.size(); i++) {
                     String urlInList = mImageUrlList.get(i);
@@ -989,18 +986,6 @@ public class VideoNewsPageFragment extends Fragment{
             vTitle.setTextSize(titleTextSize);
         }
         mSharedPref.saveNewsContentTextSize(aTextSize);
-    }
-
-    public void setHitInfo(String aNewsCategory) {
-        String url = null;
-        if (mNewsUrl != null && mNewsUrl.startsWith("/n/")) {
-            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsUrl;
-        } else if (mNewsUrl != null) {
-            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsUrl.substring(mNewsUrl.indexOf("/n/"), mNewsUrl.lastIndexOf("?"));
-        }
-        if (url != null) {
-            GoogleAnalyticsFunction.sendHitInfo(getActivity(), aNewsCategory, url, "");
-        }
     }
 
     @Override

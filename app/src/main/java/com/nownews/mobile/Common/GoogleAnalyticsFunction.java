@@ -1,6 +1,7 @@
 package com.nownews.mobile.Common;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -16,7 +17,12 @@ public class GoogleAnalyticsFunction {
     private static Tracker mTracker;
     private static HashMap<TrackerName, Tracker> mTrackers = new HashMap<TrackerName, Tracker>();
 
-    public static Tracker getTracker(Context aContext, TrackerName aTrackerId) {
+    private static Tracker getTracker(Context aContext, TrackerName aTrackerId) {
+
+        if(aContext==null){
+            return getTracker(aTrackerId);
+        }
+
         if (!mTrackers.containsKey(aTrackerId)) {
 
             Utility.processScreenSize(aContext);
@@ -37,6 +43,14 @@ public class GoogleAnalyticsFunction {
         return mTrackers.get(aTrackerId);
     }
 
+    private static Tracker getTracker(TrackerName aTrackerId){
+        if(mTrackers!=null && mTrackers.containsKey(aTrackerId)){
+            return mTrackers.get(aTrackerId);
+        }else{
+            return null;
+        }
+    }
+
     public static void setScreenName(Context aContext, String aScreenName) {
         Tracker tracker = getTracker(aContext, TrackerName.APP_TRACKER);
         tracker.setScreenName(aScreenName);
@@ -45,6 +59,9 @@ public class GoogleAnalyticsFunction {
 
     public static void sendHitInfo(Context aContext, String aCategory,
                                    String aAction, String aLabel) {
+        if(Utility.DEBUG)Log.d(TAG, "aCategory: " + aCategory);
+        if(Utility.DEBUG)Log.d(TAG, "aAction: " + aAction);
+        if(Utility.DEBUG)Log.d(TAG, "aLabel: " + aLabel);
         Tracker tracker = getTracker(aContext, TrackerName.APP_TRACKER);
         tracker.send(new HitBuilders.EventBuilder()
                 .setCategory(aCategory)

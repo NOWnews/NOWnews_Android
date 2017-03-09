@@ -51,6 +51,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
     public static final String KEY_NEWS_LIST = "newsList";
     public static final String KEY_NEWS_TYPE = "newsType";
     public static final String KEY_NEWS_CATEGORY = "newsCategory";
+    public static final String KEY_NEWS_BIG_CATEGORY = "bigCategory";
     public static final int TYPE_HEADLINE_NEWS = 0x999;
     public static final int TYPE_NORMAL_NEWS = 0x888;
     public static final int TYPE_SINGAL_NEWS = 0x777;
@@ -74,6 +75,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
     private List<SearchInfoContent> mSearchList;
     private int mNewsType;
     private String mNewsCategory;
+    private String mBigCategory;
     private NewsPageFragmentAdapter mAdapter;
     private Ad2ictionInterstitial mAd2ictionInterstitial;
     private OnClickListener mBackClickListener = new OnClickListener() {
@@ -116,8 +118,6 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, currentPage);
             if (newsPageFragment != null) {
                 newsPageFragment.changeTextSize(textSize);
-//                newsPageFragment.processPreviousNextNews();
-                newsPageFragment.setHitInfo(mNewsCategory);
                 Log.v(TAG, "newsPageFragment.isNewsInfoLoadSucess(): " + newsPageFragment.isNewsInfoLoadSucess());
                 if(!newsPageFragment.isNewsInfoLoadSucess()){
                     newsPageFragment.getNewsInfo();
@@ -207,6 +207,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                 mNewsId = intent.getIntExtra(KEY_NEWS_ID, -1);
                 mNewsUrl = intent.getStringExtra(KEY_NEWS_URL);
                 mNewsCategory = intent.getStringExtra(KEY_NEWS_CATEGORY);
+                mBigCategory = intent.getStringExtra(KEY_NEWS_BIG_CATEGORY);
                 mNewsIndex = intent.getIntExtra(KEY_NEWS_INDEX, 0);
                 mNewsType = intent.getIntExtra(KEY_NEWS_TYPE, 0);
             }
@@ -266,9 +267,12 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                 }
                 break;
         }
-        vViewPager.setAdapter(mAdapter);
-        vViewPager.setCurrentItem(mNewsIndex);
-        vViewPager.addOnPageChangeListener(mViewPagerChangeListener);
+        if(mAdapter!=null){
+            mAdapter.setCategory(mBigCategory, mNewsCategory);
+            vViewPager.setAdapter(mAdapter);
+            vViewPager.setCurrentItem(mNewsIndex);
+            vViewPager.addOnPageChangeListener(mViewPagerChangeListener);
+        }
 
     }
 
@@ -305,7 +309,6 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
         switch (item.getItemId()) {
             case R.id.action_text: //字體大小
                 if (Utility.DEBUG) Log.e(TAG, "Text Size");
-                GoogleAnalyticsFunction.sendHitInfo(this, "新聞內頁", "點擊字體大小", "");
                 showTextSizeDialog();
                 break;
             case R.id.action_share: //分享
@@ -387,8 +390,6 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
 
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-
-                        GoogleAnalyticsFunction.sendHitInfo(NewsPage.this, "字體大小", (String) text, "");
 
                         int currentPage = vViewPager.getCurrentItem();
                         NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, currentPage);

@@ -402,9 +402,6 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
                     goToPlayYoutube(aYoutubeId);
 
-                    GoogleAnalyticsFunction.sendHitInfo(mContext, "新聞內頁", "點擊新聞影片", "");
-                    GoogleAnalyticsFunction.sendHitInfo(mContext, "影音新聞ID", mNewsInfo.youtubeId, "");
-
                 }
             });
         }

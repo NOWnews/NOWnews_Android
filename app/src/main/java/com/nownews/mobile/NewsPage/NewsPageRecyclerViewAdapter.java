@@ -448,9 +448,6 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                         return;
                     }
 
-                    GoogleAnalyticsFunction.sendHitInfo(mContext, "新聞內頁", "點擊新聞圖片", "");
-                    GoogleAnalyticsFunction.sendHitInfo(mContext, "新聞圖片", aImgUrl, "");
-
                 }
             });
         }

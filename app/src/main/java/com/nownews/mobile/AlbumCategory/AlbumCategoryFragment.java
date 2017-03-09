@@ -52,7 +52,6 @@ public class AlbumCategoryFragment extends Fragment {
             if (Utility.DEBUG) Log.e(TAG, "onPageSelected()");
             String categoryName = mPhotoCategoryContent.get(position).name;
             categoryName = categoryName.substring(categoryName.lastIndexOf("_") + 1, categoryName.length());
-            GoogleAnalyticsFunction.sendHitInfo(getActivity(), "圖集列表", "切換至" + categoryName + "圖集", "");
         }
 
         @Override

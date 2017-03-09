@@ -67,9 +67,11 @@ public class GetSplashImageService extends Service {
                         break;
                     }
                     splash.mSplashImageUrl = splashImageInfo.url;
+                    splash.mSplashImageUrl = Utility.getSrcFromImgapi(splash.mSplashImageUrl);
                     int screenHeight = Utility.getScreenHeight(splash);
                     int screenWidth = Utility.getScreenWidth(splash);
                     splash.mSplashImageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, screenHeight, Utility.IMG_QUALITY, splash.mSplashImageUrl);
+                    Log.d(TAG, "splash.mSplashImageUrl: " + splash.mSplashImageUrl);
                     splash.processImage();
                     break;
                 case ParameterSet.GET_SPLASH_IMAGE_FAILED:

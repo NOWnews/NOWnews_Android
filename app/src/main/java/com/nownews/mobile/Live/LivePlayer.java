@@ -18,6 +18,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.nownews.R;
+import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
@@ -58,7 +59,7 @@ public class LivePlayer extends Activity {
         processView();
         processMenu();
         startTimer();
-        play();
+        play(mCategoryIndex);
 
     }
 
@@ -102,6 +103,7 @@ public class LivePlayer extends Activity {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+            mCategoryIndex = position;
             processChannelList(position);
 
         }
@@ -132,7 +134,7 @@ public class LivePlayer extends Activity {
             String title = mCurrentChannelList.get(position).title;
             if(Utility.DEBUG) Log.v(TAG, "title: " + title);
             mUrl = mCurrentChannelList.get(position).path;
-            play();
+            play(position);
 
         }
     };
@@ -162,11 +164,12 @@ public class LivePlayer extends Activity {
             if(Utility.DEBUG)Log.d(TAG, "時間已過: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
 
             if(minutes>0 && minutes%20==0){ //20分鐘到
-//            if(minutes>0 && minutes%1==0){ //20分鐘到
+//            if(minutes>0 && minutes%1==0){ //1分鐘到
                 if(Utility.DEBUG)Log.e(TAG, "20分鐘到");
 //                if(Utility.DEBUG)Log.e(TAG, "1分鐘到");
                 SharedPreferencesMethods sharedPreferencesMethods = new SharedPreferencesMethods(LivePlayer.this);
                 sharedPreferencesMethods.setLiveStopWatchingTime(currentTime);
+                sharedPreferencesMethods.setShareAppSuccess(false);
                 sharedPreferencesMethods.unRegistContext(LivePlayer.this);
                 setResult(NewHome.RESULT_CODE_FROM_LIVE);
                 finish();
@@ -179,7 +182,9 @@ public class LivePlayer extends Activity {
         }
     };
 
-    private void play(){
+    private void play(int position){
+
+        setHitInfo(position);
 
         vLivePlayer.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -204,6 +209,12 @@ public class LivePlayer extends Activity {
         });
         vLivePlayer.setVideoURI(Uri.parse(mUrl));
 
+    }
+
+    private void setHitInfo(int position){
+        String title = mCurrentChannelList.get(position).title;
+        String categoryName = mLiveList.get(mCategoryIndex).categoryName;
+        GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.video), categoryName, title);
     }
 
     private void showAndHideMenu(){

@@ -56,12 +56,7 @@ public class TopNewsFragment extends Fragment {
                     && mNewsListContent.get(mCurrentPosition).field_short_title.value != null
                     && !mNewsListContent.get(mCurrentPosition).field_short_title.value.trim().isEmpty()) {
                 int newsId = mNewsListContent.get(mCurrentPosition)._id;
-                String shortTitle = mNewsListContent.get(mCurrentPosition).field_short_title.value;
                 intent.putExtra(NewsPage.KEY_NEWS_ID, newsId);
-                String eventAction1 = "點擊頭條新聞";
-                String eventAction2 = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId + " " + shortTitle;
-                GoogleAnalyticsFunction.sendHitInfo(getActivity(), "首頁", eventAction1, "");
-                GoogleAnalyticsFunction.sendHitInfo(getActivity(), mCategoryName + "新聞", eventAction2, "");
                 intent.putExtra(NewsPage.KEY_NEWS_INDEX, mCurrentPosition);
                 intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_NORMAL_NEWS);
                 intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, mCategoryName + "新聞");

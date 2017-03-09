@@ -29,6 +29,7 @@ public class SharedPreferencesMethods {
     private final String ALREADY_ASK_OPEN_NOTIFICATION = "already_ask_open_notification";
     private final String KEY_IS_V3_VERSION = "is_v3_version";
     private final String KEY_LIVE_STOP_WATCHING_TIME = "live_stop_watching_time";
+    private final String KEY_SHARE_APP_SUCCESS = "share_app_success";
     private final SharedPreferences mPreferences;
     private final SharedPreferences.Editor mEditor;
 
@@ -219,4 +220,12 @@ public class SharedPreferencesMethods {
         mEditor.commit();
     }
 
+    public boolean isShareAppSuccess(){
+        return mPreferences.getBoolean(KEY_SHARE_APP_SUCCESS, true);
+    }
+
+    public void setShareAppSuccess(boolean isShareAppSuccess) {
+        mEditor.putBoolean(KEY_SHARE_APP_SUCCESS, isShareAppSuccess);
+        mEditor.commit();
+    }
 }

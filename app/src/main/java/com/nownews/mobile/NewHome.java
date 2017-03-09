@@ -39,6 +39,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Controller.BitmapController;
@@ -155,6 +156,9 @@ public class NewHome extends AppCompatActivity {
             mBitmapController.clearCache();
             mBitmapController.closeBitmapController();
             mBitmapController.unregistBitmapController(this);
+        }
+        if(mSharedPref!=null){
+            mSharedPref.unRegistContext(this);
         }
         super.onDestroy();
     }
@@ -314,7 +318,6 @@ public class NewHome extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "新聞列表", "點擊Menu", "");
                 vMenuContent.getVersionInfo();
             }
 
@@ -361,8 +364,6 @@ public class NewHome extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_search: //action bar上的search鈕
 
-                GoogleAnalyticsFunction.sendHitInfo(this, "新聞列表", "點擊搜尋", "");
-
                 Intent intent = new Intent();
                 intent.setClass(NewHome.this, SearchActivity.class);
                 startActivity(intent);
@@ -387,7 +388,6 @@ public class NewHome extends AppCompatActivity {
             if(Utility.DEBUG)Log.e(TAG, "UserDataInfo.mHomeDFPCount: " + UserDataInfo.mHomeDFPCount);
             super.onBackPressed();
         }else{
-            GoogleAnalyticsFunction.sendHitInfo(this, "首頁", "點擊返回", "");
             openConfirmDialog();
         }
     }
@@ -407,14 +407,12 @@ public class NewHome extends AppCompatActivity {
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         super.onNegative(dialog);
-                        GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "首頁-離開提示視窗", "點擊離開", "");
                         isNeedToLeave = true;
                         onBackPressed();
                     }
 
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "首頁-離開提示視窗", "點擊繼續觀看", "");
                         super.onPositive(dialog);
                     }
 
@@ -448,9 +446,7 @@ public class NewHome extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
 
-                                        GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "首頁-離開提示視窗", "點擊新聞", "");
                                         int id = hotNewsList.get(index)._id;
-                                        GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "離開提醒", WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + id, "");
                                         Intent intent = new Intent();
                                         intent.setClass(NewHome.this, NewsPage.class);
                                         intent.putExtra(NewsPage.KEY_NEWS_ID, id);
@@ -628,12 +624,26 @@ public class NewHome extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.e(TAG, "onActivityResult requestCode: " + requestCode + " resultCode: " + resultCode);
+
         if (resultCode == RESULT_CODE) {
             showAllPageDFPAD();
         }else if(resultCode == RESULT_CODE_FROM_LIVE){
             if(mCurrentFragment!=null && mCurrentFragment instanceof LiveFragment){
                 ((LiveFragment) mCurrentFragment).openDownloadDialog(0);
             }
+        }else if(requestCode == 0x789 && (resultCode == 3 || resultCode == -1)){
+            Log.e(TAG, "share success!!");
+            mSharedPref.setShareAppSuccess(true);
+
+            String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+            if(ids!=null){
+                Log.e(TAG, "ids.length: " + ids.length);
+                for (String id : ids) {
+                    Log.d(TAG, "onActivityResult: sent invitation " + id);
+                }
+            }
+
         }
 
     }
@@ -737,7 +747,6 @@ public class NewHome extends AppCompatActivity {
         }
         if (isHasNewVersion) {
 
-            GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "版本資訊", "有更新", "");
             new MaterialDialog.Builder(this)
                     .title(getString(R.string.update_dialog_title))
                     .content(currentVersionText + "\n" + getString(R.string.update_dialog_message))
@@ -784,7 +793,6 @@ public class NewHome extends AppCompatActivity {
         @Override
         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-            GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "版本資訊", "點擊立即前往", "");
             final MaterialSimpleListAdapter adapter = new MaterialSimpleListAdapter(new MaterialSimpleListAdapter.Callback() {
                 @Override
                 public void onMaterialListItemSelected(MaterialDialog dialog, int index, MaterialSimpleListItem item) {
@@ -793,7 +801,6 @@ public class NewHome extends AppCompatActivity {
                         Intent MyIntent = new Intent(Intent.ACTION_VIEW,
                                 Uri.parse("market://details?id=com.nownews"));
                         startActivity(MyIntent);
-                        GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "更新方式", getString(R.string.google_play), "");
                     } else if (item.getContent().toString().equals(getString(R.string.download_one))) {
                         //download
                         String fileUrl = "http://210.242.196.110/NowNews_Mobile.apk";
@@ -804,7 +811,6 @@ public class NewHome extends AppCompatActivity {
                         }
                         AppController appController = AppController.getInstance(NewHome.this);
                         appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mUiHandler);
-                        GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "更新方式", getString(R.string.download_one), "");
                     } else if (item.getContent().toString().equals(getString(R.string.download_two))) {
                         //download
                         String fileUrl = "http://legacy.nownews.com/events/adtips/mobile_app/NowNews_Mobile.apk";
@@ -815,7 +821,6 @@ public class NewHome extends AppCompatActivity {
                         }
                         AppController appController = AppController.getInstance(NewHome.this);
                         appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mUiHandler);
-                        GoogleAnalyticsFunction.sendHitInfo(NewHome.this, "更新方式", getString(R.string.download_two), "");
                     }
                     dialog.dismiss();
 

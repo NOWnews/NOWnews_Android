@@ -52,10 +52,6 @@ public class HeadlineFragment extends Fragment {
                 int newsId = mHeadlineContent.get(mCurrentPosition)._id;
                 String shortTitle = mHeadlineContent.get(mCurrentPosition).field_short_title.value;
                 intent.putExtra(NewsPage.KEY_NEWS_ID, newsId);
-                String eventAction1 = "點擊頭條新聞";
-                String eventAction2 = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId + " " + shortTitle;
-                GoogleAnalyticsFunction.sendHitInfo(getActivity(), "首頁", eventAction1, "");
-                GoogleAnalyticsFunction.sendHitInfo(getActivity(), "頭條新聞", eventAction2, "");
             }
             intent.putExtra(NewsPage.KEY_NEWS_INDEX, mCurrentPosition);
             intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_HEADLINE_NEWS);

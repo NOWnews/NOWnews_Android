@@ -113,8 +113,6 @@ public class ExternalLinkOpen extends AppCompatActivity {
 
         if (Utility.DEBUG) Log.i(TAG, "aNewsId: " + aNewsId);
 
-        String eventAction = "外部開啟 " + aUrl;
-        GoogleAnalyticsFunction.sendHitInfo(this, "外部開啟", eventAction, "");
         Intent intent = new Intent();
         intent.setClass(this, NewsPage.class);
         intent.putExtra(NewsPage.KEY_NEWS_ID, aNewsId);
@@ -130,8 +128,6 @@ public class ExternalLinkOpen extends AppCompatActivity {
 
         if (Utility.DEBUG) Log.i(TAG, "aNewsId: " + aNewsId);
 
-        String eventAction = "外部開啟 " + aUrl;
-        GoogleAnalyticsFunction.sendHitInfo(this, "外部開啟", eventAction, "");
         Intent intent = new Intent();
         intent.setClass(this, AlbumPage.class);
         intent.putExtra(AlbumPage.KEY_ALBUM_ID, aNewsId);
@@ -145,8 +141,6 @@ public class ExternalLinkOpen extends AppCompatActivity {
 
         if (Utility.DEBUG) Log.i(TAG, "aNewsId: " + aNewsId);
 
-        String eventAction = "外部開啟 " + aUrl;
-        GoogleAnalyticsFunction.sendHitInfo(this, "外部開啟", eventAction, "");
         Intent intent = new Intent();
         intent.setClass(this, VideoNewsPage.class);
         intent.putExtra(VideoNewsPage.KEY_NEWS_ID, aNewsId);

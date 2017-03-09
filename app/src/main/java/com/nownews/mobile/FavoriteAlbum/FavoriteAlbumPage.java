@@ -86,11 +86,6 @@ public class FavoriteAlbumPage extends AppCompatActivity {
                 ((FavoritePageFragment) (mAdapter.getItem(currentFragmentIndex))).changeTitleVisibility(false);
             }
 
-            if (mCurrentType == TYPE_FAVORITE) {
-                GoogleAnalyticsFunction.sendHitInfo(FavoriteAlbumPage.this, "最愛圖集", url, "");
-            } else if (mCurrentType == TYPE_NEWS_IMAGES) {
-                GoogleAnalyticsFunction.sendHitInfo(FavoriteAlbumPage.this, "新聞圖片", url, "");
-            }
             vToolbarText.setText((position + 1) + "/" + mFavoriteAlbumList.size());
         }
 

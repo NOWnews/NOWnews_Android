@@ -62,10 +62,6 @@ public class NewsCategoryFragment extends Fragment {
         @Override
         public void onPageSelected(int position) {
 //            if (Utility.DEBUG) Log.e(TAG, "onPageSelected()");
-            String categoryName = mNewsCategoryContent.get(position).name;
-
-            categoryName = categoryName.substring(categoryName.lastIndexOf("_") + 1, categoryName.length());
-            GoogleAnalyticsFunction.sendHitInfo(getActivity(), "新聞列表", "切換至" + categoryName + "新聞", "");
 
             int currentPage = vViewPager.getCurrentItem();
             Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
@@ -369,7 +365,7 @@ public class NewsCategoryFragment extends Fragment {
 //        } else {
 
             //News
-            //TODO: Need to add Headline, HotNews and InstanceNews, Food, Health
+            //TODO: Need to add Headline, HotNews and InstanceNews, Food, Health and nearbynews
             //Headline
             addCategoryInfo(getString(R.string.headline), -1, 0);
             //HotNews
