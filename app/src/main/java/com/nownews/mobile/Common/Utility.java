@@ -1,5 +1,6 @@
 package com.nownews.mobile.Common;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Dialog;
@@ -13,6 +14,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
@@ -28,6 +30,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialog.ButtonCallback;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.nownews.R;
@@ -1302,5 +1305,30 @@ public class Utility {
         aContext.startActivity(Intent.createChooser(sendIntent, "分享這則新聞至..."));
     }
 
+    public static void shareApp(Context mContext){
+        Uri deeplink = createDeepLink(mContext);
+        Log.d(TAG, "deeplink: " + deeplink.toString());
+        Intent intent = new AppInviteInvitation.IntentBuilder("分享NOWnews今日新聞")
+                .setMessage("NOWnews今日新聞94狂!!\n最新最快最勁爆的新聞都在這!!\n還有免費直播讓你看!!\n還不趕快下載!!")
+                .setDeepLink(Uri.parse("https://qv5h4.app.goo.gl/V9Hh"))
+                .setCallToActionText("點我下載")
+                .build();
+        ((Activity)mContext).startActivityForResult(intent, 0x789);
+    }
+
+    private static Uri createDeepLink(Context mContext){
+        String scheme = mContext.getString(R.string.dynamic_links_scheme);
+        String appCode = mContext.getString(R.string.dynamic_links_app_code);
+        String domain = mContext.getString(R.string.dynamic_links_domain);
+        String deeplinkAddress = mContext.getString(R.string.deeplink_address);
+        Uri.Builder builder = new Uri.Builder()
+                .scheme(scheme)
+                .authority(appCode + domain)
+                .path("/")
+                .appendQueryParameter("link", deeplinkAddress)
+                .appendQueryParameter("apn", mContext.getPackageName())
+                .appendQueryParameter("amv", Integer.toString(Utility.getAppVersionCode(mContext)));
+        return builder.build();
+    }
 
 }

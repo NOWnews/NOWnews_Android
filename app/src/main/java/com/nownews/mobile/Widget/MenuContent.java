@@ -257,33 +257,11 @@ public class MenuContent extends RelativeLayout {
                 mContext.startActivity(intent);
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.share_app))) {
-                Uri deeplink = createDeepLink();
-                Log.d(TAG, "deeplink: " + deeplink.toString());
-                Intent intent = new AppInviteInvitation.IntentBuilder("分享NOWnews今日新聞")
-                        .setMessage("NOWnews今日新聞94狂!!\n最新最快最勁爆的新聞都在這!!\n還有免費直播讓你看!!\n還不趕快下載!!")
-                        .setDeepLink(Uri.parse("https://qv5h4.app.goo.gl/V9Hh"))
-                        .setCallToActionText("點我下載")
-                        .build();
-                ((Activity)mContext).startActivityForResult(intent, 0x789);
+                Utility.shareApp(mContext);
             }
 
         }
     };
-
-    private Uri createDeepLink(){
-        String scheme = mContext.getString(R.string.dynamic_links_scheme);
-        String appCode = mContext.getString(R.string.dynamic_links_app_code);
-        String domain = mContext.getString(R.string.dynamic_links_domain);
-        String deeplinkAddress = mContext.getString(R.string.deeplink_address);
-        Uri.Builder builder = new Uri.Builder()
-                .scheme(scheme)
-                .authority(appCode + domain)
-                .path("/")
-                .appendQueryParameter("link", deeplinkAddress)
-                .appendQueryParameter("apn", mContext.getPackageName())
-                .appendQueryParameter("amv", Integer.toString(Utility.getAppVersionCode(mContext)));
-        return builder.build();
-    }
 
     public MenuContent(Context context, AttributeSet attrs) {
         super(context, attrs);

@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
 import com.nownews.R;
 import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
@@ -93,7 +94,6 @@ public class CSTVDownloadDialog extends Dialog {
         checkTime();
         checkShareAppStatus();
         if(isCountdownType){
-            vWatchNow.setEnabled(false);
             vMessage.setText(mContext.getString(R.string.cstv_download_hint2));
             startCountdownTimer();
         }
@@ -162,13 +162,13 @@ public class CSTVDownloadDialog extends Dialog {
             long seconds = (leftTime/1000)%60;
             if(minutes>0 || (minutes==0 && seconds>0)){
                 if(Utility.DEBUG)Log.d(TAG, "時間剩下: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
-                vMessage.setText(mContext.getString(R.string.cstv_download_hint2) + "\n距離下次收看還剩\n" + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
+                vMessage.setText(mContext.getString(R.string.cstv_download_hint2) + "\n距離下次收看還剩下: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
                 vWatchNow.setText(mContext.getString(R.string.click_me_share));
                 vWatchNow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
-
+                        Utility.shareApp(mContext);
 
                     }
                 });
