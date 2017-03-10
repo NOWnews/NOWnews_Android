@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
@@ -135,6 +136,13 @@ public class AlbumGridFragment extends Fragment {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!recyclerView.canScrollVertically(-1)) {
+                    if(Utility.DEBUG)Log.e(TAG, "滑到頂了!!");
+                    Toast.makeText(getActivity(), "上面沒有了哦...", Toast.LENGTH_SHORT).show();
+                }
+            }
 
         }
 

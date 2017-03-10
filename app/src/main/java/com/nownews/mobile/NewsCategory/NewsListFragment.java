@@ -14,9 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
+import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Json.NewsListJson.NewsContent;
@@ -114,7 +116,9 @@ public class NewsListFragment extends Fragment {
                             fragment.vLoadingLayout.setVisibility(View.GONE);
                             fragment.vList.setVisibility(View.GONE);
                             fragment.vErrorMessage.setVisibility(View.VISIBLE);
-                            fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
+//                            fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
+                            //補洞
+                            fragment.setReplaceNews();
                         }
                     }
                     break;
@@ -129,6 +133,52 @@ public class NewsListFragment extends Fragment {
         }
 
     };
+
+    private void setReplaceNews(){
+        switch(mCurrentPosition%3){
+            case 0:
+                mNewsList = UserDataInfo.getHeadlineContent();
+                if(mNewsList==null){
+                    if(UserDataInfo.getHotNewsContent()!=null){
+                        mNewsList = UserDataInfo.getHotNewsContent();
+                    }else if(UserDataInfo.getInstantNewsContent()!=null){
+                        mNewsList = UserDataInfo.getInstantNewsContent();
+                    }else{
+                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
+                    }
+                }
+                break;
+            case 1:
+                mNewsList = UserDataInfo.getHotNewsContent();
+                if(mNewsList==null){
+                    if(UserDataInfo.getHeadlineContent()!=null){
+                        mNewsList = UserDataInfo.getHeadlineContent();
+                    }else if(UserDataInfo.getInstantNewsContent()!=null){
+                        mNewsList = UserDataInfo.getInstantNewsContent();
+                    }else{
+                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
+                    }
+                }
+                break;
+            case 2:
+                mNewsList = UserDataInfo.getInstantNewsContent();
+                if(mNewsList==null){
+                    if(UserDataInfo.getHeadlineContent()!=null){
+                        mNewsList = UserDataInfo.getHeadlineContent();
+                    }else if(UserDataInfo.getHotNewsContent()!=null){
+                        mNewsList = UserDataInfo.getHotNewsContent();
+                    }else{
+                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
+                    }
+                }
+                break;
+        }
+        if(mNewsList!=null){
+            if (!isOnDestroy && isAdded()) {
+                processList();
+            }
+        }
+    }
 
     private RecyclerView.OnScrollListener mListScrollListener = new RecyclerView.OnScrollListener() {
 
@@ -146,6 +196,10 @@ public class NewsListFragment extends Fragment {
                 Log.d(TAG, "onScrollStateChanged!!! " + newState);
                 if (vList != null && vList.getAdapter()!=null) {
                     ((NewsListRecyclerViewAdapter)vList.getAdapter()).setPosition(findFirstVisibleItemPosition, findLastVisibleItemPosition);
+                }
+                if (!recyclerView.canScrollVertically(-1)) {
+                    if(Utility.DEBUG)Log.e(TAG, "滑到頂了!!");
+                    Toast.makeText(getActivity(), "上面沒有了哦...", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -183,11 +237,13 @@ public class NewsListFragment extends Fragment {
     }
 
     private RecyclerView.RecycledViewPool mPool;
-    public void setData(int aNewsCategoryId, Handler aAdHandler, String aCategoryName, RecyclerView.RecycledViewPool aPool) {
+    private int mCurrentPosition;
+    public void setData(int aNewsCategoryId, Handler aAdHandler, String aCategoryName, RecyclerView.RecycledViewPool aPool, int aPosition) {
         mNewsCategoryId = aNewsCategoryId;
         mAdHandler = aAdHandler;
         mCategoryName = aCategoryName;
         mPool = aPool;
+        mCurrentPosition = aPosition;
     }
 
     @Override

@@ -387,139 +387,144 @@ public class BitmapController {
         if (aView instanceof ZoomImageView) {
             Log.w(TAG, "aView instanceof ZoomImageView");
 
-            ((Activity) UserDataInfo.getCurrentContext()).runOnUiThread(new Runnable() {
+            if(UserDataInfo.getCurrentContext()!=null){
+                ((Activity) UserDataInfo.getCurrentContext()).runOnUiThread(new Runnable() {
 
-                @Override
-                public void run() {
+                    @Override
+                    public void run() {
 
-                    if (cache == null || cache.isRecycled()) {
-                        setImageViewIntoDefaultSize(aView, 300);
-                        ((ZoomImageView) aView).setImageResource(R.drawable.default_img);
-                    } else {
-                        ((ZoomImageView) aView).setImageBitmap(cache);
+                        if (cache == null || cache.isRecycled()) {
+                            setImageViewIntoDefaultSize(aView, 300);
+                            ((ZoomImageView) aView).setImageResource(R.drawable.default_img);
+                        } else {
+                            ((ZoomImageView) aView).setImageBitmap(cache);
+                        }
+
                     }
+                });
+            }
 
-                }
-            });
 
         } else if (aView instanceof ImageView) {
             Log.w(TAG, "aView instanceof ImageView");
 
-            ((Activity) UserDataInfo.getCurrentContext()).runOnUiThread(new Runnable() {
+            if(UserDataInfo.getCurrentContext()!=null){
+                ((Activity) UserDataInfo.getCurrentContext()).runOnUiThread(new Runnable() {
 
-                @Override
-                public void run() {
-                    if (aType == IMAGE_SRC_FROM_NEWS_PAGE || aType == IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE) {
-                        if (Utility.DEBUG) Log.i(TAG, "aType: " + aType);
-//                        if (!aUrl.contains("imgapi")) {
-                            if (mImageSizeInfo != null) {
-                                HashMap<String, Integer> map = mImageSizeInfo.get(aUrl);
-                                if (map != null) {
-                                    int imgH = map.get(KEY_IMG_H);
-                                    int imgW = map.get(KEY_IMG_W);
-                                    if (imgH > 0) {
-                                        ViewGroup.LayoutParams params = aView.getLayoutParams();
-                                        float scale = ((float) mScreenWidth) / imgW;
-                                        params.height = (int) (imgH * scale);
-                                        ((ImageView) aView).setLayoutParams(params);
-                                    }
-                                }
-                            }
-//                        } else {
-//                            if (mImageSizeInfo != null) {
-//                                HashMap<String, Integer> map = mImageSizeInfo.get(aUrl);
-//                                if (map != null) {
-//                                    int imgH = map.get(KEY_IMG_H);
-//                                    if (imgH > 0) {
-//                                        ViewGroup.LayoutParams params = aView.getLayoutParams();
-//                                        params.height = (int) (imgH * mDensity);
-//                                        ((ImageView) aView).setLayoutParams(params);
-//                                    }
-//                                }
-//                            }
-//                        }
-                        if (cache == null || cache.isRecycled()) {
-                            ((ImageView) aView).setImageResource(R.drawable.default_img);
-                        } else {
-                            ((ImageView) aView).setImageBitmap(cache);
-                        }
-                    } else if (aType == IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE) {
-                        if (Utility.DEBUG) Log.i(TAG, "IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE");
-//						if(Utility.DEBUG)Log.e(TAG, "cache.isRecycled(): " + cache.isRecycled());
-                        if (cache == null || cache.isRecycled()) {
-                            setImageViewIntoDefaultSize(aView, 300);
-                            ((CustomImageTopcrop) aView).setCenterCrop();
-                            ((CustomImageTopcrop) aView).setImageResource(R.drawable.default_img);
-                        } else {
-                            if(mImageSizeInfo != null){
-                                HashMap<String, Integer> map = mImageSizeInfo.get(aUrl);
-                                if (map != null) {
-                                    int imgH = map.get(KEY_IMG_H);
-                                    int imgW = map.get(KEY_IMG_W);
-                                    if (Utility.DEBUG) Log.i(TAG, "=== originImage info ===");
-                                    if (Utility.DEBUG) Log.e(TAG, "aUrl: " + aUrl);
-                                    if (Utility.DEBUG) Log.e(TAG, "imgH: " + imgH);
-                                    if (!aUrl.contains("imgapi")) {
+                    @Override
+                    public void run() {
+                        if (aType == IMAGE_SRC_FROM_NEWS_PAGE || aType == IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE) {
+                            if (Utility.DEBUG) Log.i(TAG, "aType: " + aType);
+    //                        if (!aUrl.contains("imgapi")) {
+                                if (mImageSizeInfo != null) {
+                                    HashMap<String, Integer> map = mImageSizeInfo.get(aUrl);
+                                    if (map != null) {
+                                        int imgH = map.get(KEY_IMG_H);
+                                        int imgW = map.get(KEY_IMG_W);
                                         if (imgH > 0) {
-                                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+                                            ViewGroup.LayoutParams params = aView.getLayoutParams();
                                             float scale = ((float) mScreenWidth) / imgW;
                                             params.height = (int) (imgH * scale);
-                                            ((CustomImageTopcrop) aView).setLayoutParams(params);
-                                        }
-                                    } else {
-                                        int mNewsBigImgMaxHeight = 300;
-                                        mNewsBigImgMaxHeight = mResizeLayoutParams.getPixelAfterScale(mNewsBigImgMaxHeight);
-                                        if (Utility.DEBUG) Log.e(TAG, "mNewsBigImgMaxHeight: " + mNewsBigImgMaxHeight);
-                                        if (imgH > mNewsBigImgMaxHeight) {
-                                            setImageViewIntoDefaultSize(aView, 300);
+                                            ((ImageView) aView).setLayoutParams(params);
                                         }
                                     }
-                                    ((CustomImageTopcrop) aView).setImageBitmap(cache);
-                                }else{
-                                    if (Utility.DEBUG) Log.e(TAG, "map==null!!");
-                                    mImageSizeInfo.remove(aUrl);
-                                    mImageCache.remove(aUrl);
-                                    if(loadStatus==TYPE_PRELOAD){
-                                        preloadOriginalImageFromUrl(aUrl, aView, aType, aImgW, aImgH, aImageLoadingListener);
+                                }
+    //                        } else {
+    //                            if (mImageSizeInfo != null) {
+    //                                HashMap<String, Integer> map = mImageSizeInfo.get(aUrl);
+    //                                if (map != null) {
+    //                                    int imgH = map.get(KEY_IMG_H);
+    //                                    if (imgH > 0) {
+    //                                        ViewGroup.LayoutParams params = aView.getLayoutParams();
+    //                                        params.height = (int) (imgH * mDensity);
+    //                                        ((ImageView) aView).setLayoutParams(params);
+    //                                    }
+    //                                }
+    //                            }
+    //                        }
+                            if (cache == null || cache.isRecycled()) {
+                                ((ImageView) aView).setImageResource(R.drawable.default_img);
+                            } else {
+                                ((ImageView) aView).setImageBitmap(cache);
+                            }
+                        } else if (aType == IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE) {
+                            if (Utility.DEBUG) Log.i(TAG, "IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE");
+    //						if(Utility.DEBUG)Log.e(TAG, "cache.isRecycled(): " + cache.isRecycled());
+                            if (cache == null || cache.isRecycled()) {
+                                setImageViewIntoDefaultSize(aView, 300);
+                                ((CustomImageTopcrop) aView).setCenterCrop();
+                                ((CustomImageTopcrop) aView).setImageResource(R.drawable.default_img);
+                            } else {
+                                if(mImageSizeInfo != null){
+                                    HashMap<String, Integer> map = mImageSizeInfo.get(aUrl);
+                                    if (map != null) {
+                                        int imgH = map.get(KEY_IMG_H);
+                                        int imgW = map.get(KEY_IMG_W);
+                                        if (Utility.DEBUG) Log.i(TAG, "=== originImage info ===");
+                                        if (Utility.DEBUG) Log.e(TAG, "aUrl: " + aUrl);
+                                        if (Utility.DEBUG) Log.e(TAG, "imgH: " + imgH);
+                                        if (!aUrl.contains("imgapi")) {
+                                            if (imgH > 0) {
+                                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+                                                float scale = ((float) mScreenWidth) / imgW;
+                                                params.height = (int) (imgH * scale);
+                                                ((CustomImageTopcrop) aView).setLayoutParams(params);
+                                            }
+                                        } else {
+                                            int mNewsBigImgMaxHeight = 300;
+                                            mNewsBigImgMaxHeight = mResizeLayoutParams.getPixelAfterScale(mNewsBigImgMaxHeight);
+                                            if (Utility.DEBUG) Log.e(TAG, "mNewsBigImgMaxHeight: " + mNewsBigImgMaxHeight);
+                                            if (imgH > mNewsBigImgMaxHeight) {
+                                                setImageViewIntoDefaultSize(aView, 300);
+                                            }
+                                        }
+                                        ((CustomImageTopcrop) aView).setImageBitmap(cache);
                                     }else{
-                                        loadImageWithOriginalSize(aUrl, aView, aType, aImgW, aImgH, aImageLoadingListener);
+                                        if (Utility.DEBUG) Log.e(TAG, "map==null!!");
+                                        mImageSizeInfo.remove(aUrl);
+                                        mImageCache.remove(aUrl);
+                                        if(loadStatus==TYPE_PRELOAD){
+                                            preloadOriginalImageFromUrl(aUrl, aView, aType, aImgW, aImgH, aImageLoadingListener);
+                                        }else{
+                                            loadImageWithOriginalSize(aUrl, aView, aType, aImgW, aImgH, aImageLoadingListener);
+                                        }
                                     }
                                 }
                             }
-                        }
-                    } else if (aType == IMAGE_SRC_FROM_NEWS_LIST) {
-                        if (Utility.DEBUG) Log.i(TAG, "$$$$$$$$$$ IMAGE_SRC_FROM_NEWS_LIST");
-//						if(Utility.DEBUG)Log.e(TAG, "cache.isRecycled(): " + cache.isRecycled());
-                        if (cache == null || cache.isRecycled()) {
-                            Log.w(TAG, "111111111111111");
-                            ((CustomImageTopcrop) aView).setCenterCrop();
-                            ((CustomImageTopcrop) aView).setImageResource(R.drawable.default_img);
+                        } else if (aType == IMAGE_SRC_FROM_NEWS_LIST) {
+                            if (Utility.DEBUG) Log.i(TAG, "$$$$$$$$$$ IMAGE_SRC_FROM_NEWS_LIST");
+    //						if(Utility.DEBUG)Log.e(TAG, "cache.isRecycled(): " + cache.isRecycled());
+                            if (cache == null || cache.isRecycled()) {
+                                Log.w(TAG, "111111111111111");
+                                ((CustomImageTopcrop) aView).setCenterCrop();
+                                ((CustomImageTopcrop) aView).setImageResource(R.drawable.default_img);
+                            } else {
+                                Log.w(TAG, "232222222");
+                                ((CustomImageTopcrop) aView).setImageBitmap(cache);
+                            }
+                        } else if (aType == IMAGE_SRC) {
+                            if (Utility.DEBUG) Log.i(TAG, "IMAGE_SRC");
+    //						if(Utility.DEBUG)Log.e(TAG, "cache.isRecycled(): " + cache.isRecycled());
+                            if (cache == null || cache.isRecycled()) {
+                                setImageViewIntoDefaultSize(aView, 200);
+                                ((ImageView) aView).setImageResource(R.drawable.default_img);
+                            } else {
+                                ((ImageView) aView).setImageBitmap(cache);
+                            }
                         } else {
-                            Log.w(TAG, "232222222");
-                            ((CustomImageTopcrop) aView).setImageBitmap(cache);
-                        }
-                    } else if (aType == IMAGE_SRC) {
-                        if (Utility.DEBUG) Log.i(TAG, "IMAGE_SRC");
-//						if(Utility.DEBUG)Log.e(TAG, "cache.isRecycled(): " + cache.isRecycled());
-                        if (cache == null || cache.isRecycled()) {
-                            setImageViewIntoDefaultSize(aView, 200);
-                            ((ImageView) aView).setImageResource(R.drawable.default_img);
-                        } else {
-                            ((ImageView) aView).setImageBitmap(cache);
-                        }
-                    } else {
-                        Log.w(TAG, "3333333333333");
-                        if (cache == null || cache.isRecycled()) {
-                            setImageViewIntoDefaultSize(aView, 200);
-                            ((ImageView) aView).setBackgroundResource(R.drawable.default_img);
-                        } else {
-                            Drawable drawable = new BitmapDrawable(mContext.getResources(), cache);
-                            ((ImageView) aView).setBackgroundDrawable(drawable);
+                            Log.w(TAG, "3333333333333");
+                            if (cache == null || cache.isRecycled()) {
+                                setImageViewIntoDefaultSize(aView, 200);
+                                ((ImageView) aView).setBackgroundResource(R.drawable.default_img);
+                            } else {
+                                Drawable drawable = new BitmapDrawable(mContext.getResources(), cache);
+                                ((ImageView) aView).setBackgroundDrawable(drawable);
+                            }
                         }
                     }
-                }
-            });
+                });
 
+            }
         } else if (aView instanceof RelativeLayout) {
             if (Utility.DEBUG) Log.e(TAG, "RelativeLayout");
             Drawable drawable = new BitmapDrawable(mContext.getResources(), cache);

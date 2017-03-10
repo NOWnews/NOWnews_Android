@@ -364,7 +364,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             @Override
             public void onVpadnReceiveAd(VpadnAd vpadnAd) {
 
-                if(nativeAd==null || nativeAd!=vpadnAd){
+                if(mContext==null || nativeAd==null || nativeAd!=vpadnAd){
                     Log.e(TAG, "onVpadnReceiveAd NULL!!");
                     return;
                 }

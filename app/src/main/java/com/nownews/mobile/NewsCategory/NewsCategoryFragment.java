@@ -26,10 +26,10 @@ import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Json.NewsCategoryJson;
 import com.nownews.mobile.Json.NewsCategoryJson.CategoryInfo;
 import com.nownews.mobile.NewHome;
-import com.nownews.mobile.Widget.CustomViewPager;
 import com.nownews.mobile.Widget.SlidingTabLayout;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewsCategoryFragment extends Fragment {
@@ -43,7 +43,7 @@ public class NewsCategoryFragment extends Fragment {
     private final int RESULT_CODE = 0x321;
     //View
     private SlidingTabLayout vTab;
-    private CustomViewPager vViewPager;
+    private ViewPager vViewPager;
     private RelativeLayout vLoadingPageLayout;
     private TextView vErrorMessage;
     //View
@@ -179,7 +179,10 @@ public class NewsCategoryFragment extends Fragment {
                         break;
                     }else{
                         fragment.mRetryCount = 0;
-                        fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_NEWS_CATEGORY_FAILED));
+//                        fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_NEWS_CATEGORY_FAILED));
+                        //補洞
+                        fragment.processCategory();
+                        fragment.setTab();
                     }
                     break;
                 case RELOAD_API:
@@ -247,7 +250,7 @@ public class NewsCategoryFragment extends Fragment {
         View view = getView();
 
         vTab = (SlidingTabLayout) view.findViewById(R.id.tab);
-        vViewPager = (CustomViewPager) view.findViewById(R.id.viewpager);
+        vViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         vLoadingPageLayout = (RelativeLayout) view.findViewById(R.id.list_loading_layout);
         vErrorMessage = (TextView) view.findViewById(R.id.error_message);
 
@@ -332,10 +335,6 @@ public class NewsCategoryFragment extends Fragment {
 
     private void processCategory() {
 
-        if (mNewsCategoryContent == null) {
-            return;
-        }
-
 //        //News
 //        boolean isFirstInApp = mSharedPref.isFirstInApp();
 //        if (isFirstInApp) {
@@ -387,6 +386,9 @@ public class NewsCategoryFragment extends Fragment {
         NewsCategoryJson.CategoryInfo categoryInfo = categoryJson.new CategoryInfo();
         categoryInfo.name = aCategoryName;
         categoryInfo.tid = aTid;
+        if(mNewsCategoryContent == null){
+            mNewsCategoryContent = new ArrayList<>();
+        }
         mNewsCategoryContent.add(aPosition, categoryInfo);
     }
 

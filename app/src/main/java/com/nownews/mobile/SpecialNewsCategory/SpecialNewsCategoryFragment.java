@@ -15,9 +15,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
+import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Json.NewsListJson.NewsContent;
@@ -25,6 +27,7 @@ import com.nownews.mobile.Json.SpecialNewsCategoryJson.CategoryInfo;
 import com.nownews.mobile.NewsCategory.NewsListRecyclerViewAdapter;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SpecialNewsCategoryFragment extends Fragment {
@@ -99,7 +102,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
                         fragment.vRefreshLayout.setRefreshing(false);
                     }
                     if (!fragment.isOnDestroy) {
-                        fragment.processList();
+                        fragment.processList(fragment.mNewsList);
                     }
                     fragment.vLoadingLayout.setVisibility(View.GONE);
                     break;
@@ -121,7 +124,9 @@ public class SpecialNewsCategoryFragment extends Fragment {
                         fragment.mRetryCount = 0;
                         fragment.vLoadingLayout.setVisibility(View.GONE);
                         fragment.vErrorMessage.setVisibility(View.VISIBLE);
-                        fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
+//                        fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
+                        //補洞
+                        fragment.setReplaceNews();
                     }
                     break;
 
@@ -142,6 +147,57 @@ public class SpecialNewsCategoryFragment extends Fragment {
 
     };
 
+    private void setReplaceNews(){
+        Log.w(TAG, "mCurrentItem: " + mCurrentItem);
+        List<NewsContent> list = null;
+        switch(mCurrentItem%3){
+            case 0:
+                list = UserDataInfo.getHeadlineContent();
+                if(list==null){
+                    if(UserDataInfo.getHotNewsContent()!=null){
+                        list = UserDataInfo.getHotNewsContent();
+                    }else if(UserDataInfo.getInstantNewsContent()!=null){
+                        list = UserDataInfo.getInstantNewsContent();
+                    }else{
+                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
+                    }
+                }
+                if (Utility.DEBUG) Log.e(TAG, "list: " + list);
+                break;
+            case 1:
+                list = UserDataInfo.getHotNewsContent();
+                if(list==null){
+                    if(UserDataInfo.getHeadlineContent()!=null){
+                        list = UserDataInfo.getHeadlineContent();
+                    }else if(UserDataInfo.getInstantNewsContent()!=null){
+                        list = UserDataInfo.getInstantNewsContent();
+                    }else{
+                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
+                    }
+                }
+                if (Utility.DEBUG) Log.e(TAG, "list: " + list);
+                break;
+            case 2:
+                list = UserDataInfo.getInstantNewsContent();
+                if(list==null){
+                    if(UserDataInfo.getHeadlineContent()!=null){
+                        list = UserDataInfo.getHeadlineContent();
+                    }else if(UserDataInfo.getHotNewsContent()!=null){
+                        list = UserDataInfo.getHotNewsContent();
+                    }else{
+                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
+                    }
+                }
+                if (Utility.DEBUG) Log.e(TAG, "list: " + list);
+                break;
+        }
+        if(list!=null){
+            if (!isOnDestroy) {
+                processList(list);
+            }
+        }
+    }
+
     private GridLayoutManager mGridLayoutManager;
     private SpecialNewsCategoryAdapter mSpecialNewsCategoryAdapter;
     private void processCategoryList(){
@@ -153,6 +209,26 @@ public class SpecialNewsCategoryFragment extends Fragment {
         mSpecialNewsCategoryAdapter.itemClick(0);
 
     }
+
+    private RecyclerView.OnScrollListener mListScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!recyclerView.canScrollVertically(1)) {
+                    if(Utility.DEBUG)Log.e(TAG, "滑到底了!!");
+                    Toast.makeText(getActivity(), "下面沒有了哦...", Toast.LENGTH_SHORT).show();
+                }
+                if (!recyclerView.canScrollVertically(-1)) {
+                    if(Utility.DEBUG)Log.e(TAG, "滑到頂了!!");
+                    Toast.makeText(getActivity(), "上面沒有了哦...", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
+
+    };
 
     private int mCurrentItem;
     private SpecialNewsCategoryAdapter.OnItemClickListener mCategoryItemClickListener = new SpecialNewsCategoryAdapter.OnItemClickListener() {
@@ -279,7 +355,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
     }
 
     private LinearLayoutManager mLinearLayoutManager;
-    private void processList() {
+    private void processList(List<NewsContent> mNewsList) {
 
         if (Utility.DEBUG) Log.e(TAG, "processList()");
         if (isScrollToBottom) {
@@ -291,12 +367,14 @@ public class SpecialNewsCategoryFragment extends Fragment {
             vList.setLayoutManager(mLinearLayoutManager);
             mAdapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryInfo.get(mCurrentItem).name, getChildFragmentManager(), getString(R.string.special));
             vList.setAdapter(mAdapter);
+            vList.addOnScrollListener(mListScrollListener);
         } else {
             mAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).name, getChildFragmentManager(), getString(R.string.special));
         }
 
         vLoadingLayout.setVisibility(View.GONE);
         vErrorMessage.setVisibility(View.GONE);
+        Log.e(TAG, "1237456");
 
     }
 

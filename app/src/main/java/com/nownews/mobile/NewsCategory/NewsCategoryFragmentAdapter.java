@@ -122,7 +122,7 @@ public class NewsCategoryFragmentAdapter extends FragmentStatePagerAdapter {
             }
         } else {
             fragment = new NewsListFragment();
-            ((NewsListFragment) fragment).setData(id, mHandler, itemName, mPool);
+            ((NewsListFragment) fragment).setData(id, mHandler, itemName, mPool, position);
 //            mNewsListFragmentList.put(KEY_FRAGMENT_INDEX + position, fragment);
         }
         Log.d(TAG, "is fragment null or not?? " + (fragment == null ? "true" : "false"));

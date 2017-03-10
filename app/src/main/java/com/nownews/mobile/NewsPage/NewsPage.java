@@ -31,7 +31,6 @@ import com.nownews.mobile.Json.NewsInfoJson;
 import com.nownews.mobile.Json.NewsInfoJson.ReferenceNewsInfo;
 import com.nownews.mobile.Json.NewsListJson.NewsContent;
 import com.nownews.mobile.Json.SearchInfoJson.SearchInfoContent;
-import com.nownews.mobile.Widget.CustomViewPager;
 import com.vpadn.ads.VpadnAd;
 import com.vpadn.ads.VpadnAdListener;
 import com.vpadn.ads.VpadnAdRequest;
@@ -65,7 +64,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
     private final int RESULT_CODE = 0x321;
     public boolean isReload = false;
     private Toolbar vToolbar;
-    private CustomViewPager vViewPager;
+    private ViewPager vViewPager;
     private int mNewsId = -1;
     private String mNewsUrl;
     private int mNewsIndex;
@@ -238,7 +237,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
     public void processView() {
 
         vToolbar = (Toolbar) findViewById(R.id.tool_bar);
-        vViewPager = (CustomViewPager) findViewById(R.id.news_page_viewpager);
+        vViewPager = (ViewPager) findViewById(R.id.news_page_viewpager);
 
     }
 
@@ -454,10 +453,6 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
     }
     //For AD2 Page AD End
 
-    public void setViewPagerSwappable(boolean isPageSwappable) {
-        vViewPager.setPagingEnabled(isPageSwappable);
-    }
-
     public void gotoReferenceNewsPage(int position, List<ReferenceNewsInfo> aReferenceNewsList) {
 
         if (aReferenceNewsList == null
@@ -544,6 +539,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             @Override
             public void onVpadnFailedToReceiveAd(VpadnAd vpadnAd, VpadnAdRequest.VpadnErrorCode vpadnErrorCode) {
                 if (Utility.DEBUG) Log.i(TAG, "onVpadnFailedToReceiveAd");
+                isInterstitialAdReady = false;
             }
 
             @Override

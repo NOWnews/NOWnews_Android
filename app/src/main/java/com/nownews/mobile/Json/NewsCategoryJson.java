@@ -4,6 +4,8 @@ import java.util.List;
 
 public class NewsCategoryJson {
 
+
+
     public List<CategoryInfo> newsCategory;
 
     public class CategoryInfo {

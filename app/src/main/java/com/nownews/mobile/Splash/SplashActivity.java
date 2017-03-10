@@ -323,7 +323,7 @@ public class SplashActivity extends Activity {
                         } else {
                             vSplashImage.setImageResource(R.drawable.default_img);
                         }
-                        if (!Utility.showNetworkSlowDialog(getApplicationContext(), mHandler, true)) {
+                        if (!Utility.showNetworkSlowDialog(SplashActivity.this, mHandler, true)) {
                             getSplashImage();
                         }
 
@@ -333,7 +333,7 @@ public class SplashActivity extends Activity {
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
 
                         vSplashImage.setImageDrawable(errorDrawable);
-                        if (!Utility.showNetworkSlowDialog(getApplicationContext(), mHandler, true)) {
+                        if (!Utility.showNetworkSlowDialog(SplashActivity.this, mHandler, true)) {
                             getSplashImage();
                         }
 

@@ -24,6 +24,8 @@ public class NownewsApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 
+        Utility.setApplicationContext(this);
+
         if (Utility.DEBUG) Log.e(TAG, TAG + " in");
         new Thread(new Runnable() {
             @Override

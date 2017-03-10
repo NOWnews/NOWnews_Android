@@ -20,18 +20,15 @@ import com.ad2iction.mobileads.Ad2ictionInterstitial;
 import com.ad2iction.mobileads.Ad2ictionInterstitial.InterstitialAdListener;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialog.ListCallbackSingleChoice;
-import com.google.android.youtube.player.YouTubePlayer;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
-import com.nownews.mobile.Json.VideosListJson;
-import com.nownews.mobile.Json.VideosListJson.VideosContent;
 import com.nownews.mobile.Json.NewsListJson.NewsContent;
+import com.nownews.mobile.Json.VideosListJson.VideosContent;
 import com.nownews.mobile.NewsPage.NewsPage;
-import com.nownews.mobile.Widget.CustomViewPager;
 
 import java.util.List;
 
@@ -51,7 +48,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     private final int RESULT_CODE = 0x321;
     public boolean isReload = false;
     private Toolbar vToolbar;
-    private CustomViewPager vViewPager;
+    private ViewPager vViewPager;
     private int mNewsId = -1;
     private int mNewsType = -1;
     private String mNewsUrl;
@@ -185,7 +182,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     public void processView() {
 
         vToolbar = (Toolbar) findViewById(R.id.tool_bar);
-        vViewPager = (CustomViewPager) findViewById(R.id.news_page_viewpager);
+        vViewPager = (ViewPager) findViewById(R.id.news_page_viewpager);
 
     }
 
@@ -348,10 +345,6 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
 
     }
     //For AD2 Page AD End
-
-    public void setViewPagerSwappable(boolean isPageSwappable) {
-        vViewPager.setPagingEnabled(isPageSwappable);
-    }
 
     public void gotoHeadlineNewsPage(int position, List<NewsContent> aHeadlineNewsList) {
 

@@ -30,11 +30,17 @@ public class SharedPreferencesMethods {
     private final String KEY_IS_V3_VERSION = "is_v3_version";
     private final String KEY_LIVE_STOP_WATCHING_TIME = "live_stop_watching_time";
     private final String KEY_SHARE_APP_SUCCESS = "share_app_success";
-    private final SharedPreferences mPreferences;
-    private final SharedPreferences.Editor mEditor;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
     public SharedPreferencesMethods(Context aContext) {
         mContext = aContext;
+        if(mContext==null){
+            mContext = Utility.getApplicationContext();
+        }
+        if(mContext==null){
+            return;
+        }
         mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mEditor = mPreferences.edit();
     }

@@ -89,6 +89,7 @@ public class Utility {
     public static boolean isNetworkSlow = false;
     public static boolean isUserKnowNetworkSlow = false;
     public static boolean isVponTestMode = false;
+    private static Context mAppilicationContext;
 
     //TODO getOptions()
 //    public static DisplayImageOptions getOptions(){
@@ -117,6 +118,14 @@ public class Utility {
     private static int mScreenDPHeight;
 //    private static IWeiboShareAPI mWeiboShareAPI;
     private static boolean isBadSignal;
+
+    public static void setApplicationContext(Context aApplicationContext){
+        mAppilicationContext = aApplicationContext;
+    }
+
+    public static Context getApplicationContext(){
+        return mAppilicationContext;
+    }
 
     public static String processGCMRegisterId(Context aContext, String aNewToken) {
         if (Utility.DEBUG) Log.v(TAG, "@@@ aNewToken: " + aNewToken);
@@ -1037,7 +1046,7 @@ public class Utility {
                 Log.e(TAG, "TYPE_MOBILE / " + networkTypeName + " / " + (isNetworkSlow ? "Slow" : "Fast"));
         }
         setNetworkSlow(isNetworkSlow);
-        if (isNetworkSlow && isNeedToShow) {
+        if (isNetworkSlow && isNeedToShow && ((Activity)aContext).hasWindowFocus()) {
             new MaterialDialog.Builder(aContext)
                     .cancelable(false)
                     .customView(R.layout.dialog_network_slow, false)

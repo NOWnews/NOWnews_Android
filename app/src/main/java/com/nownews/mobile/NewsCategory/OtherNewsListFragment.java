@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
@@ -131,6 +132,9 @@ public class OtherNewsListFragment extends Fragment {
                         }
                         break;
                     } else if ((fragment.isGetInstantNewsDone || fragment.isGetNearByNewsDone) && fragment.mNewsList != null) {
+                        if(fragment.isGetInstantNewsDone){
+                            UserDataInfo.setInstantNewsContent(fragment.mNewsList);
+                        }
                         if(fragment.isAdded()) {
                             fragment.processList();
                         }
@@ -416,9 +420,30 @@ public class OtherNewsListFragment extends Fragment {
         NewsListRecyclerViewAdapter adapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
         vList.setAdapter(adapter);
         vList.setVisibility(View.VISIBLE);
+        vList.addOnScrollListener(mListScrollListener);
         vLoadingLayout.setVisibility(View.GONE);
 
     }
+
+    private RecyclerView.OnScrollListener mListScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!recyclerView.canScrollVertically(1)) {
+                    if(Utility.DEBUG)Log.e(TAG, "滑到底了!!");
+                    Toast.makeText(getActivity(), "下面沒有了哦...", Toast.LENGTH_SHORT).show();
+                }
+                if (!recyclerView.canScrollVertically(-1)) {
+                    if(Utility.DEBUG)Log.e(TAG, "滑到頂了!!");
+                    Toast.makeText(getActivity(), "上面沒有了哦...", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
+
+    };
 
     @Override
     public void onDestroy() {
