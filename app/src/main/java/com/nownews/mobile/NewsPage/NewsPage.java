@@ -417,6 +417,12 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
 
     @Override
     public void onBackPressed() {
+        int currentPage = vViewPager.getCurrentItem();
+        NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, currentPage);
+        if(newsPageFragment!=null && newsPageFragment.isVideoFrameLayoutVisibile()){
+            newsPageFragment.closeVideoFrame();
+            return;
+        }
         if (mAd2ictionInterstitial != null) {
             mAd2ictionInterstitial.destroy();
             mAd2ictionInterstitial = null;

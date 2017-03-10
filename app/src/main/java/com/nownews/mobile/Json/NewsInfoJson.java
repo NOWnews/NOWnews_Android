@@ -30,7 +30,10 @@ public class NewsInfoJson {
     }
 
     public class VideoInfo {
-
+        public String type;
+        public String url;
+        public String youtubeId;
+        public String iframe;
     }
 
     public class MobileBody {

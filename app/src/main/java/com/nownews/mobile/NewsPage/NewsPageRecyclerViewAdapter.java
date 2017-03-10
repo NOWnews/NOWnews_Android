@@ -86,12 +86,14 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private final int VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS = R.layout.widget_reference_news_item;
     private final int VIEW_TYPE_WEB_BODY = R.layout.widget_news_page_web_body;
 
-    public NewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aContentList, NewsInfoJson aNewsInfo, ArrayList<String> aImageUrlList){
+    public NewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aContentList,
+                                       NewsInfoJson aNewsInfo, ArrayList<String> aImageUrlList, OnVideoPlayButtonClick aListener){
         mContext = aContext;
         if(Utility.DEBUG)Log.i(TAG, "mContext is null nor not?? " + (mContext==null? "true":"false"));
         mContentList = aContentList;
         mNewsInfo = aNewsInfo;
         mImageUrlList = aImageUrlList;
+        mListener = aListener;
         initController();
         initListInfo();
 
@@ -306,6 +308,9 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         private ProgressBar vImageProgressBar;
         private CustomImageTopcrop vBigImage;
         private TextView vBigImgageText;
+        private ImageView vPlayIcon;
+        private boolean hasYoutubeVideo;
+        private String mYoutubeId;
 
         public NewsInfoViewHolder(View itemView) {
             super(itemView);
@@ -324,10 +329,23 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             vImageProgressBar = (ProgressBar) itemView.findViewById(R.id.image_progressbar);
             vBigImage = (CustomImageTopcrop) itemView.findViewById(R.id.big_img);
             vBigImgageText = (TextView) itemView.findViewById(R.id.big_img_text);
+            vPlayIcon = (ImageView) itemView.findViewById(R.id.play_icon);
 
         }
 
         public void bind(int position){
+
+            //play icon
+            if(mNewsInfo.videos!=null){
+                for(NewsInfoJson.VideoInfo videoInfo : mNewsInfo.videos){
+                    if(videoInfo!=null && videoInfo.type.equals("youtube")){
+                        vPlayIcon.setVisibility(View.VISIBLE);
+                        hasYoutubeVideo = true;
+                        mYoutubeId = videoInfo.youtubeId;
+                        break;
+                    }
+                }
+            }
 
             //DFP
             if(Utility.DEBUG)Log.i(TAG, "vTopDFP is null nor not?? " + (vTopDFP==null? "true":"false"));
@@ -395,7 +413,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
 //                bigImgUrl = Utility.getSrcFromImgapi(bigImgUrl);
                 mBitmapController.loadImageWithOriginalSize(bigImgUrl, vBigImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE, 0, 0, mBigImgLoadingListener);
-                setImageClickListener(vBigImage, bigImgUrl);
+                setImageClickListener(vBigImage, bigImgUrl, mYoutubeId);
 
                 //For Share
                 mShareImgUrl = mNewsInfo.image.thumbnail;
@@ -410,7 +428,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 String bigImgUrl = mEcoDefaultImageList[imagePosition];
                 if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
                 mBitmapController.loadImageWithOriginalSize(bigImgUrl, vBigImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE, 0, 0, mBigImgLoadingListener);
-                setImageClickListener(vBigImage, bigImgUrl);
+                setImageClickListener(vBigImage, bigImgUrl, mYoutubeId);
 
                 //For Share
                 mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, 50, bigImgUrl);
@@ -429,7 +447,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
         }
 
-        private void setImageClickListener(ImageView aImgView, final String aImgUrl) {
+        private void setImageClickListener(ImageView aImgView, final String aImgUrl, final String aYoutubeId) {
             aImgView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -442,14 +460,24 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
                     int position = mImageUrlList.indexOf(aImgUrl);
                     if(position!=-1){
-                        //gotoNewsAlbumPage
-                        goToNewsAlbumPage(position);
+                        if(hasYoutubeVideo && aYoutubeId!=null && !aYoutubeId.isEmpty()){
+                            goToPlayYoutube(aYoutubeId);
+                        }else{
+                            //gotoNewsAlbumPage
+                            goToNewsAlbumPage(position);
+                        }
                     }else{
                         return;
                     }
 
                 }
             });
+        }
+
+        private void goToPlayYoutube(String aYoutubeId) {
+            if (mListener != null) {
+                mListener.onVideoPlayButtonClick(aYoutubeId);
+            }
         }
 
         private BitmapController.ImageLoadingListener mBigImgLoadingListener = new BitmapController.ImageLoadingListener() {
@@ -982,5 +1010,9 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         if(Utility.DEBUG)Log.v(TAG, "mRefCategoryTextSize: " + mRefCategoryTextSize);
     }
 
+    private OnVideoPlayButtonClick mListener;
+    public interface OnVideoPlayButtonClick{
+        public void onVideoPlayButtonClick(final String aYoutubeId);
+    }
 
 }

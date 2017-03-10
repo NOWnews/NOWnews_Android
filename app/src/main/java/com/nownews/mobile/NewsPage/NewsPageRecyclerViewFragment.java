@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,14 +13,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
+import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
@@ -60,6 +66,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
     private RecyclerView vContentRecyclerView;
     private RelativeLayout vLoadingLayout;
     private SwipeRefreshLayout vRefreshLayout;
+    private FrameLayout vVideoFrameLayout;
 
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
     public final static String KEY_CONTEXT_TEXT = "context_text";
@@ -212,6 +219,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 getNewsInfo();
             }
         });
+        vVideoFrameLayout = (FrameLayout) view.findViewById(R.id.youtube_content_view);
     }
 
     private LinearLayoutManager mLinearLayoutManager;
@@ -257,10 +265,103 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         vContentRecyclerView.setLayoutManager(mLinearLayoutManager);
-        NewsPageRecyclerViewAdapter mAdapter = new NewsPageRecyclerViewAdapter(getActivity(), mContentList, mNewsInfo, mImageUrlList);
+        NewsPageRecyclerViewAdapter mAdapter = new NewsPageRecyclerViewAdapter(getActivity(), mContentList, mNewsInfo, mImageUrlList, mVideoListener);
         vContentRecyclerView.setAdapter(mAdapter);
 
     }
+
+    private YouTubePlayer mYoutubePlayer;
+    private YouTubePlayerSupportFragment mYouTubePlayerSupportFragment;
+    private NewsPageRecyclerViewAdapter.OnVideoPlayButtonClick mVideoListener = new NewsPageRecyclerViewAdapter.OnVideoPlayButtonClick() {
+        @Override
+        public void onVideoPlayButtonClick(final String aYoutubeId) {
+
+            vVideoFrameLayout.setVisibility(View.VISIBLE);
+
+            Log.v(TAG, "onVideoPlayButtonClick() aYoutubeId: " + aYoutubeId);
+
+            mYouTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
+            FragmentTransaction transcation = getChildFragmentManager().beginTransaction();
+            transcation.add(R.id.youtube_content_view, mYouTubePlayerSupportFragment).addToBackStack(null).commit();
+
+            mYouTubePlayerSupportFragment.initialize(UserDataInfo.YOUTUBE_DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+                    if (!wasRestored) {
+                        mYoutubePlayer = youTubePlayer;
+                        mYoutubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
+                            @Override
+                            public void onPlaying() {
+                                Log.d(TAG, "===YoutubePlayer onPlaying===");
+                            }
+
+                            @Override
+                            public void onPaused() {
+                                Log.d(TAG, "===YoutubePlayer onPaused===");
+                            }
+
+                            @Override
+                            public void onStopped() {
+                                Log.d(TAG, "===YoutubePlayer onStopped===");
+                            }
+
+                            @Override
+                            public void onBuffering(boolean b) {
+                                Log.d(TAG, "===YoutubePlayer onBuffering b: " + b + " ===");
+                            }
+
+                            @Override
+                            public void onSeekTo(int i) {
+                                Log.d(TAG, "===YoutubePlayer onSeekTo i: " + i + " ===");
+                            }
+                        });
+                        mYoutubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
+                            @Override
+                            public void onLoading() {
+                                Log.i(TAG, "===YoutubePlayer onLoading===");
+                            }
+
+                            @Override
+                            public void onLoaded(String s) {
+                                Log.i(TAG, "===YoutubePlayer onLoaded s: " + s + " ===");
+                            }
+
+                            @Override
+                            public void onAdStarted() {
+                                Log.i(TAG, "===YoutubePlayer onAdStarted===");
+                            }
+
+                            @Override
+                            public void onVideoStarted() {
+                                Log.i(TAG, "===YoutubePlayer onVideoStarted===");
+                            }
+
+                            @Override
+                            public void onVideoEnded() {
+                                Log.i(TAG, "===YoutubePlayer onVideoEnded===");
+                            }
+
+                            @Override
+                            public void onError(YouTubePlayer.ErrorReason errorReason) {
+                                Log.i(TAG, "===YoutubePlayer onError errorReason: " + errorReason.name() + " ===");
+                                if(errorReason.equals(YouTubePlayer.ErrorReason.UNAUTHORIZED_OVERLAY)){
+                                    Log.i(TAG, "===YoutubePlayer is visible or not???: " + (mYouTubePlayerSupportFragment.isVisible()? "true":"false") + " ===");
+                                }
+                            }
+                        });
+                        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+                        youTubePlayer.loadVideo(aYoutubeId);
+                    }
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult error) {
+                    String errorMessage = error.toString();
+                    if (Utility.DEBUG)Log.d("errorMessage:", errorMessage);
+                }
+            });
+        }
+    };
 
     private void processBody(List<MobileBody> jbody) {
         if (Utility.DEBUG) Log.e(TAG, "processBody(List<JsonBody> jbody)");
@@ -517,6 +618,25 @@ public class NewsPageRecyclerViewFragment extends Fragment {
             return mNewsInfo;
         }
         return null;
+    }
+
+    public boolean isVideoFrameLayoutVisibile(){
+        return vVideoFrameLayout.getVisibility()==View.VISIBLE;
+    }
+
+    public void closeVideoFrame() {
+
+        if(vVideoFrameLayout!=null && vVideoFrameLayout.getVisibility()==View.VISIBLE){
+            removeYoutubeFragment();
+            vVideoFrameLayout.setVisibility(View.GONE);
+        }
+
+    }
+
+    public void removeYoutubeFragment(){
+        if(mYoutubePlayer!=null){
+            mYoutubePlayer.release();
+        }
     }
 
 }

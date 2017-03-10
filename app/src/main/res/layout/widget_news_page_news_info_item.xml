@@ -145,6 +145,13 @@
             android:layout_height="wrap_content"
             android:scaleType="centerCrop" />
 
+        <ImageView
+            android:id="@+id/play_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_play_icon"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <TextView
