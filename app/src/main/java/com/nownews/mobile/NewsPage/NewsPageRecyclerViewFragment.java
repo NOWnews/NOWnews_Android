@@ -71,6 +71,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
     public final static String KEY_CONTEXT_TEXT = "context_text";
     public final static String KEY_CONTEXT_IMAGE = "context_image";
+    public final static String KEY_CONTEXT_IFRAME_YOUTUBE = "context_iframe_youtube";
     public final static String KEY_CONTEXT_IMAGE_TEXT = "context_image_text";
 
     private boolean isNewsInfoLoadSucess = false;
@@ -457,7 +458,6 @@ public class NewsPageRecyclerViewFragment extends Fragment {
             p = p.replace("&&&", "\n");
             if (Utility.DEBUG) Log.w(TAG, "p: " + p);
 
-            Elements img = pContent.select("img[src]");
             Elements cite = pContent.select("cite");
             if (cite != null && cite.size() > 0) {
                 for (int j = 0; j < cite.size(); j++) {
@@ -490,6 +490,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
             }
 
+            Elements img = pContent.select("img[src]");
             if (img != null && img.size() > 0) {
 
                 ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
@@ -515,6 +516,27 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 mContentList.add(map);
             }
 
+            Elements iframe = pContent.select("iframe[src]");
+            if (iframe != null && iframe.size() > 0) {
+
+                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+
+                for (int j = 0; j < iframe.size(); j++) {
+                    Element iframeElement = iframe.get(j);
+                    String iframeUrl = iframeElement.attr("src");
+                    if (iframeUrl != null && !iframeUrl.trim().isEmpty()) {
+                        if (Utility.DEBUG) Log.w(TAG, "iframeUrl in body: " + iframeUrl);
+                        map.put(KEY_CONTEXT_IMAGE, iframeUrl);
+                        mImageUrlList.add(iframeUrl);
+                    }
+                }
+
+                if (citeContent != null && !citeContent.trim().equals("") && !citeContent.trim().equals("▲")) {
+                    map.put(KEY_CONTEXT_IMAGE_TEXT, citeContent);
+                }
+
+                mContentList.add(map);
+            }
 
         }
     }
