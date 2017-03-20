@@ -71,8 +71,9 @@ public class NewsPageRecyclerViewFragment extends Fragment {
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
     public final static String KEY_CONTEXT_TEXT = "context_text";
     public final static String KEY_CONTEXT_IMAGE = "context_image";
-    public final static String KEY_CONTEXT_IFRAME_YOUTUBE = "context_iframe_youtube";
     public final static String KEY_CONTEXT_IMAGE_TEXT = "context_image_text";
+    public final static String KEY_CONTEXT_IFRAME_YOUTUBE = "context_iframe_youtube";
+    public final static String KEY_CONTEXT_IFRAME_YOUTUBE_TEXT = "context_iframe_youtube_text";
 
     private boolean isNewsInfoLoadSucess = false;
     public boolean isNewsInfoLoadSucess(){
@@ -526,13 +527,13 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                     String iframeUrl = iframeElement.attr("src");
                     if (iframeUrl != null && !iframeUrl.trim().isEmpty()) {
                         if (Utility.DEBUG) Log.w(TAG, "iframeUrl in body: " + iframeUrl);
-                        map.put(KEY_CONTEXT_IMAGE, iframeUrl);
+                        map.put(KEY_CONTEXT_IFRAME_YOUTUBE, iframeUrl);
                         mImageUrlList.add(iframeUrl);
                     }
                 }
 
                 if (citeContent != null && !citeContent.trim().equals("") && !citeContent.trim().equals("▲")) {
-                    map.put(KEY_CONTEXT_IMAGE_TEXT, citeContent);
+                    map.put(KEY_CONTEXT_IFRAME_YOUTUBE_TEXT, citeContent);
                 }
 
                 mContentList.add(map);

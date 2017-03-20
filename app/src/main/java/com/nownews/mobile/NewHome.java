@@ -165,12 +165,16 @@ public class NewHome extends AppCompatActivity {
 
     private GCMController mGCMController;
     private void startGCM() {
-        String FCMReistId = mSharedPref.getGcmRegistId();
-        if(Utility.DEBUG)Log.i(TAG, "###FCMReistId: " + FCMReistId);
         if (mGCMController == null) {
             mGCMController = new GCMController(this, mUiHandler);
         }
         mGCMController.startGCM();
+        String FCMReistId = mSharedPref.getGcmRegistId();
+        if(FCMReistId==null || FCMReistId.trim().isEmpty()){
+            FCMReistId = mGCMController.getToken();
+            Utility.processGCMRegisterId(getApplicationContext(), FCMReistId);
+        }
+        if(Utility.DEBUG)Log.i(TAG, "###FCMReistId: " + FCMReistId);
     }
 
     private Handler mUiHandler = new Handler() {

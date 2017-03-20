@@ -129,7 +129,6 @@ public class Utility {
 
     public static String processGCMRegisterId(Context aContext, String aNewToken) {
         if (Utility.DEBUG) Log.v(TAG, "@@@ aNewToken: " + aNewToken);
-        storeRegistrationId(aContext, aNewToken);
         sendRegisterId(aContext, aNewToken);
         return aNewToken;
     }
@@ -162,6 +161,7 @@ public class Utility {
             if (Utility.DEBUG) Log.e(TAG, "responeseCode: " + responeseCode);
             if(responeseCode==HttpURLConnection.HTTP_OK){
                 GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message), aContext.getString(R.string.cloud_message_regist), regId);
+                storeRegistrationId(aContext, regId);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.Utility;
 
@@ -59,6 +60,16 @@ public class GCMController {
             return false;
         }
         return true;
+    }
+
+    public String getToken(){
+        String token = null;
+        try{
+            token = FirebaseInstanceId.getInstance().getToken();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return token;
     }
 
 

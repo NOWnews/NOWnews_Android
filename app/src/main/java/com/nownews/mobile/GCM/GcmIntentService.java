@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -153,15 +154,17 @@ public class GcmIntentService extends FirebaseMessagingService {
         int requestCode = 1;
         PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         //設定振動頻率
-        long[] vibratepattern = {100, 100};
+        long[] vibratepattern = {0, 300, 200, 300};
 
         //建立-通知服務建構器
         int currentSDKVersion = UserDataInfo.getSdkVersion();
         if (currentSDKVersion >= Build.VERSION_CODES.JELLY_BEAN) {
             //Api Level 16 (4.1)以上
+            Uri sound = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
             final Builder builder = new Builder(this);
             //定義Notification建構器
             builder
+                    .setSound(sound)
                     .setVibrate(vibratepattern)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
