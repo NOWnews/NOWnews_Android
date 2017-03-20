@@ -332,7 +332,7 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             public void onVpadnReceiveAd(VpadnAd vpadnAd) {
 
                 if(mContext==null || nativeAd==null || nativeAd!=vpadnAd){
-                    Log.e(TAG, "onVpadnReceiveAd NULL!!");
+                    if (Utility.DEBUG) Log.e(TAG, "onVpadnReceiveAd NULL!!");
                     return;
                 }
 
@@ -346,14 +346,14 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 aTitle.setText(nativeAd.getAdTitle());
                 aCallToAction.setText(nativeAd.getAdCallToAction());
                 VpadnNativeAd.Image adCoverImage = nativeAd.getAdCoverImage();
-                Log.i(TAG, "adCoverImage.getWidth(): " + adCoverImage.getWidth());
-                Log.i(TAG, "adCoverImage.getHeight(): " + adCoverImage.getHeight());
+                if (Utility.DEBUG) Log.i(TAG, "adCoverImage.getWidth(): " + adCoverImage.getWidth());
+                if (Utility.DEBUG) Log.i(TAG, "adCoverImage.getHeight(): " + adCoverImage.getHeight());
                 int screenWidth = Utility.getScreenWidth(mContext);
                 float scale = (float)screenWidth / (float)adCoverImage.getWidth();
                 int newHeight = (int)(adCoverImage.getHeight() * scale);
-                Log.i(TAG, "screenWidth: " + screenWidth);
-                Log.i(TAG, "scale: " + scale);
-                Log.i(TAG, "newHeight: " + newHeight);
+                if (Utility.DEBUG) Log.i(TAG, "screenWidth: " + screenWidth);
+                if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
+                if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
                 Glide.with(mContext).load(adCoverImage.getUrl()).override(screenWidth, newHeight).into(aImage);
 //                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
                 nativeAd.registerViewForInteraction(aNewsItem);
@@ -362,7 +362,7 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
             @Override
             public void onVpadnFailedToReceiveAd(VpadnAd vpadnAd, VpadnAdRequest.VpadnErrorCode vpadnErrorCode) {
-                Log.e(TAG, "onVpadnFailedToReceiveAd!! vpadnErrorCode: " + vpadnErrorCode);
+                if (Utility.DEBUG) Log.e(TAG, "onVpadnFailedToReceiveAd!! vpadnErrorCode: " + vpadnErrorCode);
                 if(aNewsItem!=null){
                     aNewsItem.setVisibility(View.GONE);
                 }
