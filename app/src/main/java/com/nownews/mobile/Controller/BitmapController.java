@@ -232,6 +232,8 @@ public class BitmapController {
                         map.put(KEY_IMG_W, resource.getWidth());
                         map.put(KEY_IMG_H, resource.getHeight());
                         mImageSizeInfo.put(aUrl, map);
+                        Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
+                        Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
 //
 //                        addBitmapToMemoryCache(aUrl, resource);
 

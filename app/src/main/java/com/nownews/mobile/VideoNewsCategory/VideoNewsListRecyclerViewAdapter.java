@@ -3,7 +3,9 @@ package com.nownews.mobile.VideoNewsCategory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +24,9 @@ import com.ad2iction.nativeads.NativeErrorCode;
 import com.ad2iction.nativeads.NativeResponse;
 import com.ad2iction.nativeads.RequestParameters;
 import com.ad2iction.nativeads.ViewBinder;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
@@ -129,7 +135,7 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     private final int TYPE_NORMAL = 1;
     @Override
     public int getItemViewType(int position) {
-        if (position>=5 && position<=29 && (position-5)%4==0) {
+        if (position == 2 || (position>=5 && position<=29 && (position-5)%4==0)) {
             return TYPE_AD;
         } else {
             return TYPE_NORMAL;
@@ -141,29 +147,30 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
         if (Utility.DEBUG) Log.e(TAG, "position: " + position);
 
-        if (position == 2) {
-            //廣告
-
-            ((NormalViewHolder)holder).vNewsItem.setVisibility(View.GONE);
-            ((NormalViewHolder)holder).vAdGroup.setVisibility(View.VISIBLE);
-
-            processAD2(((NormalViewHolder)holder).vAdGroup, position);
-
-        } else if (position>=5 && position<=29 && (position-5)%4==0) {
+        if (position == 2 || (position>=5 && position<=29 && (position-5)%4==0)) {
 
             ((ADViewHolder)holder).vNewsItem.setVisibility(View.VISIBLE);
             ((ADViewHolder)holder).vAdGroup.setVisibility(View.VISIBLE);
             ((ADViewHolder)holder).vNewsImage.setImageDrawable(null);
             ((ADViewHolder)holder).vNewsTitle.setText("");
             ((ADViewHolder)holder).vNewsCategory.setText("");
+            ((ADViewHolder)holder).vCallToAction.setText("");
             ((ADViewHolder)holder).vNewsTitle.setTextColor(Color.WHITE);
             ((ADViewHolder)holder).vNewsCategory.setTextColor(Color.WHITE);
             ((ADViewHolder)holder).vRootView.setBackgroundColor(Color.BLACK);
 
+            if(position == 2){
+
+                ((ADViewHolder)holder).vAdGroup.setVisibility(View.GONE);
+                processAD2(position, ((ADViewHolder)holder).vNewsCategory, ((ADViewHolder)holder).vNewsTitle,
+                        ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction);
+                return;
+            }
+
             int positionInAdList = (position-5)/4;
             processVPON(positionInAdList, position,
                     ((ADViewHolder)holder).vNewsCategory, ((ADViewHolder)holder).vNewsTitle,
-                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vAdGroup);
+                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction);
             processDFP(((ADViewHolder)holder).vAdGroup, positionInAdList, position);
 
         } else {
@@ -317,53 +324,58 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         vDfpAdView.loadAd(requestBuild.build());
     }
 
-    private void processVPON(int aPositionInAdList, final int aPosition, final TextView aCategory, final TextView aTitle, final ImageView aImage, final RelativeLayout aAdGroup){
+    private void processVPON(int aPositionInAdList, final int aPosition, final TextView aCategory, final TextView aTitle, final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction){
 
         final VpadnNativeAd nativeAd = new VpadnNativeAd((Activity)mContext, mVPONIdList[aPositionInAdList], "TW");
         nativeAd.setAdListener(new VpadnAdListener() {
             @Override
             public void onVpadnReceiveAd(VpadnAd vpadnAd) {
 
-                if(nativeAd==null || nativeAd!=vpadnAd){
-                    if (Utility.DEBUG)Log.e(TAG, "onVpadnReceiveAd NULL!!");
+                if(mContext==null || nativeAd==null || nativeAd!=vpadnAd){
+                    Log.e(TAG, "onVpadnReceiveAd NULL!!");
                     return;
                 }
 
                 if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
                 if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
                 if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
-//                if (aPosition >= mFirstVisibleItem && aPosition <= mLastVisibleItem) {
-                    nativeAd.unregisterView();
-                    aCategory.setText(mContext.getString(R.string.sponsored));
-                    aTitle.setText(nativeAd.getAdTitle());
-                    VpadnNativeAd.Image adCoverImage = nativeAd.getAdCoverImage();
-                    VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
 
-                    nativeAd.registerViewForInteraction(aAdGroup);
-
-//                }
+                nativeAd.unregisterView();
+                aCategory.setText(mContext.getString(R.string.sponsored));
+                aCategory.setTextColor(mContext.getResources().getColor(android.R.color.white));
+                aTitle.setText(nativeAd.getAdTitle());
+                aCallToAction.setText(nativeAd.getAdCallToAction());
+                VpadnNativeAd.Image adCoverImage = nativeAd.getAdCoverImage();
+                Log.i(TAG, "adCoverImage.getWidth(): " + adCoverImage.getWidth());
+                Log.i(TAG, "adCoverImage.getHeight(): " + adCoverImage.getHeight());
+                int screenWidth = Utility.getScreenWidth(mContext);
+                float scale = (float)screenWidth / (float)adCoverImage.getWidth();
+                int newHeight = (int)(adCoverImage.getHeight() * scale);
+                Log.i(TAG, "screenWidth: " + screenWidth);
+                Log.i(TAG, "scale: " + scale);
+                Log.i(TAG, "newHeight: " + newHeight);
+                Glide.with(mContext).load(adCoverImage.getUrl()).override(screenWidth, newHeight).into(aImage);
+//                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
+                nativeAd.registerViewForInteraction(aNewsItem);
 
             }
 
             @Override
             public void onVpadnFailedToReceiveAd(VpadnAd vpadnAd, VpadnAdRequest.VpadnErrorCode vpadnErrorCode) {
-
+                Log.e(TAG, "onVpadnFailedToReceiveAd!! vpadnErrorCode: " + vpadnErrorCode);
+                if(aNewsItem!=null){
+                    aNewsItem.setVisibility(View.GONE);
+                }
             }
 
             @Override
-            public void onVpadnPresentScreen(VpadnAd vpadnAd) {
-
-            }
+            public void onVpadnPresentScreen(VpadnAd vpadnAd) { }
 
             @Override
-            public void onVpadnDismissScreen(VpadnAd vpadnAd) {
-
-            }
+            public void onVpadnDismissScreen(VpadnAd vpadnAd) { }
 
             @Override
-            public void onVpadnLeaveApplication(VpadnAd vpadnAd) {
-
-            }
+            public void onVpadnLeaveApplication(VpadnAd vpadnAd) { }
         });
 
         if(isVponTestMode){
@@ -381,7 +393,8 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
     private String mAd2Native;
     private Ad2ictionNative vAD2Native;
-    private void processAD2(final RelativeLayout aAdView, final int aPosition) {
+    private void processAD2(final int aPosition, final TextView aCategory, final TextView aTitle,
+                            final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction) {
 
         if(vAD2Native!=null){
             vAD2Native.destroy();
@@ -391,49 +404,70 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         mAd2Native = mContext.getString(R.string.ad2_native);
         if (Utility.DEBUG) Log.e(TAG, "===mAd2Native: " + mAd2Native);
 
-        aAdView.removeAllViews();
-        final AdapterHelper helper = new AdapterHelper(mContext, 2, 10);
-
-        final ViewBinder viewBinder = new ViewBinder.Builder(R.layout.widget_native_layout)
-                .mainImageId(R.id.native_main_image)
-                .textId(R.id.native_text)
-                .callToActionId(R.id.native_cta)
-                .build();
-
-        Ad2ictionNative.Ad2ictionNativeListener listener = new Ad2ictionNative.Ad2ictionNativeListener() {
-
+        Ad2ictionNative.Ad2ictionNativeNetworkListener ad2ictionNativeNetworkListener = new Ad2ictionNative.Ad2ictionNativeNetworkListener() {
             @Override
-            public void onNativeImpression(View arg0) {
-            }
-
-            @Override
-            public void onNativeClick(View arg0) {
-            }
-
-            @Override
-            public void onNativeLoad(NativeResponse arg0) {
+            public void onNativeLoad(NativeResponse nativeResponse) {
                 if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
                 if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
                 if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
-//                if (aPosition >= mFirstVisibleItem && aPosition <= mLastVisibleItem) {
-                    if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
-                    if (Utility.DEBUG) Log.e(TAG, "arg0 is null or not??" + arg0.toString());
-                    View mAD2View = null;
-                    mAD2View = helper.getAdView(mAD2View, aAdView, arg0, viewBinder, null);
-                    aAdView.addView(mAD2View);
-                    aAdView.setVisibility(View.VISIBLE);
-//                }
+                if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
+                if (Utility.DEBUG) Log.e(TAG, "nativeResponse is null or not??" + nativeResponse.toString());
+
+                String text = nativeResponse.getText();
+                final String imageUrl = nativeResponse.getMainImageUrl();
+                String callToActionText = nativeResponse.getCallToAction();
+                if (Utility.DEBUG) Log.v(TAG, "text: " + text);
+                if (Utility.DEBUG) Log.v(TAG, "imageUrl: " + imageUrl);
+
+                aCategory.setText(mContext.getString(R.string.sponsored));
+                aCategory.setTextColor(mContext.getResources().getColor(android.R.color.white));
+                aTitle.setText(text);
+                aCallToAction.setText(callToActionText);
+                Glide.with(mContext)
+                        .load(imageUrl)
+                        .asBitmap()
+                        .skipMemoryCache(true)
+                        .error(R.drawable.default_img)
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                Log.v(TAG, "onResourceReady");
+                                Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
+                                Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
+
+//                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                                params.setMargins(0, 15, 0, 0);
+//                                aImage.setLayoutParams(params);
+
+                                int screenWidth = Utility.getScreenWidth(mContext);
+                                float scale = (float)screenWidth / (float)resource.getWidth();
+                                int newHeight = (int)(resource.getHeight() * scale);
+                                Log.i(TAG, "screenWidth: " + screenWidth);
+                                Log.i(TAG, "scale: " + scale);
+                                Log.i(TAG, "newHeight: " + newHeight);
+                                Glide.with(mContext).load(imageUrl).override(screenWidth, newHeight).into(aImage);
+
+                            }
+
+                            @Override
+                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                aImage.setImageResource(R.drawable.default_img);
+                                super.onLoadFailed(e, errorDrawable);
+                            }
+                        });
             }
 
             @Override
-            public void onNativeFail(NativeErrorCode arg0) {
+            public void onNativeFail(NativeErrorCode nativeErrorCode) {
+
             }
         };
 
         RequestParameters requestParameters = new RequestParameters.Builder().build();
 
-        vAD2Native = new Ad2ictionNative(mContext, mAd2Native, "native", listener);
+        vAD2Native = new Ad2ictionNative(mContext, mAd2Native, "native", ad2ictionNativeNetworkListener);
         vAD2Native.makeRequest(requestParameters);
+
     }
 
     private int mFirstVisibleItem;
@@ -489,6 +523,7 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         private ImageView vNewsImage;
         private TextView vNewsCategory;
         private TextView vNewsTitle;
+        private Button vCallToAction;
 
         public ADViewHolder(View itemView) {
             super(itemView);
@@ -499,6 +534,7 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             vNewsImage = (ImageView) itemView.findViewById(R.id.news_img);
             vNewsCategory = (TextView) itemView.findViewById(R.id.news_category);
             vNewsTitle = (TextView) itemView.findViewById(R.id.news_title);
+            vCallToAction = (Button) itemView.findViewById(R.id.call_to_action);
 
         }
 
