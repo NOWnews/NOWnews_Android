@@ -26,6 +26,7 @@ import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Json.SplashImageJson;
 import com.nownews.mobile.Widget.CustomImageTopcrop;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -126,7 +127,11 @@ public class GetSplashImageService extends Service {
                             Log.v(TAG, "onResourceReady");
 
                             try {
-                                FileOutputStream out = new FileOutputStream(UserDataInfo.ThumbnailPath + "Splash.jpg");
+                                File file = new File(UserDataInfo.ThumbnailPath);
+                                if(file!=null && !file.exists()){
+                                    file.mkdirs();
+                                }
+                                FileOutputStream out = new FileOutputStream(file.getAbsolutePath() + "/Splash.jpg");
                                 resource.compress(Bitmap.CompressFormat.JPEG, 70, out);
                                 out.flush();
                                 out.close();
