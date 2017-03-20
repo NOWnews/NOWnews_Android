@@ -131,7 +131,7 @@ public class GetSplashImageService extends Service {
                                 if(file!=null && !file.exists()){
                                     file.mkdirs();
                                 }
-                                FileOutputStream out = new FileOutputStream(file.getAbsolutePath() + "/Splash.jpg");
+                                FileOutputStream out = new FileOutputStream(file.getAbsolutePath() + File.separator + "Splash.jpg");
                                 resource.compress(Bitmap.CompressFormat.JPEG, 70, out);
                                 out.flush();
                                 out.close();
