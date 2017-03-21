@@ -69,6 +69,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
     private FrameLayout vVideoFrameLayout;
 
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
+    private ArrayList<ConcurrentHashMap<String, Object>> mVideoContentList;
     public final static String KEY_CONTEXT_TEXT = "context_text";
     public final static String KEY_CONTEXT_IMAGE = "context_image";
     public final static String KEY_CONTEXT_IMAGE_TEXT = "context_image_text";
@@ -255,10 +256,38 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         if (mNewsInfo.htmlBody != null) {
             String body = mNewsInfo.htmlBody;
             processBody(body);
+            if (mNewsInfo.freeBody != null) {
+                processFreeBody(mNewsInfo.freeBody);
+            }
+            if(mNewsInfo.videos!=null && mNewsInfo.videos.size()>0){
+                processVideos(mNewsInfo.videos);
+            }
             processRecyclerView();
         } else if (mNewsInfo.mobileBody != null) {
             processBody(mNewsInfo.mobileBody);
+            if (mNewsInfo.freeBody != null) {
+                processFreeBody(mNewsInfo.freeBody);
+            }
+            if(mNewsInfo.videos!=null && mNewsInfo.videos.size()>0){
+                processVideos(mNewsInfo.videos);
+            }
             processRecyclerView();
+        }
+
+    }
+
+    private void processVideos(List<NewsInfoJson.VideoInfo> videos){
+
+        if(mVideoContentList==null){
+            mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+        }
+
+        for(NewsInfoJson.VideoInfo videoInfo : videos){
+            if(videoInfo!=null && videoInfo.type.equals("youtube")){
+                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+                map.put(KEY_CONTEXT_IFRAME_YOUTUBE, videoInfo.youtubeId);
+                mVideoContentList.add(map);
+            }
         }
 
     }
@@ -267,7 +296,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         vContentRecyclerView.setLayoutManager(mLinearLayoutManager);
-        NewsPageRecyclerViewAdapter mAdapter = new NewsPageRecyclerViewAdapter(getActivity(), mContentList, mNewsInfo, mImageUrlList, mVideoListener);
+        NewsPageRecyclerViewAdapter mAdapter = new NewsPageRecyclerViewAdapter(getActivity(), mVideoContentList, mContentList, mNewsInfo, mImageUrlList, mVideoListener);
         vContentRecyclerView.setAdapter(mAdapter);
 
     }
@@ -442,6 +471,12 @@ public class NewsPageRecyclerViewFragment extends Fragment {
             mContentList.clear();
         }
 
+        if(mVideoContentList==null){
+            mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+        }else{
+            mVideoContentList.clear();
+        }
+
         String citeContent = null;
         body = body.replace("<br />", "$$$");
         body = body.replace("<br>", "&&&");
@@ -525,10 +560,10 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 for (int j = 0; j < iframe.size(); j++) {
                     Element iframeElement = iframe.get(j);
                     String iframeUrl = iframeElement.attr("src");
-                    if (iframeUrl != null && !iframeUrl.trim().isEmpty()) {
+                    if (iframeUrl != null && !iframeUrl.trim().isEmpty() && iframeUrl.contains("youtube")) {
                         if (Utility.DEBUG) Log.w(TAG, "iframeUrl in body: " + iframeUrl);
-                        map.put(KEY_CONTEXT_IFRAME_YOUTUBE, iframeUrl);
-                        mImageUrlList.add(iframeUrl);
+                        String youtubeId = iframeUrl.substring(iframeUrl.lastIndexOf("/")+1);
+                        map.put(KEY_CONTEXT_IFRAME_YOUTUBE, youtubeId);
                     }
                 }
 
@@ -536,12 +571,121 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                     map.put(KEY_CONTEXT_IFRAME_YOUTUBE_TEXT, citeContent);
                 }
 
-                mContentList.add(map);
+                mVideoContentList.add(map);
             }
 
         }
     }
 
+    private void processFreeBody(String body) {
+        if (Utility.DEBUG) Log.e(TAG, "processFreeBody: " + body);
+
+        if(mContentList==null){
+            mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+        }
+
+        if(mVideoContentList==null){
+            mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+        }
+
+        String citeContent = null;
+        body = body.replace("<br />", "$$$");
+        body = body.replace("<br>", "&&&");
+        body = body.replace("<strong>", "(((");
+        body = body.replace("</strong>", ")))");
+        body = body.replace("&nbsp;", "");
+        body = body.trim();
+        if (Utility.DEBUG) Log.i(TAG, "body: " + body);
+        Document doc = Jsoup.parse(body);
+        Elements paragraph = doc.select("p");
+        for (int i = 0; i < paragraph.size(); i++) {
+            Element pContent = paragraph.get(i);
+            String p = pContent.text();
+            p = p.replace("$$$", "\n");
+            p = p.replace("&&&", "\n");
+            if (Utility.DEBUG) Log.w(TAG, "p: " + p);
+
+            Elements cite = pContent.select("cite");
+            if (cite != null && cite.size() > 0) {
+                for (int j = 0; j < cite.size(); j++) {
+                    Element imgElement = cite.get(j);
+                    if (!imgElement.text().trim().equals("▲")) {
+                        citeContent = imgElement.text();
+                        if (Utility.DEBUG) Log.w(TAG, "citeContent: " + citeContent);
+                        break;
+                    }
+                }
+            }
+
+            if (p.contains("▲")) {
+                citeContent = p;
+            }
+
+            if (citeContent != null) {
+                p = p.replace(citeContent, "");
+                if (Utility.DEBUG) Log.d(TAG, "[p] after replace: " + p);
+            }
+
+            if (p != null && !p.trim().isEmpty()) {
+                if (p.contains("延伸閱讀")) {
+                    break;
+                }
+
+                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+                map.put(KEY_CONTEXT_TEXT, p);
+                mContentList.add(map);
+
+            }
+
+            Elements img = pContent.select("img[src]");
+            if (img != null && img.size() > 0) {
+
+                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+
+                for (int j = 0; j < img.size(); j++) {
+                    Element imgElement = img.get(j);
+                    String imgUrl = imgElement.attr("src");
+                    imgUrl = Utility.getSrcFromImgapi(imgUrl);
+//                    if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + imgUrl);
+
+                    if (imgUrl != null && !imgUrl.trim().isEmpty()) {
+                        if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + imgUrl);
+                        map.put(KEY_CONTEXT_IMAGE, imgUrl);
+                        mImageUrlList.add(imgUrl);
+                    }
+
+                }
+
+                if (citeContent != null && !citeContent.trim().equals("") && !citeContent.trim().equals("▲")) {
+                    map.put(KEY_CONTEXT_IMAGE_TEXT, citeContent);
+                }
+
+                mContentList.add(map);
+            }
+
+            Elements iframe = pContent.select("iframe[src]");
+            if (iframe != null && iframe.size() > 0) {
+
+                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+
+                for (int j = 0; j < iframe.size(); j++) {
+                    Element iframeElement = iframe.get(j);
+                    String iframeUrl = iframeElement.attr("src");
+                    if (iframeUrl != null && !iframeUrl.trim().isEmpty() && iframeUrl.contains("youtube")) {
+                        if (Utility.DEBUG) Log.w(TAG, "iframeUrl in body: " + iframeUrl);
+                        String youtubeId = iframeUrl.substring(iframeUrl.lastIndexOf("/")+1);
+                        map.put(KEY_CONTEXT_IFRAME_YOUTUBE, youtubeId);
+                    }
+                }
+
+                if (citeContent != null && !citeContent.trim().equals("") && !citeContent.trim().equals("▲")) {
+                    map.put(KEY_CONTEXT_IFRAME_YOUTUBE_TEXT, citeContent);
+                }
+
+                mVideoContentList.add(map);
+            }
+        }
+    }
 
     @Override
     public void onDestroy() {

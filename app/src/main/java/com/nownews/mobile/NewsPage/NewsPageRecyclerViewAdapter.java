@@ -61,6 +61,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private BitmapController mBitmapController;
     private SharedPreferencesMethods mSharedPref;
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
+    private ArrayList<ConcurrentHashMap<String, Object>> mVideoContentList;
     private NewsInfoJson mNewsInfo;
     private int mListSize;
     private List<NewsListJson.NewsContent> mHeadline;
@@ -86,11 +87,12 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private final int VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS = R.layout.widget_reference_news_item;
     private final int VIEW_TYPE_WEB_BODY = R.layout.widget_news_page_web_body;
 
-    public NewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aContentList,
+    public NewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aVideoContentList, ArrayList<ConcurrentHashMap<String, Object>> aContentList,
                                        NewsInfoJson aNewsInfo, ArrayList<String> aImageUrlList, OnVideoPlayButtonClick aListener){
         mContext = aContext;
         if(Utility.DEBUG)Log.i(TAG, "mContext is null nor not?? " + (mContext==null? "true":"false"));
         mContentList = aContentList;
+        mVideoContentList = aVideoContentList;
         mNewsInfo = aNewsInfo;
         mImageUrlList = aImageUrlList;
         mListener = aListener;
@@ -142,6 +144,9 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                         mViewTypeList.add(VIEW_TYPE_CONTENT_IMAGE);
                     }
                 }
+            }
+            if(mVideoContentList!=null && mVideoContentList.size()>1){
+                mListSize += mVideoContentList.size()-1;
             }
         }
 
@@ -295,6 +300,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         return mListSize;
     }
 
+    private boolean isVideosMoreThanOne;
     public class NewsInfoViewHolder extends RecyclerView.ViewHolder {
 
         private LinearLayout vTopDFP;
@@ -336,16 +342,17 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         public void bind(int position){
 
             //play icon
-            if(mNewsInfo.videos!=null){
-                for(NewsInfoJson.VideoInfo videoInfo : mNewsInfo.videos){
-                    if(videoInfo!=null && videoInfo.type.equals("youtube")){
+            if(mVideoContentList!=null && mVideoContentList.size()>=1){
+                for(ConcurrentHashMap<String, Object> map : mVideoContentList){
+                    if(map.containsKey(NewsPageRecyclerViewFragment.KEY_CONTEXT_IFRAME_YOUTUBE)){
                         vPlayIcon.setVisibility(View.VISIBLE);
                         hasYoutubeVideo = true;
-                        mYoutubeId = videoInfo.youtubeId;
+                        mYoutubeId = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IFRAME_YOUTUBE);
                         break;
                     }
                 }
             }
+            if(Utility.DEBUG)Log.d(TAG, "mYoutubeId: " + mYoutubeId);
 
             //DFP
             if(Utility.DEBUG)Log.i(TAG, "vTopDFP is null nor not?? " + (vTopDFP==null? "true":"false"));
