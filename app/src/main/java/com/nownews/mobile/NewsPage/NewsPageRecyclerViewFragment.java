@@ -71,6 +71,8 @@ public class NewsPageRecyclerViewFragment extends Fragment {
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
     private ArrayList<ConcurrentHashMap<String, Object>> mVideoContentList;
     public final static String KEY_CONTEXT_TEXT = "context_text";
+    public final static String KEY_CONTEXT_TEXT_LINK_HTML = "context_text_link_html";
+    public final static String KEY_CONTEXT_TEXT_LINK = "context_text_link";
     public final static String KEY_CONTEXT_IMAGE = "context_image";
     public final static String KEY_CONTEXT_IMAGE_TEXT = "context_image_text";
     public final static String KEY_CONTEXT_IFRAME_YOUTUBE = "context_iframe_youtube";
@@ -478,6 +480,8 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         }
 
         String citeContent = null;
+        String textLinkHtml = null;
+        String textLink = null;
         body = body.replace("<br />", "$$$");
         body = body.replace("<br>", "&&&");
         body = body.replace("<strong>", "(((");
@@ -515,6 +519,15 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 if (Utility.DEBUG) Log.d(TAG, "[p] after replace: " + p);
             }
 
+            Elements a = pContent.select("a[href]");
+            if(a !=null && a.size() > 0){
+                for (int j = 0; j < a.size(); j++) {
+                    Element href = a.get(j);
+                    textLink = href.attr("href");
+                    textLinkHtml = href.toString();
+                }
+            }
+
             if (p != null && !p.trim().isEmpty()) {
                 if (p.contains("延伸閱讀")) {
                     break;
@@ -522,6 +535,14 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
                 ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
                 map.put(KEY_CONTEXT_TEXT, p);
+
+                if(textLinkHtml!=null && !textLinkHtml.trim().isEmpty()){
+                    map.put(KEY_CONTEXT_TEXT_LINK_HTML, textLinkHtml);
+                }
+                if(textLink!=null && !textLink.trim().isEmpty()){
+                    map.put(KEY_CONTEXT_TEXT_LINK, textLink);
+                }
+
                 mContentList.add(map);
 
             }
@@ -589,6 +610,8 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         }
 
         String citeContent = null;
+        String textLinkHtml = null;
+        String textLink = null;
         body = body.replace("<br />", "$$$");
         body = body.replace("<br>", "&&&");
         body = body.replace("<strong>", "(((");
@@ -626,6 +649,15 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 if (Utility.DEBUG) Log.d(TAG, "[p] after replace: " + p);
             }
 
+            Elements a = pContent.select("a[href]");
+            if(a !=null && a.size() > 0){
+                for (int j = 0; j < a.size(); j++) {
+                    Element href = a.get(j);
+                    textLink = href.attr("href");
+                    textLinkHtml = href.toString();
+                }
+            }
+
             if (p != null && !p.trim().isEmpty()) {
                 if (p.contains("延伸閱讀")) {
                     break;
@@ -633,6 +665,14 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
                 ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
                 map.put(KEY_CONTEXT_TEXT, p);
+
+                if(textLinkHtml!=null && !textLinkHtml.trim().isEmpty()){
+                    map.put(KEY_CONTEXT_TEXT_LINK_HTML, textLinkHtml);
+                }
+                if(textLink!=null && !textLink.trim().isEmpty()){
+                    map.put(KEY_CONTEXT_TEXT_LINK, textLink);
+                }
+
                 mContentList.add(map);
 
             }

@@ -7,13 +7,17 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.style.StyleSpan;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -44,7 +48,13 @@ import com.nownews.mobile.FavoriteAlbum.FavoriteAlbumPage;
 import com.nownews.mobile.Json.NewsInfoJson;
 import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Widget.CustomImageTopcrop;
+import com.nownews.mobile.Widget.WebActivity;
 import com.squareup.okhttp.internal.Util;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -539,6 +549,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     public class ContextTextViewHolder extends RecyclerView.ViewHolder {
 
         private TextView vContentText;
+        private String urlLink;
 
         public ContextTextViewHolder(View itemView) {
             super(itemView);
@@ -557,8 +568,8 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             }
             int realPosition = position-1;
             ConcurrentHashMap<String, Object> map = mContentList.get(realPosition);
-            if(map.get(NewsPageFragment.KEY_CONTEXT_TEXT)!=null){
-                String text = (String) map.get(NewsPageFragment.KEY_CONTEXT_TEXT);
+            if(map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT)!=null){
+                String text = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT);
                 if(Utility.DEBUG)Log.v(TAG, "text: " + text);
                 if (text.contains("(((") && text.contains(")))")) {
                     SpannableString content = getStrongText(text.trim());
@@ -570,6 +581,57 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 vContentText.setTextSize(mContentTextSize);
                 if(text.contains("http://") || text.contains("https://")){
                     Linkify.addLinks(vContentText, Linkify.WEB_URLS);
+                    URLSpan spans[] = vContentText.getUrls();
+                    for(URLSpan span: spans) {
+                        urlLink = span.getURL();
+                        Log.d(TAG, urlLink);
+                    }
+                    vContentText.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+
+                                Intent intent = new Intent();
+                                intent.setClass(mContext, WebActivity.class);
+                                intent.putExtra(WebActivity.KEY_URL, urlLink);
+                                mContext.startActivity(intent);
+
+                            }
+
+
+                            return true;
+                        }
+                    });
+                }
+                if(map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_LINK)!=null
+                        && map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_LINK_HTML)!=null){
+                    Log.d(TAG, "i am here!!");
+                    final String urlLink = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_LINK) ;
+                    String textLink = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_LINK_HTML);
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        vContentText.setText(Html.fromHtml(textLink,Html.FROM_HTML_MODE_COMPACT));
+                    } else {
+                        vContentText.setText(Html.fromHtml(textLink));
+                    }
+                    vContentText.setMovementMethod(LinkMovementMethod.getInstance());
+                    vContentText.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+
+                                Intent intent = new Intent();
+                                intent.setClass(mContext, WebActivity.class);
+                                intent.putExtra(WebActivity.KEY_URL, urlLink);
+                                mContext.startActivity(intent);
+
+                            }
+
+
+                            return true;
+                        }
+                    });
                 }
 
             }
