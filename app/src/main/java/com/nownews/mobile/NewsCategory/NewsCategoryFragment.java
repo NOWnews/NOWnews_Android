@@ -27,6 +27,7 @@ import com.nownews.mobile.Json.NewsCategoryJson;
 import com.nownews.mobile.Json.NewsCategoryJson.CategoryInfo;
 import com.nownews.mobile.NewHome;
 import com.nownews.mobile.Widget.SlidingTabLayout;
+import com.nownews.mobile.Widget.WebFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -109,6 +110,36 @@ public class NewsCategoryFragment extends Fragment {
     private ApiController mApiController;
     private List<CategoryInfo> mNewsCategoryContent;
     private UiHandler mUiHandler;
+
+    public boolean checkIsWebFragment() {
+
+        int currentPage = vViewPager.getCurrentItem();
+        Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
+        if(fragment instanceof WebFragment){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkIsWebFragmentCanGoBack() {
+
+        int currentPage = vViewPager.getCurrentItem();
+        Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
+        if(fragment instanceof WebFragment){
+            return ((WebFragment)fragment).canGoBack();
+        }
+        return false;
+    }
+
+    public void doWebFragmentGoBack() {
+
+        int currentPage = vViewPager.getCurrentItem();
+        Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
+        if(fragment instanceof WebFragment){
+            ((WebFragment)fragment).goBack();
+        }
+    }
+
     private static class UiHandler extends Handler {
 
         private final WeakReference<NewsCategoryFragment> mFragment;

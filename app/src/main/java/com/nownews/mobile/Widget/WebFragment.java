@@ -60,7 +60,7 @@ public class WebFragment extends Fragment {
     private void setWeb() {
         final WebSettings webSettings = vWebView.getSettings();
         webSettings.setSupportZoom(true);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setBuiltInZoomControls(false);
         webSettings.setJavaScriptEnabled(true);
         vWebView.setWebViewClient(new WebViewClient(){
 
@@ -74,6 +74,21 @@ public class WebFragment extends Fragment {
             }
         });
         vWebView.loadUrl(mUrl);
+    }
+
+    public boolean canGoBack() {
+
+        if(vWebView!=null){
+            return vWebView.canGoBack();
+        }
+
+        return false;
+    }
+
+    public void goBack(){
+        if(vWebView!=null){
+            vWebView.goBack();
+        }
     }
 
 }

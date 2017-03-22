@@ -386,6 +386,17 @@ public class NewHome extends AppCompatActivity {
             return;
         }
 
+        if(mCurrentFragment instanceof NewsCategoryFragment){
+            boolean isWebFragment = ((NewsCategoryFragment)mCurrentFragment).checkIsWebFragment();
+            if(isWebFragment){
+                boolean canGoBack = ((NewsCategoryFragment)mCurrentFragment).checkIsWebFragmentCanGoBack();
+                if(canGoBack){
+                    ((NewsCategoryFragment)mCurrentFragment).doWebFragmentGoBack();
+                    return;
+                }
+            }
+        }
+
         if(isNeedToLeave){
             UserDataInfo.isVersionDialogShow = false;
             UserDataInfo.mHomeDFPCount = 0;
