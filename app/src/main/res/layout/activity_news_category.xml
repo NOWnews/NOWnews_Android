@@ -27,12 +27,16 @@
                 android:id="@+id/catalog_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tab"
+                android:layout_alignTop="@+id/tab"
                 android:src="@drawable/catalog_filter_left" />
 
             <ImageView
                 android:id="@+id/catalog_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tab"
+                android:layout_alignTop="@+id/tab"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/catalog_filter_right" />
 
@@ -43,7 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/tab_group"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textSize="20dp"/>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
@@ -68,6 +73,7 @@
                 android:layout_centerVertical="true" />
 
             <TextView
+                android:id="@+id/loading_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

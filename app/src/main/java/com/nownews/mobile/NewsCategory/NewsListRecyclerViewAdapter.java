@@ -34,6 +34,7 @@ import com.google.android.gms.ads.doubleclick.PublisherAdView;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
+import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.BitmapController;
@@ -547,17 +548,27 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         private TextView vNewsCategory;
         private TextView vNewsTitle;
         private TextView vNewsDate;
+        private ReSizeLayoutParams mResize;
 
         public NormalViewHolder(View itemView) {
             super(itemView);
 
+            mResize = new ReSizeLayoutParams(mContext);
+            mResize.setDoResize(true);
+
             vAdGroup = (RelativeLayout) itemView.findViewById(R.id.ad_view);
 
             vNewsItem = (RelativeLayout) itemView.findViewById(R.id.news_item);
+
             vNewsImage = (CustomImageTopcrop) itemView.findViewById(R.id.news_img);
+            vNewsImage.setLayoutParams(mResize.setOnSize(vNewsImage, 0, 15, 0, 0));
+
             vNewsCategory = (TextView) itemView.findViewById(R.id.news_category);
             vNewsTitle = (TextView) itemView.findViewById(R.id.news_title);
             vNewsDate = (TextView) itemView.findViewById(R.id.news_date);
+
+            mResize.setDoResize(false);
+            mResize.unregisterCallback(mContext);
 
         }
 

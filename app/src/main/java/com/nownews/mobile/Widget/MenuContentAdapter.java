@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nownews.R;
+import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class MenuContentAdapter extends BaseAdapter {
     private ArrayList<HashMap<String, Object>> mList;
     private SharedPreferencesMethods mSharedPref;
     private boolean isHasNewVersion = false;
+    private ReSizeLayoutParams mResize;
 
     public MenuContentAdapter(Context aContext, ArrayList<HashMap<String, Object>> aList) {
         mContext = aContext;
@@ -34,6 +36,7 @@ public class MenuContentAdapter extends BaseAdapter {
     private void init() {
         inflater = LayoutInflater.from(mContext);
         mSharedPref = new SharedPreferencesMethods(mContext);
+        mResize = new ReSizeLayoutParams(mContext);
     }
 
     public void setData(ArrayList<HashMap<String, Object>> aList) {
@@ -66,10 +69,22 @@ public class MenuContentAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.widget_menu_item, null);
 
             item.vItem = (LinearLayout) convertView.findViewById(R.id.item);
+
             item.vItemImage = (ImageView) convertView.findViewById(R.id.icon);
+            item.vItemImage.setLayoutParams(mResize.setOnSize(item.vItemImage, 10, 10, 10, 10));
+
             item.vTitle = (TextView) convertView.findViewById(R.id.title);
+            item.vTitle.setLayoutParams(mResize.setMargins(item.vTitle, 10, 10, 10, 10));
+            mResize.setTextSize(item.vTitle);
+
             item.vNewVersion = (TextView) convertView.findViewById(R.id.new_version);
+            item.vNewVersion.setLayoutParams(mResize.setMargins(item.vNewVersion, 20, 0, 0, 0));
+            mResize.setPadding(item.vNewVersion, 5, 5, 5, 5);
+            mResize.setTextSize(item.vNewVersion);
+
             item.vNotificationStatus = (TextView) convertView.findViewById(R.id.notification_status);
+            item.vNotificationStatus.setLayoutParams(mResize.setMargins(item.vNotificationStatus, 50, 0, 0, 0));
+            mResize.setTextSize(item.vNotificationStatus);
 
             convertView.setTag(item);
         } else {

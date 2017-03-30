@@ -76,9 +76,9 @@ public class VideoNewsPageFragmentAdapter extends FragmentStatePagerAdapter {
 
         newsPageFragment = new VideoNewsPageRecyclerViewFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(VideoNewsPageFragment.KEY_NEWS_ID, newsId);
+        bundle.putInt(VideoNewsPageRecyclerViewFragment.KEY_NEWS_ID, newsId);
         bundle.putString(VideoNewsPageRecyclerViewFragment.KEY_NEWS_CATEGORY, mNewsCategory);
-        bundle.putInt(VideoNewsPageFragment.KEY_NEWS_POSITION, position);
+        bundle.putInt(VideoNewsPageRecyclerViewFragment.KEY_NEWS_POSITION, position);
         newsPageFragment.setArguments(bundle);
 //        mNewsPageFragmentList.put(KEY_FRAGMENT_INDEX + position, newsPageFragment);
         return newsPageFragment;

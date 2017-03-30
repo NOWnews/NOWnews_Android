@@ -67,7 +67,6 @@ public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (Utility.DEBUG) Log.e(TAG, "getItem() position: " + position);
-//        NewsPageFragment newsPageFragment = null;
         NewsPageRecyclerViewFragment newsPageFragment = null;
         String newsUrl = null;
         int newsId = -1;

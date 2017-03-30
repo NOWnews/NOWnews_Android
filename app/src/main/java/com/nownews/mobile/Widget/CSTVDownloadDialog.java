@@ -196,21 +196,18 @@ public class CSTVDownloadDialog extends Dialog {
 
         vMessage = (TextView)findViewById(R.id.message);
         vMessage.setLayoutParams(mResize.setMargins(vMessage, 0, 0, 0, 10));
-        mResize.setTextSize(vMessage.getTextSize());
-        vMessage.setTextSize(mResize.getTextSize());
+        mResize.setTextSize(vMessage);
 
         vButtonsGroup = (LinearLayout)findViewById(R.id.buttons_group);
         vButtonsGroup.setLayoutParams(mResize.setMargins(vButtonsGroup, 10, 10, 10, 10));
 
         vWatchNow = (Button)findViewById(R.id.watch_now);
         vWatchNow.setLayoutParams(mResize.setOnSize(vWatchNow, 0, 0, 0, 0));
-        mResize.setTextSize(vWatchNow.getTextSize());
-        vWatchNow.setTextSize(mResize.getTextSize());
+        mResize.setTextSize(vWatchNow);
 
         vDownloadNow = (Button)findViewById(R.id.download_now);
         vDownloadNow.setLayoutParams(mResize.setOnSize(vDownloadNow, 10, 0, 0, 0));
-        mResize.setTextSize(vDownloadNow.getTextSize());
-        vDownloadNow.setTextSize(mResize.getTextSize());
+        mResize.setTextSize(vDownloadNow);
 
         vIcon = (ImageView)findViewById(R.id.cstv_icon);
         mResize.setPadding(vIcon, 20, 20, 20, 10);

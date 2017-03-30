@@ -59,7 +59,7 @@ public class LivePlayer extends Activity {
         processView();
         processMenu();
         startTimer();
-        play(mCategoryIndex);
+        play(mChannelIndex);
 
     }
 

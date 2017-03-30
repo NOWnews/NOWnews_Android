@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
+import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
@@ -39,6 +40,7 @@ public class NewsListFragment extends Fragment {
     //	private NewsListFragmentAdapter mAdapter;
     private RelativeLayout vLoadingLayout;
     private TextView vErrorMessage;
+    private TextView vLoadingText;
     private Handler mAdHandler;
     private String mCategoryName;
     private int mCurrentPage = 1;
@@ -283,8 +285,10 @@ public class NewsListFragment extends Fragment {
     private void initController() {
         mApiController = ApiController.getInstance();
         mApiHandler = new ApiHandler(this);
+        mResize = new ReSizeLayoutParams(getActivity());
     }
 
+    private ReSizeLayoutParams mResize;
     private void processView() {
 
         View view = getView();
@@ -303,7 +307,12 @@ public class NewsListFragment extends Fragment {
         });
 
         vLoadingLayout = (RelativeLayout) view.findViewById(R.id.loading_layout);
+
+        vLoadingText = (TextView) view.findViewById(R.id.image_loading_txt);
+        mResize.setTextSize(vLoadingText);
+
         vErrorMessage = (TextView) view.findViewById(R.id.error_message);
+        mResize.setTextSize(vErrorMessage);
 
     }
 

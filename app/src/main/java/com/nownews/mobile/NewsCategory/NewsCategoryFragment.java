@@ -19,6 +19,7 @@ import com.google.android.gms.common.api.Api;
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
+import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
@@ -47,6 +48,7 @@ public class NewsCategoryFragment extends Fragment {
     private ViewPager vViewPager;
     private RelativeLayout vLoadingPageLayout;
     private TextView vErrorMessage;
+    private TextView vLoadingText;
     //View
 
     //For DFP End
@@ -244,16 +246,7 @@ public class NewsCategoryFragment extends Fragment {
         processArgument();
         processView();
         processListener();
-        processData();
-    }
-
-    private void processData(){
-//        mNewsCategoryContent = UserDataInfo.getNewsCategoryContent();
-//        if(mNewsCategoryContent==null){
-            getNewsCategory();
-//        }else{
-//            setTab();
-//        }
+        getNewsCategory();
     }
 
     private void getNewsCategory() {
@@ -267,6 +260,7 @@ public class NewsCategoryFragment extends Fragment {
         mApiController = ApiController.getInstance();
         mUiHandler = new UiHandler(this);
         mApiHandler = new ApiHandler(this);
+        mResize = new ReSizeLayoutParams(getActivity());
     }
 
     private void processArgument() {
@@ -276,15 +270,22 @@ public class NewsCategoryFragment extends Fragment {
         }
     }
 
+    private ReSizeLayoutParams mResize;
     private void processView() {
 
         View view = getView();
 
         vTab = (SlidingTabLayout) view.findViewById(R.id.tab);
+        mResize.setPadding(vTab, 20, 0, 20, 0);
+
+        vLoadingText = (TextView) view.findViewById(R.id.loading_text);
+        mResize.setTextSize(vLoadingText);
+
+        vErrorMessage = (TextView) view.findViewById(R.id.error_message);
+        mResize.setTextSize(vErrorMessage);
+
         vViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         vLoadingPageLayout = (RelativeLayout) view.findViewById(R.id.list_loading_layout);
-        vErrorMessage = (TextView) view.findViewById(R.id.error_message);
-
     }
 
     private void processListener(){
@@ -366,50 +367,21 @@ public class NewsCategoryFragment extends Fragment {
 
     private void processCategory() {
 
-//        //News
-//        boolean isFirstInApp = mSharedPref.isFirstInApp();
-//        if (isFirstInApp) {
-//            //News
-//            mSharedPref.saveFirstInAppStatus(false);
-//
-//            //News
-//            //TODO: Need to add Headline, HotNews and InstanceNews, Food, Health
-//            //Headline
-//            addCategoryInfo("頭條", -1, 0);
-//            //HotNews
-//            addCategoryInfo("熱門", -1, 1);
-//            //InstanceNews
-//            addCategoryInfo("速報", -1, 2);
-//            //Food
-//            addCategoryInfo("旅食樂", -1, mNewsCategoryContent.size());
-//            //Health
-//            addCategoryInfo("健康百科", -1, mNewsCategoryContent.size());
-//
-//            for (int i = 0; i < mNewsCategoryContent.size(); i++) {
-//                NewsCategoryJson.CategoryInfo content = mNewsCategoryContent.get(i);
-//                String categoryName = content.name;
-//                Log.d(TAG, "categoryName: " + categoryName);
-//                mSharedPref.saveHomeNewsItems(i + "_" + SharedPreferencesMethods.HOME_NEWS_ITEMS + categoryName, true);
-//            }
-//
-//        } else {
+        //News
+        //TODO: Need to add Headline, HotNews and InstanceNews, Food, Health and nearbynews
+        //Headline
+        addCategoryInfo(getString(R.string.headline), -1, 0);
+        //HotNews
+        addCategoryInfo(getString(R.string.hot_news), -1, 1);
+        //InstanceNews
+        addCategoryInfo(getString(R.string.instant_news), -1, 2);
+        //Food
+        addCategoryInfo(getString(R.string.food), -1, mNewsCategoryContent.size());
+        //Health
+        addCategoryInfo(getString(R.string.health), -1, mNewsCategoryContent.size());
+        //Nearby
+        addCategoryInfo(getString(R.string.nearbynews), -1, mNewsCategoryContent.size());
 
-            //News
-            //TODO: Need to add Headline, HotNews and InstanceNews, Food, Health and nearbynews
-            //Headline
-            addCategoryInfo(getString(R.string.headline), -1, 0);
-            //HotNews
-            addCategoryInfo(getString(R.string.hot_news), -1, 1);
-            //InstanceNews
-            addCategoryInfo(getString(R.string.instant_news), -1, 2);
-            //Food
-            addCategoryInfo(getString(R.string.food), -1, mNewsCategoryContent.size());
-            //Health
-            addCategoryInfo(getString(R.string.health), -1, mNewsCategoryContent.size());
-            //Nearby
-            addCategoryInfo(getString(R.string.nearbynews), -1, mNewsCategoryContent.size());
-
-//        }
     }
 
     private void addCategoryInfo(String aCategoryName, int aTid, int aPosition) {

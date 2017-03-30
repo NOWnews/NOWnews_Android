@@ -148,9 +148,9 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 mListSize += mContentList.size();
                 for(int i = 0; i<mContentList.size(); i++){
                     ConcurrentHashMap<String, Object> map = mContentList.get(i);
-                    if(map.get(NewsPageFragment.KEY_CONTEXT_TEXT)!=null){
+                    if(map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT)!=null){
                         mViewTypeList.add(VIEW_TYPE_CONTENT_TEXT);
-                    }else if(map.get(NewsPageFragment.KEY_CONTEXT_IMAGE)!=null){
+                    }else if(map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE)!=null){
                         mViewTypeList.add(VIEW_TYPE_CONTENT_IMAGE);
                     }
                 }
@@ -679,12 +679,12 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             }
             int realPosition = position-1;
             ConcurrentHashMap<String, Object> map = mContentList.get(realPosition);
-            if(map.get(NewsPageFragment.KEY_CONTEXT_IMAGE)!=null){
-                String imageUrl = (String) map.get(NewsPageFragment.KEY_CONTEXT_IMAGE);
+            if(map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE)!=null){
+                String imageUrl = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE);
                 mCurrentImageUrl = imageUrl;
 //                imageUrl = Utility.getSrcFromImgapi(imageUrl);
                 mBitmapController.loadImageWithOriginalSize(imageUrl, vImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE, 0, 0, null);
-                String imageText = (String) map.get(NewsPageFragment.KEY_CONTEXT_IMAGE_TEXT);
+                String imageText = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE_TEXT);
                 if(imageText!=null){
                     vImageText.setVisibility(View.VISIBLE);
                     vImageText.setText(imageText);

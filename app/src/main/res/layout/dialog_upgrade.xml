@@ -43,7 +43,7 @@
                     android:layout_marginBottom="20dp"
                     android:text="@string/cstv_download_hint"
                     android:textColor="@android:color/black"
-                    android:textSize="20dp"
+                    android:textSize="18dp"
                     android:gravity="center"/>
 
                 <LinearLayout

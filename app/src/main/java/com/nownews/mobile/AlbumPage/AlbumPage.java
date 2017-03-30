@@ -28,6 +28,7 @@ import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Common.Utility.ShareType;
 import com.nownews.mobile.Controller.ApiController;
+import com.nownews.mobile.GCM.GcmIntentService;
 import com.nownews.mobile.Json.PhotosInfoJson;
 import com.nownews.mobile.Widget.CustomViewPager;
 
@@ -219,7 +220,7 @@ public class AlbumPage extends AppCompatActivity {
                   title = title.replaceAll("▼", "");
               }
               String url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mAlbumInfo.url;
-              if(mFromWhere!=null && mFromWhere.equals("GcmIntentService")){
+              if(mFromWhere!=null && mFromWhere.equals(GcmIntentService.class.getClass().getSimpleName())){
                   GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.cloud_message), getString(R.string.cloud_message_click), title + " " + url);
               }else{
                   GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.album), mAlbumCategory, title + " " + url);

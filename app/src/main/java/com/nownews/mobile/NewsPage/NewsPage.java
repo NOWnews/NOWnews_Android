@@ -31,6 +31,7 @@ import com.nownews.mobile.Json.NewsInfoJson;
 import com.nownews.mobile.Json.NewsInfoJson.ReferenceNewsInfo;
 import com.nownews.mobile.Json.NewsListJson.NewsContent;
 import com.nownews.mobile.Json.SearchInfoJson.SearchInfoContent;
+import com.nownews.mobile.NewHome;
 import com.vpadn.ads.VpadnAd;
 import com.vpadn.ads.VpadnAdListener;
 import com.vpadn.ads.VpadnAdRequest;
@@ -427,7 +428,13 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             mAd2ictionInterstitial.destroy();
             mAd2ictionInterstitial = null;
         }
-        setResult(RESULT_CODE);
+        if(UserDataInfo.isSingalNewsFromAction){
+            Intent intent = new Intent();
+            intent.setClass(this, NewHome.class);
+            startActivity(intent);
+        }else{
+            setResult(RESULT_CODE);
+        }
         super.onBackPressed();
     }
 

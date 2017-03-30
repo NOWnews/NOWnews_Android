@@ -158,7 +158,7 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
             mNewsCategory = bundle.getString(KEY_NEWS_CATEGORY);
             mCurrentNewsPosition = bundle.getInt(KEY_NEWS_POSITION, -1);
 
-            if (Utility.DEBUG) Log.e(TAG, "VideoNewsPageFragment");
+            if (Utility.DEBUG) Log.e(TAG, "VideoNewsPageRecyclerViewFragment");
             if (Utility.DEBUG) Log.e(TAG, "mNewsId: " + mNewsId);
             if (Utility.DEBUG) Log.e(TAG, "mCurrentNewsPosition: " + mCurrentNewsPosition);
         }

@@ -176,7 +176,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
             mNewsCategory = bundle.getString(KEY_NEWS_CATEGORY);
             mBigCategory = bundle.getString(KEY_NEWS_BIG_CATEGORY);
 
-            if (Utility.DEBUG) Log.e(TAG, "VideoNewsPageFragment");
+            if (Utility.DEBUG) Log.e(TAG, "VideoNewsPageRecyclerViewFragment");
             if (Utility.DEBUG) Log.e(TAG, "mNewsId: " + mNewsId);
             if (Utility.DEBUG) Log.e(TAG, "mNewsCategory: " + mNewsCategory);
             if (Utility.DEBUG) Log.e(TAG, "mBigCategory: " + mBigCategory);

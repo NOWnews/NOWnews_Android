@@ -32,6 +32,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Json.NewsCategoryJson;
 import com.nownews.mobile.Json.PhotosCategoryJson;
@@ -183,6 +184,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         mTextViewTextSize = aTextViewTextSize;
     }
 
+    private ReSizeLayoutParams mResize;
     private void populateTabStrip() {
 
         if (Utility.DEBUG)Log.d(TAG, "populateTabStrip()");
@@ -244,7 +246,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 tabTitleView.setTextColor(getResources().getColor(android.R.color.white));
             }
 
+            mResize = new ReSizeLayoutParams(getContext());
             tabTitleView.setTextSize(mTextViewTextSize);
+            mResize.setTextSize(tabTitleView);
+            mResize.setPadding(tabTitleView, 10, 10, 10, 10);
 
         }
     }

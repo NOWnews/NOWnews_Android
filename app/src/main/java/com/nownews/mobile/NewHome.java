@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
+import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.GCM.GCMController;
 import com.nownews.mobile.Json.NewsListJson;
@@ -82,6 +84,7 @@ public class NewHome extends AppCompatActivity {
     private MenuContent vMenuContent;
     private TextView vX;
     private ImageView vCsmuse;
+    private LinearLayout vLeftDrawer;
     public final static int REQUEST_CODE = 0x123;
     public final static int RESULT_CODE = 0x321;
     public final static int RESULT_CODE_FROM_LIVE = 0x159;
@@ -295,8 +298,10 @@ public class NewHome extends AppCompatActivity {
         mSharedPref = new SharedPreferencesMethods(this);
         mApiController = ApiController.getInstance();
         mBitmapController = BitmapController.getInstance(this);
+        mResize = new ReSizeLayoutParams(this);
     }
 
+    private ReSizeLayoutParams mResize;
     private void processView(){
 
         vCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinator_layout);
@@ -306,6 +311,10 @@ public class NewHome extends AppCompatActivity {
         vMenuContent = (MenuContent) findViewById(R.id.menu_content);
         vX = (TextView) findViewById(R.id.x);
         vCsmuse = (ImageView) findViewById(R.id.csmuse_logo);
+        vLeftDrawer = (LinearLayout) findViewById(R.id.llv_left_drawer);
+        vLeftDrawer.setLayoutParams(mResize.setOnSize(vLeftDrawer));
+
+        mResize.unregisterCallback(this);
 
     }
 

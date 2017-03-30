@@ -42,7 +42,6 @@ public class GcmIntentService extends FirebaseMessagingService {
     private SharedPreferencesMethods mSharedPref;
     private GetNotificationInfo mNotificationInfo;
     private Bitmap bitmap = null;
-    private String mCurrentLoadingType;
     private ImageLoadingListener mImageLoadingListener;
     private RemoteMessage mRemoteMessage;
     private final String INTENT_FILTER = "INTENT_FILTER";
@@ -157,10 +156,11 @@ public class GcmIntentService extends FirebaseMessagingService {
         long[] vibratepattern = {0, 300, 200, 300};
 
         //建立-通知服務建構器
+        Uri sound = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
         int currentSDKVersion = UserDataInfo.getSdkVersion();
         if (currentSDKVersion >= Build.VERSION_CODES.JELLY_BEAN) {
             //Api Level 16 (4.1)以上
-            Uri sound = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
+            Bitmap iconBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
             final Builder builder = new Builder(this);
             //定義Notification建構器
             builder
@@ -168,7 +168,8 @@ public class GcmIntentService extends FirebaseMessagingService {
                     .setVibrate(vibratepattern)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
-                    .setPriority(Notification.PRIORITY_HIGH);
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setLargeIcon(iconBitmap);
 
             if (currentSDKVersion >= Build.VERSION_CODES.LOLLIPOP) {
                 //Api Level 21 (5.0)以上
@@ -178,14 +179,13 @@ public class GcmIntentService extends FirebaseMessagingService {
             setBigStyleNotification(type, newsTitle, newsSummary, builder);
         } else {
             //Api Level 16 (4.1)以下不包含4.1
-            setNormalNotification(newsTitle, newsSummary, pendingIntent);
+            setNormalNotification(newsTitle, newsSummary, pendingIntent, vibratepattern, sound);
         }
-
 
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void setNormalNotification(String newsTitle, String newsSummary, PendingIntent pendingIntent) {
+    private void setNormalNotification(String newsTitle, String newsSummary, PendingIntent pendingIntent, long[] vibratepattern, Uri sound) {
         Notification notification;
         int currentSDKVersion = UserDataInfo.getSdkVersion();
         if (currentSDKVersion < Build.VERSION_CODES.HONEYCOMB) {
@@ -195,6 +195,8 @@ public class GcmIntentService extends FirebaseMessagingService {
                     .setContentTitle(newsTitle)
                     .setContentText(newsSummary)
                     .setContentIntent(pendingIntent)
+                    .setVibrate(vibratepattern)
+                    .setSound(sound)
                     .build();
         } else {
             notification = new Builder(this)
@@ -203,10 +205,12 @@ public class GcmIntentService extends FirebaseMessagingService {
                     .setContentTitle(newsTitle)
                     .setContentText(newsSummary)
                     .setContentIntent(pendingIntent)
+                    .setVibrate(vibratepattern)
+                    .setSound(sound)
                     .build();
         }
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        mNotificationManager.notify(0, notification);
+        mNotificationManager.notify(mNotificationId != -1? mNotificationId:0 , notification);
     }
 
     private String mImageUrl;
@@ -214,9 +218,7 @@ public class GcmIntentService extends FirebaseMessagingService {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setBigStyleNotification(String type, String newsTitle, final String newsSummary, final Builder builder) {
 
-//        builder.setSmallIcon(R.drawable.notification_icon);
         builder.setSmallIcon(R.drawable.now);
-
 
         if (type.equalsIgnoreCase("news")) {
             builder.setSubText(getString(R.string.news));
@@ -236,15 +238,11 @@ public class GcmIntentService extends FirebaseMessagingService {
         mImageUrl = mNotificationInfo.image;
         if (mImageUrl == null || (mImageUrl != null && mImageUrl.isEmpty())) {
             //設定大圖
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-            builder.setLargeIcon(bitmap);
             Notification notification = builder.build();
-            mNotificationManager.notify(0, notification);
+            mNotificationManager.notify(mNotificationId != -1? mNotificationId:0 , notification);
         } else {
             mBitmapController = BitmapController.getInstance(this);
-//            final BitmapController mBitmapController = new BitmapController(this);
             mImageUrl = Utility.getSrcFromImgapi(mImageUrl);
-            mCurrentLoadingType = "smallImage";
             mImageLoadingListener = new ImageLoadingListener() {
 
                 @Override
@@ -257,71 +255,65 @@ public class GcmIntentService extends FirebaseMessagingService {
 
                 @Override
                 public void onLoadingFailed(String aImageUrl, View aView, Exception aException) {
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-                    builder.setLargeIcon(bitmap);
                     Notification notification = builder.build();
-                    notification.icon = R.mipmap.ic_launcher;
                     mNotificationManager.notify(0, notification);
                 }
 
                 @Override
                 public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
-                    if (mCurrentLoadingType.equals("smallImage")) {
-                        mCurrentLoadingType = "bigImage";
-                        builder.setLargeIcon(aBitmap);
-                        mBitmapController.loadImageWithOriginalSize(mImageUrl, null, BitmapController.IMAGE_SRC, 0, 0, mImageLoadingListener);
-                    } else if (mCurrentLoadingType.equals("bigImage")) {
-                        Notification.BigPictureStyle bigPictureStyle = new Notification.BigPictureStyle();
-                        bigPictureStyle.bigPicture(aBitmap);
-                        bigPictureStyle.setSummaryText(newsSummary);
-                        builder.setStyle(bigPictureStyle);
-                        Notification notification = builder.build();
-                        notification.icon = R.drawable.now;
-                        mNotificationManager.notify(0, notification);
-                    }
+
+                    Notification.BigPictureStyle bigPictureStyle = new Notification.BigPictureStyle();
+                    bigPictureStyle.bigPicture(aBitmap);
+                    bigPictureStyle.setSummaryText(newsSummary);
+                    builder.setStyle(bigPictureStyle);
+
+                    Notification notification = builder.build();
+                    mNotificationManager.notify(mNotificationId != -1? mNotificationId:0 , notification);
                 }
 
                 @Override
                 public void onLoadingCancelled() {
                 }
             };
-            final String url = String.format(WebAPIUrl.SCALE_IMAGE, "180", "", 50, mImageUrl);
-            mBitmapController.loadImageWithOriginalSize(url, null, BitmapController.IMAGE_SRC, 0, 0, mImageLoadingListener);
+//            final String url = String.format(WebAPIUrl.SCALE_IMAGE, "180", "", 50, mImageUrl);
+//            mBitmapController.loadImageWithOriginalSize(url, null, BitmapController.IMAGE_SRC, 0, 0, mImageLoadingListener);
+            mBitmapController.loadImageWithOriginalSize(mImageUrl, null, BitmapController.IMAGE_SRC, 0, 0, mImageLoadingListener);
         }
     }
 
+    private int mNotificationId;
     private Intent createNotificationGoWhere(String type) {
         Intent intent = null;
 
         String url = mNotificationInfo.url;
-        int id = -1;
+        mNotificationId = -1;
         if (url != null && !url.isEmpty()) {
             if (url.contains("/n/") || url.contains("/news/")) {
                 type = "news";
-                id = Integer.parseInt(url.substring(url.lastIndexOf("/") + 1));
+                mNotificationId = Integer.parseInt(url.substring(url.lastIndexOf("/") + 1));
             } else if (url.contains("/p/") || url.contains("/photo/")) {
                 type = "album";
-                id = Integer.parseInt(url.substring(url.lastIndexOf("/") + 1));
+                mNotificationId = Integer.parseInt(url.substring(url.lastIndexOf("/") + 1));
             }
         }
         if (Utility.DEBUG && type != null) Log.d(TAG, "type: " + type);
         if (Utility.DEBUG && url != null) Log.d(TAG, "url: " + url);
-        if (Utility.DEBUG && id != -1) Log.d(TAG, "id: " + id);
+        if (Utility.DEBUG && mNotificationId != -1) Log.d(TAG, "mNotificationId: " + mNotificationId);
 
         if (type.equalsIgnoreCase("news")) {
             if(Utility.DEBUG)Log.w(TAG, "news!!!!!");
             intent = new Intent();
             intent.setClass(this, NewsPage.class);
-            intent.putExtra(NewsPage.KEY_NEWS_ID, (mNotificationInfo.id.equals("") ? id : mNotificationInfo.id));
+            intent.putExtra(NewsPage.KEY_NEWS_ID, (mNotificationInfo.id.equals("") ? mNotificationId : mNotificationInfo.id));
             intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_SINGAL_NEWS);
             intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, getString(R.string.cloud_message));
-            intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, getString(R.string.cloud_message_reveive));
+            intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, getString(R.string.cloud_message_click));
             UserDataInfo.isSingalNewsFromAction = true;
         } else if (type.equalsIgnoreCase("album")) {
             if(Utility.DEBUG)Log.w(TAG, "album!!!!!");
             intent = new Intent();
             intent.setClass(this, AlbumPage.class);
-            intent.putExtra(AlbumPage.KEY_ALBUM_ID, (mNotificationInfo.id.equals("") ? id : mNotificationInfo.id));
+            intent.putExtra(AlbumPage.KEY_ALBUM_ID, (mNotificationInfo.id.equals("") ? mNotificationId : mNotificationInfo.id));
             intent.putExtra(AlbumPage.KEY_FROM_WHERE, GcmIntentService.this.getClass().getSimpleName());
         } else if (type.equalsIgnoreCase("normal")) {
             if(Utility.DEBUG)Log.w(TAG, "normal!!!!!");

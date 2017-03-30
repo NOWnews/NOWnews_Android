@@ -35,15 +35,6 @@
         android:textStyle="bold|italic"
         android:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/nshopping_arrow"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="10dp"
-        android:src="@drawable/ic_keyboard_arrow_down_grey600_24dp"
-        android:visibility="gone" />
-
     <TextView
         android:id="@+id/notification_status"
         android:layout_width="wrap_content"
