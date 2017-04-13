@@ -1304,6 +1304,7 @@ public class Utility {
     }
 
     public static void shareToSNS(Context aContext, String aShareMessage){
+        Log.d(TAG, "aShareMessage: " + aShareMessage);
         if(aShareMessage!=null && aShareMessage.contains("▲")){
             aShareMessage = aShareMessage.replaceAll("▲", "");
         }

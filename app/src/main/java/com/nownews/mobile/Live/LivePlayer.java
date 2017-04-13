@@ -214,7 +214,7 @@ public class LivePlayer extends Activity {
     private void setHitInfo(int position){
         String title = mCurrentChannelList.get(position).title;
         String categoryName = mLiveList.get(mCategoryIndex).categoryName;
-        GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.video), categoryName, title);
+        GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.live), categoryName, title);
     }
 
     private void showAndHideMenu(){

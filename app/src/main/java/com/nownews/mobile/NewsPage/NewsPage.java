@@ -347,7 +347,8 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                         newsId = mReferenceNewsList.get(vViewPager.getCurrentItem())._id;
                         break;
                     case TYPE_SINGAL_NEWS:
-                        NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.getItem(vViewPager.getCurrentItem());
+                        Log.d(TAG, "TYPE_SINGAL_NEWS");
+                        NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, vViewPager.getCurrentItem());
                         NewsInfoJson newsInfo = newsPageFragment.getCurrentNewsInfo();
                         if(newsInfo==null){
                             return false;
@@ -643,7 +644,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
 
     public void reload() {
         if (mAdapter != null) {
-            NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.getItem(mNewsIndex);
+            NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, mNewsIndex);
             if (newsPageFragment != null) {
                 newsPageFragment.reload();
             }
