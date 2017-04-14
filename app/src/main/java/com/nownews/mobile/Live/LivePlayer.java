@@ -40,9 +40,11 @@ public class LivePlayer extends Activity {
     public final static String KEY_PLAY_URL = "keyPlayUrl";
     public final static String KEY_CATEGORY_INDEX = "categoryIndex";
     public final static String KEY_CHANNEL_INDEX = "channelIndex";
+    public final static String KEY_WATCH_TIME = "watchTime";
     private String mUrl;
     private int mCategoryIndex;
     private int mChannelIndex;
+    private int mWatchTime;
 
     private VideoView vLivePlayer;
     private LinearLayout vChannelListGroup;
@@ -68,9 +70,9 @@ public class LivePlayer extends Activity {
             mUrl = getIntent().getStringExtra(KEY_PLAY_URL);
             mCategoryIndex = getIntent().getIntExtra(KEY_CATEGORY_INDEX, 0);
             mChannelIndex = getIntent().getIntExtra(KEY_CHANNEL_INDEX, 0);
+            mWatchTime = getIntent().getIntExtra(KEY_WATCH_TIME, 0);
         }
         mLiveList = UserDataInfo.getLiveList();
-
     }
 
     private void processView(){
@@ -163,9 +165,9 @@ public class LivePlayer extends Activity {
             long seconds = (spentTime/1000)%60;
             if(Utility.DEBUG)Log.d(TAG, "時間已過: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
 
-            if(minutes>0 && minutes%20==0){ //20分鐘到
+            if(minutes>0 && minutes%mWatchTime==0){ //mWatchTime分鐘到
 //            if(minutes>0 && minutes%1==0){ //1分鐘到
-                if(Utility.DEBUG)Log.e(TAG, "20分鐘到");
+                if(Utility.DEBUG)Log.e(TAG, mWatchTime + "分鐘到");
 //                if(Utility.DEBUG)Log.e(TAG, "1分鐘到");
                 SharedPreferencesMethods sharedPreferencesMethods = new SharedPreferencesMethods(LivePlayer.this);
                 sharedPreferencesMethods.setLiveStopWatchingTime(currentTime);

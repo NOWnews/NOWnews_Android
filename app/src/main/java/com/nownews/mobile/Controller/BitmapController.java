@@ -375,6 +375,9 @@ public class BitmapController {
 
         if (loadStatus == TYPE_PRELOAD) {
             Log.w(TAG, "loadStatus == TYPE_PRELOAD");
+            if (aImageLoadingListener != null) {
+                aImageLoadingListener.onLoadingComplete(aUrl, aView, cache);
+            }
             return;
         }
 

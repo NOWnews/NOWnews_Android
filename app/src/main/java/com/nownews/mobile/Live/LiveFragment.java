@@ -1,7 +1,7 @@
 package com.nownews.mobile.Live;
 
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,14 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Common.UserDataInfo;
-import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
+import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Json.LiveListJson;
 import com.nownews.mobile.Widget.CSTVDownloadDialog;
 
@@ -33,6 +34,7 @@ public class LiveFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
     public boolean isApiLoadingSuccess;
     private ApiController mApiController;
+    private BitmapController mBitmapController;
     private ApiHandler mApiHandler;
     private ListView vCategoryList;
     private ListView vChannelList;
@@ -65,6 +67,7 @@ public class LiveFragment extends Fragment {
     private void initController(){
         mApiController = ApiController.getInstance();
         mApiHandler = new ApiHandler();
+        mBitmapController = BitmapController.getInstance(getActivity());
     }
 
     private void processView(){
@@ -82,6 +85,7 @@ public class LiveFragment extends Fragment {
         }
     }
 
+    private LiveListJson mLiveInfoJson;
     private List<LiveListJson.Data> mLiveList;
     private class ApiHandler extends Handler{
 
@@ -90,9 +94,12 @@ public class LiveFragment extends Fragment {
 
             switch (msg.what){
                 case ParameterSet.GET_LIVE_LIST_DONE:
-                    mLiveList = (List<LiveListJson.Data>) msg.obj;
-                    if(mLiveList!=null){
-                        processList();
+                    mLiveInfoJson = (LiveListJson) msg.obj;
+                    if(mLiveInfoJson!=null){
+                        mLiveList = mLiveInfoJson.data;
+                        if(mLiveList!=null){
+                            processList();
+                        }
                     }
                     break;
                 case ParameterSet.GET_LIVE_LIST_FAILED:
@@ -136,15 +143,52 @@ public class LiveFragment extends Fragment {
 
         mCurrentCategoryIndex = position;
         mCurrentChannelList = mLiveList.get(position).list;
-        List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-        for(LiveListJson.ChannelList list : mCurrentChannelList){
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("channelName", list.title);
-            items.add(map);
+        String iconUrl = mLiveInfoJson.liveInfo.icon;
+        if(mBitmapController!=null){
+            mBitmapController.preloadOriginalImageFromUrl(iconUrl, null, BitmapController.IMAGE_SRC, 0, 0, new BitmapController.ImageLoadingListener() {
+                @Override
+                public void onLoadingStart(String aImageUrl, View aView) { }
+
+                @Override
+                public void onLoadingFailed(String aImageUrl, View aView, Exception aException) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
+
+                    List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
+                    for(LiveListJson.ChannelList list : mCurrentChannelList){
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put("channelName", list.title);
+                        map.put("channelIcon", aBitmap);
+                        items.add(map);
+                    }
+                    SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.widget_live_channel_item, new String[]{"channelName", "channelIcon"}, new int[]{R.id.channel_item, R.id.tv_icon});
+                    adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+                        @Override
+                        public boolean setViewValue(View view, Object o, String s) {
+
+                            if(view instanceof ImageView && o instanceof Bitmap){
+                                ((ImageView)view).setImageBitmap((Bitmap)o);
+                                return true;
+                            }
+
+                            return false;
+                        }
+                    });
+                    vChannelList.setAdapter(adapter);
+                    vChannelList.setOnItemClickListener(mChannelListItemClickListener);
+
+                }
+
+                @Override
+                public void onLoadingCancelled() { }
+
+                @Override
+                public void onProgressUpdate(String aImageUrl, int aProgress, int max) { }
+            });
         }
-        SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.widget_live_channel_item, new String[]{"channelName"}, new int[]{R.id.channel_item});
-        vChannelList.setAdapter(adapter);
-        vChannelList.setOnItemClickListener(mChannelListItemClickListener);
 
     }
 
@@ -164,7 +208,8 @@ public class LiveFragment extends Fragment {
         }
         String title = mCurrentChannelList.get(position).title;
         String path = mCurrentChannelList.get(position).path;
-        mCSTVDownloadDialog = new CSTVDownloadDialog(getActivity(), title, mLiveList, path, mCurrentCategoryIndex, position);
+        mCSTVDownloadDialog = new CSTVDownloadDialog(getActivity(), title, mLiveList, path,
+                mCurrentCategoryIndex, position, mLiveInfoJson);
         mCSTVDownloadDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {

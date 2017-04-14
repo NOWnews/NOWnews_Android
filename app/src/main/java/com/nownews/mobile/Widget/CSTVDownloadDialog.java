@@ -16,12 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.util.Util;
 import com.nownews.R;
 import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
+import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Json.LiveListJson;
 import com.nownews.mobile.Live.LivePlayer;
 import com.nownews.mobile.NewHome;
@@ -42,20 +42,31 @@ public class CSTVDownloadDialog extends Dialog {
     private TextView vMessage;
     private Button vWatchNow;
     private Button vDownloadNow;
+    private Button vOnlyOneButton;
     private CardView vCardViewGroup;
     private LinearLayout vButtonsGroup;
     private ImageView vIcon;
 
     private ReSizeLayoutParams mResize;
+    private BitmapController mBitmapController;
 
     private String mTitle;
     private List<LiveListJson.Data> mLiveList;
     private String mPath;
     private int mCategoryIndex;
     private int mChannelIndex;
+    private int mWatchTime;
+    private int mLockTime;
+    private String mIconUrl;
+    private String mTitleMessage;
+    private boolean downloadable;
+    private boolean watchable;
+    private String downloadLink;
+    private LiveListJson mLiveInfoJson;
     private boolean isCountdownType;
 
-    public CSTVDownloadDialog(Context context, String aTitle, List<LiveListJson.Data> aLiveList, String aPath, int aCategoryIndex, int aChannelIndex) {
+    public CSTVDownloadDialog(Context context, String aTitle, List<LiveListJson.Data> aLiveList, String aPath,
+                              int aCategoryIndex, int aChannelIndex, LiveListJson aLiveInfoJson) {
         super(context, R.style.FullScreenDialogStyle);
 
         mTitle = aTitle;
@@ -63,6 +74,15 @@ public class CSTVDownloadDialog extends Dialog {
         mPath = aPath;
         mCategoryIndex = aCategoryIndex;
         mChannelIndex = aChannelIndex;
+        mLiveInfoJson = aLiveInfoJson;
+        if(mLiveInfoJson!=null){
+            mWatchTime = mLiveInfoJson.liveInfo.watchTime;
+            mLockTime = mLiveInfoJson.liveInfo.lockTime;
+            mIconUrl = mLiveInfoJson.liveInfo.icon;
+            mTitleMessage = mLiveInfoJson.liveInfo.titleMessage;
+            watchable = mLiveInfoJson.liveInfo.watchable;
+            downloadLink = mLiveInfoJson.liveInfo.androidDownloadLink;
+        }
         if(mChannelIndex==-1){
             isCountdownType = true;
         }
@@ -94,7 +114,7 @@ public class CSTVDownloadDialog extends Dialog {
         checkTime();
         checkShareAppStatus();
         if(isCountdownType){
-            vMessage.setText(mContext.getString(R.string.cstv_download_hint2));
+            vMessage.setText(mContext.getString(R.string.download_hint2));
             startCountdownTimer();
         }
 
@@ -113,10 +133,9 @@ public class CSTVDownloadDialog extends Dialog {
     private long enableWatchingTime;
     private void initController(){
         sharedPreferencesMethods = new SharedPreferencesMethods(mContext);
+        mBitmapController = BitmapController.getInstance(mContext);
     }
 
-//    private final int mIntervalHours = 2;
-    private final int mIntervalMinutes = 30;
     private void checkTime(){
 
         stopWatchingTime = sharedPreferencesMethods.getLiveStopWatchingTime();
@@ -130,8 +149,8 @@ public class CSTVDownloadDialog extends Dialog {
         Log.e(TAG, "currentTime: " + currentTime);
         Log.e(TAG, "spentTime: " + spentTime);
         Log.e(TAG, "minutes: " + minutes);
-//        if(minutes>=mIntervalHours*60){
-        if(minutes>=mIntervalMinutes){ // for test
+//        if(minutes>=mIntervalHours*60){ // for test
+        if(minutes>=mLockTime){
             isCountdownType = false;
         }else{
             isCountdownType = true;
@@ -143,7 +162,7 @@ public class CSTVDownloadDialog extends Dialog {
     private void startCountdownTimer(){
 
 //        enableWatchingTime = stopWatchingTime + (mIntervalHours*60*60*1000);
-        enableWatchingTime = stopWatchingTime + (mIntervalMinutes*60*1000); // for test
+        enableWatchingTime = stopWatchingTime + (mLockTime*60*1000); // for test
         Log.e(TAG, "enableWatchingTime: " + enableWatchingTime);
         if(mCountdownTimer!=null){
             mCountdownTimer.removeCallbacks(mCountdownRunnalbe);
@@ -162,7 +181,7 @@ public class CSTVDownloadDialog extends Dialog {
             long seconds = (leftTime/1000)%60;
             if(minutes>0 || (minutes==0 && seconds>0)){
                 if(Utility.DEBUG)Log.d(TAG, "時間剩下: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
-                vMessage.setText(mContext.getString(R.string.cstv_download_hint2) + "\n距離下次收看還剩下: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
+                vMessage.setText(String.format(mContext.getString(R.string.download_hint2), mLockTime) + "\n距離下次收看還剩下: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
                 vWatchNow.setText(mContext.getString(R.string.click_me_share));
                 vWatchNow.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -175,8 +194,9 @@ public class CSTVDownloadDialog extends Dialog {
                 mCountdownTimer.postDelayed(this, 1000);
             }else{
                 if(Utility.DEBUG)Log.e(TAG, "時間到!!");
+                vMessage.setText(mTitleMessage);
                 vWatchNow.setEnabled(true);
-                vWatchNow.setText(mContext.getString(R.string.cstv_watch_now));
+                vWatchNow.setText(mContext.getString(R.string.watch_now));
             }
 
         }
@@ -197,6 +217,7 @@ public class CSTVDownloadDialog extends Dialog {
         vMessage = (TextView)findViewById(R.id.message);
         vMessage.setLayoutParams(mResize.setMargins(vMessage, 0, 0, 0, 10));
         mResize.setTextSize(vMessage);
+        vMessage.setText(mTitleMessage);
 
         vButtonsGroup = (LinearLayout)findViewById(R.id.buttons_group);
         vButtonsGroup.setLayoutParams(mResize.setMargins(vButtonsGroup, 10, 10, 10, 10));
@@ -209,8 +230,15 @@ public class CSTVDownloadDialog extends Dialog {
         vDownloadNow.setLayoutParams(mResize.setOnSize(vDownloadNow, 10, 0, 0, 0));
         mResize.setTextSize(vDownloadNow);
 
+        vOnlyOneButton = (Button)findViewById(R.id.only_one_button);
+        mResize.setTextSize(vOnlyOneButton);
+
         vIcon = (ImageView)findViewById(R.id.cstv_icon);
+        vIcon.setLayoutParams(mResize.setOnSize(vIcon, 0, 0, 0, 0));
         mResize.setPadding(vIcon, 20, 20, 20, 10);
+        if(mBitmapController!=null && mIconUrl!=null && !mIconUrl.trim().isEmpty()){
+            mBitmapController.loadImageWithOriginalSize(mIconUrl, vIcon, BitmapController.IMAGE_SRC, 0, 0, null);
+        }
 
 
     }
@@ -221,6 +249,31 @@ public class CSTVDownloadDialog extends Dialog {
         vWatchNow.setOnClickListener(mWatchNowClickListener);
         vDownloadNow.setOnClickListener(mDownloadNowClickListener);
         vBody.setOnClickListener(mBodyClickListener);
+
+        if(watchable && downloadable && !downloadLink.trim().isEmpty()){
+            vButtonsGroup.setVisibility(View.VISIBLE);
+            vOnlyOneButton.setVisibility(View.GONE);
+            vWatchNow.setText(mContext.getString(R.string.watch_now));
+            vDownloadNow.setText(mContext.getString(R.string.download_now));
+            vWatchNow.setEnabled(true);
+        }else if((watchable && downloadable && downloadLink.trim().isEmpty()) || (watchable && !downloadable)){
+            vButtonsGroup.setVisibility(View.GONE);
+            vOnlyOneButton.setVisibility(View.VISIBLE);
+            vOnlyOneButton.setText(mContext.getString(R.string.watch_now));
+            vOnlyOneButton.setOnClickListener(mWatchNowClickListener);
+            vOnlyOneButton.setEnabled(true);
+        }else if(!watchable && downloadable && !downloadLink.trim().isEmpty()){
+            vButtonsGroup.setVisibility(View.VISIBLE);
+            vOnlyOneButton.setVisibility(View.GONE);
+            vWatchNow.setText(mContext.getString(R.string.watch_now));
+            vWatchNow.setText(mContext.getString(R.string.stop_service));
+            vWatchNow.setEnabled(false);
+        }else{
+            vButtonsGroup.setVisibility(View.GONE);
+            vOnlyOneButton.setVisibility(View.VISIBLE);
+            vOnlyOneButton.setText(mContext.getString(R.string.stop_service));
+            vOnlyOneButton.setEnabled(false);
+        }
 
     }
 
@@ -238,7 +291,7 @@ public class CSTVDownloadDialog extends Dialog {
         public void onClick(View view) {
 
             Intent MyIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=com.csmuse.dvbt.nownews.mobile"));
+                    Uri.parse(downloadLink));
             mContext.startActivity(MyIntent);
             dismiss();
 
@@ -267,6 +320,7 @@ public class CSTVDownloadDialog extends Dialog {
             intent.putExtra(LivePlayer.KEY_PLAY_URL, mPath);
             intent.putExtra(LivePlayer.KEY_CATEGORY_INDEX, mCategoryIndex);
             intent.putExtra(LivePlayer.KEY_CHANNEL_INDEX, mChannelIndex);
+            intent.putExtra(LivePlayer.KEY_WATCH_TIME, mWatchTime);
             ((NewHome)mContext).startActivityForResult(intent, NewHome.RESULT_CODE_FROM_LIVE);
 
             dismiss();
@@ -298,6 +352,9 @@ public class CSTVDownloadDialog extends Dialog {
         }
         if(sharedPreferencesMethods!=null){
             sharedPreferencesMethods.unRegistContext(mContext);
+        }
+        if(mBitmapController!=null){
+            mBitmapController.unregistBitmapController(mContext);
         }
     }
 }

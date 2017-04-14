@@ -38,7 +38,7 @@ public class GetLiveList implements Runnable {
 
             Utility.writeJsonToFile(TAG, jsonValue);
 
-            message.obj = jsonValueClb.data;
+            message.obj = jsonValueClb;
             message.what = ParameterSet.GET_LIVE_LIST_DONE;
 
             if (Utility.DEBUG) Log.v(TAG, "GET_LIVE_LIST_DONE");

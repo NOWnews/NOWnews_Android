@@ -419,6 +419,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
 
     @Override
     public void onBackPressed() {
+
         int currentPage = vViewPager.getCurrentItem();
         NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, currentPage);
         if(newsPageFragment!=null && newsPageFragment.isVideoFrameLayoutVisibile()){
@@ -570,6 +571,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             public void onVpadnLeaveApplication(VpadnAd vpadnAd) {
                 if (Utility.DEBUG) Log.i(TAG, "onVpadnLeaveApplication");
             }
+
         });
         VpadnAdRequest request = new VpadnAdRequest();
         if(isVponTestMode){
