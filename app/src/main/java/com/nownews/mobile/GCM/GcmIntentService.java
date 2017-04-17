@@ -308,6 +308,7 @@ public class GcmIntentService extends FirebaseMessagingService {
             intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_SINGAL_NEWS);
             intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, getString(R.string.cloud_message));
             intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, getString(R.string.cloud_message_click));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             UserDataInfo.isSingalNewsFromAction = true;
         } else if (type.equalsIgnoreCase("album")) {
             if(Utility.DEBUG)Log.w(TAG, "album!!!!!");

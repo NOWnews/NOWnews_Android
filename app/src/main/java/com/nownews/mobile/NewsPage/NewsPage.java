@@ -433,6 +433,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
         if(UserDataInfo.isSingalNewsFromAction){
             Intent intent = new Intent();
             intent.setClass(this, NewHome.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }else{
             setResult(RESULT_CODE);
