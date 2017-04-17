@@ -323,6 +323,12 @@ public class SplashActivity extends Activity {
                         } else {
                             vSplashImage.setImageResource(R.drawable.default_img);
                         }
+
+                        boolean connectStatus = Utility.getConnectivityStatus(SplashActivity.this);
+                        if (!connectStatus) {
+                            Utility.openNetworkErrorDialog();
+                            return;
+                        }
                         if (!Utility.showNetworkSlowDialog(SplashActivity.this, mHandler, true)) {
                             getSplashImage();
                         }

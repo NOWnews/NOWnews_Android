@@ -880,7 +880,9 @@ public class Utility {
     }
 
     public static void openNetworkErrorDialog() {
-        if (mNetworkErrordialog != null && mNetworkErrordialog.isShowing()) {
+        if(!UserDataInfo.isActivityVisible()){
+            return;
+        }else if (mNetworkErrordialog != null && mNetworkErrordialog.isShowing()) {
             return;
         }
         final Context context = UserDataInfo.getCurrentContext();
@@ -942,7 +944,9 @@ public class Utility {
     }
 
     public static void openSocketTimeoutDialog(final Context aContext) {
-        if (isNetworkSlow() && !isUserKnowNetworkSlow) {
+        if(!UserDataInfo.isActivityVisible()){
+            return;
+        }else if (isNetworkSlow() && !isUserKnowNetworkSlow) {
             showNetworkSlowDialog(aContext, null, true);
             return;
         } else if (isNetworkSlow() && isUserKnowNetworkSlow) {
