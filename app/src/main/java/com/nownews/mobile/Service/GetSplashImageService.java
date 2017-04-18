@@ -72,7 +72,7 @@ public class GetSplashImageService extends Service {
                     int screenHeight = Utility.getScreenHeight(splash);
                     int screenWidth = Utility.getScreenWidth(splash);
                     splash.mSplashImageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, screenHeight, Utility.IMG_QUALITY, splash.mSplashImageUrl);
-                    Log.d(TAG, "splash.mSplashImageUrl: " + splash.mSplashImageUrl);
+                    if (Utility.DEBUG)Log.d(TAG, "splash.mSplashImageUrl: " + splash.mSplashImageUrl);
                     splash.processImage();
                     break;
                 case ParameterSet.GET_SPLASH_IMAGE_FAILED:
@@ -89,7 +89,7 @@ public class GetSplashImageService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.v(TAG, "^^^^onStartCommand^^^^");
+        if (Utility.DEBUG)Log.v(TAG, "^^^^onStartCommand^^^^");
         initController();
         getSplashImage();
 
@@ -124,7 +124,7 @@ public class GetSplashImageService extends Service {
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            Log.v(TAG, "onResourceReady");
+                            if (Utility.DEBUG)Log.v(TAG, "onResourceReady");
 
                             try {
                                 File file = new File(UserDataInfo.ThumbnailPath);

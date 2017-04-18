@@ -311,7 +311,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
             vVideoFrameLayout.setVisibility(View.VISIBLE);
 
-            Log.v(TAG, "onVideoPlayButtonClick() aYoutubeId: " + aYoutubeId);
+            if (Utility.DEBUG)Log.v(TAG, "onVideoPlayButtonClick() aYoutubeId: " + aYoutubeId);
 
             mYouTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
             FragmentTransaction transcation = getChildFragmentManager().beginTransaction();
@@ -325,60 +325,60 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                         mYoutubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
                             @Override
                             public void onPlaying() {
-                                Log.d(TAG, "===YoutubePlayer onPlaying===");
+                                if (Utility.DEBUG)Log.d(TAG, "===YoutubePlayer onPlaying===");
                             }
 
                             @Override
                             public void onPaused() {
-                                Log.d(TAG, "===YoutubePlayer onPaused===");
+                                if (Utility.DEBUG)Log.d(TAG, "===YoutubePlayer onPaused===");
                             }
 
                             @Override
                             public void onStopped() {
-                                Log.d(TAG, "===YoutubePlayer onStopped===");
+                                if (Utility.DEBUG)Log.d(TAG, "===YoutubePlayer onStopped===");
                             }
 
                             @Override
                             public void onBuffering(boolean b) {
-                                Log.d(TAG, "===YoutubePlayer onBuffering b: " + b + " ===");
+                                if (Utility.DEBUG)Log.d(TAG, "===YoutubePlayer onBuffering b: " + b + " ===");
                             }
 
                             @Override
                             public void onSeekTo(int i) {
-                                Log.d(TAG, "===YoutubePlayer onSeekTo i: " + i + " ===");
+                                if (Utility.DEBUG)Log.d(TAG, "===YoutubePlayer onSeekTo i: " + i + " ===");
                             }
                         });
                         mYoutubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                             @Override
                             public void onLoading() {
-                                Log.i(TAG, "===YoutubePlayer onLoading===");
+                                if (Utility.DEBUG)Log.i(TAG, "===YoutubePlayer onLoading===");
                             }
 
                             @Override
                             public void onLoaded(String s) {
-                                Log.i(TAG, "===YoutubePlayer onLoaded s: " + s + " ===");
+                                if (Utility.DEBUG)Log.i(TAG, "===YoutubePlayer onLoaded s: " + s + " ===");
                             }
 
                             @Override
                             public void onAdStarted() {
-                                Log.i(TAG, "===YoutubePlayer onAdStarted===");
+                                if (Utility.DEBUG)Log.i(TAG, "===YoutubePlayer onAdStarted===");
                             }
 
                             @Override
                             public void onVideoStarted() {
-                                Log.i(TAG, "===YoutubePlayer onVideoStarted===");
+                                if (Utility.DEBUG)Log.i(TAG, "===YoutubePlayer onVideoStarted===");
                             }
 
                             @Override
                             public void onVideoEnded() {
-                                Log.i(TAG, "===YoutubePlayer onVideoEnded===");
+                                if (Utility.DEBUG)Log.i(TAG, "===YoutubePlayer onVideoEnded===");
                             }
 
                             @Override
                             public void onError(YouTubePlayer.ErrorReason errorReason) {
-                                Log.i(TAG, "===YoutubePlayer onError errorReason: " + errorReason.name() + " ===");
+                                if (Utility.DEBUG)Log.i(TAG, "===YoutubePlayer onError errorReason: " + errorReason.name() + " ===");
                                 if(errorReason.equals(YouTubePlayer.ErrorReason.UNAUTHORIZED_OVERLAY)){
-                                    Log.i(TAG, "===YoutubePlayer is visible or not???: " + (mYouTubePlayerSupportFragment.isVisible()? "true":"false") + " ===");
+                                    if (Utility.DEBUG)Log.i(TAG, "===YoutubePlayer is visible or not???: " + (mYouTubePlayerSupportFragment.isVisible()? "true":"false") + " ===");
                                 }
                             }
                         });
@@ -789,7 +789,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         if(url!=null && title!=null){
             label = title + " " + url;
         }
-        Log.d(TAG, "label: " + label);
+        if (Utility.DEBUG)Log.d(TAG, "label: " + label);
         GoogleAnalyticsFunction.sendHitInfo(getActivity(), mBigCategory, mNewsCategory, label);
     }
 

@@ -134,7 +134,7 @@ public class MenuContent extends RelativeLayout {
                         appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mHandler);
                     } else if (item.getContent().toString().equals(mContext.getString(R.string.download_two))) {
                         //download
-                        String fileUrl = "http://legacy.nownews.com/events/adtips/mobile_app/NowNews_Mobile.apk";
+                        String fileUrl = "http://www.megamediatech.com/NowNews_Mobile.apk";
                         String fileName = "NownewsApp.apk";
                         File folder = new File(mNownewsApkFolder);
                         if (!folder.exists()) {

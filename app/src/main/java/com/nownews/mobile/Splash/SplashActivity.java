@@ -149,7 +149,7 @@ public class SplashActivity extends Activity {
 
     private void getSplashImage() {
 
-        Log.v(TAG, "getSplashImage");
+        if (Utility.DEBUG)Log.v(TAG, "getSplashImage");
 
         Intent intent = new Intent();
         intent.setClass(this, GetSplashImageService.class);
@@ -215,7 +215,7 @@ public class SplashActivity extends Activity {
                 public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
 
                     if (aBitmap != null) {
-                        Log.v(TAG, "onLoadingComplete && aBitmpa is not null");
+                        if (Utility.DEBUG)Log.v(TAG, "onLoadingComplete && aBitmpa is not null");
                         mBitmapController.convertBitmapToFile(UserDataInfo.ThumbnailPath, "Splash.jpg", aBitmap);
                     }
                     if (!isAllreadyCallGoHome) {
@@ -307,7 +307,7 @@ public class SplashActivity extends Activity {
         processView();
 //        mBitmapController.loadImageFromFile(vSplashImage, UserDataInfo.ThumbnailPath + "Splash.jpg", mHandler);
         String thumbnailPath = UserDataInfo.ThumbnailPath + "Splash.jpg";
-        Log.d(TAG, "thumbnailPath: " + thumbnailPath);
+        if (Utility.DEBUG)Log.d(TAG, "thumbnailPath: " + thumbnailPath);
         Glide.with(this)
                 .load(thumbnailPath)
                 .asBitmap()
