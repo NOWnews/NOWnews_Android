@@ -182,21 +182,42 @@ public class CSTVDownloadDialog extends Dialog {
             if(minutes>0 || (minutes==0 && seconds>0)){
                 if(Utility.DEBUG)Log.d(TAG, "時間剩下: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
                 vMessage.setText(String.format(mContext.getString(R.string.download_hint2), mLockTime) + "\n距離下次收看還剩下: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
-                vWatchNow.setText(mContext.getString(R.string.click_me_share));
-                vWatchNow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
 
-                        Utility.shareApp(mContext);
+                if(watchable && downloadable && !downloadLink.trim().isEmpty()){
+                    vButtonsGroup.setVisibility(View.VISIBLE);
+                    vOnlyOneButton.setVisibility(View.GONE);
+                    vWatchNow.setText(mContext.getString(R.string.click_me_share));
+                    vDownloadNow.setText(mContext.getString(R.string.download_now));
+                    vWatchNow.setEnabled(true);
+                    vWatchNow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
-                    }
-                });
+                            Utility.shareApp(mContext);
+
+                        }
+                    });
+                }else if((watchable && downloadable && downloadLink.trim().isEmpty()) || (watchable && !downloadable)){
+                    vButtonsGroup.setVisibility(View.GONE);
+                    vOnlyOneButton.setVisibility(View.VISIBLE);
+                    vOnlyOneButton.setText(mContext.getString(R.string.click_me_share));
+                    vOnlyOneButton.setOnClickListener(mWatchNowClickListener);
+                    vOnlyOneButton.setEnabled(true);
+                    vOnlyOneButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            Utility.shareApp(mContext);
+
+                        }
+                    });
+                }
+
                 mCountdownTimer.postDelayed(this, 1000);
             }else{
                 if(Utility.DEBUG)Log.e(TAG, "時間到!!");
                 vMessage.setText(mTitleMessage);
-                vWatchNow.setEnabled(true);
-                vWatchNow.setText(mContext.getString(R.string.watch_now));
+                processListener();
             }
 
         }
@@ -265,8 +286,8 @@ public class CSTVDownloadDialog extends Dialog {
         }else if(!watchable && downloadable && !downloadLink.trim().isEmpty()){
             vButtonsGroup.setVisibility(View.VISIBLE);
             vOnlyOneButton.setVisibility(View.GONE);
-            vWatchNow.setText(mContext.getString(R.string.watch_now));
             vWatchNow.setText(mContext.getString(R.string.stop_service));
+            vDownloadNow.setText(mContext.getString(R.string.download_now));
             vWatchNow.setEnabled(false);
         }else{
             vButtonsGroup.setVisibility(View.GONE);
