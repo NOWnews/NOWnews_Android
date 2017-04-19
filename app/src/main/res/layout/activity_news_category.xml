@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/tab"
                 android:layout_alignTop="@+id/tab"
-                android:src="@drawable/catalog_filter_left" />
+                android:background="@drawable/catalog_filter_left"/>
 
             <ImageView
                 android:id="@+id/catalog_right"
@@ -38,7 +38,7 @@
                 android:layout_alignBottom="@+id/tab"
                 android:layout_alignTop="@+id/tab"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/catalog_filter_right" />
+                android:background="@drawable/catalog_filter_right" />
 
         </RelativeLayout>
 

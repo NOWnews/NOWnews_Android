@@ -161,4 +161,5 @@
     <string name="gcm_dialog_lets_go">立即前往</string>
     <string name="click_me_share">點我分享</string>
     <string name="stop_service">暫停服務</string>
+    <string name="live_signal">ＬＩＶＥ</string>
 </resources>

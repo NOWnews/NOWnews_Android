@@ -11,6 +11,7 @@ import com.nownews.mobile.Api.CheckVersion;
 import com.nownews.mobile.Api.GetHeadlineNews;
 import com.nownews.mobile.Api.GetHotNews;
 import com.nownews.mobile.Api.GetInstantNews;
+import com.nownews.mobile.Api.GetLiveInfo;
 import com.nownews.mobile.Api.GetLiveList;
 import com.nownews.mobile.Api.GetNearByNews;
 import com.nownews.mobile.Api.GetNewsCategory;
@@ -366,6 +367,15 @@ public class ApiController {
 //        mApiQueue.add(new GetLiveList(aHandler));
 //        if (Utility.DEBUG) Log.v(TAG, "mApiQueue.size(): " + mApiQueue.size());
         new Thread(new GetLiveList(aHandler)).start();
+    }
+
+    /**取得KMT直播資訊*/
+    public void getLiveInfo(Handler aHandler) {
+        if (Utility.DEBUG) Log.i(TAG, "getLiveInfo called");
+//        if (Utility.DEBUG) Log.e(TAG, "mApiQueue = " + (mApiQueue == null ? true : false));
+//        mApiQueue.add(new GetLiveList(aHandler));
+//        if (Utility.DEBUG) Log.v(TAG, "mApiQueue.size(): " + mApiQueue.size());
+        new Thread(new GetLiveInfo(aHandler)).start();
     }
 
 //    public void stopApiScheduler() {

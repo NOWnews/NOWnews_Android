@@ -42,10 +42,10 @@ import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.nownews.R;
-import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.GCM.GCMController;
+import com.nownews.mobile.Json.LiveInfoJson;
 import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Live.LiveFragment;
 import com.nownews.mobile.NewsCategory.NewsCategoryFragment;
@@ -62,9 +62,11 @@ import com.nownews.mobile.Controller.AppController;
 import com.nownews.mobile.Json.CheckVersionJson;
 import com.nownews.mobile.Service.FileDownloadService;
 import com.nownews.mobile.VideoNewsCategory.VideoNewsCategoryFragment;
+import com.nownews.mobile.Widget.LiveMarquee;
 import com.nownews.mobile.Widget.MenuContent;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
 
@@ -85,10 +87,11 @@ public class NewHome extends AppCompatActivity {
     private TextView vX;
     private ImageView vCsmuse;
     private LinearLayout vLeftDrawer;
+    private LiveMarquee vLiveMarquee;
     public final static int REQUEST_CODE = 0x123;
     public final static int RESULT_CODE = 0x321;
     public final static int RESULT_CODE_FROM_LIVE = 0x159;
-    private final int SHOW_DFP_AD_PAGE = 0x951;
+    private final static int SHOW_DFP_AD_PAGE = 0x951;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,6 +105,7 @@ public class NewHome extends AppCompatActivity {
         processListener();
         processDrawerLayout();
         startGCM();
+        getLiveInfo();
         getVersionInfo();
         processBottomNavigation();
 
@@ -144,9 +148,9 @@ public class NewHome extends AppCompatActivity {
     public void onPause() {
         UserDataInfo.activityPaused();
         isPause = true;
-        if (mUiHandler != null) {
-            if (mUiHandler.hasMessages(SHOW_DFP_AD_PAGE)) {
-                mUiHandler.removeMessages(SHOW_DFP_AD_PAGE);
+        if (mApiHandler != null) {
+            if (mApiHandler.hasMessages(SHOW_DFP_AD_PAGE)) {
+                mApiHandler.removeMessages(SHOW_DFP_AD_PAGE);
             }
         }
         super.onPause();
@@ -163,13 +167,17 @@ public class NewHome extends AppCompatActivity {
         if(mSharedPref!=null){
             mSharedPref.unRegistContext(this);
         }
+        if(mApiHandler!=null){
+            mApiHandler.removeCallbacks(null);
+            mApiHandler = null;
+        }
         super.onDestroy();
     }
 
     private GCMController mGCMController;
     private void startGCM() {
         if (mGCMController == null) {
-            mGCMController = new GCMController(this, mUiHandler);
+            mGCMController = new GCMController(this, mApiHandler);
         }
         mGCMController.startGCM();
         String FCMReistId = mSharedPref.getGcmRegistId();
@@ -180,56 +188,86 @@ public class NewHome extends AppCompatActivity {
         if(Utility.DEBUG)Log.i(TAG, "###FCMReistId: " + FCMReistId);
     }
 
-    private Handler mUiHandler = new Handler() {
+    private LiveInfoJson mLiveInfo;
+    private static class ApiHandler extends Handler {
+
+        private final WeakReference<NewHome> mNewHome;
+
+        public ApiHandler(NewHome aNewHome){
+            mNewHome = new WeakReference<NewHome>(aNewHome);
+        }
 
         @Override
         public void handleMessage(Message msg) {
 
+            NewHome newHome = mNewHome.get();
+            if(newHome==null){
+                return;
+            }
+
             switch (msg.what) {
                 case ParameterSet.CHECK_VERSION_DONE:
-                    mVersionInfo = (CheckVersionJson) msg.obj;
-                    if (mVersionInfo != null) {
-                        mCurrentVersion = mVersionInfo.android_versioncode;
-                        if (mCurrentVersion != null) {
-                            boolean isNeedToUpdate = checkVersion(Integer.parseInt(mCurrentVersion));
+                    newHome.mVersionInfo = (CheckVersionJson) msg.obj;
+                    if (newHome.mVersionInfo != null) {
+                        newHome.mCurrentVersion = newHome.mVersionInfo.android_versioncode;
+                        if (newHome.mCurrentVersion != null) {
+                            boolean isNeedToUpdate = newHome.checkVersion(Integer.parseInt(newHome.mCurrentVersion));
                             /**
                              * 若需要跳更新訊息則不顯示蓋版廣告，反之，顯示
                              * */
                             if (!isNeedToUpdate) {
-                                showAllPageDFPAD();
+                                newHome.showAllPageDFPAD();
                             }
                         }
                     }
                     break;
                 case ParameterSet.CHECK_VERSION_FAILED:
-                    showAllPageDFPAD();
+                    newHome.showAllPageDFPAD();
+                    break;
+
+                //KMT Live
+                case ParameterSet.GET_LIVE_INFO_DONE:
+                    newHome.mLiveInfo = (LiveInfoJson)msg.obj;
+                    if(newHome.mLiveInfo==null
+                            || !newHome.mLiveInfo.isIsOnAir()
+                            || newHome.mLiveInfo.getTitle()==null
+                            || newHome.mLiveInfo.getTitle().trim().isEmpty()){
+                        newHome.vLiveMarquee.setVisibility(View.GONE);
+                    }else{
+                        newHome.vLiveMarquee.setVisibility(View.VISIBLE);
+                        newHome.vLiveMarquee.setLiveTitle(newHome.mLiveInfo.getTitle());
+                        newHome.vLiveMarquee.setLiveUrl(newHome.mLiveInfo.getUrl());
+                    }
+                    break;
+                case ParameterSet.GET_LIVE_INFO_FAILED:
+                    newHome.vLiveMarquee.setVisibility(View.GONE);
                     break;
 
                 case FileDownloadService.FILE_DOWNLOAD_PERSENTAGE:
                     if (msg.arg2 > 0) {
                         long persentage = msg.arg1 * 100L / msg.arg2;
-                        showProgressDialog((int) persentage);
+                        newHome.showProgressDialog((int) persentage);
                         if (persentage == 100) {
-                            vDownloadProgressDialog.dismiss();
-                            vDownloadProgressDialog = null;
-                            installAPK((String) msg.obj);
+                            newHome.vDownloadProgressDialog.dismiss();
+                            newHome.vDownloadProgressDialog = null;
+                            newHome.installAPK((String) msg.obj);
                         }
                     }
                     break;
                 case GCMController.SHOW_NEW_FUNCTION:
-                    openFCM();
+                    newHome.openFCM();
 //                    showNewFunctionUpdate();
                     break;
 
                 case SHOW_DFP_AD_PAGE:
                     UserDataInfo.mHomeDFPCount++;
                     if (Utility.DEBUG)
-                        Log.e(TAG, "UserDataInfo.mHomeDFPCount: " + UserDataInfo.mHomeDFPCount);
+                        Log.e(newHome.TAG, "UserDataInfo.mHomeDFPCount: " + UserDataInfo.mHomeDFPCount);
                     if (UserDataInfo.mHomeDFPCount == 2
                             || UserDataInfo.mHomeDFPCount == 4
                             || UserDataInfo.mHomeDFPCount == 6) {
-                        if (mDFPInterstitial != null && mDFPInterstitial.isLoaded()) {
-                            mDFPInterstitial.show();
+                        if (newHome.mDFPInterstitial != null && newHome.mDFPInterstitial.isLoaded()) {
+                            newHome.mDFPInterstitial.show();
                         }
                     }
                     break;
@@ -294,9 +332,11 @@ public class NewHome extends AppCompatActivity {
 
     private ApiController mApiController;
     private SharedPreferencesMethods mSharedPref;
+    private ApiHandler mApiHandler;
     private void initController(){
         mSharedPref = new SharedPreferencesMethods(this);
         mApiController = ApiController.getInstance();
+        mApiHandler = new ApiHandler(this);
         mBitmapController = BitmapController.getInstance(this);
         mResize = new ReSizeLayoutParams(this);
     }
@@ -313,6 +353,7 @@ public class NewHome extends AppCompatActivity {
         vCsmuse = (ImageView) findViewById(R.id.csmuse_logo);
         vLeftDrawer = (LinearLayout) findViewById(R.id.llv_left_drawer);
         vLeftDrawer.setLayoutParams(mResize.setOnSize(vLeftDrawer));
+        vLiveMarquee = (LiveMarquee)findViewById(R.id.live_marquee);
 
         mResize.unregisterCallback(this);
 
@@ -672,10 +713,16 @@ public class NewHome extends AppCompatActivity {
 
     }
 
+    public void getLiveInfo() {
+        if (mApiController != null) {
+            mApiController.getLiveInfo(mApiHandler);
+        }
+    }
+
     public void getVersionInfo() {
         if (!UserDataInfo.isVersionDialogShow) {
             if (mApiController != null) {
-                mApiController.checkVersion(mUiHandler);
+                mApiController.checkVersion(mApiHandler);
             }
         }
     }
@@ -720,8 +767,8 @@ public class NewHome extends AppCompatActivity {
             public void onAdLoaded() {
                 super.onAdLoaded();
                 if (Utility.DEBUG) Log.e(TAG, "AD Loaded!!!");
-                if (mUiHandler != null && !isPause) {
-                    mUiHandler.sendEmptyMessage(SHOW_DFP_AD_PAGE);
+                if (mApiHandler != null && !isPause) {
+                    mApiHandler.sendEmptyMessage(SHOW_DFP_AD_PAGE);
                 }
             }
 
@@ -834,7 +881,7 @@ public class NewHome extends AppCompatActivity {
                             folder.mkdirs();
                         }
                         AppController appController = AppController.getInstance(NewHome.this);
-                        appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mUiHandler);
+                        appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mApiHandler);
                     } else if (item.getContent().toString().equals(getString(R.string.download_two))) {
                         //download
                         String fileUrl = "http://www.megamediatech.com/NowNews_Mobile.apk";
@@ -844,7 +891,7 @@ public class NewHome extends AppCompatActivity {
                             folder.mkdirs();
                         }
                         AppController appController = AppController.getInstance(NewHome.this);
-                        appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mUiHandler);
+                        appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mApiHandler);
                     }
                     dialog.dismiss();
 

@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Json.LiveListJson;
-import com.nownews.mobile.Widget.CSTVDownloadDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -201,14 +199,14 @@ public class LiveFragment extends Fragment {
         }
     };
 
-    private CSTVDownloadDialog mCSTVDownloadDialog;
+    private LiveAppDownloadDialog mCSTVDownloadDialog;
     public void openDownloadDialog(int position){
         if(mCSTVDownloadDialog!=null && mCSTVDownloadDialog.isShowing()){
             return;
         }
         String title = mCurrentChannelList.get(position).title;
         String path = mCurrentChannelList.get(position).path;
-        mCSTVDownloadDialog = new CSTVDownloadDialog(getActivity(), title, mLiveList, path,
+        mCSTVDownloadDialog = new LiveAppDownloadDialog(getActivity(), title, mLiveList, path,
                 mCurrentCategoryIndex, position, mLiveInfoJson);
         mCSTVDownloadDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override

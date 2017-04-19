@@ -87,6 +87,9 @@ public class WebAPIUrl {
     //live
     public final static String LIVE_LIST = HOST + "/lifefei/channels";
 
+    //kmt live info
+    public final static String LIVE_INFO = HOST + "/kmt/chairman2017";
+
     //附近的人在看
     public final static String NEAR_BY_NEWS = HOST + "/nearByNews?longitude=%f&latitude=%f";
 }

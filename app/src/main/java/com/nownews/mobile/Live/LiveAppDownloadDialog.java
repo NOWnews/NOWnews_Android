@@ -1,4 +1,4 @@
-package com.nownews.mobile.Widget;
+package com.nownews.mobile.Live;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -32,7 +32,7 @@ import java.util.List;
  * Created by cindy on 2016/12/19.
  */
 
-public class CSTVDownloadDialog extends Dialog {
+public class LiveAppDownloadDialog extends Dialog {
 
     private final String TAG = getClass().getSimpleName();
     private Context mContext;
@@ -65,8 +65,8 @@ public class CSTVDownloadDialog extends Dialog {
     private LiveListJson mLiveInfoJson;
     private boolean isCountdownType;
 
-    public CSTVDownloadDialog(Context context, String aTitle, List<LiveListJson.Data> aLiveList, String aPath,
-                              int aCategoryIndex, int aChannelIndex, LiveListJson aLiveInfoJson) {
+    public LiveAppDownloadDialog(Context context, String aTitle, List<LiveListJson.Data> aLiveList, String aPath,
+                                 int aCategoryIndex, int aChannelIndex, LiveListJson aLiveInfoJson) {
         super(context, R.style.FullScreenDialogStyle);
 
         mTitle = aTitle;
@@ -93,12 +93,12 @@ public class CSTVDownloadDialog extends Dialog {
         setContentView(R.layout.dialog_upgrade);
     }
 
-    public CSTVDownloadDialog(Context context, int themeResId) {
+    public LiveAppDownloadDialog(Context context, int themeResId) {
         super(context, themeResId);
         mContext = context;
     }
 
-    protected CSTVDownloadDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
+    protected LiveAppDownloadDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         mContext = context;
     }

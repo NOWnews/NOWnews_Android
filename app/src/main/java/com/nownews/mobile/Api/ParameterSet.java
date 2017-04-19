@@ -64,4 +64,8 @@ public class ParameterSet {
     public final static int GET_NEAR_BY_NEWS_DONE = 37;
     public final static int GET_NEAR_BY_NEWS_FAILED = 38;
 
+    public final static int GET_LIVE_INFO_DONE = 39;
+    public final static int GET_LIVE_INFO_FAILED = 40;
+
+
 }
