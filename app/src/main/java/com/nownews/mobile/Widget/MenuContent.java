@@ -13,12 +13,16 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -351,49 +355,55 @@ public class MenuContent extends RelativeLayout {
     }
 
     private void showNotificationSwicherDialog() {
+
+        View notificationSettingView = LayoutInflater.from(mContext).inflate(R.layout.widget_notification_switcher, null);
+        Switch switcher = (Switch) notificationSettingView.findViewById(R.id.switcher);
+        final TextView switcherStatus = (TextView)notificationSettingView.findViewById(R.id.switch_status);
+        final LinearLayout soundSetting = (LinearLayout)notificationSettingView.findViewById(R.id.notification_sound_setting);
+        final CheckBox sound = (CheckBox)notificationSettingView.findViewById(R.id.sound);
+        final CheckBox vibrate = (CheckBox)notificationSettingView.findViewById(R.id.vibrate);
+        final LinearLayout timeSetting = (LinearLayout)notificationSettingView.findViewById(R.id.notification_time_setting);
+        final RadioButton allDay = (RadioButton)notificationSettingView.findViewById(R.id.all_day);
+        final RadioButton onlyAm = (RadioButton)notificationSettingView.findViewById(R.id.only_am);
+        final RadioButton onlyPm = (RadioButton)notificationSettingView.findViewById(R.id.only_pm);
+
+        isNotificationOpen = mSharedPref.getNotificationStatus();
+        switcher.setChecked(isNotificationOpen);
+        switcher.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isNotificationOpen = isChecked;
+
+                if(isNotificationOpen){
+                    switcherStatus.setText(mContext.getString(R.string.open));
+                    soundSetting.setVisibility(View.VISIBLE);
+                    timeSetting.setVisibility(View.VISIBLE);
+                }else{
+                    switcherStatus.setText(mContext.getString(R.string.close));
+                    soundSetting.setVisibility(View.GONE);
+                    timeSetting.setVisibility(View.GONE);
+                }
+
+            }
+        });
+
         boolean wrapInScrollView = false;
         mNotificationSwitchDialog = new MaterialDialog.Builder(mContext)
-                .customView(R.layout.widget_notification_switcher, wrapInScrollView)
-                .title("請選擇您要開啟或關閉推播通知")
+                .customView(notificationSettingView, wrapInScrollView)
+                .title(mContext.getString(R.string.notification_settings_title))
                 .positiveText("完成")
-                .callback(new ButtonCallback() {
-
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onNegative(MaterialDialog dialog) {
-                    }
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
                         mSharedPref.setNotificationStatus(isNotificationOpen);
                         mMenuContentAdapter.notifyDataSetChanged();
                         GoogleAnalyticsFunction.sendHitInfo(mContext, mContext.getString(R.string.cloud_message),
                                 (isNotificationOpen? mContext.getString(R.string.cloud_message_open):mContext.getString(R.string.cloud_message_close)), "");
-                        super.onPositive(dialog);
-                    }
-
-                })
-                .showListener(new OnShowListener() {
-
-                    @Override
-                    public void onShow(DialogInterface dialog) {
-
-                        View view = mNotificationSwitchDialog.getCustomView();
-                        TextView message = (TextView) view.findViewById(R.id.message);
-                        message.setVisibility(View.GONE);
-                        Switch switcher = (Switch) view.findViewById(R.id.switcher);
-                        isNotificationOpen = mSharedPref.getNotificationStatus();
-                        switcher.setChecked(isNotificationOpen);
-                        switcher.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-                            @Override
-                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                isNotificationOpen = isChecked;
-                            }
-                        });
 
                     }
-                })
-                .show();
+                }).show();
     }
 
     private void gotoAlbum(){

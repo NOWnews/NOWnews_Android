@@ -26,6 +26,9 @@ public class SharedPreferencesMethods {
     private final String KEY_NEWS_CONTENT_TEXT_SIZE = "news_content_text_size";
     private final String KEY_ALREADY_CHANGE_TEXT_SIZE_NAME = "already_change_text_size_name";
     private final String NOTIFICATION_STATUS = "notification_status";
+    private final String NOTIFICATION_SOUND_STATUS = "notification_sound_status";
+    private final String NOTIFICATION_VIBRATE_STATUS = "notification_vibrate_status";
+    private final String NOTIFICATION_TIME = "notification_time";
     private final String ALREADY_ASK_OPEN_NOTIFICATION = "already_ask_open_notification";
     private final String KEY_IS_V3_VERSION = "is_v3_version";
     private final String KEY_LIVE_STOP_WATCHING_TIME = "live_stop_watching_time";
@@ -177,11 +180,38 @@ public class SharedPreferencesMethods {
     }
 
     public boolean getNotificationStatus() {
-        return mPreferences.getBoolean(NOTIFICATION_STATUS, false);
+        return mPreferences.getBoolean(NOTIFICATION_STATUS, true);
     }
 
     public void setNotificationStatus(boolean status) {
         mEditor.putBoolean(NOTIFICATION_STATUS, status);
+        mEditor.commit();
+    }
+
+    public boolean getNotificationSoundStatus(){
+        return mPreferences.getBoolean(NOTIFICATION_SOUND_STATUS, true);
+    }
+
+    public void setNotificationSoundStatus(boolean status) {
+        mEditor.putBoolean(NOTIFICATION_SOUND_STATUS, status);
+        mEditor.commit();
+    }
+
+    public boolean getNotificationVibrateStatus(){
+        return mPreferences.getBoolean(NOTIFICATION_VIBRATE_STATUS, true);
+    }
+
+    public void setNotificationVibrateStatus(boolean status) {
+        mEditor.putBoolean(NOTIFICATION_VIBRATE_STATUS, status);
+        mEditor.commit();
+    }
+
+    public int getNotificationTime() {
+        return mPreferences.getInt(NOTIFICATION_TIME, 0);
+    }
+
+    public void setNotificationTime(int aTime) {
+        mEditor.putInt(NOTIFICATION_TIME, aTime);
         mEditor.commit();
     }
 
