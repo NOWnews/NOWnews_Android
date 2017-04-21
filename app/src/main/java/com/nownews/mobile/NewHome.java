@@ -91,6 +91,7 @@ public class NewHome extends AppCompatActivity {
     public final static int REQUEST_CODE = 0x123;
     public final static int RESULT_CODE = 0x321;
     public final static int RESULT_CODE_FROM_LIVE = 0x159;
+    public final static int RESULT_CODE_FROM_LIVE_BAR = 0x357;
     private final static int SHOW_DFP_AD_PAGE = 0x951;
 
     @Override
@@ -247,14 +248,16 @@ public class NewHome extends AppCompatActivity {
                 case ParameterSet.GET_LIVE_INFO_DONE:
                     newHome.mLiveInfo = (LiveInfoJson)msg.obj;
                     if(newHome.mLiveInfo==null
-                            || !newHome.mLiveInfo.isIsOnAir()
+                            || !newHome.mLiveInfo.isCampainStatus()
                             || newHome.mLiveInfo.getTitle()==null
                             || newHome.mLiveInfo.getTitle().trim().isEmpty()){
                         newHome.vLiveMarquee.setVisibility(View.GONE);
                     }else{
                         newHome.vLiveMarquee.setVisibility(View.VISIBLE);
+                        newHome.vLiveMarquee.setBackgroundUrl(newHome.mLiveInfo.getBackground());
+                        newHome.vLiveMarquee.setIsOnAir(newHome.mLiveInfo.isIsOnAir());
                         newHome.vLiveMarquee.setLiveTitle(newHome.mLiveInfo.getTitle());
-                        newHome.vLiveMarquee.setLiveUrl(newHome.mLiveInfo.getUrl());
+                        newHome.vLiveMarquee.setLiveUrl(newHome.mLiveInfo.getLivePage());
                     }
                     break;
                 case ParameterSet.GET_LIVE_INFO_FAILED:
@@ -715,6 +718,8 @@ public class NewHome extends AppCompatActivity {
             if(mCurrentFragment!=null && mCurrentFragment instanceof LiveFragment){
                 ((LiveFragment) mCurrentFragment).openDownloadDialog(0);
             }
+        }else if(resultCode == RESULT_CODE_FROM_LIVE_BAR){
+            getLiveInfo();
         }else if(requestCode == 0x789 && (resultCode == 3 || resultCode == -1)){
             Log.e(TAG, "share success!!");
             mSharedPref.setShareAppSuccess(true);

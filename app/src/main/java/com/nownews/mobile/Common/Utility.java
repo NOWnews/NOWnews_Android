@@ -85,7 +85,7 @@ import java.util.concurrent.Executors;
 public class Utility {
 
     public final static int IMG_QUALITY = 60;
-    public final static boolean DEBUG = true;
+    public final static boolean DEBUG = false;
     public final static boolean SAVE_JSON = false;
     //    private static DisplayImageOptions options;
     public static String mIPAddress = "";
@@ -1464,6 +1464,14 @@ public class Utility {
                     }
                 })
                 .dismissListener(aDialogDismissListener)
+                .cancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        if(mSharedPref!=null){
+                            mSharedPref.unRegistContext(aContext);
+                        }
+                    }
+                })
                 .show();
     }
 
