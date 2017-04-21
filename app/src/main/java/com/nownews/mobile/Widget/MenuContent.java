@@ -3,45 +3,30 @@ package com.nownews.mobile.Widget;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.MaterialDialog.ButtonCallback;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.nownews.R;
 import com.nownews.mobile.AlbumCategory.AlbumActivity;
 import com.nownews.mobile.FavoriteAlbum.FavoriteAlbum;
 import com.nownews.mobile.NewHome;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
-import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
@@ -128,7 +113,7 @@ public class MenuContent extends RelativeLayout {
                         mContext.startActivity(MyIntent);
                     } else if (item.getContent().toString().equals(mContext.getString(R.string.download_one))) {
                         //download
-                        String fileUrl = "http://210.242.196.110/NowNews_Mobile.apk";
+                        String fileUrl = mContext.getString(R.string.update_url1);
                         String fileName = "NownewsApp.apk";
                         File folder = new File(mNownewsApkFolder);
                         if (!folder.exists()) {
@@ -138,7 +123,7 @@ public class MenuContent extends RelativeLayout {
                         appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mHandler);
                     } else if (item.getContent().toString().equals(mContext.getString(R.string.download_two))) {
                         //download
-                        String fileUrl = "http://www.megamediatech.com/NowNews_Mobile.apk";
+                        String fileUrl = mContext.getString(R.string.update_url2);
                         String fileName = "NownewsApp.apk";
                         File folder = new File(mNownewsApkFolder);
                         if (!folder.exists()) {

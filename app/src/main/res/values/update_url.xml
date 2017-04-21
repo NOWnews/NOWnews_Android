@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_url1">http://legacy.nownews.com/events/adtips/mobile_app/NowNews_Mobile.apk</string>
+    <string name="update_url2">http://www.megamediatech.com/NowNews_Mobile.apk</string>
+</resources>
