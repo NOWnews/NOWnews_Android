@@ -718,7 +718,7 @@ public class NewHome extends AppCompatActivity {
             if(mCurrentFragment!=null && mCurrentFragment instanceof LiveFragment){
                 ((LiveFragment) mCurrentFragment).openDownloadDialog(0);
             }
-        }else if(resultCode == RESULT_CODE_FROM_LIVE_BAR){
+        }else if(requestCode == RESULT_CODE_FROM_LIVE_BAR){
             getLiveInfo();
         }else if(requestCode == 0x789 && (resultCode == 3 || resultCode == -1)){
             Log.e(TAG, "share success!!");

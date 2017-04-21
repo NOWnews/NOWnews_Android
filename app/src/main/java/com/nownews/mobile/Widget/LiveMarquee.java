@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nownews.R;
+import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.NewHome;
 
@@ -105,7 +106,7 @@ public class LiveMarquee extends RelativeLayout {
     private String mLiveUrl;
     public void setLiveUrl(String aLiveUrl){
         mLiveUrl = aLiveUrl;
-        Log.i(TAG, "mLiveUrl: " + mLiveUrl);
+        if(Utility.DEBUG)Log.i(TAG, "mLiveUrl: " + mLiveUrl);
     }
 
     public void setBackgroundUrl(String aBackgroundUrl){
