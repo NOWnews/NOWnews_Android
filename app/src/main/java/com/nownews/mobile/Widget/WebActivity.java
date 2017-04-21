@@ -1,6 +1,7 @@
 package com.nownews.mobile.Widget;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.webkit.WebViewClient;
 import com.nownews.R;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
+import com.nownews.mobile.NewHome;
 
 public class WebActivity extends Activity {
 
