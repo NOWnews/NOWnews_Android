@@ -897,7 +897,7 @@ public class NewHome extends AppCompatActivity {
                         startActivity(MyIntent);
                     } else if (item.getContent().toString().equals(getString(R.string.download_one))) {
                         //download
-                        String fileUrl = "http://210.242.196.110/NowNews_Mobile.apk";
+                        String fileUrl = getString(R.string.update_url1);
                         String fileName = "NownewsApp.apk";
                         File folder = new File(mNownewsApkFolder);
                         if (!folder.exists()) {
@@ -907,7 +907,7 @@ public class NewHome extends AppCompatActivity {
                         appController.downloadFileFromUrl(fileUrl, fileName, mNownewsApkFolder, mApiHandler);
                     } else if (item.getContent().toString().equals(getString(R.string.download_two))) {
                         //download
-                        String fileUrl = "http://www.megamediatech.com/NowNews_Mobile.apk";
+                        String fileUrl = getString(R.string.update_url2);
                         String fileName = "NownewsApp.apk";
                         File folder = new File(mNownewsApkFolder);
                         if (!folder.exists()) {
