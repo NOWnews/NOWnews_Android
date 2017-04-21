@@ -101,6 +101,8 @@ public class NewHome extends AppCompatActivity {
         if (Utility.DEBUG)Log.d(TAG, "in NewHome");
         initController();
         checkIsV3Version();
+        //20170421 Cindy add checkIsAlreadyShowNotificationSetting()
+        checkIsAlreadyShowNotificationSetting();
         processView();
         processListener();
         processDrawerLayout();
@@ -120,6 +122,22 @@ public class NewHome extends AppCompatActivity {
             }
         }
     }
+
+    private void checkIsAlreadyShowNotificationSetting(){
+        if(mSharedPref!=null){
+            boolean isAlreadyShowNotificationSetting = mSharedPref.isAlreadyShowNotificationSetting();
+            if(!isAlreadyShowNotificationSetting){
+                Utility.showNotificationSwicherDialog(this, mNotificationDialogDismissListener);
+            }
+        }
+    }
+
+    private DialogInterface.OnDismissListener mNotificationDialogDismissListener = new DialogInterface.OnDismissListener() {
+        @Override
+        public void onDismiss(DialogInterface dialogInterface) {
+            mSharedPref.setIsAlreadyShowNotificationSetting();
+        }
+    };
 
     @Override
     public void onResume() {

@@ -33,6 +33,7 @@ import com.nownews.mobile.Json.GetNotificationInfo;
 import com.nownews.mobile.NewsPage.NewsPage;
 import com.nownews.mobile.Widget.WebActivity;
 
+import java.util.Calendar;
 import java.util.Map;
 
 public class GcmIntentService extends FirebaseMessagingService {
@@ -75,6 +76,8 @@ public class GcmIntentService extends FirebaseMessagingService {
         }
     }
 
+    private boolean isSoundOpen;
+    private boolean isVibrateOpen;
     private BroadcastReceiver mFCMReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -84,6 +87,12 @@ public class GcmIntentService extends FirebaseMessagingService {
             if (!isGCMOpen) {
                 return;
             }
+            boolean isInTime = checkTime(mSharedPref.getNotificationTime());
+            if(!isInTime){
+                return;
+            }
+            isSoundOpen = mSharedPref.getNotificationSoundStatus();
+            isVibrateOpen = mSharedPref.getNotificationVibrateStatus();
             if(mSharedPref!=null){
                 mSharedPref.unRegistContext(context);
             }
@@ -102,6 +111,26 @@ public class GcmIntentService extends FirebaseMessagingService {
 
         }
     };
+
+    private boolean checkTime(int aNotificationTime){
+        Calendar calendar = Calendar.getInstance();
+        int ampm = calendar.get(Calendar.AM_PM); //0->AM 1->PM
+        switch(aNotificationTime){
+            case 0: //all day
+                return true;
+            case 1: //only am
+                if(ampm==0){
+                    return true;
+                }
+                break;
+            case 2: //only pm
+                if(ampm==1){
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
 
     @Override
     public void onSendError(String msgId, Exception error) {
@@ -152,11 +181,14 @@ public class GcmIntentService extends FirebaseMessagingService {
         //設定請求碼
         int requestCode = 1;
         PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //設定鈴聲
+        Uri sound = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
+
         //設定振動頻率
         long[] vibratepattern = {0, 300, 200, 300};
 
         //建立-通知服務建構器
-        Uri sound = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
         int currentSDKVersion = UserDataInfo.getSdkVersion();
         if (currentSDKVersion >= Build.VERSION_CODES.JELLY_BEAN) {
             //Api Level 16 (4.1)以上
@@ -164,12 +196,18 @@ public class GcmIntentService extends FirebaseMessagingService {
             final Builder builder = new Builder(this);
             //定義Notification建構器
             builder
-                    .setSound(sound)
-                    .setVibrate(vibratepattern)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setLargeIcon(iconBitmap);
+
+            if(isSoundOpen){
+                builder.setSound(sound);
+            }
+
+            if(isVibrateOpen){
+                builder.setVibrate(vibratepattern);
+            }
 
             if (currentSDKVersion >= Build.VERSION_CODES.LOLLIPOP) {
                 //Api Level 21 (5.0)以上
@@ -189,25 +227,41 @@ public class GcmIntentService extends FirebaseMessagingService {
         Notification notification;
         int currentSDKVersion = UserDataInfo.getSdkVersion();
         if (currentSDKVersion < Build.VERSION_CODES.HONEYCOMB) {
-            notification = new NotificationCompat.Builder(this)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setTicker(newsTitle)
                     .setContentTitle(newsTitle)
                     .setContentText(newsSummary)
-                    .setContentIntent(pendingIntent)
-                    .setVibrate(vibratepattern)
-                    .setSound(sound)
-                    .build();
+                    .setContentIntent(pendingIntent);
+
+            if(isSoundOpen){
+                builder.setSound(sound);
+            }
+
+            if(isVibrateOpen){
+                builder.setVibrate(vibratepattern);
+            }
+
+            notification = builder.build();
+
         } else {
-            notification = new Builder(this)
+            Builder builder = new Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setTicker(newsTitle)
                     .setContentTitle(newsTitle)
                     .setContentText(newsSummary)
-                    .setContentIntent(pendingIntent)
-                    .setVibrate(vibratepattern)
-                    .setSound(sound)
-                    .build();
+                    .setContentIntent(pendingIntent);
+
+            if(isSoundOpen){
+                builder.setSound(sound);
+            }
+
+            if(isVibrateOpen){
+                builder.setVibrate(vibratepattern);
+            }
+
+            notification = builder.build();
+
         }
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         mNotificationManager.notify(mNotificationId != -1? mNotificationId:0 , notification);

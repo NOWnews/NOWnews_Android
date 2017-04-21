@@ -6,6 +6,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -18,15 +19,24 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialog.ButtonCallback;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -75,7 +85,7 @@ import java.util.concurrent.Executors;
 public class Utility {
 
     public final static int IMG_QUALITY = 60;
-    public final static boolean DEBUG = false;
+    public final static boolean DEBUG = true;
     public final static boolean SAVE_JSON = false;
     //    private static DisplayImageOptions options;
     public static String mIPAddress = "";
@@ -1343,6 +1353,118 @@ public class Utility {
                 .appendQueryParameter("apn", mContext.getPackageName())
                 .appendQueryParameter("amv", Integer.toString(Utility.getAppVersionCode(mContext)));
         return builder.build();
+    }
+
+    //20170421 Cindy move from MenuContent
+    private static MaterialDialog mNotificationSwitchDialog;
+    public static void showNotificationSwicherDialog(final Context aContext, DialogInterface.OnDismissListener aDialogDismissListener) {
+
+        View notificationSettingView = LayoutInflater.from(aContext).inflate(R.layout.widget_notification_switcher, null);
+        final Switch switcher = (Switch) notificationSettingView.findViewById(R.id.switcher);
+        final TextView switcherStatus = (TextView)notificationSettingView.findViewById(R.id.switch_status);
+        final LinearLayout soundSetting = (LinearLayout)notificationSettingView.findViewById(R.id.notification_sound_setting);
+        final CheckBox sound = (CheckBox)notificationSettingView.findViewById(R.id.sound);
+        final CheckBox vibrate = (CheckBox)notificationSettingView.findViewById(R.id.vibrate);
+        final LinearLayout timeSetting = (LinearLayout)notificationSettingView.findViewById(R.id.notification_time_setting);
+        final RadioGroup timeRadio = (RadioGroup)notificationSettingView.findViewById(R.id.time_radios);
+
+        final SharedPreferencesMethods mSharedPref = new SharedPreferencesMethods(aContext);
+
+        boolean isNotificationOpen = mSharedPref.getNotificationStatus();
+        if(isNotificationOpen){
+            switcherStatus.setText(aContext.getString(R.string.open));
+            soundSetting.setVisibility(View.VISIBLE);
+            timeSetting.setVisibility(View.VISIBLE);
+        }else{
+            switcherStatus.setText(aContext.getString(R.string.close));
+            soundSetting.setVisibility(View.GONE);
+            timeSetting.setVisibility(View.GONE);
+        }
+        switcher.setChecked(isNotificationOpen);
+        switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked){
+                    switcherStatus.setText(aContext.getString(R.string.open));
+                    soundSetting.setVisibility(View.VISIBLE);
+                    timeSetting.setVisibility(View.VISIBLE);
+                }else{
+                    switcherStatus.setText(aContext.getString(R.string.close));
+                    soundSetting.setVisibility(View.GONE);
+                    timeSetting.setVisibility(View.GONE);
+                }
+
+            }
+        });
+
+        boolean isSoundOpen = mSharedPref.getNotificationSoundStatus();
+        sound.setChecked(isSoundOpen);
+
+        boolean isVibrate = mSharedPref.getNotificationVibrateStatus();
+        vibrate.setChecked(isVibrate);
+
+        int timeRadioBtnId = mSharedPref.getNotificationTime();
+        switch(timeRadioBtnId){
+            case 0:
+                timeRadio.check(R.id.all_day);
+                break;
+            case 1:
+                timeRadio.check(R.id.only_am);
+                break;
+            case 2:
+                timeRadio.check(R.id.only_pm);
+                break;
+        }
+
+        boolean wrapInScrollView = false;
+        mNotificationSwitchDialog = new MaterialDialog.Builder(aContext)
+                .customView(notificationSettingView, wrapInScrollView)
+                .title(aContext.getString(R.string.notification_settings_title))
+                .positiveText("完成")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                        boolean isNotificationOpen = switcher.isChecked();
+
+                        mSharedPref.setNotificationStatus(isNotificationOpen);
+                        GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message),
+                                (isNotificationOpen? aContext.getString(R.string.cloud_message_open):aContext.getString(R.string.cloud_message_close)), "");
+
+                        mSharedPref.setNotificationSoundStatus(sound.isChecked());
+                        GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message),
+                                (sound.isChecked()? aContext.getString(R.string.sound_open):aContext.getString(R.string.sound_close)), "");
+
+                        mSharedPref.setNotificationVibrateStatus(vibrate.isChecked());
+                        GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message),
+                                (vibrate.isChecked()? aContext.getString(R.string.vibrate_open):aContext.getString(R.string.vibrate_close)), "");
+
+                        int timeRadioBtnId = timeRadio.getCheckedRadioButtonId();
+                        int timeStatus = 0;
+                        String timeString = aContext.getString(R.string.notification_settings_time) + " ";
+                        switch(timeRadioBtnId){
+                            case R.id.all_day:
+                                timeStatus = 0;
+                                timeString = timeString + aContext.getString(R.string.all_day);
+                                break;
+                            case R.id.only_am:
+                                timeStatus = 1;
+                                timeString = timeString + aContext.getString(R.string.only_am);
+                                break;
+                            case R.id.only_pm:
+                                timeStatus = 2;
+                                timeString = timeString + aContext.getString(R.string.only_pm);
+                                break;
+                        }
+                        mSharedPref.setNotificationTime(timeStatus);
+                        GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message), timeString, "");
+
+                    }
+                })
+                .dismissListener(aDialogDismissListener)
+                .show();
     }
 
 }

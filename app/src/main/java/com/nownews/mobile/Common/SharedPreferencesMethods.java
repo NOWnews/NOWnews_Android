@@ -31,6 +31,7 @@ public class SharedPreferencesMethods {
     private final String NOTIFICATION_TIME = "notification_time";
     private final String ALREADY_ASK_OPEN_NOTIFICATION = "already_ask_open_notification";
     private final String KEY_IS_V3_VERSION = "is_v3_version";
+    private final String KEY_IS_ALREADY_SHOW_NOTIFICATION_SETTING = "is_already_show_notification_setting";
     private final String KEY_LIVE_STOP_WATCHING_TIME = "live_stop_watching_time";
     private final String KEY_SHARE_APP_SUCCESS = "share_app_success";
     private SharedPreferences mPreferences;
@@ -244,6 +245,15 @@ public class SharedPreferencesMethods {
 
     public void setIsV3Version(){
         mEditor.putBoolean(KEY_IS_V3_VERSION, true);
+        mEditor.commit();
+    }
+
+    public boolean isAlreadyShowNotificationSetting(){
+        return mPreferences.getBoolean(KEY_IS_ALREADY_SHOW_NOTIFICATION_SETTING, false);
+    }
+
+    public void setIsAlreadyShowNotificationSetting(){
+        mEditor.putBoolean(KEY_IS_ALREADY_SHOW_NOTIFICATION_SETTING, true);
         mEditor.commit();
     }
 
