@@ -9,16 +9,22 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -68,9 +74,7 @@ public class MenuContent extends RelativeLayout {
     private ApiController mApiController;
     private boolean isHasNewVersion;
     private boolean isNShoppingMenuOpen;
-    private SharedPreferencesMethods mSharedPref;
     private boolean isNotificationOpen;
-    private MaterialDialog mNotificationSwitchDialog;
     private MaterialDialog.SingleButtonCallback mOkClickListener = new MaterialDialog.SingleButtonCallback() {
 
         @Override
@@ -240,7 +244,7 @@ public class MenuContent extends RelativeLayout {
                 openNewsPreference();
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.notification_setting))) {
-                showNotificationSwicherDialog();
+                Utility.showNotificationSwicherDialog(mContext, mNotificationDialogDismissListener);
                 vDrawerLayout.closeDrawers();
             } else if (itemName != null && itemName.equals(mContext.getString(R.string.about))) {
                 String url = "http://m.nownews.com/about";
@@ -263,6 +267,15 @@ public class MenuContent extends RelativeLayout {
         }
     };
 
+    private DialogInterface.OnDismissListener mNotificationDialogDismissListener = new DialogInterface.OnDismissListener() {
+        @Override
+        public void onDismiss(DialogInterface dialogInterface) {
+
+            mMenuContentAdapter.notifyDataSetChanged();
+
+        }
+    };
+
     public MenuContent(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
@@ -271,7 +284,6 @@ public class MenuContent extends RelativeLayout {
     public void init(Context aContext, DrawerLayout aDrawerLayout) {
         mContext = aContext;
         vDrawerLayout = aDrawerLayout;
-        mSharedPref = new SharedPreferencesMethods(mContext);
         initController();
         processView();
         processList();
@@ -348,52 +360,6 @@ public class MenuContent extends RelativeLayout {
     private void goHome() {
         ((Activity) mContext).setResult(NewHome.RESULT_CODE);
         ((Activity) mContext).finish();
-    }
-
-    private void showNotificationSwicherDialog() {
-        boolean wrapInScrollView = false;
-        mNotificationSwitchDialog = new MaterialDialog.Builder(mContext)
-                .customView(R.layout.widget_notification_switcher, wrapInScrollView)
-                .title("請選擇您要開啟或關閉推播通知")
-                .positiveText("完成")
-                .callback(new ButtonCallback() {
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                    }
-
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        mSharedPref.setNotificationStatus(isNotificationOpen);
-                        mMenuContentAdapter.notifyDataSetChanged();
-                        GoogleAnalyticsFunction.sendHitInfo(mContext, mContext.getString(R.string.cloud_message),
-                                (isNotificationOpen? mContext.getString(R.string.cloud_message_open):mContext.getString(R.string.cloud_message_close)), "");
-                        super.onPositive(dialog);
-                    }
-
-                })
-                .showListener(new OnShowListener() {
-
-                    @Override
-                    public void onShow(DialogInterface dialog) {
-
-                        View view = mNotificationSwitchDialog.getCustomView();
-                        TextView message = (TextView) view.findViewById(R.id.message);
-                        message.setVisibility(View.GONE);
-                        Switch switcher = (Switch) view.findViewById(R.id.switcher);
-                        isNotificationOpen = mSharedPref.getNotificationStatus();
-                        switcher.setChecked(isNotificationOpen);
-                        switcher.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-                            @Override
-                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                isNotificationOpen = isChecked;
-                            }
-                        });
-
-                    }
-                })
-                .show();
     }
 
     private void gotoAlbum(){

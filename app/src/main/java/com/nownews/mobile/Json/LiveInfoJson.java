@@ -10,6 +10,7 @@ public class LiveInfoJson {
      * title : 2017 國民黨黨主席辯論直播
      * url : https://www.youtube.com/embed/KyrppX4KFH4
      * livePage :
+     * background : http://legacy.nownews.com/NOWnews_static/live-background.jpg
      * youtubeId : KyrppX4KFH4
      * isOnAir : true
      * campainStatus : true
@@ -21,6 +22,7 @@ public class LiveInfoJson {
     private String youtubeId;
     private boolean isOnAir;
     private boolean campainStatus;
+    private String background;
 
     public String getTitle() {
         return title;
@@ -69,4 +71,13 @@ public class LiveInfoJson {
     public void setCampainStatus(boolean campainStatus) {
         this.campainStatus = campainStatus;
     }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
 }

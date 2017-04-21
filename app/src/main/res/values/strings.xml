@@ -4,7 +4,7 @@
     <string name="app_name">今日新聞</string>
     <string name="nownews">NOWnews今日新聞</string>
     <string name="instant">即時</string>
-    <string name="open">Open</string>
+    <string name="open">開啟</string>
     <string name="close">關閉</string>
     <string name="news">新聞</string>
     <string name="album">圖輯</string>
@@ -162,4 +162,17 @@
     <string name="click_me_share">點我分享</string>
     <string name="stop_service">暫停服務</string>
     <string name="live_signal">ＬＩＶＥ</string>
+    <string name="notification_settings_title">推播設定</string>
+    <string name="notification_settings_done">完成</string>
+    <string name="notification_settings_sound">聲音設定</string>
+    <string name="sound">鈴聲</string>
+    <string name="sound_open">鈴聲開</string>
+    <string name="sound_close">鈴聲關</string>
+    <string name="vibrate">震動</string>
+    <string name="vibrate_open">震動開</string>
+    <string name="vibrate_close">震動關</string>
+    <string name="notification_settings_time">時間設定</string>
+    <string name="only_am">上半天(AM 00:00~11:59)</string>
+    <string name="only_pm">下半天(PM 12:00~23:59)</string>
+    <string name="all_day">全天</string>
 </resources>
