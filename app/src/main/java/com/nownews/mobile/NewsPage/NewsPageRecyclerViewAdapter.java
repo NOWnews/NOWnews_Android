@@ -6,20 +6,24 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,7 +43,6 @@ import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherAdView;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
-import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
@@ -49,12 +52,6 @@ import com.nownews.mobile.Json.NewsInfoJson;
 import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Widget.CustomImageTopcrop;
 import com.nownews.mobile.Widget.WebActivity;
-import com.squareup.okhttp.internal.Util;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +83,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private int mHeadlineListStartPosition = -1;
     private int mReferenceListSize;
     private int mHeadlineListSize;
-    private boolean useWebBody = false;
+    private boolean useWebBody = true;
 
     private final int VIEW_TYPE_NEWS_INFO = R.layout.widget_news_page_news_info_item;
     private final int VIEW_TYPE_CONTENT_TEXT = R.layout.widget_news_page_context_text_item;
@@ -575,7 +572,8 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                     SpannableString content = getStrongText(text.trim());
                     vContentText.setText(content);
                 }else{
-                    vContentText.setText(text);
+                    vContentText.setText(setTextLinkOpenByWebView(mContext, mNewsInfo.htmlBody));
+                    vContentText.setMovementMethod(LinkMovementMethod.getInstance());
                 }
 
                 vContentText.setTextSize(mContentTextSize);
@@ -636,6 +634,53 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
             }
 
+        }
+
+        @SuppressWarnings("deprecation")
+        public Spanned fromHtml(String html){
+            Spanned result;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                result = Html.fromHtml(html,Html.FROM_HTML_MODE_LEGACY);
+            } else {
+                result = Html.fromHtml(html);
+            }
+            return result;
+        }
+
+        public SpannableStringBuilder setTextLinkOpenByWebView(final Context context, String answerString) {
+            if (!TextUtils.isEmpty(answerString)) {
+                Spanned htmlString = fromHtml(answerString);
+                if (htmlString instanceof SpannableStringBuilder) {
+                    SpannableStringBuilder spannableStringBuilder = (SpannableStringBuilder) htmlString;
+                    // 取得雨a標籤相關的Span
+                    Object[] objs = spannableStringBuilder.getSpans(0, spannableStringBuilder.length(), URLSpan.class);
+                    if (null != objs && objs.length != 0) {
+                        for (Object obj : objs) {
+                            int start = spannableStringBuilder.getSpanStart(obj);
+                            int end = spannableStringBuilder.getSpanEnd(obj);
+                            if (obj instanceof URLSpan) {
+                                // 先移除Span，再添加自己的Span
+                                URLSpan span = (URLSpan) obj;
+                                final String url = span.getURL();
+                                spannableStringBuilder.removeSpan(obj);
+                                spannableStringBuilder.setSpan(new ClickableSpan() {
+                                    @Override
+                                    public void onClick(View widget) {
+                                        //
+                                        Log.e("aaa", "sssss");
+                                        Intent intent = new Intent();
+                                        intent.setClass(mContext, WebActivity.class);
+                                        intent.putExtra(WebActivity.KEY_URL, url);
+                                        mContext.startActivity(intent);
+                                    }
+                                }, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                            }
+                        }
+                    }
+                    return spannableStringBuilder;
+                }
+            }
+            return new SpannableStringBuilder(answerString);
         }
 
         private SpannableString getStrongText(String p) {
@@ -966,9 +1011,16 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         public void bind(int position){
 
             String body = mNewsInfo.htmlBody;
-            body = "<html><body>" + body + "</body></html>";
+
+            body = getHtmlData(body.replace(mNewsInfo.mobileBody.get(3).content, ""));
             vWebView.loadData(body, "text/html; charset=utf-8", "UTF-8");
             vWebView.getSettings().setJavaScriptEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                vWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+            } else {
+                vWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+            }
+            vWebView.getSettings().setLoadsImagesAutomatically(true);
             vWebView.getSettings().setDefaultFontSize(mTitleTextSize);
             vWebView.getSettings().setUseWideViewPort(true);
             vWebView.setVerticalScrollBarEnabled(false);
@@ -976,6 +1028,11 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
         }
 
+    }
+
+    private String getHtmlData(String bodyHTML) {
+        String head = "<head><style>img{max-width: 100%; width:auto; height: auto;}</style></head>";
+        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 
     private ArrayList<PublisherAdView> mDFPADList;

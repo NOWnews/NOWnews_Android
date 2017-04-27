@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -56,6 +55,7 @@ public class AlbumActivity extends AppCompatActivity {
     }
 
     private AlbumCategoryFragment mAlbumCategoryFragment;
+
     private void processAlbumFragment(){
         if(mAlbumCategoryFragment==null){
             mAlbumCategoryFragment = new AlbumCategoryFragment();
@@ -107,19 +107,19 @@ public class AlbumActivity extends AppCompatActivity {
     }
 
     private void processListener(){
-        vMenuContent.init(this, vDrawerLayout);
+//        vMenuContent.init(this, vDrawerLayout);
     }
 
     private void processDrawerLayout() {
 
         setSupportActionBar(vToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(false);
         mDrawerToggle = new ActionBarDrawerToggle(this, vDrawerLayout, vToolbar, R.string.open, R.string.close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                vMenuContent.getVersionInfo();
+//                vMenuContent.getVersionInfo();
             }
 
             @Override

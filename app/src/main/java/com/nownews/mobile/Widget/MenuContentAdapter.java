@@ -130,13 +130,11 @@ public class MenuContentAdapter extends BaseAdapter {
     }
 
     class Item {
-
         LinearLayout vItem;
         ImageView vItemImage;
         TextView vTitle;
         TextView vNewVersion;
         TextView vNotificationStatus;
-
     }
 
 
