@@ -71,6 +71,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
     private ArrayList<ConcurrentHashMap<String, Object>> mVideoContentList;
     public final static String KEY_CONTEXT_TEXT = "context_text";
+    public final static String KEY_CONTEXT_TEXT_HTML = "context_text_html";
     public final static String KEY_CONTEXT_TEXT_LINK_HTML = "context_text_link_html";
     public final static String KEY_CONTEXT_TEXT_LINK = "context_text_link";
     public final static String KEY_CONTEXT_IMAGE = "context_image";
@@ -482,6 +483,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         String citeContent = null;
         String textLinkHtml = null;
         String textLink = null;
+        String pHtml = null;
         body = body.replace("<br />", "$$$");
         body = body.replace("<br>", "&&&");
         body = body.replace("<strong>", "(((");
@@ -521,6 +523,8 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
             Elements a = pContent.select("a[href]");
             if(a !=null && a.size() > 0){
+                pHtml = pContent.toString();
+                if(Utility.DEBUG)Log.v(TAG, "pHtml: " + pHtml);
                 for (int j = 0; j < a.size(); j++) {
                     Element href = a.get(j);
                     textLink = href.attr("href");
@@ -541,6 +545,9 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 }
                 if(textLink!=null && !textLink.trim().isEmpty()){
                     map.put(KEY_CONTEXT_TEXT_LINK, textLink);
+                }
+                if(pHtml!=null && !pHtml.trim().isEmpty()){
+                    map.put(KEY_CONTEXT_TEXT_HTML, pHtml);
                 }
 
                 mContentList.add(map);

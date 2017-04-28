@@ -8,14 +8,17 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.Layout;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.method.MovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,7 +42,6 @@ import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherAdView;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
-import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
@@ -49,12 +51,6 @@ import com.nownews.mobile.Json.NewsInfoJson;
 import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Widget.CustomImageTopcrop;
 import com.nownews.mobile.Widget.WebActivity;
-import com.squareup.okhttp.internal.Util;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,7 +189,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 mViewTypeList.add(VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS);
             }
         }
-        Log.i(TAG, "mListSize: " + mListSize);
+        if(Utility.DEBUG)Log.i(TAG, "mListSize: " + mListSize);
     }
 
     @Override
@@ -414,7 +410,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 vLikeView.setOnErrorListener(new LikeView.OnErrorListener() {
                     @Override
                     public void onError(FacebookException error) {
-                        Log.e(TAG, error.getMessage(), error);
+                        if(Utility.DEBUG)Log.e(TAG, error.getMessage(), error);
                     }
                 });
             }
@@ -584,7 +580,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                     URLSpan spans[] = vContentText.getUrls();
                     for(URLSpan span: spans) {
                         urlLink = span.getURL();
-                        Log.d(TAG, urlLink);
+                        if(Utility.DEBUG)Log.d(TAG, urlLink);
                     }
                     vContentText.setOnTouchListener(new View.OnTouchListener() {
                         @Override
@@ -605,33 +601,62 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                     });
                 }
                 if(map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_LINK)!=null
-                        && map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_LINK_HTML)!=null){
-                    Log.d(TAG, "i am here!!");
+                        && map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_LINK_HTML)!=null
+                        && map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_HTML)!=null){
                     final String urlLink = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_LINK) ;
                     String textLink = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_LINK_HTML);
+                    String textHtml = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_TEXT_HTML);
+                    textHtml = textHtml.replace("&amp;&amp;&amp;", "<br>");
+                    if(Utility.DEBUG)Log.d(TAG, "urlLink: " + urlLink);
+                    if(Utility.DEBUG)Log.d(TAG, "textLink: " + textLink);
+                    if(Utility.DEBUG)Log.d(TAG, "textHtml: " + textHtml);
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                        vContentText.setText(Html.fromHtml(textLink,Html.FROM_HTML_MODE_COMPACT));
+                        vContentText.setText(Html.fromHtml(textHtml,Html.FROM_HTML_MODE_COMPACT));
                     } else {
-                        vContentText.setText(Html.fromHtml(textLink));
+                        vContentText.setText(Html.fromHtml(textHtml));
                     }
-                    vContentText.setMovementMethod(LinkMovementMethod.getInstance());
-                    vContentText.setOnTouchListener(new View.OnTouchListener() {
+                    MovementMethod movementMethod = new LinkMovementMethod(){
                         @Override
-                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                        public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
 
-                            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                            int action = event.getAction();
+                            if(action==MotionEvent.ACTION_DOWN){
 
-                                Intent intent = new Intent();
-                                intent.setClass(mContext, WebActivity.class);
-                                intent.putExtra(WebActivity.KEY_URL, urlLink);
-                                mContext.startActivity(intent);
+                                int x = (int) event.getX();
+                                int y = (int) event.getY();
+
+                                x -= widget.getTotalPaddingLeft();
+                                y -= widget.getTotalPaddingTop();
+
+                                x += widget.getScrollX();
+                                y += widget.getScrollY();
+
+                                Layout layout = widget.getLayout();
+                                int line = layout.getLineForVertical(y);
+                                int off = layout.getOffsetForHorizontal(line, x);
+
+                                ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
+
+                                if (link.length != 0) { // 是連結點擊
+
+                                    if(Utility.DEBUG)Log.e(TAG, "是連結");
+                                    Intent intent = new Intent();
+                                    intent.setClass(mContext, WebActivity.class);
+                                    intent.putExtra(WebActivity.KEY_URL, urlLink);
+                                    mContext.startActivity(intent);
+
+                                    return true;
+                                } else { // 不是連結點擊
+                                    if(Utility.DEBUG)Log.e(TAG, "不是連結");
+                                    return false;
+                                }
 
                             }
 
-
-                            return true;
+                            return false;
                         }
-                    });
+                    };
+                    vContentText.setMovementMethod(movementMethod);
                 }
 
             }
@@ -884,10 +909,10 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         public void referenceNewsbind(int position){
 
             int realPosition = position-mReferenceListStartPosition;
-            Log.i(TAG, "referenceNewsbind realPosition: " + realPosition);
+            if(Utility.DEBUG)Log.i(TAG, "referenceNewsbind realPosition: " + realPosition);
             mCurrentPosition = realPosition;
             String imageUrl = mNewsInfo.refNews.get(realPosition).image.url;
-            Log.i(TAG, "referenceNewsbind imageUrl: " + imageUrl);
+            if(Utility.DEBUG)Log.i(TAG, "referenceNewsbind imageUrl: " + imageUrl);
             mBitmapController.loadImageWithOriginalSize(imageUrl, vNewsImage, BitmapController.IMAGE_SRC_FROM_NEWS_LIST, 0, 0, null);
 
             NewsInfoJson.ReferenceNewsInfo.CategoryInfo categoryInfo = mNewsInfo.refNews.get(realPosition).category;
@@ -919,7 +944,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         public void headlineNewsbind(int position){
 
             int realPosition = position-mHeadlineListStartPosition;
-            Log.i(TAG, "realPosition: " + realPosition);
+            if(Utility.DEBUG)Log.i(TAG, "realPosition: " + realPosition);
             mCurrentPosition = realPosition;
             String imageUrl = mHeadline.get(realPosition).image.url;
             mBitmapController.loadImageWithOriginalSize(imageUrl, vNewsImage, BitmapController.IMAGE_SRC_FROM_NEWS_LIST, 0, 0, null);
