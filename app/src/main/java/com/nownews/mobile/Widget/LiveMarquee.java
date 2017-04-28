@@ -3,6 +3,7 @@ package com.nownews.mobile.Widget;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,7 +52,6 @@ public class LiveMarquee extends RelativeLayout {
     private void init() {
 
         processView();
-        processAnimation();
         processListener();
 
     }
@@ -90,10 +90,14 @@ public class LiveMarquee extends RelativeLayout {
     };
 
     public void setIsOnAir(boolean isOnAir){
-        if(vLiveSignal!=null && isOnAir){
-            vLiveSignal.setVisibility(View.VISIBLE);
-        }else if(vLiveSignal!=null && !isOnAir){
-            vLiveSignal.setVisibility(View.GONE);
+        if(vLive!=null && isOnAir){
+            vLive.setText(mContext.getString(R.string.live_signal));
+            vLive.setBackgroundResource(R.drawable.live_signal_background);
+            processAnimation();
+        }else if(vLive!=null && !isOnAir){
+            vLive.setText(mContext.getString(R.string.live_preview));
+            vLive.setBackgroundColor(Color.TRANSPARENT);
+            vLive.clearAnimation();
         }
     }
 

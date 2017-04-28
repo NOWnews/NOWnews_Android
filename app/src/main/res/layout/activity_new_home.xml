@@ -26,32 +26,6 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/nownews_logo" />
 
-                <TextView
-                    android:id="@+id/x"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/nownews_logo"
-                    android:text="X"
-                    android:textSize="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white"
-                    android:visibility="visible"/>
-
-                <ImageView
-                    android:id="@+id/csmuse_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/nownews_logo"
-                    android:layout_alignBottom="@+id/nownews_logo"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/x"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/csmuse"
-                    android:visibility="visible"/>
-
-
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
@@ -72,7 +46,8 @@
                 <com.nownews.mobile.Widget.LiveMarquee
                     android:id="@+id/live_marquee"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
                 <android.support.design.widget.CoordinatorLayout
                     android:id="@+id/coordinator_layout"
