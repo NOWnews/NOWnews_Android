@@ -84,8 +84,6 @@ public class NewHome extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar vToolbar;
     private MenuContent vMenuContent;
-    private TextView vX;
-    private ImageView vCsmuse;
     private LinearLayout vLeftDrawer;
     private LiveMarquee vLiveMarquee;
     public final static int REQUEST_CODE = 0x123;
@@ -370,8 +368,6 @@ public class NewHome extends AppCompatActivity {
         vDrawerLayout = (DrawerLayout) findViewById(R.id.drw_layout);
         vToolbar = (Toolbar) findViewById(R.id.tool_bar);
         vMenuContent = (MenuContent) findViewById(R.id.menu_content);
-        vX = (TextView) findViewById(R.id.x);
-        vCsmuse = (ImageView) findViewById(R.id.csmuse_logo);
         vLeftDrawer = (LinearLayout) findViewById(R.id.llv_left_drawer);
         vLeftDrawer.setLayoutParams(mResize.setOnSize(vLeftDrawer));
         vLiveMarquee = (LiveMarquee)findViewById(R.id.live_marquee);
@@ -598,7 +594,6 @@ public class NewHome extends AppCompatActivity {
                             mNewsCategoryFragment.reload();
                         }
                     }
-                    hideCsmuseIconOnToolBar();
                     switchFragment(mNewsCategoryFragment);
                     mCurrentCategoryPage = position;
                     break;
@@ -607,7 +602,6 @@ public class NewHome extends AppCompatActivity {
                     if(mSpecialNewsCategoryFragment==null){
                         mSpecialNewsCategoryFragment = new SpecialNewsCategoryFragment();
                     }
-                    hideCsmuseIconOnToolBar();
                     switchFragment(mSpecialNewsCategoryFragment);
                     mCurrentCategoryPage = position;
                     break;
@@ -623,7 +617,6 @@ public class NewHome extends AppCompatActivity {
                             mVideoNewsCategoryFragment.reload();
                         }
                     }
-                    hideCsmuseIconOnToolBar();
                     switchFragment(mVideoNewsCategoryFragment);
                     mCurrentCategoryPage = position;
                     break;
@@ -636,7 +629,6 @@ public class NewHome extends AppCompatActivity {
                             mLiveFragment.reload();
                         }
                     }
-//                    showCsmuseIconOnToolBar();
                     switchFragment(mLiveFragment);
                     mCurrentCategoryPage = position;
                     break;
@@ -645,16 +637,6 @@ public class NewHome extends AppCompatActivity {
             return true;
         }
     };
-
-    private void showCsmuseIconOnToolBar(){
-        vX.setVisibility(View.VISIBLE);
-        vCsmuse.setVisibility(View.VISIBLE);
-    }
-
-    private void hideCsmuseIconOnToolBar(){
-        vX.setVisibility(View.GONE);
-        vCsmuse.setVisibility(View.GONE);
-    }
 
     public Snackbar mSnackbar;
     public void showSnackBar(){
