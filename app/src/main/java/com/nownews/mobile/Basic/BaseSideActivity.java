@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.nownews.R;
 import com.nownews.mobile.Baselibs.CustomLoader;
 import com.nownews.mobile.Common.UserDataInfo;
@@ -23,6 +24,8 @@ import com.nownews.mobile.Config.Configs;
 import com.nownews.mobile.Config.Constants;
 import com.nownews.mobile.Dao.BaseDao;
 import com.nownews.mobile.Dao.Entity.ResponseErr;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,15 +36,16 @@ import butterknife.ButterKnife;
 
 public abstract class BaseSideActivity<T> extends AppCompatActivity implements LoaderManager.LoaderCallbacks<T> {
     @BindView(R.id.drw_layout)
-    protected
-    DrawerLayout vDrawerLayout;
+    protected DrawerLayout vDrawerLayout;
+    @BindView(R.id.bottom_navigation)
+    protected AHBottomNavigation vBottomNavigation;
 
     protected BaseDao baseDao;
-    protected Fragment mCurrentFragment;
     public boolean isMenu = false;
     private FragmentTransaction ft;
     private FragmentManager fm;
     protected boolean isNeedToLeave = false;
+    protected int mCurrentCategoryPage = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,19 +84,10 @@ public abstract class BaseSideActivity<T> extends AppCompatActivity implements L
     public void onBackPressed() {
         if (this.vDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             this.vDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            // Clear all back stack.
-            FragmentManager fm = getSupportFragmentManager();
-            int backStackCount = fm.getBackStackEntryCount();
-            for (int i = 0; i < backStackCount; i++) {
-                // Get the back stack fragment id.
-                int backStackId = fm.getBackStackEntryAt(i).getId();
-                fm.popBackStack(backStackId,
-                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-            }
-        } else if (getSupportFragmentManager().getBackStackEntryCount() == 1
-                || getSupportFragmentManager().getBackStackEntryCount() == 0) {
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            super.onBackPressed();
+            setBottomVisibility(View.VISIBLE);
+        } else if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             if (this.isNeedToLeave) {
                 UserDataInfo.isVersionDialogShow = false;
                 UserDataInfo.mHomeDFPCount = 0;
@@ -214,5 +209,20 @@ public abstract class BaseSideActivity<T> extends AppCompatActivity implements L
         if (status)
             ft.addToBackStack(null);
         ft.commit();
+    }
+
+    public Fragment getVisibleFragment() {
+        List<Fragment> fragments = this.getSupportFragmentManager().getFragments();
+        if (fragments != null) {
+            for(Fragment fragment : fragments){
+                if(fragment != null && fragment.isVisible())
+                    return fragment;
+            }
+        }
+        return null;
+    }
+
+    public void setBottomVisibility(int visibility) {
+        this.vBottomNavigation.setVisibility(visibility);
     }
 }

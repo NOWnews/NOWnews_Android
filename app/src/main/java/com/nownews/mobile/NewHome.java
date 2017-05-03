@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -80,18 +81,12 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout vCoordinatorLayout;
-    @BindView(R.id.bottom_navigation)
-    AHBottomNavigation vBottomNavigation;
 
     ActionBarDrawerToggle mDrawerToggle;
     @BindView(R.id.tool_bar)
     Toolbar vToolbar;
     @BindView(R.id.menu_content)
     MenuContent vMenuContent;
-    @BindView(R.id.x)
-    TextView vX;
-    @BindView(R.id.csmuse_logo)
-    ImageView vCsmuse;
     @BindView(R.id.llv_left_drawer)
     LinearLayout vLeftDrawer;
     @BindView(R.id.live_marquee)
@@ -110,9 +105,6 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     private boolean isNotificationOpen;
     private LiveInfoJson mLiveInfo;
     private DownloadAsyncTask downloadtask;
-
-    private int mCurrentCategoryPage = -1;
-    private LiveFragment mLiveFragment;
 
     private String mGooglePlayStorePackageName = "com.android.vending";
     private MaterialDialog vDownloadProgressDialog;
@@ -257,7 +249,8 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     @Override
     public boolean onTabSelected(int position, boolean wasSelected) {
         // wasSelected => 是否正被選中 != isFocused 不要搞混了
-        if (this.mCurrentCategoryPage == position) {
+        if (this.mCurrentCategoryPage == position
+                && getSupportFragmentManager().getBackStackEntryCount() == 0) {
             return false;
         }
         Bundle bundle = null;
@@ -269,14 +262,12 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                 bundle.putInt(NewsCategoryFragment.KEY_POSITION, 0);
                 setFistPage(new NewsCategoryFragment(), bundle);
 
-                hideCsmuseIconOnToolBar();
                 this.mCurrentCategoryPage = position;
                 break;
 
             case 1:
                 if (Utility.DEBUG) Log.w(TAG, "Show 特輯");
-                hideCsmuseIconOnToolBar();
-                changeFragment(new SpecialNewsCategoryFragment(), true, null);
+                changeFragment(new SpecialNewsCategoryFragment(), false, null);
                 this.mCurrentCategoryPage = position;
                 break;
 
@@ -284,23 +275,13 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                 if (Utility.DEBUG) Log.w(TAG, "Show 影音");
                 bundle = new Bundle();
                 bundle.putInt(NewsCategoryFragment.KEY_POSITION, 0);
-                changeFragment(new VideoNewsCategoryFragment(), true, bundle);
-                hideCsmuseIconOnToolBar();
-
+                changeFragment(new VideoNewsCategoryFragment(), false, bundle);
                 this.mCurrentCategoryPage = position;
                 break;
 
             case 3:
                 if (Utility.DEBUG) Log.w(TAG, "Show 直播");
-                if (this.mLiveFragment == null) {
-                    this.mLiveFragment = new LiveFragment();
-                } else {
-                    if (!this.mLiveFragment.isApiLoadingSuccess) {
-                        this.mLiveFragment.reload();
-                    }
-                }
-                changeFragment(new LiveFragment(), true, null);
-//                    showCsmuseIconOnToolBar();
+                changeFragment(new LiveFragment(), false, null);
                 this.mCurrentCategoryPage = position;
                 break;
         }
@@ -545,26 +526,18 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
     @Override
     public void onBackPressed() {
-        //open confirm dialog
-        if (this.mCurrentFragment instanceof NewsCategoryFragment) {
-            boolean isWebFragment = ((NewsCategoryFragment) this.mCurrentFragment).checkIsWebFragment();
+        Fragment fragment = getVisibleFragment();
+        if (fragment instanceof NewsCategoryFragment) {
+            boolean isWebFragment = ((NewsCategoryFragment) fragment).checkIsWebFragment();
             if (isWebFragment) {
-                boolean canGoBack = ((NewsCategoryFragment) this.mCurrentFragment).checkIsWebFragmentCanGoBack();
+                boolean canGoBack = ((NewsCategoryFragment) fragment).checkIsWebFragmentCanGoBack();
                 if (canGoBack) {
-                    ((NewsCategoryFragment) this.mCurrentFragment).doWebFragmentGoBack();
+                    ((NewsCategoryFragment) fragment).doWebFragmentGoBack();
                     return;
                 }
             }
         }
-        if (this.isNeedToLeave) {
-            UserDataInfo.isVersionDialogShow = false;
-            UserDataInfo.mHomeDFPCount = 0;
-            if (Utility.DEBUG)
-                Log.e(TAG, "UserDataInfo.mHomeDFPCount: " + UserDataInfo.mHomeDFPCount);
-            super.onBackPressed();
-        } else {
-            openConfirmDialog();
-        }
+        super.onBackPressed();
     }
 
     protected void openConfirmDialog() {
@@ -595,16 +568,6 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         this.vBottomNavigation.setCurrentItem(0);
     }
 
-    private void showCsmuseIconOnToolBar() {
-        this.vX.setVisibility(View.VISIBLE);
-        this.vCsmuse.setVisibility(View.VISIBLE);
-    }
-
-    private void hideCsmuseIconOnToolBar() {
-        this.vX.setVisibility(View.GONE);
-        this.vCsmuse.setVisibility(View.GONE);
-    }
-
     public void showSnackBar() {
         if (this.mSnackbar != null && this.mSnackbar.isShown()) {
             return;
@@ -630,21 +593,6 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         }
     }
 
-//    public void switchFragment(Fragment fragment) {
-//        if (this.mCurrentFragment == null) {
-//            getSupportFragmentManager().beginTransaction().add(R.id.main_body, fragment).commit();
-//        } else if (fragment != this.mCurrentFragment) {
-//            if (!fragment.isAdded()) {
-//                getSupportFragmentManager().beginTransaction().hide(this.mCurrentFragment)
-//                        .add(R.id.main_body, fragment).commit();
-//            } else {
-//                getSupportFragmentManager().beginTransaction().hide(this.mCurrentFragment)
-//                        .show(fragment).commit();
-//            }
-//        }
-//        this.mCurrentFragment = fragment;
-//    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -654,8 +602,9 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         if (resultCode == RESULT_CODE) {
             showAllPageDFPAD();
         } else if (resultCode == RESULT_CODE_FROM_LIVE) {
-            if (mCurrentFragment != null && mCurrentFragment instanceof LiveFragment) {
-                ((LiveFragment) mCurrentFragment).openDownloadDialog(0);
+            Fragment fragment = getVisibleFragment();
+            if (fragment instanceof LiveFragment) {
+                ((LiveFragment) fragment).openDownloadDialog(0);
             }
         } else if (requestCode == RESULT_CODE_FROM_LIVE_BAR) {
             /* 取得KMT直播資訊 */
@@ -750,6 +699,13 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         }
         this.vMenuContent.setHasNewVersion(result);
         return result;
+    }
+
+    public void goHomePage() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            setBottomVisibility(View.VISIBLE);
+        }
     }
 
     public void getVersion(boolean isHasNewVersion, CheckVersionJson data) {

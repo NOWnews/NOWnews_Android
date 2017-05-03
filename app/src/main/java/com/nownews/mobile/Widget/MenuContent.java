@@ -1,6 +1,5 @@
 package com.nownews.mobile.Widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.nownews.R;
@@ -95,7 +95,7 @@ public class MenuContent extends RelativeLayout {
 
         if (itemName != null
                 && itemName.equals(this.mContext.getString(R.string.return_home))) {
-            this.baseAct.onBackPressed();
+            this.baseAct.goHomePage();
         } else if (itemName != null && itemName.equals(this.mContext.getString(R.string.album))) {
             gotoAlbum();
         } else if (itemName != null && itemName.equals(this.mContext.getString(R.string.favorite_album))) {
@@ -132,15 +132,11 @@ public class MenuContent extends RelativeLayout {
         this.menuRecyclerAdapter.setHasNewVersion(value);
     }
 
-    private void goHome() {
-        ((Activity) this.mContext).setResult(NewHome.RESULT_CODE);
-        ((Activity) this.mContext).finish();
-    }
-
     private void gotoAlbum() {
         Fragment mAlbumCategoryFragment = new AlbumCategoryFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(AlbumCategoryFragment.KEY_POSITION, 0);
+        this.baseAct.setBottomVisibility(View.GONE);
         this.baseAct.changeFragment(mAlbumCategoryFragment, true, bundle);
     }
 

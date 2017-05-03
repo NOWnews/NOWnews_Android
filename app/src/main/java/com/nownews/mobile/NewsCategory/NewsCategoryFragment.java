@@ -15,12 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Api;
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.ReSizeLayoutParams;
-import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
@@ -114,7 +112,6 @@ public class NewsCategoryFragment extends Fragment {
     private UiHandler mUiHandler;
 
     public boolean checkIsWebFragment() {
-
         int currentPage = vViewPager.getCurrentItem();
         Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
         if(fragment instanceof WebFragment){
@@ -124,7 +121,6 @@ public class NewsCategoryFragment extends Fragment {
     }
 
     public boolean checkIsWebFragmentCanGoBack() {
-
         int currentPage = vViewPager.getCurrentItem();
         Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
         if(fragment instanceof WebFragment){
@@ -134,7 +130,6 @@ public class NewsCategoryFragment extends Fragment {
     }
 
     public void doWebFragmentGoBack() {
-
         int currentPage = vViewPager.getCurrentItem();
         Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
         if(fragment instanceof WebFragment){
