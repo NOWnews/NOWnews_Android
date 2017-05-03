@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -39,7 +38,6 @@ import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.nownews.R;
-import com.nownews.mobile.Baselibs.DownloadAsyncTask;
 import com.nownews.mobile.Basic.BaseSideActivity;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.ReSizeLayoutParams;
@@ -50,6 +48,7 @@ import com.nownews.mobile.Config.Constants;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Dao.CheckVerDao;
 import com.nownews.mobile.Dao.LiveInfoDao;
+import com.nownews.mobile.Download.DownloadAsyncTask;
 import com.nownews.mobile.Download.DownloadListener;
 import com.nownews.mobile.GCM.GcmＭanager;
 import com.nownews.mobile.Json.CheckVersionJson;
@@ -113,15 +112,11 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     private DownloadAsyncTask downloadtask;
 
     private int mCurrentCategoryPage = -1;
-    private NewsCategoryFragment mNewsCategoryFragment;
-    private SpecialNewsCategoryFragment mSpecialNewsCategoryFragment;
-    private VideoNewsCategoryFragment mVideoNewsCategoryFragment;
     private LiveFragment mLiveFragment;
 
     private String mGooglePlayStorePackageName = "com.android.vending";
     private MaterialDialog vDownloadProgressDialog;
 
-    private boolean isNeedToLeave = false;
     private MaterialDialog mConfirmDialog;
     public Snackbar mSnackbar;
 
@@ -141,7 +136,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
     @Override
     protected int getContentLayoutID() {
-        return 0;
+        return R.id.main_body;
     }
 
     protected void initContent() {
@@ -265,48 +260,33 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         if (this.mCurrentCategoryPage == position) {
             return false;
         }
+        Bundle bundle = null;
         switch (position) {
             case 0:
                 if (Utility.DEBUG) Log.w(TAG, "Show 新聞");
-                if (this.mNewsCategoryFragment == null) {
-                    this.mNewsCategoryFragment = new NewsCategoryFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(NewsCategoryFragment.KEY_POSITION, 0);
-                    this.mNewsCategoryFragment.setArguments(bundle);
-                } else {
-                    if (!this.mNewsCategoryFragment.isApiLoadingSuccess) {
-                        this.mNewsCategoryFragment.reload();
-                    }
-                }
+                // 設定地首頁
+                bundle = new Bundle();
+                bundle.putInt(NewsCategoryFragment.KEY_POSITION, 0);
+                setFistPage(new NewsCategoryFragment(), bundle);
+
                 hideCsmuseIconOnToolBar();
-                switchFragment(this.mNewsCategoryFragment);
                 this.mCurrentCategoryPage = position;
                 break;
 
             case 1:
                 if (Utility.DEBUG) Log.w(TAG, "Show 特輯");
-                if (this.mSpecialNewsCategoryFragment == null) {
-                    this.mSpecialNewsCategoryFragment = new SpecialNewsCategoryFragment();
-                }
                 hideCsmuseIconOnToolBar();
-                switchFragment(this.mSpecialNewsCategoryFragment);
+                changeFragment(new SpecialNewsCategoryFragment(), true, null);
                 this.mCurrentCategoryPage = position;
                 break;
 
             case 2:
                 if (Utility.DEBUG) Log.w(TAG, "Show 影音");
-                if (this.mVideoNewsCategoryFragment == null) {
-                    this.mVideoNewsCategoryFragment = new VideoNewsCategoryFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(NewsCategoryFragment.KEY_POSITION, 0);
-                    this.mVideoNewsCategoryFragment.setArguments(bundle);
-                } else {
-                    if (!this.mVideoNewsCategoryFragment.isApiLoadingSuccess) {
-                        this.mVideoNewsCategoryFragment.reload();
-                    }
-                }
+                bundle = new Bundle();
+                bundle.putInt(NewsCategoryFragment.KEY_POSITION, 0);
+                changeFragment(new VideoNewsCategoryFragment(), true, bundle);
                 hideCsmuseIconOnToolBar();
-                switchFragment(this.mVideoNewsCategoryFragment);
+
                 this.mCurrentCategoryPage = position;
                 break;
 
@@ -319,12 +299,11 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                         this.mLiveFragment.reload();
                     }
                 }
+                changeFragment(new LiveFragment(), true, null);
 //                    showCsmuseIconOnToolBar();
-                switchFragment(this.mLiveFragment);
                 this.mCurrentCategoryPage = position;
                 break;
         }
-
         return true;
     }
 
@@ -482,9 +461,8 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     }
 
     private void downloadApk(String url) {
-//        this.downloadtask = new DownloadAsyncTask(this);
-//        this.downloadtask.execute(url);
-        installAPK();
+        this.downloadtask = new DownloadAsyncTask(this);
+        this.downloadtask.execute(url);
     }
 
     public void openFCM() {
@@ -589,8 +567,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         }
     }
 
-    // exit dialog
-    private void openConfirmDialog() {
+    protected void openConfirmDialog() {
         boolean wrapInScrollView = false;
         this.mConfirmDialog = new MaterialDialog.Builder(this)
                 .customView(R.layout.widget_leave_confirm_dialog, wrapInScrollView)
@@ -653,20 +630,20 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         }
     }
 
-    private void switchFragment(Fragment fragment) {
-        if (this.mCurrentFragment == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.main_body, fragment).commit();
-        } else if (fragment != this.mCurrentFragment) {
-            if (!fragment.isAdded()) {
-                getSupportFragmentManager().beginTransaction().hide(this.mCurrentFragment)
-                        .add(R.id.main_body, fragment).commit();
-            } else {
-                getSupportFragmentManager().beginTransaction().hide(this.mCurrentFragment)
-                        .show(fragment).commit();
-            }
-        }
-        this.mCurrentFragment = fragment;
-    }
+//    public void switchFragment(Fragment fragment) {
+//        if (this.mCurrentFragment == null) {
+//            getSupportFragmentManager().beginTransaction().add(R.id.main_body, fragment).commit();
+//        } else if (fragment != this.mCurrentFragment) {
+//            if (!fragment.isAdded()) {
+//                getSupportFragmentManager().beginTransaction().hide(this.mCurrentFragment)
+//                        .add(R.id.main_body, fragment).commit();
+//            } else {
+//                getSupportFragmentManager().beginTransaction().hide(this.mCurrentFragment)
+//                        .show(fragment).commit();
+//            }
+//        }
+//        this.mCurrentFragment = fragment;
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

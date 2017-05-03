@@ -11,11 +11,14 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.nownews.R;
 import com.nownews.mobile.Baselibs.CustomLoader;
+import com.nownews.mobile.Common.UserDataInfo;
+import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Config.Configs;
 import com.nownews.mobile.Config.Constants;
 import com.nownews.mobile.Dao.BaseDao;
@@ -38,6 +41,7 @@ public abstract class BaseSideActivity<T> extends AppCompatActivity implements L
     public boolean isMenu = false;
     private FragmentTransaction ft;
     private FragmentManager fm;
+    protected boolean isNeedToLeave = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,11 @@ public abstract class BaseSideActivity<T> extends AppCompatActivity implements L
      * 返回Fragment Content佈局id
      */
     protected abstract int getContentLayoutID();
+
+    /**
+     * exit dialog
+     */
+    protected abstract void openConfirmDialog();
 
     /**
      * Loader Result
@@ -84,7 +93,15 @@ public abstract class BaseSideActivity<T> extends AppCompatActivity implements L
             }
         } else if (getSupportFragmentManager().getBackStackEntryCount() == 1
                 || getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            this.finish();
+            if (this.isNeedToLeave) {
+                UserDataInfo.isVersionDialogShow = false;
+                UserDataInfo.mHomeDFPCount = 0;
+                if (Utility.DEBUG)
+                    Log.e(getClass().getSimpleName(), "UserDataInfo.mHomeDFPCount: " + UserDataInfo.mHomeDFPCount);
+                super.onBackPressed();
+            } else {
+                openConfirmDialog();
+            }
         }
     }
 
