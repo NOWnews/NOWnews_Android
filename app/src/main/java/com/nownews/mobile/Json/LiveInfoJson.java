@@ -1,28 +1,36 @@
 package com.nownews.mobile.Json;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by cindy on 2017/4/19.
  */
 
 public class LiveInfoJson {
-
     /**
-     * title : 2017 國民黨黨主席辯論直播
-     * url : https://www.youtube.com/embed/KyrppX4KFH4
-     * livePage :
-     * background : http://legacy.nownews.com/NOWnews_static/live-background.jpg
-     * youtubeId : KyrppX4KFH4
-     * isOnAir : true
-     * campainStatus : true
+     *
+     * {
+     *   "title": "直播 /「龍談大小事」- 藍營準黨魁大PK",
+     *   "teaserTitle": "19:00 「龍談大小事」- 藍營準黨魁大PK",
+     *   "url": "https://www.youtube.com/embed/Ps1SpLK-pqw",
+     *   "wowza": "http://59.124.93.43/live/KMT.stream/playlist.m3u8?pf=mm",
+     *   "youtubeId": "Ps1SpLK-pqw",
+     *   "livePage": "https://m.nownews.com/live/Ps1SpLK-pqw",
+     *   "background": "https://legacy.nownews.com/NOWnews_static/live-background.jpg",
+     *   "isOnAir": false,
+     *   "campainStatus": false
+     *   }
      */
-
     private String title;
+    private String teaserTitle;
     private String url;
-    private String livePage;
+    private String wowza;
     private String youtubeId;
+    private String livePage;
+    private String background;
+    @JsonProperty("isOnAir")
     private boolean isOnAir;
     private boolean campainStatus;
-    private String background;
 
     public String getTitle() {
         return title;
@@ -30,6 +38,14 @@ public class LiveInfoJson {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTeaserTitle() {
+        return teaserTitle;
+    }
+
+    public void setTeaserTitle(String teaserTitle) {
+        this.teaserTitle = teaserTitle;
     }
 
     public String getUrl() {
@@ -40,12 +56,12 @@ public class LiveInfoJson {
         this.url = url;
     }
 
-    public String getLivePage() {
-        return livePage;
+    public String getWowza() {
+        return wowza;
     }
 
-    public void setLivePage(String livePage) {
-        this.livePage = livePage;
+    public void setWowza(String wowza) {
+        this.wowza = wowza;
     }
 
     public String getYoutubeId() {
@@ -56,20 +72,12 @@ public class LiveInfoJson {
         this.youtubeId = youtubeId;
     }
 
-    public boolean isIsOnAir() {
-        return isOnAir;
+    public String getLivePage() {
+        return livePage;
     }
 
-    public void setIsOnAir(boolean isOnAir) {
-        this.isOnAir = isOnAir;
-    }
-
-    public boolean isCampainStatus() {
-        return campainStatus;
-    }
-
-    public void setCampainStatus(boolean campainStatus) {
-        this.campainStatus = campainStatus;
+    public void setLivePage(String livePage) {
+        this.livePage = livePage;
     }
 
     public String getBackground() {
@@ -80,4 +88,19 @@ public class LiveInfoJson {
         this.background = background;
     }
 
+    public boolean isOnAir() {
+        return isOnAir;
+    }
+
+    public void setOnAir(boolean onAir) {
+        isOnAir = onAir;
+    }
+
+    public boolean isCampainStatus() {
+        return campainStatus;
+    }
+
+    public void setCampainStatus(boolean campainStatus) {
+        this.campainStatus = campainStatus;
+    }
 }

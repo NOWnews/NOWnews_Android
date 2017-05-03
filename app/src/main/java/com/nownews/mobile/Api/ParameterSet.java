@@ -40,8 +40,8 @@ public class ParameterSet {
     public final static int GET_SPLASH_IMAGE_DONE = 21;
     public final static int GET_SPLASH_IMAGE_FAILED = 22;
 
-    public final static int CHECK_VERSION_DONE = 23;
-    public final static int CHECK_VERSION_FAILED = 24;
+//    public final static int CHECK_VERSION_DONE = 23;
+//    public final static int CHECK_VERSION_FAILED = 24;
 
     public final static int GET_SEARCH_INFO_DONE = 25;
     public final static int GET_SEARCH_INFO_FAILED = 26;

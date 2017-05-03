@@ -1,51 +1,42 @@
 package com.nownews.mobile.GCM;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
-import com.nownews.mobile.Common.Utility;
+import com.nownews.mobile.NewHome;
 
 /**
  * Created by cindy on 2016/10/12.
  */
 
-public class GCMController {
+public class GcmＭanager {
 
     public final static int SHOW_NEW_FUNCTION = 0x164;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private final String TAG = getClass().getSimpleName();
-    private Context mContext;
-    private Handler mUiHandler;
+    private NewHome mContext;
     private SharedPreferencesMethods mSharedPref;
 
-    public GCMController(Context aContext, Handler aUiHandler) {
-        mContext = aContext;
-        mUiHandler = aUiHandler;
-        mSharedPref = new SharedPreferencesMethods(mContext);
+    public GcmＭanager(NewHome aContext) {
+        this.mContext = aContext;
+        this.mSharedPref = new SharedPreferencesMethods(this.mContext);
     }
 
     public void startGCM() {
-
-        boolean isAlreadyAskOpenNotification = mSharedPref.getAskOpenNotificationStatus();
+        boolean isAlreadyAskOpenNotification = this.mSharedPref.getAskOpenNotificationStatus();
         if (!isAlreadyAskOpenNotification) {
             //Ask User to open notification
-            if (mUiHandler != null) {
-                mUiHandler.sendEmptyMessage(SHOW_NEW_FUNCTION);
-            }
+            this.mContext.openFCM();
             return;
         }
 
-        if(mSharedPref!=null){
-            mSharedPref.unRegistContext(mContext);
+        if(this.mSharedPref != null) {
+            this.mSharedPref.unRegistContext(mContext);
         }
     }
-
 
     /**
      * 檢查是否支援GooglePlayServices
@@ -64,9 +55,9 @@ public class GCMController {
 
     public String getToken(){
         String token = null;
-        try{
+        try {
             token = FirebaseInstanceId.getInstance().getToken();
-        }catch(Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
         }
         return token;
