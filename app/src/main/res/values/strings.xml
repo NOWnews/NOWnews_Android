@@ -176,4 +176,6 @@
     <string name="only_am">上半天(AM 00:00~11:59)</string>
     <string name="only_pm">下半天(PM 12:00~23:59)</string>
     <string name="all_day">全天</string>
+
+    <string name="miss_connect">網路連線異常</string>
 </resources>
