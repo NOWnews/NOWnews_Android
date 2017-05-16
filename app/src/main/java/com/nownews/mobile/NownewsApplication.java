@@ -41,8 +41,10 @@ public class NownewsApplication extends MultiDexApplication {
         }).start();
 
         mAppController = AppController.getInstance(this);
-        FacebookSdk.sdkInitialize(this);
+
+        //Facebook
         AppEventsLogger.activateApp(this);
+
         //雪豹
         CMAdManager.applicationInit(this, getString(R.string.ileopard_mid));
 
