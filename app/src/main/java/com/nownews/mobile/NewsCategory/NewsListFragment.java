@@ -196,9 +196,6 @@ public class NewsListFragment extends Fragment {
 
             if(newState==RecyclerView.SCROLL_STATE_IDLE){
                 Log.d(TAG, "onScrollStateChanged!!! " + newState);
-                if (vList != null && vList.getAdapter()!=null) {
-                    ((NewsListRecyclerViewAdapter)vList.getAdapter()).setPosition(findFirstVisibleItemPosition, findLastVisibleItemPosition);
-                }
                 if (!recyclerView.canScrollVertically(-1)) {
                     if(Utility.DEBUG)Log.e(TAG, "滑到頂了!!");
                     Toast.makeText(getActivity(), "上面沒有了哦...", Toast.LENGTH_SHORT).show();

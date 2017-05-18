@@ -121,6 +121,7 @@ public class OtherNewsListFragment extends Fragment {
                     break;
 
                 case CHECK_LIST:
+                    if(Utility.DEBUG)Log.w(TAG, "CHECK_LIST!!!");
                     if (fragment.isGetHeadLineDone && fragment.mNewsList != null) {
                         UserDataInfo.setHeadlineContent(fragment.mNewsList);
                         if(fragment.isAdded()){
@@ -412,7 +413,7 @@ public class OtherNewsListFragment extends Fragment {
     private LinearLayoutManager mLinearLayoutManager;
     private void processList() {
 
-        if (Utility.DEBUG) Log.e(TAG, "processList()");
+        if (Utility.DEBUG) Log.e(TAG, "processList() + mCategoryName: " + mCategoryName);
 
         vLoadingLayout.setVisibility(View.GONE);
         vList.setVisibility(View.VISIBLE);

@@ -173,19 +173,23 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             ((ADViewHolder)holder).vNewsCategory.setText("");
             ((ADViewHolder)holder).vCallToAction.setText("");
 
+            setItemVisibility(false, ((ADViewHolder)holder).itemView);
             if(position == 2){
 
                 ((ADViewHolder)holder).vAdGroup.setVisibility(View.GONE);
                 processAD2(position, ((ADViewHolder)holder).vNewsCategory, ((ADViewHolder)holder).vNewsTitle,
-                        ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction);
+                        ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction,
+                        ((ADViewHolder)holder).itemView);
                 return;
             }
 
             int positionInAdList = (position-5)/4;
             processVPON(positionInAdList, position,
                     ((ADViewHolder)holder).vNewsCategory, ((ADViewHolder)holder).vNewsTitle,
-                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction);
-            processDFP(((ADViewHolder)holder).vAdGroup, positionInAdList, position);
+                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction,
+                    ((ADViewHolder)holder).itemView);
+            processDFP(((ADViewHolder)holder).vAdGroup, positionInAdList, position,
+                    ((ADViewHolder)holder).itemView);
 
         } else {
 
@@ -304,7 +308,8 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     private final AdSize DFP_SIZE = AdSize.MEDIUM_RECTANGLE;
-    private void processDFP(final RelativeLayout aAdCardView, final int aPositionInAdList, final int aPosition) {
+    private void processDFP(final RelativeLayout aAdCardView, final int aPositionInAdList, final int aPosition,
+                            final View aItemView) {
         if (Utility.DEBUG) Log.e(TAG, "DFP");
 
         final PublisherAdView vDfpAdView = new PublisherAdView(mContext);
@@ -336,13 +341,10 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 if (Utility.DEBUG) Log.e(TAG, "onAdLoaded");
                 if (Utility.DEBUG) Log.e(TAG, "onBannerLoaded");
                 if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
-                if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
-                if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
-//                if (aPosition >= mFirstVisibleItem && aPosition <= mLastVisibleItem) {
-                    aAdCardView.removeAllViews();
-                    aAdCardView.addView(vDfpAdView);
-                    aAdCardView.setVisibility(View.VISIBLE);
-//                }
+                aAdCardView.removeAllViews();
+                aAdCardView.addView(vDfpAdView);
+                aAdCardView.setVisibility(View.VISIBLE);
+                setItemVisibility(true, aItemView);
                 super.onAdLoaded();
             }
 
@@ -363,7 +365,8 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     private void processVPON(int aPositionInAdList, final int aPosition, final TextView aCategory, final TextView aTitle,
-                             final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction){
+                             final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction,
+                             final View aItemView){
 
         final VpadnNativeAd nativeAd = new VpadnNativeAd((Activity)mContext, mVPONIdList[aPositionInAdList], "TW");
         nativeAd.setAdListener(new VpadnAdListener() {
@@ -376,8 +379,6 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
 
                 if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
-                if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
-                if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
 
                 nativeAd.unregisterView();
                 aCategory.setText(mContext.getString(R.string.sponsored));
@@ -396,6 +397,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 Glide.with(mContext).load(adCoverImage.getUrl()).override(screenWidth, newHeight).into(aImage);
 //                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
                 nativeAd.registerViewForInteraction(aNewsItem);
+                setItemVisibility(true, aItemView);
 
             }
 
@@ -434,7 +436,8 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     private String mAd2Native;
     private Ad2ictionNative vAD2Native;
     private void processAD2(final int aPosition, final TextView aCategory, final TextView aTitle,
-                            final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction) {
+                            final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction,
+                            final View aItemView) {
 
         if(vAD2Native!=null){
             vAD2Native.destroy();
@@ -448,8 +451,6 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             @Override
             public void onNativeLoad(NativeResponse nativeResponse) {
                 if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
-                if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
-                if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
                 if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
                 if (Utility.DEBUG) Log.e(TAG, "nativeResponse is null or not??" + nativeResponse.toString());
 
@@ -486,12 +487,14 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                                 Log.i(TAG, "scale: " + scale);
                                 Log.i(TAG, "newHeight: " + newHeight);
                                 Glide.with(mContext).load(imageUrl).override(screenWidth, newHeight).into(aImage);
+                                setItemVisibility(true, aItemView);
 
                             }
 
                             @Override
                             public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                 aImage.setImageResource(R.drawable.default_img);
+                                setItemVisibility(true, aItemView);
                                 super.onLoadFailed(e, errorDrawable);
                             }
                         });
@@ -499,7 +502,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
             @Override
             public void onNativeFail(NativeErrorCode nativeErrorCode) {
-
+                setItemVisibility(false, aItemView);
             }
         };
 
@@ -510,13 +513,18 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
     }
 
-    private int mFirstVisibleItem;
-    private int mLastVisibleItem;
-    public void setPosition(int firstVisibleItem, int visibleItemCount) {
-        Log.i(TAG, "setPosition");
-        mFirstVisibleItem = firstVisibleItem;
-        mLastVisibleItem = visibleItemCount;
-//        notifyDataSetChanged();
+    private void setItemVisibility(boolean isVisible, View itemView){
+        RecyclerView.LayoutParams param = (RecyclerView.LayoutParams)itemView.getLayoutParams();
+        if (isVisible){
+            param.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            param.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            itemView.setVisibility(View.VISIBLE);
+        }else{
+            itemView.setVisibility(View.GONE);
+            param.height = 0;
+            param.width = 0;
+        }
+        itemView.setLayoutParams(param);
     }
 
     public void clearBitmapController() {
