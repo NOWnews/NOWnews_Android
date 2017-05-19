@@ -87,6 +87,13 @@ dependencies {
     compile 'joda-time:joda-time:+'
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    // Ad2一般廣告
+    compile project(':ad2iction-sdk')
+    // Ad2進階互動廣告
+    compile 'com.google.android.gms:play-services-vision:10.0.1'
+    // Ad2廣告聯聯播網轉接器
+    compile project(':ad2iction-mediation-adapter')
+    compile 'com.google.firebase:firebase-ads:10.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -88,8 +88,8 @@
         <activity
             android:name="com.tapjoy.TJAdUnitActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            android:hardwareAccelerated="true" />
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
             android:name="com.tapjoy.mraid.view.ActionHandler"
             android:configChanges="orientation|keyboardHidden|screenSize" />
@@ -114,8 +114,8 @@
 
         <activity
             android:name=".mobile.BroadcastReceiver.ExternalLinkOpen"
-            android:screenOrientation="landscape"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -133,8 +133,8 @@
 
         <activity
             android:name=".mobile.Invite.InviteCodeInputPage"
-            android:screenOrientation="landscape"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -275,8 +275,8 @@
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.nownews.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <!--元数据-->
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
