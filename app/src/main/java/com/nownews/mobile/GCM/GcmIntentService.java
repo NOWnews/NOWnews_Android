@@ -178,9 +178,9 @@ public class GcmIntentService extends FirebaseMessagingService {
 
         //建立按下訊息嵌板後所要轉跳的Intent
         Intent intent = createNotificationGoWhere(type);
-        //設定請求碼
+        //設定請求碼，請求碼若相同則會以最新的為準
         int requestCode = 1;
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, mNotificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         //設定鈴聲
         Uri sound = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
@@ -362,7 +362,7 @@ public class GcmIntentService extends FirebaseMessagingService {
             intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_SINGAL_NEWS);
             intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, getString(R.string.cloud_message));
             intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, getString(R.string.cloud_message_click));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             UserDataInfo.isSingalNewsFromAction = true;
         } else if (type.equalsIgnoreCase("album")) {
             if(Utility.DEBUG)Log.w(TAG, "album!!!!!");
