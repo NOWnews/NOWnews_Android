@@ -19,26 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:background="@color/tab_bar_background_color"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp" />
-
-            <ImageView
-                android:id="@+id/catalog_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/tab"
-                android:layout_alignTop="@+id/tab"
-                android:background="@drawable/catalog_filter_left"/>
-
-            <ImageView
-                android:id="@+id/catalog_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/tab"
-                android:layout_alignTop="@+id/tab"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/catalog_filter_right" />
+                android:background="@color/tab_bar_background_color" />
 
         </RelativeLayout>
 
