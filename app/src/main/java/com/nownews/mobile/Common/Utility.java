@@ -13,11 +13,15 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
@@ -85,7 +89,7 @@ import java.util.concurrent.Executors;
 public class Utility {
 
     public final static int IMG_QUALITY = 60;
-    public final static boolean DEBUG = false;
+    public final static boolean DEBUG = true;
     public final static boolean SAVE_JSON = false;
     //    private static DisplayImageOptions options;
     public static String mIPAddress = "";
@@ -1473,6 +1477,84 @@ public class Utility {
                     }
                 })
                 .show();
+    }
+
+    public static double[] getLongitudeLatitude(Context aContext){
+        double[] longitudeLatitude = new double[2];
+
+        long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+        long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+
+        LocationManager locationManager = (LocationManager)aContext.getSystemService(Context.LOCATION_SERVICE);
+        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if(!isGPSEnabled && !isNetworkEnabled){
+            return longitudeLatitude;
+        }else if(isGPSEnabled){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                    mLocationListener);
+            if(locationManager!=null){
+                mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if(mCurrentLocation!=null){
+                    longitudeLatitude[0] = mCurrentLocation.getLongitude();
+                    longitudeLatitude[1] = mCurrentLocation.getLatitude();
+                    if (Utility.DEBUG) Log.i(TAG, "isGPSEnabled longitude: " + longitudeLatitude[0]);
+                    if (Utility.DEBUG) Log.i(TAG, "isGPSEnabled latitude: " + longitudeLatitude[1]);
+                    locationManager.removeUpdates(mLocationListener);
+                    return longitudeLatitude;
+                }else{
+                    if (Utility.DEBUG) Log.w(TAG, "isGPSEnabled location==null");
+                }
+                locationManager.removeUpdates(mLocationListener);
+            }else{
+                if (Utility.DEBUG) Log.w(TAG, "isGPSEnabled locationManager==null");
+            }
+        }
+
+        if(isNetworkEnabled){
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                    mLocationListener);
+            if(locationManager!=null){
+                mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if(mCurrentLocation!=null){
+                    longitudeLatitude[0] = mCurrentLocation.getLongitude();
+                    longitudeLatitude[1] = mCurrentLocation.getLatitude();
+                    if (Utility.DEBUG) Log.i(TAG, "isNetworkEnabled longitude: " + longitudeLatitude[0]);
+                    if (Utility.DEBUG) Log.i(TAG, "isNetworkEnabled latitude: " + longitudeLatitude[1]);
+                }else{
+                    if (Utility.DEBUG) Log.w(TAG, "isNetworkEnabled location==null");
+                }
+                locationManager.removeUpdates(mLocationListener);
+            }else{
+                if (Utility.DEBUG) Log.w(TAG, "isNetworkEnabled locationManager==null");
+            }
+        }
+
+        return longitudeLatitude;
+    }
+
+    public static LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) { }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) { }
+
+        @Override
+        public void onProviderEnabled(String s) { }
+
+        @Override
+        public void onProviderDisabled(String s) { }
+    };
+
+    private static Location mCurrentLocation;
+    public static Location getLocation(Context aContext){
+        getLongitudeLatitude(aContext);
+        return mCurrentLocation;
     }
 
 }
