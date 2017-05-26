@@ -140,6 +140,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             mViewTypeList.add(VIEW_TYPE_WEB_BODY);
         }else{
             if(mContentList!=null && mContentList.size()>0){
+                if(Utility.DEBUG)Log.d(TAG, "mContentList.size(): " + mContentList.size());
                 //VIEW_TYPE_CONTENT_TEXT OR VIEW_TYPE_CONTENT_IMAGE
                 mListSize += mContentList.size();
                 for(int i = 0; i<mContentList.size(); i++){
@@ -161,6 +162,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         mViewTypeList.add(VIEW_TYPE_PRE_NEXT_NEWS);
 
         if(mNewsInfo.refNews!=null && mNewsInfo.refNews.size()>0){
+            if(Utility.DEBUG)Log.d(TAG, "mNewsInfo.refNews.size(): " + mNewsInfo.refNews.size());
             mReferenceTitlePosition = mListSize;
             mListSize++; //VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS_TITLE
             mViewTypeList.add(VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS_TITLE);
@@ -176,6 +178,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         }
         mHeadline = UserDataInfo.getHeadlineContent();
         if(mHeadline!=null && mHeadline.size()>0){
+            if(Utility.DEBUG)Log.d(TAG, "mHeadline.size(): " + mHeadline.size());
             mHeadlineTitlePosition = mListSize;
             mListSize++; //VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS_TITLE
             mViewTypeList.add(VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS_TITLE);
@@ -349,11 +352,15 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
             //play icon
             if(mVideoContentList!=null && mVideoContentList.size()>=1){
+                if(Utility.DEBUG)Log.w(TAG, "mVideoContentList: " + mVideoContentList);
                 for(ConcurrentHashMap<String, Object> map : mVideoContentList){
                     if(map.containsKey(NewsPageRecyclerViewFragment.KEY_CONTEXT_IFRAME_YOUTUBE)){
                         vPlayIcon.setVisibility(View.VISIBLE);
                         hasYoutubeVideo = true;
                         mYoutubeId = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IFRAME_YOUTUBE);
+                        if(mYoutubeId.contains("?")){
+                            mYoutubeId = mYoutubeId.substring(0, mYoutubeId.indexOf("?"));
+                        }
                         break;
                     }
                 }
@@ -699,6 +706,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
         public void bind(int position){
 
+            vImage.setImageDrawable(null);
             if(mContentList==null || mContentList.size()==0){
                 return;
             }

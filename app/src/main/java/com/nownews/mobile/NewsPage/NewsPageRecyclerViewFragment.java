@@ -502,6 +502,9 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
             Element pContent = paragraph.get(i);
             String p = pContent.text();
+            if(p.contains("(影片擷取自YouTube.com，若遭移除請見諒)")){
+                continue;
+            }
             p = p.replace("$$$", "\n");
             p = p.replace("&&&", "\n");
             if (Utility.DEBUG) Log.w(TAG, "p: " + p);
@@ -644,6 +647,9 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
             Element pContent = paragraph.get(i);
             String p = pContent.text();
+            if(p.contains("(影片擷取自YouTube.com，若遭移除請見諒)")){
+                continue;
+            }
             p = p.replace("$$$", "\n");
             p = p.replace("&&&", "\n");
             if (Utility.DEBUG) Log.w(TAG, "p: " + p);

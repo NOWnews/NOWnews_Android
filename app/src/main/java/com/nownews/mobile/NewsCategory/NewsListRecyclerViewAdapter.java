@@ -522,7 +522,9 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
         vAD2Native = new Ad2ictionNative((Activity) mContext, mAd2Native, "native", listener);
         Location currentLocation = Utility.getLocation(mContext);
-        currentLocation.setAccuracy(100);
+        if(currentLocation!=null){
+            currentLocation.setAccuracy(100);
+        }
         EnumSet<RequestParameters.NativeAdAsset> assetsSet = EnumSet.of(RequestParameters.NativeAdAsset.TITLE,
                                                                         RequestParameters.NativeAdAsset.CALL_TO_ACTION_TEXT,
                                                                         RequestParameters.NativeAdAsset.MAIN_IMAGE);
