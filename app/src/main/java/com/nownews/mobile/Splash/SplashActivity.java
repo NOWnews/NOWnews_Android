@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +19,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.appinvite.AppInvite;
+import com.google.android.gms.appinvite.AppInviteInvitationResult;
+import com.google.android.gms.appinvite.AppInviteReferral;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nownews.R;
 import com.nownews.mobile.NewHome;
 import com.nownews.mobile.Api.ParameterSet;
@@ -28,13 +39,16 @@ import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
 import com.nownews.mobile.Json.SplashImageJson;
+import com.nownews.mobile.NownewsApplication;
 import com.nownews.mobile.Service.GetSplashImageService;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.net.URLDecoder;
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends AppCompatActivity{
 
     public final static int GET_SPLASH_INFO = 0x572;
     public final static int NETWORK_SLOW_OK_CLICK = 0x213;
@@ -305,7 +319,6 @@ public class SplashActivity extends Activity {
         changeSharePreferenceTextSize();
         initController();
         processView();
-//        mBitmapController.loadImageFromFile(vSplashImage, UserDataInfo.ThumbnailPath + "Splash.jpg", mHandler);
         String thumbnailPath = UserDataInfo.ThumbnailPath + "Splash.jpg";
         if (Utility.DEBUG)Log.d(TAG, "thumbnailPath: " + thumbnailPath);
         Glide.with(this)
@@ -346,41 +359,6 @@ public class SplashActivity extends Activity {
                         super.onLoadFailed(e, errorDrawable);
                     }
                 });
-
-//        mBitmapController.loadImageWithGlide(thumbnailPath,
-//                vSplashImage, BitmapController.IMAGE_SRC, 0, 0, new ImageLoadingListener() {
-//                    @Override
-//                    public void onLoadingStart(String aImageUrl, View aView) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onLoadingFailed(String aImageUrl, View aView, Exception aException) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
-//                        if (aBitmap != null) {
-//                            vSplashImage.setImageBitmap(aBitmap);
-//                        } else {
-//                            vSplashImage.setImageResource(R.drawable.default_img);
-//                        }
-//                        if (!Utility.showNetworkSlowDialog(getApplicationContext(), mHandler, true)) {
-//                            getSplashImage();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onLoadingCancelled() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onProgressUpdate(String aImageUrl, int aProgress, int max) {
-//
-//                    }
-//                }, 0x568);
 
     }
 

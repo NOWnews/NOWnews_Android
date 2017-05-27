@@ -37,7 +37,14 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
+import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.appinvite.AppInviteInvitationResult;
+import com.google.android.gms.appinvite.AppInviteReferral;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nownews.R;
 import com.nownews.mobile.Basic.BaseSideActivity;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
@@ -65,6 +72,8 @@ import com.nownews.mobile.Widget.LiveMarquee;
 import com.nownews.mobile.Widget.MenuContent;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Random;
 
@@ -75,7 +84,7 @@ import butterknife.BindView;
  */
 
 public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTabSelectedListener,
-        MaterialDialog.SingleButtonCallback, DownloadListener.DownloadStatus, DialogInterface.OnShowListener {
+        MaterialDialog.SingleButtonCallback, DownloadListener.DownloadStatus, DialogInterface.OnShowListener,  GoogleApiClient.OnConnectionFailedListener {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -117,6 +126,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         super.onCreate(savedInstanceState);
 
         if (Utility.DEBUG) Log.d(TAG, "in NewHome");
+        processTracker();
         initContent();
         processBottomNavigation();
     }
@@ -736,4 +746,60 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                     .show();
         }
     }
+
+
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private GoogleApiClient mGoogleApiClient;
+    private void processTracker(){
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(AppInvite.API)
+                .build();
+
+        boolean autoLaunchDeepLink = false;
+        AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, this, autoLaunchDeepLink)
+                .setResultCallback(new ResultCallback<AppInviteInvitationResult>() {
+                    @Override
+                    public void onResult(@NonNull AppInviteInvitationResult appInviteInvitationResult) {
+
+                        if(appInviteInvitationResult.getStatus().isSuccess()){
+                            Log.i(TAG, "status: " + appInviteInvitationResult.getStatus().getStatus());
+                            Log.i(TAG, "status message: " + appInviteInvitationResult.getStatus().getStatusMessage());
+
+                            Intent intent = appInviteInvitationResult.getInvitationIntent();
+                            Log.i(TAG, "intent data: " + intent.getData());
+                            Log.i(TAG, "intent action: " + intent.getAction());
+                            String deepLink = AppInviteReferral.getDeepLink(intent);
+                            Log.i(TAG, "deepLink: " + deepLink);
+                            String inviteId = AppInviteReferral.getInvitationId(intent);
+                            Log.i(TAG, "inviteId: " + inviteId);
+
+                            try{
+                                deepLink = URLDecoder.decode(deepLink, "UTF-8");
+                            }catch (UnsupportedEncodingException e){
+                                e.printStackTrace();
+                            }
+                            Uri uri = Uri.parse(deepLink);
+                            String utmSource = uri.getQueryParameter("utm_source");
+                            String utmMedium = uri.getQueryParameter("utm_medium");
+                            Log.i(TAG, "utmSource: " + utmSource);
+                            Log.i(TAG, "utmMedium: " + utmMedium);
+
+                        } else {
+                            Log.d(TAG, "getInvitation: no deep link found.");
+                        }
+
+                    }
+                });
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e(TAG, "onConnectionFailed.");
+    }
+
 }
