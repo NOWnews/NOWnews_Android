@@ -1269,7 +1269,7 @@ public class Utility {
         aTextView.setTextColor(colorString);
     }
 
-    public enum ShareType {news, photo}
+    public enum ShareType {news, photo, normal}
 
     /**
      * 微信分享內容
@@ -1323,6 +1323,11 @@ public class Utility {
 
     public static void shareToSNS(Context aContext, String aShareMessage){
         Log.d(TAG, "aShareMessage: " + aShareMessage);
+        Intent sendIntent = getShareIntent(aContext, aShareMessage);
+        aContext.startActivity(Intent.createChooser(sendIntent, "分享這則新聞至..."));
+    }
+
+    public static Intent getShareIntent(Context aContext, String aShareMessage){
         if(aShareMessage!=null && aShareMessage.contains("▲")){
             aShareMessage = aShareMessage.replaceAll("▲", "");
         }
@@ -1330,7 +1335,7 @@ public class Utility {
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, aShareMessage);
         sendIntent.setType("text/plain");
-        aContext.startActivity(Intent.createChooser(sendIntent, "分享這則新聞至..."));
+        return sendIntent;
     }
 
     public static void shareApp(Context mContext){

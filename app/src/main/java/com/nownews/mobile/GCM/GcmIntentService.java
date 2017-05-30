@@ -157,8 +157,24 @@ public class GcmIntentService extends FirebaseMessagingService {
         String newsTitle;
         String newsSummary;
         String type;
+        String notificationUrl;
+        String notificationTitle;
+        int notificationId;
 
         type = mNotificationInfo.type;
+        notificationUrl = mNotificationInfo.url;
+        notificationTitle = mNotificationInfo.title;
+
+        notificationId = -1;
+        if (notificationUrl != null && !notificationUrl.isEmpty()) {
+            if (notificationUrl.contains("/n/") || notificationUrl.contains("/news/")) {
+                type = "news";
+                notificationId = Integer.parseInt(notificationUrl.substring(notificationUrl.lastIndexOf("/") + 1));
+            } else if (notificationUrl.contains("/p/") || notificationUrl.contains("/photo/")) {
+                type = "album";
+                notificationId = Integer.parseInt(notificationUrl.substring(notificationUrl.lastIndexOf("/") + 1));
+            }
+        }
 
         //設置標題
         newsTitle = getString(R.string.nownews);
@@ -177,10 +193,15 @@ public class GcmIntentService extends FirebaseMessagingService {
         }
 
         //建立按下訊息嵌板後所要轉跳的Intent
-        Intent intent = createNotificationGoWhere(type);
+        Intent intent = createNotificationGoWhere(type, notificationUrl, notificationId);
         //設定請求碼，請求碼若相同則會以最新的為準
         int requestCode = 1;
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, mNotificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        //Share Intent
+        Intent shareIntent = createShareIntent(type, notificationUrl, notificationTitle);
+        PendingIntent sharePendingIntent = PendingIntent.getActivity(this, notificationId, shareIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Notification.Action action = new Notification.Action.Builder(R.drawable.ic_share_grey600_24dp, "立即分享", sharePendingIntent).build();
 
         //設定鈴聲
         Uri sound = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
@@ -199,7 +220,8 @@ public class GcmIntentService extends FirebaseMessagingService {
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
                     .setPriority(Notification.PRIORITY_HIGH)
-                    .setLargeIcon(iconBitmap);
+                    .setLargeIcon(iconBitmap)
+                    .addAction(action);
 
             if(isSoundOpen){
                 builder.setSound(sound);
@@ -214,16 +236,16 @@ public class GcmIntentService extends FirebaseMessagingService {
                 //棒棒糖才有鎖屏通知
                 builder.setVisibility(Notification.VISIBILITY_PUBLIC);
             }
-            setBigStyleNotification(type, newsTitle, newsSummary, builder);
+            setBigStyleNotification(type, newsTitle, newsSummary, builder, notificationId);
         } else {
             //Api Level 16 (4.1)以下不包含4.1
-            setNormalNotification(newsTitle, newsSummary, pendingIntent, vibratepattern, sound);
+            setNormalNotification(newsTitle, newsSummary, pendingIntent, vibratepattern, sound, notificationId);
         }
 
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void setNormalNotification(String newsTitle, String newsSummary, PendingIntent pendingIntent, long[] vibratepattern, Uri sound) {
+    private void setNormalNotification(String newsTitle, String newsSummary, PendingIntent pendingIntent, long[] vibratepattern, Uri sound, int notificationId) {
         Notification notification;
         int currentSDKVersion = UserDataInfo.getSdkVersion();
         if (currentSDKVersion < Build.VERSION_CODES.HONEYCOMB) {
@@ -264,13 +286,13 @@ public class GcmIntentService extends FirebaseMessagingService {
 
         }
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        mNotificationManager.notify(mNotificationId != -1? mNotificationId:0 , notification);
+        mNotificationManager.notify(notificationId != -1? notificationId:0 , notification);
     }
 
     private String mImageUrl;
     private BitmapController mBitmapController;
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void setBigStyleNotification(String type, String newsTitle, final String newsSummary, final Builder builder) {
+    private void setBigStyleNotification(String type, String newsTitle, final String newsSummary, final Builder builder, final int notificationId) {
 
         builder.setSmallIcon(R.drawable.now);
 
@@ -293,7 +315,7 @@ public class GcmIntentService extends FirebaseMessagingService {
         if (mImageUrl == null || (mImageUrl != null && mImageUrl.isEmpty())) {
             //設定大圖
             Notification notification = builder.build();
-            mNotificationManager.notify(mNotificationId != -1? mNotificationId:0 , notification);
+            mNotificationManager.notify(notificationId != -1? notificationId:0 , notification);
         } else {
             mBitmapController = BitmapController.getInstance(this);
             mImageUrl = Utility.getSrcFromImgapi(mImageUrl);
@@ -322,7 +344,7 @@ public class GcmIntentService extends FirebaseMessagingService {
                     builder.setStyle(bigPictureStyle);
 
                     Notification notification = builder.build();
-                    mNotificationManager.notify(mNotificationId != -1? mNotificationId:0 , notification);
+                    mNotificationManager.notify(notificationId != -1? notificationId:0 , notification);
                 }
 
                 @Override
@@ -335,30 +357,18 @@ public class GcmIntentService extends FirebaseMessagingService {
         }
     }
 
-    private int mNotificationId;
-    private Intent createNotificationGoWhere(String type) {
+    private Intent createNotificationGoWhere(String type, String notificationUrl, int notificationId) {
         Intent intent = null;
 
-        String url = mNotificationInfo.url;
-        mNotificationId = -1;
-        if (url != null && !url.isEmpty()) {
-            if (url.contains("/n/") || url.contains("/news/")) {
-                type = "news";
-                mNotificationId = Integer.parseInt(url.substring(url.lastIndexOf("/") + 1));
-            } else if (url.contains("/p/") || url.contains("/photo/")) {
-                type = "album";
-                mNotificationId = Integer.parseInt(url.substring(url.lastIndexOf("/") + 1));
-            }
-        }
         if (Utility.DEBUG && type != null) Log.d(TAG, "type: " + type);
-        if (Utility.DEBUG && url != null) Log.d(TAG, "url: " + url);
-        if (Utility.DEBUG && mNotificationId != -1) Log.d(TAG, "mNotificationId: " + mNotificationId);
+        if (Utility.DEBUG && notificationUrl != null) Log.d(TAG, "url: " + notificationUrl);
+        if (Utility.DEBUG && notificationId != -1) Log.d(TAG, "notificationId: " + notificationId);
 
         if (type.equalsIgnoreCase("news")) {
             if(Utility.DEBUG)Log.w(TAG, "news!!!!!");
             intent = new Intent();
             intent.setClass(this, NewsPage.class);
-            intent.putExtra(NewsPage.KEY_NEWS_ID, (mNotificationInfo.id.equals("") ? mNotificationId : mNotificationInfo.id));
+            intent.putExtra(NewsPage.KEY_NEWS_ID, (mNotificationInfo.id.equals("") ? notificationId : mNotificationInfo.id));
             intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_SINGAL_NEWS);
             intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, getString(R.string.cloud_message));
             intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, getString(R.string.cloud_message_click));
@@ -368,7 +378,7 @@ public class GcmIntentService extends FirebaseMessagingService {
             if(Utility.DEBUG)Log.w(TAG, "album!!!!!");
             intent = new Intent();
             intent.setClass(this, AlbumPage.class);
-            intent.putExtra(AlbumPage.KEY_ALBUM_ID, (mNotificationInfo.id.equals("") ? mNotificationId : mNotificationInfo.id));
+            intent.putExtra(AlbumPage.KEY_ALBUM_ID, (mNotificationInfo.id.equals("") ? notificationId : mNotificationInfo.id));
             intent.putExtra(AlbumPage.KEY_FROM_WHERE, GcmIntentService.this.getClass().getSimpleName());
         } else if (type.equalsIgnoreCase("normal")) {
             if(Utility.DEBUG)Log.w(TAG, "normal!!!!!");
@@ -383,10 +393,32 @@ public class GcmIntentService extends FirebaseMessagingService {
         if(mNotificationInfo.title!=null){
             action = mNotificationInfo.title;
         }
-        if(mNotificationInfo.url!=null){
-            action = action + " " + mNotificationInfo.url;
+        if(notificationUrl!=null){
+            action = action + " " + notificationUrl;
         }
         GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.cloud_message), getString(R.string.cloud_message_reveive), action);
+
+        return intent;
+    }
+
+    private Intent createShareIntent(String type, String notificationUrl, String notificationTitle) {
+        Intent intent = null;
+
+        Utility.ShareType shareType = null;
+
+        if (type.equalsIgnoreCase("news")) {
+            if(Utility.DEBUG)Log.w(TAG, "news!!!!!");
+            shareType = Utility.ShareType.news;
+        } else if (type.equalsIgnoreCase("album")) {
+            if(Utility.DEBUG)Log.w(TAG, "album!!!!!");
+            shareType = Utility.ShareType.photo;
+        } else if (type.equalsIgnoreCase("normal")) {
+            if(Utility.DEBUG)Log.w(TAG, "normal!!!!!");
+            shareType = Utility.ShareType.normal;
+        }
+
+        String shareMessage = Utility.getShareMessage(this, notificationUrl, notificationTitle, shareType);
+        intent = Utility.getShareIntent(this, shareMessage);
 
         return intent;
     }
