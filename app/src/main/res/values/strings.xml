@@ -158,6 +158,7 @@
     <string name="cloud_message_close">推播關</string>
     <string name="cloud_message_reveive">收到推播</string>
     <string name="cloud_message_click">點擊推播</string>
+    <string name="cloud_message_click_share_news">點擊立即分享</string>
     <string name="gcm_dialog_lets_go">立即前往</string>
     <string name="click_me_share">點我分享</string>
     <string name="stop_service">暫停服務</string>
@@ -176,4 +177,6 @@
     <string name="only_am">上半天(AM 00:00~11:59)</string>
     <string name="only_pm">下半天(PM 12:00~23:59)</string>
     <string name="all_day">全天</string>
+
+    <string name="miss_connect">網路連線異常</string>
 </resources>

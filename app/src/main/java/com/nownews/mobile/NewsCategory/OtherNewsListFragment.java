@@ -121,6 +121,7 @@ public class OtherNewsListFragment extends Fragment {
                     break;
 
                 case CHECK_LIST:
+                    if(Utility.DEBUG)Log.w(TAG, "CHECK_LIST!!!");
                     if (fragment.isGetHeadLineDone && fragment.mNewsList != null) {
                         UserDataInfo.setHeadlineContent(fragment.mNewsList);
                         if(fragment.isAdded()){
@@ -285,91 +286,13 @@ public class OtherNewsListFragment extends Fragment {
 
     private void getNearByNews(){
         if (Utility.DEBUG) Log.v(TAG, "getNearByNews()");
-        double[] longitudeLatitude = getLongitudeLatitude();
+        double[] longitudeLatitude = Utility.getLongitudeLatitude(getActivity());
         if (mApiController != null) {
             mApiController.getNearByNews(mApiHandler, longitudeLatitude[0], longitudeLatitude[1]);
         }
     }
 
-    private double[] getLongitudeLatitude(){
-        double[] longitudeLatitude = new double[2];
 
-        long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-        long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
-
-        LocationManager locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        if(!isGPSEnabled && !isNetworkEnabled){
-            return longitudeLatitude;
-        }else if(isGPSEnabled){
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                    mLocationListener);
-            if(locationManager!=null){
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if(location!=null){
-                    longitudeLatitude[0] = location.getLongitude();
-                    longitudeLatitude[1] = location.getLatitude();
-                    Log.i(TAG, "isGPSEnabled longitude: " + longitudeLatitude[0]);
-                    Log.i(TAG, "isGPSEnabled latitude: " + longitudeLatitude[1]);
-                    locationManager.removeUpdates(mLocationListener);
-                    return longitudeLatitude;
-                }else{
-                    Log.w(TAG, "isGPSEnabled location==null");
-                }
-                locationManager.removeUpdates(mLocationListener);
-            }else{
-                Log.w(TAG, "isGPSEnabled locationManager==null");
-            }
-        }
-
-        if(isNetworkEnabled){
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                    MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                    mLocationListener);
-            if(locationManager!=null){
-                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if(location!=null){
-                    longitudeLatitude[0] = location.getLongitude();
-                    longitudeLatitude[1] = location.getLatitude();
-                    Log.i(TAG, "isNetworkEnabled longitude: " + longitudeLatitude[0]);
-                    Log.i(TAG, "isNetworkEnabled latitude: " + longitudeLatitude[1]);
-                }else{
-                    Log.w(TAG, "isNetworkEnabled location==null");
-                }
-                locationManager.removeUpdates(mLocationListener);
-            }else{
-                Log.w(TAG, "isNetworkEnabled locationManager==null");
-            }
-        }
-
-        return longitudeLatitude;
-    }
-
-    private LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-    };
 
     private void processArgument() {
         mCategoryName = getArguments().getString(KEY_CATEGORY_NAME);
@@ -412,7 +335,7 @@ public class OtherNewsListFragment extends Fragment {
     private LinearLayoutManager mLinearLayoutManager;
     private void processList() {
 
-        if (Utility.DEBUG) Log.e(TAG, "processList()");
+        if (Utility.DEBUG) Log.e(TAG, "processList() + mCategoryName: " + mCategoryName);
 
         vLoadingLayout.setVisibility(View.GONE);
         vList.setVisibility(View.VISIBLE);

@@ -10,11 +10,9 @@
         android:alpha="0.7"
         android:background="@android:color/black" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/menu_content_category_bg"
-        android:dividerHeight="0.5dp" />
+        android:layout_height="match_parent" />
 
 </com.nownews.mobile.Widget.MenuContent>

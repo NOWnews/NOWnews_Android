@@ -13,11 +13,15 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
@@ -85,7 +89,7 @@ import java.util.concurrent.Executors;
 public class Utility {
 
     public final static int IMG_QUALITY = 60;
-    public final static boolean DEBUG = false;
+    public final static boolean DEBUG = true;
     public final static boolean SAVE_JSON = false;
     //    private static DisplayImageOptions options;
     public static String mIPAddress = "";
@@ -435,7 +439,8 @@ public class Utility {
 
         String sendingMessageFormat;
         String sendingMessage = null;
-        if (aShareText != null && !aShareText.trim().equals("")) {
+        if (aShareText != null && !aShareText.trim().equals("")
+                && aShareUrl != null && !aShareUrl.trim().equals("")) {
             //分享內容和Url都有
             if (aShareType == ShareType.photo) {
                 sendingMessageFormat = aContext.getString(R.string.album_sending_message);
@@ -444,7 +449,15 @@ public class Utility {
                 sendingMessageFormat = aContext.getString(R.string.sending_message);
                 sendingMessage = String.format(sendingMessageFormat, aShareText, aShareUrl);
             }
-        } else {
+        } else if(aShareText != null && !aShareText.trim().equals("")){
+            //僅有分享Text
+            if (aShareType == ShareType.photo) {
+                sendingMessageFormat = aContext.getString(R.string.album_sending_message_no_title);
+            } else {
+                sendingMessageFormat = aContext.getString(R.string.sending_message_no_title);
+            }
+            sendingMessage = String.format(sendingMessageFormat, aShareText);
+        } else if(aShareUrl != null && !aShareUrl.trim().equals("")){
             //僅有分享URL
             if (aShareType == ShareType.photo) {
                 sendingMessageFormat = aContext.getString(R.string.album_sending_message_no_title);
@@ -1265,7 +1278,7 @@ public class Utility {
         aTextView.setTextColor(colorString);
     }
 
-    public enum ShareType {news, photo}
+    public enum ShareType {news, photo, normal}
 
     /**
      * 微信分享內容
@@ -1319,6 +1332,11 @@ public class Utility {
 
     public static void shareToSNS(Context aContext, String aShareMessage){
         Log.d(TAG, "aShareMessage: " + aShareMessage);
+        Intent sendIntent = getShareIntent(aContext, aShareMessage);
+        aContext.startActivity(Intent.createChooser(sendIntent, "分享這則新聞至..."));
+    }
+
+    public static Intent getShareIntent(Context aContext, String aShareMessage){
         if(aShareMessage!=null && aShareMessage.contains("▲")){
             aShareMessage = aShareMessage.replaceAll("▲", "");
         }
@@ -1326,7 +1344,7 @@ public class Utility {
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, aShareMessage);
         sendIntent.setType("text/plain");
-        aContext.startActivity(Intent.createChooser(sendIntent, "分享這則新聞至..."));
+        return sendIntent;
     }
 
     public static void shareApp(Context mContext){
@@ -1334,7 +1352,7 @@ public class Utility {
         Log.d(TAG, "deeplink: " + deeplink.toString());
         Intent intent = new AppInviteInvitation.IntentBuilder("分享NOWnews今日新聞")
                 .setMessage("NOWnews今日新聞94狂!!\n最新最快最勁爆的新聞都在這!!\n還有免費直播讓你看!!\n還不趕快下載!!")
-                .setDeepLink(Uri.parse("https://qv5h4.app.goo.gl/V9Hh"))
+                .setDeepLink(Uri.parse("https://qv5h4.app.goo.gl/OnxH"))
                 .setCallToActionText("點我下載")
                 .build();
         ((Activity)mContext).startActivityForResult(intent, 0x789);
@@ -1473,6 +1491,84 @@ public class Utility {
                     }
                 })
                 .show();
+    }
+
+    public static double[] getLongitudeLatitude(Context aContext){
+        double[] longitudeLatitude = new double[2];
+
+        long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+        long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+
+        LocationManager locationManager = (LocationManager)aContext.getSystemService(Context.LOCATION_SERVICE);
+        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if(!isGPSEnabled && !isNetworkEnabled){
+            return longitudeLatitude;
+        }else if(isGPSEnabled){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                    mLocationListener);
+            if(locationManager!=null){
+                mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if(mCurrentLocation!=null){
+                    longitudeLatitude[0] = mCurrentLocation.getLongitude();
+                    longitudeLatitude[1] = mCurrentLocation.getLatitude();
+                    if (Utility.DEBUG) Log.i(TAG, "isGPSEnabled longitude: " + longitudeLatitude[0]);
+                    if (Utility.DEBUG) Log.i(TAG, "isGPSEnabled latitude: " + longitudeLatitude[1]);
+                    locationManager.removeUpdates(mLocationListener);
+                    return longitudeLatitude;
+                }else{
+                    if (Utility.DEBUG) Log.w(TAG, "isGPSEnabled location==null");
+                }
+                locationManager.removeUpdates(mLocationListener);
+            }else{
+                if (Utility.DEBUG) Log.w(TAG, "isGPSEnabled locationManager==null");
+            }
+        }
+
+        if(isNetworkEnabled){
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                    mLocationListener);
+            if(locationManager!=null){
+                mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if(mCurrentLocation!=null){
+                    longitudeLatitude[0] = mCurrentLocation.getLongitude();
+                    longitudeLatitude[1] = mCurrentLocation.getLatitude();
+                    if (Utility.DEBUG) Log.i(TAG, "isNetworkEnabled longitude: " + longitudeLatitude[0]);
+                    if (Utility.DEBUG) Log.i(TAG, "isNetworkEnabled latitude: " + longitudeLatitude[1]);
+                }else{
+                    if (Utility.DEBUG) Log.w(TAG, "isNetworkEnabled location==null");
+                }
+                locationManager.removeUpdates(mLocationListener);
+            }else{
+                if (Utility.DEBUG) Log.w(TAG, "isNetworkEnabled locationManager==null");
+            }
+        }
+
+        return longitudeLatitude;
+    }
+
+    public static LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) { }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) { }
+
+        @Override
+        public void onProviderEnabled(String s) { }
+
+        @Override
+        public void onProviderDisabled(String s) { }
+    };
+
+    private static Location mCurrentLocation;
+    public static Location getLocation(Context aContext){
+        getLongitudeLatitude(aContext);
+        return mCurrentLocation;
     }
 
 }

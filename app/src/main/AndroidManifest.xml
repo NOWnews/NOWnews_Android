@@ -27,11 +27,12 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <!-- For GCM -->
 
+
     <!-- For AD2 -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- For AD2 -->
 
+    <!-- For AD2 -->
     <application
         android:name=".mobile.NownewsApplication"
         android:allowBackup="true"
@@ -54,19 +55,19 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".mobile.NewsPage.NewsPage"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".mobile.VideoNewsPage.VideoNewsPage"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".mobile.AlbumPage.AlbumPage"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".mobile.FavoriteAlbum.FavoriteAlbum"
             android:screenOrientation="portrait" />
         <activity
             android:name=".mobile.FavoriteAlbum.FavoriteAlbumPage"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".mobile.Search.SearchActivity"
             android:screenOrientation="portrait" />
@@ -84,19 +85,17 @@
             android:name=".mobile.Live.LivePlayer"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-
         <activity
             android:name="com.tapjoy.TJAdUnitActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            android:hardwareAccelerated="true" />
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
             android:name="com.tapjoy.mraid.view.ActionHandler"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name="com.tapjoy.mraid.view.Browser"
             android:configChanges="orientation|keyboardHidden|screenSize" />
-
         <activity
             android:name="com.tapjoy.TJContentActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -114,8 +113,8 @@
 
         <activity
             android:name=".mobile.BroadcastReceiver.ExternalLinkOpen"
-            android:screenOrientation="landscape"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -131,10 +130,11 @@
             </intent-filter>
         </activity>
 
+        <!--
         <activity
             android:name=".mobile.Invite.InviteCodeInputPage"
-            android:screenOrientation="landscape"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -150,6 +150,8 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
+        -->
+
 
         <!--
         <receiver
@@ -272,6 +274,22 @@
             android:hardwareAccelerated="true"
             android:theme="@android:style/Theme.Translucent" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.nownews.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <!-- 元数据 -->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <receiver
+            android:name=".mobile.BroadcastReceiver.GcmShareAppReceiver"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

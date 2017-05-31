@@ -6,8 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.nownews.mobile.Api.ApiScheduler;
-import com.nownews.mobile.Api.CheckVersion;
 import com.nownews.mobile.Api.GetHeadlineNews;
 import com.nownews.mobile.Api.GetHotNews;
 import com.nownews.mobile.Api.GetInstantNews;
@@ -27,12 +25,8 @@ import com.nownews.mobile.Api.GetSplashImage;
 import com.nownews.mobile.Api.GetVideosCategory;
 import com.nownews.mobile.Api.GetVideosInfo;
 import com.nownews.mobile.Api.GetVideosList;
-import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Service.SignalService;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ApiController {
 
@@ -340,15 +334,6 @@ public class ApiController {
 //        mApiQueue.add(new GetSplashImage(aHandler));
 //        if (Utility.DEBUG) Log.v(TAG, "mApiQueue.size(): " + mApiQueue.size());
         new Thread(new GetSplashImage(aHandler)).start();
-    }
-
-    /**取得版本資訊*/
-    public void checkVersion(Handler aHandler) {
-        if (Utility.DEBUG) Log.i(TAG, "checkVersion called");
-//        if (Utility.DEBUG) Log.e(TAG, "mApiQueue = " + (mApiQueue == null ? true : false));
-//        mApiQueue.add(new CheckVersion(aHandler));
-//        if (Utility.DEBUG) Log.v(TAG, "mApiQueue.size(): " + mApiQueue.size());
-        new Thread(new CheckVersion(aHandler)).start();
     }
 
     /**取得搜尋資訊*/

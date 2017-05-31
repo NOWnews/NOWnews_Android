@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <Paths>
+        <external-path path="Nownews/" name="ext_root" />
+    </Paths>
+
+</resources>

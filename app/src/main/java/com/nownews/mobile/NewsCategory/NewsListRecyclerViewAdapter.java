@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,12 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ad2iction.nativeads.Ad2ictionAdLocalEventHandler;
 import com.ad2iction.nativeads.Ad2ictionNative;
-import com.ad2iction.nativeads.AdapterHelper;
 import com.ad2iction.nativeads.NativeErrorCode;
 import com.ad2iction.nativeads.NativeResponse;
 import com.ad2iction.nativeads.RequestParameters;
-import com.ad2iction.nativeads.ViewBinder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -32,8 +31,6 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherAdView;
 import com.nownews.R;
-import com.nownews.mobile.Api.WebAPIUrl;
-import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
@@ -47,8 +44,7 @@ import com.vpadn.ads.VpadnAdListener;
 import com.vpadn.ads.VpadnAdRequest;
 import com.vpadn.ads.VpadnNativeAd;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 
@@ -172,20 +168,25 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             ((ADViewHolder)holder).vNewsTitle.setText("");
             ((ADViewHolder)holder).vNewsCategory.setText("");
             ((ADViewHolder)holder).vCallToAction.setText("");
+            ((ADViewHolder)holder).itemView.setOnClickListener(null);
 
+            setItemVisibility(false, ((ADViewHolder)holder).itemView);
             if(position == 2){
 
                 ((ADViewHolder)holder).vAdGroup.setVisibility(View.GONE);
                 processAD2(position, ((ADViewHolder)holder).vNewsCategory, ((ADViewHolder)holder).vNewsTitle,
-                        ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction);
+                        ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction,
+                        ((ADViewHolder)holder).itemView);
                 return;
             }
 
             int positionInAdList = (position-5)/4;
             processVPON(positionInAdList, position,
                     ((ADViewHolder)holder).vNewsCategory, ((ADViewHolder)holder).vNewsTitle,
-                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction);
-            processDFP(((ADViewHolder)holder).vAdGroup, positionInAdList, position);
+                    ((ADViewHolder)holder).vNewsImage, ((ADViewHolder)holder).vNewsItem, ((ADViewHolder)holder).vCallToAction,
+                    ((ADViewHolder)holder).itemView);
+            processDFP(((ADViewHolder)holder).vAdGroup, positionInAdList, position,
+                    ((ADViewHolder)holder).itemView);
 
         } else {
 
@@ -304,7 +305,8 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     private final AdSize DFP_SIZE = AdSize.MEDIUM_RECTANGLE;
-    private void processDFP(final RelativeLayout aAdCardView, final int aPositionInAdList, final int aPosition) {
+    private void processDFP(final RelativeLayout aAdCardView, final int aPositionInAdList, final int aPosition,
+                            final View aItemView) {
         if (Utility.DEBUG) Log.e(TAG, "DFP");
 
         final PublisherAdView vDfpAdView = new PublisherAdView(mContext);
@@ -336,13 +338,10 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 if (Utility.DEBUG) Log.e(TAG, "onAdLoaded");
                 if (Utility.DEBUG) Log.e(TAG, "onBannerLoaded");
                 if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
-                if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
-                if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
-//                if (aPosition >= mFirstVisibleItem && aPosition <= mLastVisibleItem) {
-                    aAdCardView.removeAllViews();
-                    aAdCardView.addView(vDfpAdView);
-                    aAdCardView.setVisibility(View.VISIBLE);
-//                }
+                aAdCardView.removeAllViews();
+                aAdCardView.addView(vDfpAdView);
+                aAdCardView.setVisibility(View.VISIBLE);
+                setItemVisibility(true, aItemView);
                 super.onAdLoaded();
             }
 
@@ -363,7 +362,8 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     private void processVPON(int aPositionInAdList, final int aPosition, final TextView aCategory, final TextView aTitle,
-                             final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction){
+                             final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction,
+                             final View aItemView){
 
         final VpadnNativeAd nativeAd = new VpadnNativeAd((Activity)mContext, mVPONIdList[aPositionInAdList], "TW");
         nativeAd.setAdListener(new VpadnAdListener() {
@@ -376,8 +376,6 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
 
                 if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
-                if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
-                if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
 
                 nativeAd.unregisterView();
                 aCategory.setText(mContext.getString(R.string.sponsored));
@@ -396,6 +394,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 Glide.with(mContext).load(adCoverImage.getUrl()).override(screenWidth, newHeight).into(aImage);
 //                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
                 nativeAd.registerViewForInteraction(aNewsItem);
+                setItemVisibility(true, aItemView);
 
             }
 
@@ -433,31 +432,49 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
     private String mAd2Native;
     private Ad2ictionNative vAD2Native;
+    private NativeResponse mNativeResponse;
+    private Ad2ictionAdLocalEventHandler mAd2ictionAdLocalEventHandler;
     private void processAD2(final int aPosition, final TextView aCategory, final TextView aTitle,
-                            final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction) {
+                            final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction,
+                            final View aItemView) {
 
         if(vAD2Native!=null){
             vAD2Native.destroy();
             vAD2Native = null;
         }
 
+        if(mAd2ictionAdLocalEventHandler!=null){
+            mAd2ictionAdLocalEventHandler.recycle();
+        }
+
         mAd2Native = mContext.getString(R.string.ad2_native);
         if (Utility.DEBUG) Log.e(TAG, "===mAd2Native: " + mAd2Native);
 
-        Ad2ictionNative.Ad2ictionNativeNetworkListener ad2ictionNativeNetworkListener = new Ad2ictionNative.Ad2ictionNativeNetworkListener() {
+        Ad2ictionNative.Ad2ictionNativeListener listener = new Ad2ictionNative.Ad2ictionNativeListener() {
+            @Override
+            public void onNativeImpression(View view) { }
+
+            @Override
+            public void onNativeClick(View view) { }
+
             @Override
             public void onNativeLoad(NativeResponse nativeResponse) {
-                if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
-                if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
-                if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
-                if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
-                if (Utility.DEBUG) Log.e(TAG, "nativeResponse is null or not??" + nativeResponse.toString());
 
-                String text = nativeResponse.getText();
-                final String imageUrl = nativeResponse.getMainImageUrl();
-                String callToActionText = nativeResponse.getCallToAction();
+                mNativeResponse = nativeResponse;
+                mAd2ictionAdLocalEventHandler = new Ad2ictionAdLocalEventHandler(mContext);
+                mAd2ictionAdLocalEventHandler.handleEvent(aItemView, mNativeResponse);
+
+                if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
+                if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
+                if (Utility.DEBUG) Log.e(TAG, "mNativeResponse is null or not??" + mNativeResponse.toString());
+
+                String text = mNativeResponse.getText();
+                final String imageUrl = mNativeResponse.getMainImageUrl();
+                String callToActionText = mNativeResponse.getCallToAction();
+                String link = mNativeResponse.getClickDestinationUrl();
                 if (Utility.DEBUG) Log.v(TAG, "text: " + text);
                 if (Utility.DEBUG) Log.v(TAG, "imageUrl: " + imageUrl);
+                if (Utility.DEBUG) Log.v(TAG, "link: " + link);
 
                 aCategory.setText(mContext.getString(R.string.sponsored));
                 aCategory.setTextColor(mContext.getResources().getColor(android.R.color.black));
@@ -471,9 +488,9 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                Log.v(TAG, "onResourceReady");
-                                Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
-                                Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
+                                if (Utility.DEBUG) Log.v(TAG, "onResourceReady");
+                                if (Utility.DEBUG) Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
+                                if (Utility.DEBUG) Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
 
 //                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 //                                params.setMargins(0, 15, 0, 0);
@@ -482,41 +499,164 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                                 int screenWidth = Utility.getScreenWidth(mContext);
                                 float scale = (float)screenWidth / (float)resource.getWidth();
                                 int newHeight = (int)(resource.getHeight() * scale);
-                                Log.i(TAG, "screenWidth: " + screenWidth);
-                                Log.i(TAG, "scale: " + scale);
-                                Log.i(TAG, "newHeight: " + newHeight);
+                                if (Utility.DEBUG) Log.i(TAG, "screenWidth: " + screenWidth);
+                                if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
+                                if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
                                 Glide.with(mContext).load(imageUrl).override(screenWidth, newHeight).into(aImage);
+                                setItemVisibility(true, aItemView);
 
                             }
 
                             @Override
                             public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                 aImage.setImageResource(R.drawable.default_img);
+                                setItemVisibility(true, aItemView);
                                 super.onLoadFailed(e, errorDrawable);
                             }
                         });
             }
 
             @Override
-            public void onNativeFail(NativeErrorCode nativeErrorCode) {
-
-            }
+            public void onNativeFail(NativeErrorCode nativeErrorCode) { }
         };
 
-        RequestParameters requestParameters = new RequestParameters.Builder().build();
+        vAD2Native = new Ad2ictionNative((Activity) mContext, mAd2Native, "native", listener);
+        Location currentLocation = Utility.getLocation(mContext);
+        if(currentLocation!=null){
+            currentLocation.setAccuracy(100);
+        }
+        EnumSet<RequestParameters.NativeAdAsset> assetsSet = EnumSet.of(RequestParameters.NativeAdAsset.TITLE,
+                                                                        RequestParameters.NativeAdAsset.CALL_TO_ACTION_TEXT,
+                                                                        RequestParameters.NativeAdAsset.MAIN_IMAGE);
 
-        vAD2Native = new Ad2ictionNative(mContext, mAd2Native, "native", ad2ictionNativeNetworkListener);
+        RequestParameters requestParameters = new RequestParameters.Builder()
+                .location(currentLocation)
+                .desiredAssets(assetsSet)
+                .build();
+
         vAD2Native.makeRequest(requestParameters);
+
+//        aItemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                Log.d(TAG, "aItemView 111");
+//                if(mNativeResponse!=null){
+//                    Log.d(TAG, "aItemView 222");
+//                    mAd2ictionAdLocalEventHandler.handleEvent(aItemView, mNativeResponse);
+//                }
+//
+//            }
+//        });
+
+//        Ad2ictionNative.Ad2ictionNativeNetworkListener ad2ictionNativeNetworkListener = new Ad2ictionNative.Ad2ictionNativeNetworkListener() {
+//            @Override
+//            public void onNativeLoad(NativeResponse nativeResponse) {
+//
+//                mNativeResponse = nativeResponse;
+//
+//                if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
+//                if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
+//                if (Utility.DEBUG) Log.e(TAG, "mNativeResponse is null or not??" + mNativeResponse.toString());
+//
+//                String text = mNativeResponse.getText();
+//                final String imageUrl = mNativeResponse.getMainImageUrl();
+//                String callToActionText = mNativeResponse.getCallToAction();
+//                String link = mNativeResponse.getClickDestinationUrl();
+//                if (Utility.DEBUG) Log.v(TAG, "text: " + text);
+//                if (Utility.DEBUG) Log.v(TAG, "imageUrl: " + imageUrl);
+//                if (Utility.DEBUG) Log.v(TAG, "link: " + link);
+//
+//                aCategory.setText(mContext.getString(R.string.sponsored));
+//                aCategory.setTextColor(mContext.getResources().getColor(android.R.color.black));
+//                aTitle.setText(text);
+//                aCallToAction.setText(callToActionText);
+//                Glide.with(mContext)
+//                        .load(imageUrl)
+//                        .asBitmap()
+//                        .skipMemoryCache(true)
+//                        .error(R.drawable.default_img)
+//                        .into(new SimpleTarget<Bitmap>() {
+//                            @Override
+//                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                                if (Utility.DEBUG) Log.v(TAG, "onResourceReady");
+//                                if (Utility.DEBUG) Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
+//                                if (Utility.DEBUG) Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
+//
+////                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+////                                params.setMargins(0, 15, 0, 0);
+////                                aImage.setLayoutParams(params);
+//
+//                                int screenWidth = Utility.getScreenWidth(mContext);
+//                                float scale = (float)screenWidth / (float)resource.getWidth();
+//                                int newHeight = (int)(resource.getHeight() * scale);
+//                                if (Utility.DEBUG) Log.i(TAG, "screenWidth: " + screenWidth);
+//                                if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
+//                                if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
+//                                Glide.with(mContext).load(imageUrl).override(screenWidth, newHeight).into(aImage);
+//                                setItemVisibility(true, aItemView);
+//
+//                            }
+//
+//                            @Override
+//                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                                aImage.setImageResource(R.drawable.default_img);
+//                                setItemVisibility(true, aItemView);
+//                                super.onLoadFailed(e, errorDrawable);
+//                            }
+//                        });
+//            }
+//
+//            @Override
+//            public void onNativeFail(NativeErrorCode nativeErrorCode) {
+//                setItemVisibility(false, aItemView);
+//            }
+//        };
+//
+//        Ad2ictionNative.Ad2ictionNativeEventListener ad2ictionNativeEventListener = new Ad2ictionNative.Ad2ictionNativeEventListener() {
+//            @Override
+//            public void onNativeImpression(View view) {
+//
+//            }
+//
+//            @Override
+//            public void onNativeClick(View view) {
+//                Log.d(TAG, "vAD2Native click!!");
+//            }
+//        };
+//
+//        aItemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                if(mNativeResponse!=null){
+////                    mNativeResponse.prepare(aItemView);
+//                    mNativeResponse.handleClick(aItemView);
+//                }
+//
+//            }
+//        });
+//
+//        RequestParameters requestParameters = new RequestParameters.Builder().build();
+//
+//        vAD2Native = new Ad2ictionNative((Activity)mContext, mAd2Native, "native", ad2ictionNativeNetworkListener);
+//        vAD2Native.setNativeEventListener(ad2ictionNativeEventListener);
+//        vAD2Native.makeRequest(requestParameters);
 
     }
 
-    private int mFirstVisibleItem;
-    private int mLastVisibleItem;
-    public void setPosition(int firstVisibleItem, int visibleItemCount) {
-        Log.i(TAG, "setPosition");
-        mFirstVisibleItem = firstVisibleItem;
-        mLastVisibleItem = visibleItemCount;
-//        notifyDataSetChanged();
+    private void setItemVisibility(boolean isVisible, View itemView){
+        RecyclerView.LayoutParams param = (RecyclerView.LayoutParams)itemView.getLayoutParams();
+        if (isVisible){
+            param.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            param.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            itemView.setVisibility(View.VISIBLE);
+        }else{
+            itemView.setVisibility(View.GONE);
+            param.height = 0;
+            param.width = 0;
+        }
+        itemView.setLayoutParams(param);
     }
 
     public void clearBitmapController() {
@@ -531,6 +671,11 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             vAD2Native.destroy();
             vAD2Native = null;
         }
+
+        if(mAd2ictionAdLocalEventHandler!=null){
+            mAd2ictionAdLocalEventHandler.recycle();
+        }
+
     }
 
     public void unRegistContext(Context aContext){

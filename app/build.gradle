@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
 
 repositories {
     mavenCentral()
@@ -34,6 +35,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'jsr305_annotations/Jsr305_annotations.gwt.xml'
+    }
 }
 
 dependencies {
@@ -66,6 +81,19 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.comscore:android-analytics:5.+'
     compile 'com.tapjoy:tapjoy-android-sdk:11.7.0@aar'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.8.0'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.0'
+    compile 'joda-time:joda-time:+'
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    // Ad2一般廣告
+    compile project(':ad2iction-sdk')
+    // Ad2進階互動廣告
+    compile 'com.google.android.gms:play-services-vision:10.0.1'
+    // Ad2廣告聯聯播網轉接器
+    compile project(':ad2iction-mediation-adapter')
+    compile 'com.google.firebase:firebase-ads:10.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
