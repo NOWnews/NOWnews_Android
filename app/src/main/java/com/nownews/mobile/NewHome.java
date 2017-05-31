@@ -163,6 +163,8 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
              * */
             if (!isNeedToUpdate && !this.isMenu) {
                 this.showAllPageDFPAD();
+            }else if(!isNeedToUpdate && this.isMenu){
+                this.getVersion(false, (CheckVersionJson) result);
             }
             this.isMenu = false;
         } else if (result instanceof LiveInfoJson) {
@@ -742,7 +744,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                     .title(getString(R.string.version))
                     .content(currentVersionText)
                     .negativeText(getString(R.string.ok))
-                    .onNegative(this)
+                    .onNegative(null)
                     .show();
         }
     }
