@@ -1343,7 +1343,7 @@ public class Utility {
         Log.d(TAG, "deeplink: " + deeplink.toString());
         Intent intent = new AppInviteInvitation.IntentBuilder("分享NOWnews今日新聞")
                 .setMessage("NOWnews今日新聞94狂!!\n最新最快最勁爆的新聞都在這!!\n還有免費直播讓你看!!\n還不趕快下載!!")
-                .setDeepLink(Uri.parse("https://qv5h4.app.goo.gl/V9Hh"))
+                .setDeepLink(Uri.parse("https://qv5h4.app.goo.gl/OnxH"))
                 .setCallToActionText("點我下載")
                 .build();
         ((Activity)mContext).startActivityForResult(intent, 0x789);
