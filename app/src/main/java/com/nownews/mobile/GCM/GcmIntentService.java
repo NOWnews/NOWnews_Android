@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.nownews.R;
 import com.nownews.mobile.AlbumPage.AlbumPage;
 import com.nownews.mobile.Api.WebAPIUrl;
+import com.nownews.mobile.BroadcastReceiver.GcmShareAppReceiver;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
@@ -198,11 +199,6 @@ public class GcmIntentService extends FirebaseMessagingService {
         int requestCode = 1;
         PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        //Share Intent
-        Intent shareIntent = createShareIntent(type, notificationUrl, notificationTitle);
-        PendingIntent sharePendingIntent = PendingIntent.getActivity(this, notificationId, shareIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        Notification.Action action = new Notification.Action.Builder(R.drawable.ic_share_grey600_24dp, "立即分享", sharePendingIntent).build();
-
         //設定鈴聲
         Uri sound = Uri.parse("android.resource://" + getPackageName() + "/raw/notification_sound");
 
@@ -212,6 +208,7 @@ public class GcmIntentService extends FirebaseMessagingService {
         //建立-通知服務建構器
         int currentSDKVersion = UserDataInfo.getSdkVersion();
         if (currentSDKVersion >= Build.VERSION_CODES.JELLY_BEAN) {
+
             //Api Level 16 (4.1)以上
             Bitmap iconBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
             final Builder builder = new Builder(this);
@@ -220,8 +217,20 @@ public class GcmIntentService extends FirebaseMessagingService {
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
                     .setPriority(Notification.PRIORITY_HIGH)
-                    .setLargeIcon(iconBitmap)
-                    .addAction(action);
+                    .setLargeIcon(iconBitmap);
+
+
+            if(currentSDKVersion >= Build.VERSION_CODES.KITKAT_WATCH){
+
+                //Share Intent
+                Intent shareIntent = createShareIntent(type, notificationUrl, notificationTitle);
+                PendingIntent sharePendingIntent = PendingIntent.getBroadcast(this, notificationId, shareIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                Notification.Action action = new Notification.Action.Builder(R.drawable.ic_share_grey600_24dp, "立即分享", sharePendingIntent).build();
+                if(action!=null){
+                    builder.addAction(action);
+                }
+
+            }
 
             if(isSoundOpen){
                 builder.setSound(sound);
@@ -402,24 +411,11 @@ public class GcmIntentService extends FirebaseMessagingService {
     }
 
     private Intent createShareIntent(String type, String notificationUrl, String notificationTitle) {
-        Intent intent = null;
-
-        Utility.ShareType shareType = null;
-
-        if (type.equalsIgnoreCase("news")) {
-            if(Utility.DEBUG)Log.w(TAG, "news!!!!!");
-            shareType = Utility.ShareType.news;
-        } else if (type.equalsIgnoreCase("album")) {
-            if(Utility.DEBUG)Log.w(TAG, "album!!!!!");
-            shareType = Utility.ShareType.photo;
-        } else if (type.equalsIgnoreCase("normal")) {
-            if(Utility.DEBUG)Log.w(TAG, "normal!!!!!");
-            shareType = Utility.ShareType.normal;
-        }
-
-        String shareMessage = Utility.getShareMessage(this, notificationUrl, notificationTitle, shareType);
-        intent = Utility.getShareIntent(this, shareMessage);
-
+        Intent intent = new Intent();
+        intent.setClass(this, GcmShareAppReceiver.class);
+        intent.putExtra(GcmShareAppReceiver.NOTIFICATION_TYPE, type);
+        intent.putExtra(GcmShareAppReceiver.NOTIFICATION_URL, notificationUrl);
+        intent.putExtra(GcmShareAppReceiver.NOTIFICATION_TITLE, notificationTitle);
         return intent;
     }
 

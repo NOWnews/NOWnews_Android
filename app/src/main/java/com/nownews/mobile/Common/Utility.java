@@ -439,7 +439,8 @@ public class Utility {
 
         String sendingMessageFormat;
         String sendingMessage = null;
-        if (aShareText != null && !aShareText.trim().equals("")) {
+        if (aShareText != null && !aShareText.trim().equals("")
+                && aShareUrl != null && !aShareUrl.trim().equals("")) {
             //分享內容和Url都有
             if (aShareType == ShareType.photo) {
                 sendingMessageFormat = aContext.getString(R.string.album_sending_message);
@@ -448,7 +449,15 @@ public class Utility {
                 sendingMessageFormat = aContext.getString(R.string.sending_message);
                 sendingMessage = String.format(sendingMessageFormat, aShareText, aShareUrl);
             }
-        } else {
+        } else if(aShareText != null && !aShareText.trim().equals("")){
+            //僅有分享Text
+            if (aShareType == ShareType.photo) {
+                sendingMessageFormat = aContext.getString(R.string.album_sending_message_no_title);
+            } else {
+                sendingMessageFormat = aContext.getString(R.string.sending_message_no_title);
+            }
+            sendingMessage = String.format(sendingMessageFormat, aShareText);
+        } else if(aShareUrl != null && !aShareUrl.trim().equals("")){
             //僅有分享URL
             if (aShareType == ShareType.photo) {
                 sendingMessageFormat = aContext.getString(R.string.album_sending_message_no_title);
