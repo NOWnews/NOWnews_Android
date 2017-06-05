@@ -160,6 +160,7 @@ public class LiveFragment extends Fragment {
                         Map<String, Object> map = new HashMap<String, Object>();
                         map.put("channelName", list.title);
                         map.put("channelIcon", aBitmap);
+//                        map.put("channelIcon", R.drawable.watch_now);
                         items.add(map);
                     }
                     SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.widget_live_channel_item, new String[]{"channelName", "channelIcon"}, new int[]{R.id.channel_item, R.id.tv_icon});
