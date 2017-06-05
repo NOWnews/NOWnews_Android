@@ -31,8 +31,7 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
-                    android:paddingTop="20dp"
-                    android:src="@drawable/lifefeitv_icon_big" />
+                    android:paddingTop="20dp" />
 
                 <TextView
                     android:id="@+id/message"
