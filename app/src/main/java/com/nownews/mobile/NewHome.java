@@ -652,6 +652,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
             public void onAdClosed() {
                 super.onAdClosed();
                 if (Utility.DEBUG) Log.e(TAG, "onAdClosed!!!");
+                Utility.UnMuteAudio(NewHome.this);
             }
 
             @Override
@@ -677,6 +678,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                         || UserDataInfo.mHomeDFPCount == 4
                         || UserDataInfo.mHomeDFPCount == 6) {
                     if (mDFPInterstitial != null && mDFPInterstitial.isLoaded()) {
+                        Utility.MuteAudio(NewHome.this);
                         mDFPInterstitial.show();
                     }
                 }
