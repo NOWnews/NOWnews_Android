@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,25 @@ import android.widget.SimpleAdapter;
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Common.UserDataInfo;
+import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Json.LiveListJson;
+import com.nownews.mobile.NewHome;
+import com.tapjoy.TJActionRequest;
+import com.tapjoy.TJConnectListener;
+import com.tapjoy.TJEarnedCurrencyListener;
+import com.tapjoy.TJError;
+import com.tapjoy.TJGetCurrencyBalanceListener;
+import com.tapjoy.TJPlacement;
+import com.tapjoy.TJPlacementListener;
+import com.tapjoy.TJPlacementVideoListener;
+import com.tapjoy.Tapjoy;
+import com.tapjoy.TapjoyConnectFlag;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +72,7 @@ public class LiveFragment extends Fragment {
 
     private void startFragment(){
         initController();
+//        testTapjoyVideoAd();
         processView();
         getLiveList();
     }
@@ -196,6 +211,7 @@ public class LiveFragment extends Fragment {
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
             openDownloadDialog(position);
+//            showVideoAd();
 
         }
     };
@@ -226,5 +242,131 @@ public class LiveFragment extends Fragment {
         mApiHandler.removeCallbacks(null);
         super.onDestroyView();
     }
+
+
+    private void testTapjoyVideoAd(){
+        if(Utility.DEBUG)Log.v(TAG, "testTapjoyVideoAd");
+
+        Hashtable<String, Object> connectFlags = new Hashtable<>();
+        if(Utility.DEBUG)connectFlags.put(TapjoyConnectFlag.ENABLE_LOGGING, "true"); // remember to turn off
+
+        if(Utility.DEBUG)Log.v(TAG, "ad key: 863uZVsvQ1aDZ3Zn1fumuAEC1I2Rj553fRhZTf72bAHYoptJrZtZsi2Wtl66");
+//        if(Utility.DEBUG)Log.v(TAG, "ad key: u6SfEbh_TA-WMiGqgQ3W8QECyiQIURFEeKm0zbOggubusy-o5ZfXp33sTXaD");
+        Tapjoy.connect(getActivity(), "863uZVsvQ1aDZ3Zn1fumuAEC1I2Rj553fRhZTf72bAHYoptJrZtZsi2Wtl66", connectFlags, new TJConnectListener() {
+            @Override
+            public void onConnectSuccess() {
+                LiveFragment.this.onConnectSuccess();
+            }
+
+            @Override
+            public void onConnectFailure() {
+
+            }
+        });
+
+    }
+
+    private TJPlacement mDirectPlayPlacement;
+    private void onConnectSuccess(){
+        if(Utility.DEBUG)Log.v(TAG, "onConnectSuccess");
+
+        mDirectPlayPlacement = new TJPlacement(getActivity(), "AndroidTest", mTjPlacementListener);
+        mDirectPlayPlacement.setVideoListener(mTjPlacementVideoListener);
+        mDirectPlayPlacement.requestContent();
+
+        // Setup listener for Tapjoy currency callbacks
+        Tapjoy.setEarnedCurrencyListener(new TJEarnedCurrencyListener() {
+            @Override
+            public void onEarnedCurrency(String currencyName, int amount) {
+                Log.w(TAG, "You've just earned " + amount + " " + currencyName);
+                Log.w(TAG, "You've just earned " + amount + " " + currencyName);
+            }
+        });
+
+    }
+
+    private void showVideoAd(){
+        if(Utility.DEBUG)Log.v(TAG, "showVideoAd");
+
+        // Check if content is available and if it is ready to show
+        if (mDirectPlayPlacement!=null && mDirectPlayPlacement.isContentAvailable()) {
+            if (mDirectPlayPlacement.isContentReady()) {
+                mDirectPlayPlacement.showContent();
+            } else {
+                Log.e(TAG, "Direct play video not ready to show");
+            }
+
+        } else {
+            Log.e(TAG, "No direct play video to show");
+        }
+    }
+
+    private TJPlacementVideoListener mTjPlacementVideoListener = new TJPlacementVideoListener() {
+        @Override
+        public void onVideoStart(TJPlacement tjPlacement) {
+            Log.i(TAG, "Video has started has started for: " + tjPlacement.getName());
+        }
+
+        @Override
+        public void onVideoError(TJPlacement tjPlacement, String message) {
+            Log.i(TAG, "Video error: " + message + " for " + tjPlacement.getName());
+        }
+
+        @Override
+        public void onVideoComplete(TJPlacement tjPlacement) {
+            Log.i(TAG, "Video has completed for: " + tjPlacement.getName());
+            Tapjoy.getCurrencyBalance(mTjGetCurrencyBalanceListener);
+        }
+    };
+
+    private TJPlacementListener mTjPlacementListener = new TJPlacementListener() {
+        @Override
+        public void onRequestSuccess(TJPlacement tjPlacement) {
+            Log.i(TAG, "onRequestSuccess: " + tjPlacement.getName());
+        }
+
+        @Override
+        public void onRequestFailure(TJPlacement tjPlacement, TJError tjError) {
+            Log.i(TAG, "onRequestFailure: " + tjPlacement.getName());
+        }
+
+        @Override
+        public void onContentReady(TJPlacement tjPlacement) {
+            Log.i(TAG, "onContentReady: " + tjPlacement.getName());
+        }
+
+        @Override
+        public void onContentShow(TJPlacement tjPlacement) {
+            Log.i(TAG, "onContentShow: " + tjPlacement.getName());
+        }
+
+        @Override
+        public void onContentDismiss(TJPlacement tjPlacement) {
+            Log.i(TAG, "onContentDismiss: " + tjPlacement.getName());
+        }
+
+        @Override
+        public void onPurchaseRequest(TJPlacement tjPlacement, TJActionRequest tjActionRequest, String s) {
+            Log.i(TAG, "onPurchaseRequest: " + tjPlacement.getName());
+        }
+
+        @Override
+        public void onRewardRequest(TJPlacement tjPlacement, TJActionRequest tjActionRequest, String s, int i) {
+            Log.i(TAG, "onRewardRequest: " + tjPlacement.getName());
+        }
+    };
+
+    private TJGetCurrencyBalanceListener mTjGetCurrencyBalanceListener = new TJGetCurrencyBalanceListener() {
+        @Override
+        public void onGetCurrencyBalanceResponse(String s, int i) {
+
+        }
+
+        @Override
+        public void onGetCurrencyBalanceResponseFailure(String s) {
+
+        }
+    };
+
 
 }
