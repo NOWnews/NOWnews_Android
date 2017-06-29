@@ -8,11 +8,8 @@ import com.google.gson.Gson;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Json.SearchInfoJson;
-import com.nownews.mobile.Json.SearchInfoJson.SearchInfoContent;
 
 import java.net.SocketTimeoutException;
-import java.util.Iterator;
-import java.util.List;
 
 public class GetSearchInfo implements Runnable {
 
@@ -44,7 +41,7 @@ public class GetSearchInfo implements Runnable {
 
             Utility.writeJsonToFile(TAG, jsonValue);
 
-            message.obj = checkNull(jsonValueClb.newsList);
+            message.obj = jsonValueClb.getNewsList();
             message.what = ParameterSet.GET_SEARCH_INFO_DONE;
 
             if (Utility.DEBUG) Log.v(TAG, "GET_SEARCH_INFO_DONE");
@@ -66,21 +63,6 @@ public class GetSearchInfo implements Runnable {
                 mHandler.sendMessage(message);
         }
         if (Utility.DEBUG) Log.d(TAG, "######### " + TAG + " END!! #########");
-    }
-
-    private List<SearchInfoContent> checkNull(List<SearchInfoContent> aData) {
-
-        Iterator<SearchInfoContent> iterator = aData.iterator();
-        while (iterator.hasNext()) {
-            SearchInfoContent content = iterator.next();
-            if (content.field_short_title == null
-                    || content.field_short_title.value == null
-                    || content.field_short_title.value.trim().isEmpty()) {
-                iterator.remove();
-            }
-        }
-
-        return aData;
     }
 
 }

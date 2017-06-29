@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Json.NewsListJson;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
 
 import java.net.SocketTimeoutException;
 import java.util.Iterator;
@@ -49,7 +48,7 @@ public class GetNearByNews implements Runnable {
 
             Utility.writeJsonToFile(TAG, jsonValue);
 
-            message.obj = checkNull(jsonValueClb.newsList);
+            message.obj = jsonValueClb.getNewsList();
             message.what = ParameterSet.GET_NEAR_BY_NEWS_DONE;
 
             if (Utility.DEBUG) Log.v(TAG, "GET_NEAR_BY_NEWS_DONE");
@@ -74,19 +73,4 @@ public class GetNearByNews implements Runnable {
         if (Utility.DEBUG) Log.d(TAG, "######### " + TAG + " END!! #########");
     }
 
-    private List<NewsContent> checkNull(List<NewsContent> aData) {
-        Iterator<NewsContent> iterator = aData.iterator();
-        while (iterator.hasNext()) {
-            NewsContent content = iterator.next();
-            if (content.field_short_title == null
-                    || content.field_short_title.value == null
-                    || content.field_short_title.value.trim().isEmpty()
-                    || content.image == null
-                    || content.image.originImage == null
-                    || content.image.originImage.trim().isEmpty()) {
-                iterator.remove();
-            }
-        }
-        return aData;
-    }
 }

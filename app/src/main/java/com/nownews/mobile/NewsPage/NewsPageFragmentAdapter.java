@@ -1,21 +1,21 @@
 package com.nownews.mobile.NewsPage;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ViewGroup;
 
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
-import com.nownews.mobile.Json.NewsInfoJson.ReferenceNewsInfo;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
-import com.nownews.mobile.Json.SearchInfoJson.SearchInfoContent;
+import com.nownews.mobile.Json.HeadlineNewsJson;
+import com.nownews.mobile.Json.InstantNewsJson;
+import com.nownews.mobile.Json.NewsListJson;
+import com.nownews.mobile.Json.RelationsNewsInfoJson;
+import com.nownews.mobile.Json.SearchInfoJson;
+import com.nownews.mobile.Json.SpecialNewsListJson;
 import com.nownews.mobile.NewsPage.NewsPage.SingalNewsType;
 
 import java.util.List;
@@ -23,16 +23,17 @@ import java.util.List;
 public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
 
     private final String TAG = getClass().getSimpleName();
-    private List<NewsContent> mNewsList;
-    private List<NewsContent> mHeadlineNewsList;
-    private List<NewsContent> mInstantNewsContent;
-    private List<ReferenceNewsInfo> mReferenceNewsList;
-    private List<SearchInfoContent> mSearchList;
+    private List<NewsListJson.NewsListBean> mNewsList;
+    private List<HeadlineNewsJson.CarouselsBean> mHeadlineNewsList;
+    private List<InstantNewsJson.NewsListBean> mInstantNewsContent;
+    private List<RelationsNewsInfoJson.RelationsNewsBean> mReferenceNewsList;
+    private List<SpecialNewsListJson.NewsListBean> mSpecialNewsList;
+    private List<SearchInfoJson.NewsListBean> mSearchList;
     private String mNewsUrl;
     private int mNewsId;
     private FragmentManager mFragmentManager;
 
-    public NewsPageFragmentAdapter(FragmentManager fm, List<NewsContent> aNewsList) {
+    public NewsPageFragmentAdapter(FragmentManager fm, List<NewsListJson.NewsListBean> aNewsList) {
         super(fm);
         mNewsList = aNewsList;
         mFragmentManager = fm;
@@ -42,16 +43,21 @@ public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
         super(fm);
         switch (aType) {
             case NewsPage.TYPE_HEADLINE_NEWS:
-                mHeadlineNewsList = (List<NewsContent>) aNewsList;
+                mHeadlineNewsList = (List<HeadlineNewsJson.CarouselsBean>) aNewsList;
                 break;
             case NewsPage.TYPE_INSTANT_NEWS:
-                mInstantNewsContent = (List<NewsContent>) aNewsList;
+                mInstantNewsContent = (List<InstantNewsJson.NewsListBean>) aNewsList;
                 break;
             case NewsPage.TYPE_SEARCH_NEWS:
-                mSearchList = (List<SearchInfoContent>) aNewsList;
+                mSearchList = (List<SearchInfoJson.NewsListBean>) aNewsList;
                 break;
             case NewsPage.TYPE_REFERENCE_NEWS:
-                mReferenceNewsList = (List<ReferenceNewsInfo>) aNewsList;
+                mReferenceNewsList = (List<RelationsNewsInfoJson.RelationsNewsBean>) aNewsList;
+                break;
+            case NewsPage.TYPE_SPECIAL_NEWS:
+                mSpecialNewsList = (List<SpecialNewsListJson.NewsListBean>) aNewsList;
+                break;
+
         }
     }
 
@@ -71,37 +77,43 @@ public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
         String newsUrl = null;
         int newsId = -1;
         if (mNewsList != null) {
-            List<NewsContent> newsInfoList = UserDataInfo.getNewsList();
+            List<NewsListJson.NewsListBean> newsInfoList = UserDataInfo.getNewsList();
             if (newsInfoList != null
                     && newsInfoList.get(position) != null
-                    && newsInfoList.get(position)._id != -1) {
-                newsId = newsInfoList.get(position)._id;
+                    && newsInfoList.get(position).getSn() != -1) {
+                newsId = newsInfoList.get(position).getSn();
             }
         } else if (mHeadlineNewsList != null
                 && mHeadlineNewsList.get(position) != null
-                && mHeadlineNewsList.get(position)._id != -1) {
+                && mHeadlineNewsList.get(position).getSn() != -1) {
 
-            newsId = mHeadlineNewsList.get(position)._id;
+            newsId = mHeadlineNewsList.get(position).getSn();
 
         } else if (mInstantNewsContent != null
                 && mInstantNewsContent.get(position) != null
-                && mInstantNewsContent.get(position)._id != -1) {
+                && mInstantNewsContent.get(position).getSn() != -1) {
 
-            newsId = mInstantNewsContent.get(position)._id;
+            newsId = mInstantNewsContent.get(position).getSn();
 
         } else if (mSearchList != null
                 && mSearchList.get(position) != null
-                && mSearchList.get(position)._id != -1) {
+                && mSearchList.get(position).getSn() != -1) {
 
-            newsId = mSearchList.get(position)._id;
+            newsId = mSearchList.get(position).getSn();
 
         } else if (mReferenceNewsList != null
                 && mReferenceNewsList.get(position) != null
-                && mReferenceNewsList.get(position)._id != -1) {
+                && mReferenceNewsList.get(position).getSn() != -1) {
 
-            newsId = mReferenceNewsList.get(position)._id;
+            newsId = mReferenceNewsList.get(position).getSn();
 
-        } else if (mNewsUrl != null && !mNewsUrl.trim().equals("")) {
+        } else if (mSpecialNewsList != null
+                && mSpecialNewsList.get(position) != null
+                && mSpecialNewsList.get(position).getSn() != -1) {
+
+            newsId = mSpecialNewsList.get(position).getSn();
+
+        }else if (mNewsUrl != null && !mNewsUrl.trim().equals("")) {
             newsUrl = mNewsUrl;
         } else if (mNewsId != -1) {
             newsId = mNewsId;
@@ -128,7 +140,9 @@ public class NewsPageFragmentAdapter extends FragmentStatePagerAdapter {
             count = mSearchList.size();
         } else if (mReferenceNewsList != null) {
             count = mReferenceNewsList.size();
-        } else if (mNewsUrl != null) {
+        } else if (mSpecialNewsList !=null) {
+            count = mSpecialNewsList.size();
+        }else if (mNewsUrl != null) {
             count = 1;
         } else if (mNewsId != -1) {
             count = 1;

@@ -60,14 +60,14 @@ import com.nownews.mobile.Download.DownloadAsyncTask;
 import com.nownews.mobile.Download.DownloadListener;
 import com.nownews.mobile.GCM.GcmＭanager;
 import com.nownews.mobile.Json.CheckVersionJson;
+import com.nownews.mobile.Json.InstantNewsJson;
 import com.nownews.mobile.Json.LiveInfoJson;
-import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Live.LiveFragment;
 import com.nownews.mobile.NewsCategory.NewsCategoryFragment;
 import com.nownews.mobile.NewsPage.NewsPage;
 import com.nownews.mobile.Search.SearchActivity;
+import com.nownews.mobile.Service.GetApiService;
 import com.nownews.mobile.SpecialNewsCategory.SpecialNewsCategoryFragment;
-import com.nownews.mobile.VideoNewsCategory.VideoNewsCategoryFragment;
 import com.nownews.mobile.Widget.LiveMarquee;
 import com.nownews.mobile.Widget.MenuContent;
 
@@ -150,8 +150,15 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         processListener();
         processDrawerLayout();
         startGCM();
+        startApiService();
         /* 取得KMT直播資訊 &  取得版本資訊 */
         this.DoSync(new LiveInfoDao(this), new CheckVerDao(this));
+    }
+
+    private void startApiService(){
+        Intent intent = new Intent();
+        intent.setClass(this, GetApiService.class);
+        startService(intent);
     }
 
     @Override
@@ -177,7 +184,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
             } else {
                 this.vLiveMarquee.setVisibility(View.VISIBLE);
                 this.vLiveMarquee.setBackgroundUrl(this.mLiveInfo.getBackground());
-                this.vLiveMarquee.setIsOnAir(this.mLiveInfo.isOnAir());
+                this.vLiveMarquee.setIsOnAir(this.mLiveInfo.isIsOnAir());
                 this.vLiveMarquee.setLiveTitle(this.mLiveInfo.getTitle());
                 this.vLiveMarquee.setLiveUrl(this.mLiveInfo.getLivePage());
             }
@@ -284,14 +291,14 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                 break;
 
             case 2:
-                if (Utility.DEBUG) Log.w(TAG, "Show 影音");
-                bundle = new Bundle();
-                bundle.putInt(NewsCategoryFragment.KEY_POSITION, 0);
-                changeFragment(new VideoNewsCategoryFragment(), false, bundle);
-                this.mCurrentCategoryPage = position;
-                break;
-
-            case 3:
+//                if (Utility.DEBUG) Log.w(TAG, "Show 影音");
+//                bundle = new Bundle();
+//                bundle.putInt(NewsCategoryFragment.KEY_POSITION, 0);
+//                changeFragment(new VideoNewsCategoryFragment(), false, bundle);
+//                this.mCurrentCategoryPage = position;
+//                break;
+//
+//            case 3:
                 if (Utility.DEBUG) Log.w(TAG, "Show 直播");
                 changeFragment(new LiveFragment(), false, null);
                 this.mCurrentCategoryPage = position;
@@ -333,27 +340,32 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
             ImageView image = (ImageView) view.findViewById(R.id.image);
             TextView title = (TextView) view.findViewById(R.id.title);
             RelativeLayout newsLayout = (RelativeLayout) view.findViewById(R.id.news_layout);
-            final List<NewsListJson.NewsContent> hotNewsList = UserDataInfo.getHotNewsContent();
-            if (hotNewsList != null && hotNewsList.size() > 0) {
+            final List<InstantNewsJson.NewsListBean> instantNewsList = UserDataInfo.getInstantNewsContent();
+            for(InstantNewsJson.NewsListBean bean : instantNewsList){
+                Log.w(TAG, "bean: " + bean);
+                Log.i(TAG, "bean.getMainPhoto(): " + bean.getShortTitle());
+                Log.e(TAG, "bean.getMainPhoto(): " + bean.getMainPhoto());
+            }
+            Log.e(TAG, "instantNewsList: " + instantNewsList);
+            if (instantNewsList != null && instantNewsList.size() > 0) {
                 Random random = new Random();
-                final int index = random.nextInt(hotNewsList.size());
-                if (hotNewsList.get(index) != null
-                        && hotNewsList.get(index).image != null
-                        && hotNewsList.get(index).image.thumbnail != null
-                        && hotNewsList.get(index).field_short_title != null
-                        && hotNewsList.get(index).field_short_title.value != null) {
-                    String imageUrl = hotNewsList.get(index).image.thumbnail;
+                final int index = random.nextInt(instantNewsList.size());
+                Log.e(TAG, "index: " + index);
+                if (instantNewsList.get(index) != null
+                        && instantNewsList.get(index).getMainPhoto() != null) {
+                    String imageUrl = instantNewsList.get(index).getMainPhoto().getThumbnail();
+                    Log.e(TAG, "imageUrl: " + imageUrl);
                     if (imageUrl != null) {
                         BitmapController.getInstance(NewHome.this).loadImageWithOriginalSize(imageUrl, image, BitmapController.IMAGE_SRC, 0, 0, null);
                     }
-                    String titleText = hotNewsList.get(index).field_short_title.value;
+                    String titleText = instantNewsList.get(index).getShortTitle();
                     title.setText(titleText);
                     newsLayout.setOnClickListener(new View.OnClickListener() {
 
                         @Override
                         public void onClick(View v) {
 
-                            int id = hotNewsList.get(index)._id;
+                            int id = instantNewsList.get(index).getSn();
                             Intent intent = new Intent();
                             intent.setClass(NewHome.this, NewsPage.class);
                             intent.putExtra(NewsPage.KEY_NEWS_ID, id);
@@ -418,12 +430,12 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
                     case 1:
                         // download one
-                        downloadApk(getString(R.string.update_url1));
-                        break;
-
-                    case 2:
-                        // download two
-                        downloadApk(getString(R.string.update_url2));
+                        if(mCheckVersionInfo==null){
+                            downloadApk(getString(R.string.update_url2));
+                        }else{
+                            String downloadLink = mCheckVersionInfo.getDownloadLink();
+                            downloadApk(downloadLink);
+                        }
                         break;
                 }
                 dialog.dismiss();
@@ -436,16 +448,14 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                     .tag(0)
                     .build());
         }
-        adapter.add(new MaterialSimpleListItem.Builder(NewHome.this)
-                .content(getString(R.string.download_one))
-                .icon(R.drawable.download_icon)
-                .tag(1)
-                .build());
-        adapter.add(new MaterialSimpleListItem.Builder(NewHome.this)
-                .content(getString(R.string.download_two))
-                .icon(R.drawable.download_icon)
-                .tag(2)
-                .build());
+
+        if(mCheckVersionInfo!=null && mCheckVersionInfo.getDownloadLink()!=null){
+            adapter.add(new MaterialSimpleListItem.Builder(NewHome.this)
+                    .content(getString(R.string.download_one))
+                    .icon(R.drawable.download_icon)
+                    .tag(1)
+                    .build());
+        }
 
         new MaterialDialog.Builder(NewHome.this)
                 .title("請選擇更新方式")
@@ -454,6 +464,9 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     }
 
     private void downloadApk(String url) {
+        if(url==null || url.trim().isEmpty()){
+            return;
+        }
         this.downloadtask = new DownloadAsyncTask(this);
         this.downloadtask.execute(url);
     }
@@ -567,11 +580,11 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     private void processBottomNavigation() {
         AHBottomNavigationItem item1 = new AHBottomNavigationItem(getString(R.string.news), R.drawable.news_static);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem(getString(R.string.special), R.drawable.spacial_static);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem(getString(R.string.video), R.drawable.video_static);
+//        AHBottomNavigationItem item3 = new AHBottomNavigationItem(getString(R.string.video), R.drawable.video_static);
         AHBottomNavigationItem item4 = new AHBottomNavigationItem(getString(R.string.live), R.drawable.btn_live);
         this.vBottomNavigation.addItem(item1);
         this.vBottomNavigation.addItem(item2);
-        this.vBottomNavigation.addItem(item3);
+//        this.vBottomNavigation.addItem(item3);
         this.vBottomNavigation.addItem(item4);
         this.vBottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
         this.vBottomNavigation.setAccentColor(Color.parseColor("#0083ff"));
@@ -705,8 +718,12 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
     private boolean checkVersion(CheckVersionJson data) {
         boolean result = false;
-        int currentVersion = Utility.getAppVersionCode(this);
-        if (currentVersion != 0 && currentVersion < Integer.parseInt(data.android_versioncode)) {
+        String currentVersionName = Utility.getAppVersionName(this);
+        Log.d(TAG, "currentVersionName: " + currentVersionName);
+        currentVersionName = currentVersionName.replace(".", "");
+        Log.d(TAG, "currentVersionName: " + currentVersionName);
+        int currentVersion = Integer.valueOf(currentVersionName);
+        if (currentVersion != 0 && currentVersion < Integer.parseInt(data.getVersion().replace(".", ""))) {
             result = true;
             //update
             getVersion(result, data);
@@ -722,14 +739,16 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         }
     }
 
+    private CheckVersionJson mCheckVersionInfo;
     public void getVersion(boolean isHasNewVersion, CheckVersionJson data) {
-        int versionCode = Utility.getAppVersionCode(this);
+        mCheckVersionInfo = data;
+        String versionName = Utility.getAppVersionName(this);
         String currentVersionText = getString(R.string.current_version);
-        currentVersionText = String.format(currentVersionText, versionCode);
+        currentVersionText = String.format(currentVersionText, versionName);
         if (data != null
-                && data.android_versioncode != null
-                && !data.android_versioncode.trim().isEmpty()) {
-            currentVersionText = currentVersionText + "\n" + String.format(getString(R.string.newest_version), data.android_versioncode);
+                && data.getVersion() != null
+                && !data.getVersion().trim().isEmpty()) {
+            currentVersionText = currentVersionText + "\n" + String.format(getString(R.string.newest_version), data.getVersion());
         }
         if (isHasNewVersion) {
             new MaterialDialog.Builder(this)

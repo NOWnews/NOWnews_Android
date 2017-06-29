@@ -50,7 +50,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/loading_layout"
+        android:id="@+id/search_history_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tool_bar"
@@ -73,6 +73,40 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ProgressBar
+            android:id="@+id/image_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:id="@+id/image_loading_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/image_progressbar"
+            android:text="@string/search_loading"
+            android:textColor="@android:color/black"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/image_loading_keywords"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/image_loading_txt"
+            android:textColor="@android:color/black"
+            android:textSize="25dp" />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/hint"
         android:layout_width="match_parent"
@@ -81,12 +115,17 @@
         android:gravity="center"
         android:visibility="gone" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tool_bar"
-        android:descendantFocusability="blocksDescendants"
-        android:padding="5dp" />
+        android:layout_below="@+id/tool_bar">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tool_bar"
+            android:descendantFocusability="blocksDescendants" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

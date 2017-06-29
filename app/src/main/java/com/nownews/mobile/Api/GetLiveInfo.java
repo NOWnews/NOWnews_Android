@@ -30,7 +30,7 @@ public class GetLiveInfo implements Runnable {
 
             String webApiUrl = WebAPIUrl.LIVE_INFO;
 
-            String jsonValue = WebApi.DoGet(webApiUrl, false);
+            String jsonValue = WebApi.DoGet(webApiUrl, true);
 //			Log.e(TAG, "jsonValue: " + jsonValue);
             LiveInfoJson jsonValueClb = new Gson().fromJson(jsonValue, LiveInfoJson.class);
 

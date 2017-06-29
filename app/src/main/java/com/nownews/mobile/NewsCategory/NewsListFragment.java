@@ -22,7 +22,7 @@ import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
+import com.nownews.mobile.Json.NewsListJson;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -33,10 +33,10 @@ public class NewsListFragment extends Fragment {
 
     private RecyclerView vList;
     private SwipeRefreshLayout vRefreshLayout;
-    private int mNewsCategoryId;
+    private String mNewsCategoryUrl;
     private ApiController mApiController;
 
-    private List<NewsContent> mNewsList;
+    private List<NewsListJson.NewsListBean> mNewsList;
     //	private NewsListFragmentAdapter mAdapter;
     private RelativeLayout vLoadingLayout;
     private TextView vErrorMessage;
@@ -74,12 +74,12 @@ public class NewsListFragment extends Fragment {
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;
                     if (fragment.mCurrentPage > 1) {
-                        fragment.mNewsList.addAll((List<NewsContent>) msg.obj);
+                        fragment.mNewsList.addAll((List<NewsListJson.NewsListBean>) msg.obj);
                         if (fragment.mAdHandler != null) {
                             fragment.mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
                         }
                     } else {
-                        fragment.mNewsList = (List<NewsContent>) msg.obj;
+                        fragment.mNewsList = (List<NewsListJson.NewsListBean>) msg.obj;
                     }
                     if (fragment.isRefereshing) {
                         // Stop refresh animation
@@ -87,7 +87,7 @@ public class NewsListFragment extends Fragment {
                         fragment.vRefreshLayout.setRefreshing(false);
                     }
                     if (!fragment.isOnDestroy && fragment.isAdded()) {
-                        fragment.processList();
+                        fragment.processList(fragment.mNewsList);
                     }
                     break;
                 case ParameterSet.GET_NEWS_LIST_FAILED:
@@ -137,47 +137,48 @@ public class NewsListFragment extends Fragment {
     };
 
     private void setReplaceNews(){
+        List<?> list = null;
         switch(mCurrentPosition%3){
             case 0:
-                mNewsList = UserDataInfo.getHeadlineContent();
-                if(mNewsList==null){
+                list = UserDataInfo.getHeadlineContent();
+                if(list==null){
                     if(UserDataInfo.getHotNewsContent()!=null){
-                        mNewsList = UserDataInfo.getHotNewsContent();
+                        list = UserDataInfo.getHotNewsContent();
                     }else if(UserDataInfo.getInstantNewsContent()!=null){
-                        mNewsList = UserDataInfo.getInstantNewsContent();
+                        list = UserDataInfo.getInstantNewsContent();
                     }else{
                         vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
                     }
                 }
                 break;
             case 1:
-                mNewsList = UserDataInfo.getHotNewsContent();
-                if(mNewsList==null){
+                list = UserDataInfo.getHotNewsContent();
+                if(list==null){
                     if(UserDataInfo.getHeadlineContent()!=null){
-                        mNewsList = UserDataInfo.getHeadlineContent();
+                        list = UserDataInfo.getHeadlineContent();
                     }else if(UserDataInfo.getInstantNewsContent()!=null){
-                        mNewsList = UserDataInfo.getInstantNewsContent();
+                        list = UserDataInfo.getInstantNewsContent();
                     }else{
                         vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
                     }
                 }
                 break;
             case 2:
-                mNewsList = UserDataInfo.getInstantNewsContent();
-                if(mNewsList==null){
+                list = UserDataInfo.getInstantNewsContent();
+                if(list==null){
                     if(UserDataInfo.getHeadlineContent()!=null){
-                        mNewsList = UserDataInfo.getHeadlineContent();
+                        list = UserDataInfo.getHeadlineContent();
                     }else if(UserDataInfo.getHotNewsContent()!=null){
-                        mNewsList = UserDataInfo.getHotNewsContent();
+                        list = UserDataInfo.getHotNewsContent();
                     }else{
                         vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
                     }
                 }
                 break;
         }
-        if(mNewsList!=null){
+        if(list!=null){
             if (!isOnDestroy && isAdded()) {
-                processList();
+                processList(list);
             }
         }
     }
@@ -237,8 +238,8 @@ public class NewsListFragment extends Fragment {
 
     private RecyclerView.RecycledViewPool mPool;
     private int mCurrentPosition;
-    public void setData(int aNewsCategoryId, Handler aAdHandler, String aCategoryName, RecyclerView.RecycledViewPool aPool, int aPosition) {
-        mNewsCategoryId = aNewsCategoryId;
+    public void setData(String aNewsCategoryUrl, Handler aAdHandler, String aCategoryName, RecyclerView.RecycledViewPool aPool, int aPosition) {
+        mNewsCategoryUrl = aNewsCategoryUrl;
         mAdHandler = aAdHandler;
         mCategoryName = aCategoryName;
         mPool = aPool;
@@ -275,7 +276,7 @@ public class NewsListFragment extends Fragment {
         }
         vErrorMessage.setVisibility(View.GONE);
         if (mApiController != null) {
-            mApiController.getNewsList(mApiHandler, mNewsCategoryId, mCurrentPage);
+            mApiController.getNewsList(mApiHandler, mNewsCategoryUrl, Utility.NEWS_LIST_LIMIT_COUNT, mCurrentPage);
         }
     }
 
@@ -314,7 +315,7 @@ public class NewsListFragment extends Fragment {
     }
 
     private LinearLayoutManager mLinearLayoutManager;
-    private void processList() {
+    private void processList(List<?> newsList) {
 
         vLoadingLayout.setVisibility(View.GONE);
         vList.setVisibility(View.VISIBLE);
@@ -334,11 +335,12 @@ public class NewsListFragment extends Fragment {
             if(mPool!=null){
                 vList.setRecycledViewPool(mPool);
             }
-            NewsListRecyclerViewAdapter adapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
+            NewsListRecyclerViewAdapter adapter = null;
+            adapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
             vList.setAdapter(adapter);
             vList.addOnScrollListener(mListScrollListener);
         }else{
-            ((NewsListRecyclerViewAdapter)vList.getAdapter()).setData(mNewsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
+            ((NewsListRecyclerViewAdapter) vList.getAdapter()).setData(newsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
         }
 
         vLoadingLayout.setVisibility(View.GONE);

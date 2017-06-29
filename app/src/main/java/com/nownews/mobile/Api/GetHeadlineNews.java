@@ -7,8 +7,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
+import com.nownews.mobile.Json.HeadlineNewsJson;
 import com.nownews.mobile.Json.NewsListJson;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
 
 import java.net.SocketTimeoutException;
 import java.util.Iterator;
@@ -35,15 +35,15 @@ public class GetHeadlineNews implements Runnable {
 
         try {
 
-            String webApiUrl = WebAPIUrl.BIG_3_SMALL_6;
+            String webApiUrl = WebAPIUrl.HEADLINE_NEWS;
 
             String jsonValue = WebApi.DoGet(webApiUrl, true);
 //			if(Utility.DEBUG)Log.e(TAG, "jsonValue: " + jsonValue);
-            NewsListJson jsonValueClb = new Gson().fromJson(jsonValue, NewsListJson.class);
+            HeadlineNewsJson jsonValueClb = new Gson().fromJson(jsonValue, HeadlineNewsJson.class);
 
             Utility.writeJsonToFile(TAG, jsonValue);
 
-            message.obj = checkNull(jsonValueClb.newsList);
+            message.obj = jsonValueClb.getCarousels();
             message.what = ParameterSet.GET_HEADLINE_NEWS_DONE;
 
             if (Utility.DEBUG) Log.v(TAG, "GET_HEADLINE_NEWS_DONE");
@@ -66,23 +66,6 @@ public class GetHeadlineNews implements Runnable {
 //            ApiController.mApiControllerInstance.getApiQueueSize();
         }
         if (Utility.DEBUG) Log.d(TAG, "######### " + TAG + " END!! #########");
-    }
-
-    private List<NewsContent> checkNull(List<NewsContent> aData) {
-        Iterator<NewsContent> iterator = aData.iterator();
-        while (iterator.hasNext()) {
-            NewsContent content = iterator.next();
-            if (content==null
-                    || content.field_short_title == null
-                    || content.field_short_title.value == null
-                    || content.field_short_title.value.trim().isEmpty()
-                    || content.image == null
-                    || content.image.originImage == null
-                    || content.image.originImage.trim().isEmpty()) {
-                iterator.remove();
-            }
-        }
-        return aData;
     }
 
 }

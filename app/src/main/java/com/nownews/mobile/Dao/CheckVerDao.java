@@ -27,8 +27,8 @@ public class CheckVerDao<T> extends BaseDao<T> {
                     this.token,
                     WebAPIUrl.GET_CURRENT_APP_VERSION,
                     null)),
-            new TypeReference<CheckVersionJson>() {
-            }, true);
+                    new TypeReference<CheckVersionJson>() {
+                    }, false);
         } catch (IOException e) {
             e.printStackTrace();
         }

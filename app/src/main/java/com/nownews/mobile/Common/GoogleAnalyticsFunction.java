@@ -43,7 +43,7 @@ public class GoogleAnalyticsFunction {
         return mTrackers.get(aTrackerId);
     }
 
-    private static Tracker getTracker(TrackerName aTrackerId){
+    public static Tracker getTracker(TrackerName aTrackerId){
         if(mTrackers!=null && mTrackers.containsKey(aTrackerId)){
             return mTrackers.get(aTrackerId);
         }else{

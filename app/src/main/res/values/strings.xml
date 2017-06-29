@@ -3,7 +3,6 @@
 
     <string name="app_name">今日新聞</string>
     <string name="nownews">NOWnews今日新聞</string>
-    <string name="instant">即時</string>
     <string name="open">開啟</string>
     <string name="close">關閉</string>
     <string name="news">新聞</string>
@@ -29,7 +28,7 @@
     <string name="share_app">分享App</string>
     <string-array name="menu_list">
         <item>@string/return_home</item>
-        <item>@string/album</item>
+        <!--<item>@string/album</item>-->
         <item>@string/favorite_album</item>
         <item>@string/nowvote</item>
         <item>@string/setting</item>
@@ -59,14 +58,16 @@
 
     <string name="new_version">NEW!!</string>
     <string name="update_dialog_title">更新通知!</string>
-    <string name="current_version">目前版本:%1$d</string>
-    <string name="newest_version">最新版本:%1$s</string>
+    <string name="current_version">目前版本: v%1$s</string>
+    <string name="newest_version">最新版本: v%1$s</string>
     <string name="update_dialog_message">我們有新版本更新囉，為提供更好的服務品質，請至Google Play更新版本！</string>
     <string name="go_now">立即前往</string>
     <string name="next_time">下次再說</string>
     <string name="ok">確定</string>
     <string name="search_hint">請輸入關鍵字</string>
     <string name="search_history">最近搜尋</string>
+    <string name="search">搜尋頁面</string>
+    <string name="search_loading">正在搜尋</string>
 
     <string name="special">特輯</string>
     <string name="category_chooser_hint">您尚未選擇您感興趣的分類喔!</string>
@@ -179,4 +180,8 @@
     <string name="all_day">全天</string>
 
     <string name="miss_connect">網路連線異常</string>
+
+    <string name="NEWS">NEWS</string>
+    <string name="PHOTO">PHOTO</string>
+    <string name="VIDEO">VIDEO</string>
 </resources>

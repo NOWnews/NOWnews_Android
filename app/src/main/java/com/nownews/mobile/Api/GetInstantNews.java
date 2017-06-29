@@ -7,8 +7,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
+import com.nownews.mobile.Json.InstantNewsJson;
 import com.nownews.mobile.Json.NewsListJson;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
 
 import java.net.SocketTimeoutException;
 import java.util.Iterator;
@@ -39,11 +39,11 @@ public class GetInstantNews implements Runnable {
 
             String jsonValue = WebApi.DoGet(webApiUrl, true);
 //			if(Utility.DEBUG)Log.e(TAG, "jsonValue: " + jsonValue);
-            NewsListJson jsonValueClb = new Gson().fromJson(jsonValue, NewsListJson.class);
+            InstantNewsJson jsonValueClb = new Gson().fromJson(jsonValue, InstantNewsJson.class);
 
             Utility.writeJsonToFile(TAG, jsonValue);
 
-            message.obj = checkNull(jsonValueClb.newsList);
+            message.obj = jsonValueClb.getNewsList();
             message.what = ParameterSet.GET_INSTANT_NEWS_DONE;
 
             if (Utility.DEBUG) Log.v(TAG, "GET_INSTANT_NEWS_DONE");
@@ -68,19 +68,4 @@ public class GetInstantNews implements Runnable {
         if (Utility.DEBUG) Log.d(TAG, "######### " + TAG + " END!! #########");
     }
 
-    private List<NewsContent> checkNull(List<NewsContent> aData) {
-        Iterator<NewsContent> iterator = aData.iterator();
-        while (iterator.hasNext()) {
-            NewsContent content = iterator.next();
-            if (content.field_short_title == null
-                    || content.field_short_title.value == null
-                    || content.field_short_title.value.trim().isEmpty()
-                    || content.image == null
-                    || content.image.originImage == null
-                    || content.image.originImage.trim().isEmpty()) {
-                iterator.remove();
-            }
-        }
-        return aData;
-    }
 }

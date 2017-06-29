@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nownews.R;
-import com.nownews.mobile.Json.SpecialNewsCategoryJson.CategoryInfo;
+import com.nownews.mobile.Json.SpecialNewsCategoryJson.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,17 +20,17 @@ public class SpecialNewsCategoryAdapter extends RecyclerView.Adapter<SpecialNews
     private final String TAG = getClass().getSimpleName();
 
     private Context mContext;
-    private List<CategoryInfo> mAlbumList;
+    private List<SpecialChannelsBean> mAlbumList;
     private HashMap<Integer, String> mImageList = new HashMap<Integer, String>();
     private OnItemClickListener mOnItemClickListener;
 
-    public SpecialNewsCategoryAdapter(Context aContext, List<CategoryInfo> aAlbumList, OnItemClickListener aOnItemClickListener) {
+    public SpecialNewsCategoryAdapter(Context aContext, List<SpecialChannelsBean> aAlbumList, OnItemClickListener aOnItemClickListener) {
         mContext = aContext;
         mAlbumList = aAlbumList;
         mOnItemClickListener = aOnItemClickListener;
     }
 
-    public void setData(List<CategoryInfo> aAlbumList, OnItemClickListener aOnItemClickListener) {
+    public void setData(List<SpecialChannelsBean> aAlbumList, OnItemClickListener aOnItemClickListener) {
         mAlbumList = aAlbumList;
         mOnItemClickListener = aOnItemClickListener;
         notifyDataSetChanged();
@@ -44,7 +44,7 @@ public class SpecialNewsCategoryAdapter extends RecyclerView.Adapter<SpecialNews
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        holder.vCategoryName.setText(mAlbumList.get(position).name);
+        holder.vCategoryName.setText(mAlbumList.get(position).getTitle());
         holder.vCategoryName.setTextColor(Color.BLACK);
         if(mCurrentPosition == position){
             holder.vCategoryName.setTextColor(mContext.getResources().getColor(R.color.special_news_category_bar));
@@ -83,8 +83,8 @@ public class SpecialNewsCategoryAdapter extends RecyclerView.Adapter<SpecialNews
     private int mCurrentPosition;
     public void itemClick(int aPosition){
         mCurrentPosition = aPosition;
-        if(mOnItemClickListener!=null){
-            mOnItemClickListener.onItemClick(aPosition, mAlbumList.get(aPosition).name);
+        if(mOnItemClickListener!=null && mAlbumList!=null && mAlbumList.size()>0){
+            mOnItemClickListener.onItemClick(aPosition, mAlbumList.get(aPosition).getTitle());
         }
         notifyDataSetChanged();
     }

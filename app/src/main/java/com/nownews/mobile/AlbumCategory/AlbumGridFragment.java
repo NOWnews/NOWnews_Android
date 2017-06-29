@@ -20,7 +20,6 @@ import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
-import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Json.PhotosListJson.PhotosContent;
 import com.nownews.mobile.NewsCategory.NewsCategoryFragment;
 

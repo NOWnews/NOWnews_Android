@@ -26,7 +26,8 @@ import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
+import com.nownews.mobile.Json.HeadlineNewsJson;
+import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Json.VideosListJson.VideosContent;
 import com.nownews.mobile.NewsPage.NewsPage;
 
@@ -346,7 +347,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
     }
     //For AD2 Page AD End
 
-    public void gotoHeadlineNewsPage(int position, List<NewsContent> aHeadlineNewsList) {
+    public void gotoHeadlineNewsPage(int position, List<HeadlineNewsJson.CarouselsBean> aHeadlineNewsList) {
 
         if (aHeadlineNewsList == null
                 || aHeadlineNewsList.get(position) == null) {
@@ -354,7 +355,7 @@ public class VideoNewsPage extends AppCompatActivity implements InterstitialAdLi
             return;
         }
 
-        int newsId = aHeadlineNewsList.get(position)._id;
+        int newsId = aHeadlineNewsList.get(position).getSn();
         if (newsId == -1) {
             Toast.makeText(this, getString(R.string.reference_error), Toast.LENGTH_LONG).show();
             return;

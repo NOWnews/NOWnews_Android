@@ -13,18 +13,32 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.nownews.mobile.Widget.CustomImageTopcrop
-                android:id="@+id/news_img"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginTop="15dp"
-                android:scaleType="centerCrop" />
+            <RelativeLayout
+                android:id="@+id/image_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.nownews.mobile.Widget.CustomImageTopcrop
+                    android:id="@+id/news_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="15dp"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:id="@+id/video_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/btn_play_icon" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/news_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/news_img"
+                android:layout_below="@+id/image_item"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="15dp"
@@ -52,6 +66,7 @@
                 android:drawablePadding="5dp"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="12dp" />
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -71,8 +86,8 @@
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray" />
 
 </RelativeLayout>

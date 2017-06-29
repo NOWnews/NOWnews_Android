@@ -67,5 +67,8 @@ public class ParameterSet {
     public final static int GET_LIVE_INFO_DONE = 39;
     public final static int GET_LIVE_INFO_FAILED = 40;
 
+    public final static int GET_RELATIONS_NEWS_INFO_DONE = 41;
+    public final static int GET_RELATIONS_NEWS_INFO_FAILED = 42;
+
 
 }

@@ -1,9 +1,5 @@
 package com.nownews.mobile.NewsCategory;
 
-import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,7 +21,9 @@ import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
+import com.nownews.mobile.Json.HeadlineNewsJson;
+import com.nownews.mobile.Json.InstantNewsJson;
+import com.nownews.mobile.Json.NewsListJson;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -38,7 +36,9 @@ public class OtherNewsListFragment extends Fragment {
     private RecyclerView vList;
     private SwipeRefreshLayout vRefreshLayout;
     private ApiController mApiController;
-    private List<NewsContent> mNewsList;
+    private List<NewsListJson.NewsListBean> mNewsList;
+    private List<InstantNewsJson.NewsListBean> mInstantNewsList;
+    private List<HeadlineNewsJson.CarouselsBean> mHeadlineNewsList;
     private RelativeLayout vLoadingLayout;
     private TextView vErrorMessage;
     private TextView vLoadingText;
@@ -74,8 +74,8 @@ public class OtherNewsListFragment extends Fragment {
                 case ParameterSet.GET_HEADLINE_NEWS_DONE:
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;
-                    fragment.mNewsList = (List<NewsContent>) msg.obj;
-                    if(Utility.DEBUG)Log.w(TAG, "mNewsList: " + fragment.mNewsList);
+                    fragment.mHeadlineNewsList = (List<HeadlineNewsJson.CarouselsBean>) msg.obj;
+                    if(Utility.DEBUG)Log.w(TAG, "mNewsList: " + fragment.mHeadlineNewsList);
                     fragment.isGetHeadLineDone = true;
                     fragment.refreshDone();
                     break;
@@ -90,7 +90,7 @@ public class OtherNewsListFragment extends Fragment {
                 case ParameterSet.GET_HOT_NEWS_DONE:
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;
-                    fragment.mNewsList = (List<NewsContent>) msg.obj;
+                    fragment.mNewsList = (List<NewsListJson.NewsListBean>) msg.obj;
                     fragment.isGetHotNewsDone = true;
                     fragment.refreshDone();
                     break;
@@ -101,7 +101,7 @@ public class OtherNewsListFragment extends Fragment {
                 case ParameterSet.GET_INSTANT_NEWS_DONE:
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;
-                    fragment.mNewsList = (List<NewsContent>) msg.obj;
+                    fragment.mInstantNewsList = (List<InstantNewsJson.NewsListBean>) msg.obj;
                     fragment.isGetInstantNewsDone = true;
                     fragment.refreshDone();
                     break;
@@ -112,7 +112,7 @@ public class OtherNewsListFragment extends Fragment {
                 case ParameterSet.GET_NEAR_BY_NEWS_DONE:
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;
-                    fragment.mNewsList = (List<NewsContent>) msg.obj;
+                    fragment.mNewsList = (List<NewsListJson.NewsListBean>) msg.obj;
                     fragment.isGetNearByNewsDone = true;
                     fragment.refreshDone();
                     break;
@@ -122,8 +122,8 @@ public class OtherNewsListFragment extends Fragment {
 
                 case CHECK_LIST:
                     if(Utility.DEBUG)Log.w(TAG, "CHECK_LIST!!!");
-                    if (fragment.isGetHeadLineDone && fragment.mNewsList != null) {
-                        UserDataInfo.setHeadlineContent(fragment.mNewsList);
+                    if (fragment.isGetHeadLineDone && fragment.mHeadlineNewsList != null) {
+                        UserDataInfo.setHeadlineContent(fragment.mHeadlineNewsList);
                         if(fragment.isAdded()){
                             fragment.processList();
                         }
@@ -136,7 +136,7 @@ public class OtherNewsListFragment extends Fragment {
                         break;
                     } else if ((fragment.isGetInstantNewsDone || fragment.isGetNearByNewsDone) && fragment.mNewsList != null) {
                         if(fragment.isGetInstantNewsDone){
-                            UserDataInfo.setInstantNewsContent(fragment.mNewsList);
+                            UserDataInfo.setInstantNewsContent(fragment.mInstantNewsList);
                         }
                         if(fragment.isAdded()) {
                             fragment.processList();

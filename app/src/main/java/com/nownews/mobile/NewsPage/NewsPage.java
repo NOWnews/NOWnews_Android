@@ -27,10 +27,12 @@ import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
+import com.nownews.mobile.Json.HeadlineNewsJson;
 import com.nownews.mobile.Json.NewsInfoJson;
-import com.nownews.mobile.Json.NewsInfoJson.ReferenceNewsInfo;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
-import com.nownews.mobile.Json.SearchInfoJson.SearchInfoContent;
+import com.nownews.mobile.Json.NewsListJson;
+import com.nownews.mobile.Json.RelationsNewsInfoJson;
+import com.nownews.mobile.Json.SearchInfoJson;
+import com.nownews.mobile.Json.SpecialNewsListJson;
 import com.nownews.mobile.NewHome;
 import com.vpadn.ads.VpadnAd;
 import com.vpadn.ads.VpadnAdListener;
@@ -58,6 +60,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
     public static final int TYPE_SEARCH_NEWS = 0x666;
     public static final int TYPE_INSTANT_NEWS = 0x555;
     public static final int TYPE_REFERENCE_NEWS = 0x444;
+    public static final int TYPE_SPECIAL_NEWS = 0x333;
     //For AD2 Page AD Start
 //	public static final String PUB_ID_INTERSTITIAL = "355b3228-c16b-11e3-ade5-f23c91dba5f7";
     public static final String PUB_ID_INTERSTITIAL = "e94d08f0-6817-11e5-8e01-f23c9173ed43"; //2015-10-01 add
@@ -69,10 +72,11 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
     private int mNewsId = -1;
     private String mNewsUrl;
     private int mNewsIndex;
-    private List<NewsContent> mHeadlineNewsList;
-    private List<NewsContent> mNewsList;
-    private List<ReferenceNewsInfo> mReferenceNewsList;
-    private List<SearchInfoContent> mSearchList;
+    private List<HeadlineNewsJson.CarouselsBean> mHeadlineNewsList;
+    private List<NewsListJson.NewsListBean> mNewsList;
+    private List<RelationsNewsInfoJson.RelationsNewsBean> mReferenceNewsList;
+    private List<SpecialNewsListJson.NewsListBean> mSpecialNewsList;
+    private List<SearchInfoJson.NewsListBean> mSearchList;
     private int mNewsType;
     private String mNewsCategory;
     private String mBigCategory;
@@ -231,6 +235,9 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                 case TYPE_REFERENCE_NEWS:
                     mReferenceNewsList = UserDataInfo.getReferenceNewsList();
                     break;
+                case TYPE_SPECIAL_NEWS:
+                    mSpecialNewsList = UserDataInfo.getSpecialNewsList();
+                    break;
             }
         }
     }
@@ -256,6 +263,9 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                 break;
             case TYPE_REFERENCE_NEWS:
                 mAdapter = new NewsPageFragmentAdapter(getSupportFragmentManager(), mReferenceNewsList, TYPE_REFERENCE_NEWS);
+                break;
+            case TYPE_SPECIAL_NEWS:
+                mAdapter = new NewsPageFragmentAdapter(getSupportFragmentManager(), mSpecialNewsList, TYPE_SPECIAL_NEWS);
                 break;
             case TYPE_SINGAL_NEWS:
                 if (mNewsId == -1 && mNewsUrl != null) {
@@ -322,29 +332,36 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                         if (mHeadlineNewsList == null) {
                             return false;
                         }
-                        newsTitle = mHeadlineNewsList.get(vViewPager.getCurrentItem()).field_short_title.value;
-                        newsId = mHeadlineNewsList.get(vViewPager.getCurrentItem())._id;
+                        newsTitle = mHeadlineNewsList.get(vViewPager.getCurrentItem()).getShortTitle();
+                        newsId = mHeadlineNewsList.get(vViewPager.getCurrentItem()).getSn();
                         break;
                     case TYPE_NORMAL_NEWS:
                         if (mNewsList == null) {
                             return false;
                         }
-                        newsTitle = mNewsList.get(vViewPager.getCurrentItem()).field_short_title.value;
-                        newsId = mNewsList.get(vViewPager.getCurrentItem())._id;
+                        newsTitle = mNewsList.get(vViewPager.getCurrentItem()).getShortTitle();
+                        newsId = mNewsList.get(vViewPager.getCurrentItem()).getSn();
                         break;
                     case TYPE_SEARCH_NEWS:
                         if (mSearchList == null) {
                             return false;
                         }
-                        newsTitle = mSearchList.get(vViewPager.getCurrentItem()).field_short_title.value;
-                        newsId = mSearchList.get(vViewPager.getCurrentItem())._id;
+                        newsTitle = mSearchList.get(vViewPager.getCurrentItem()).getShortTitle();
+                        newsId = mSearchList.get(vViewPager.getCurrentItem()).getSn();
                         break;
                     case TYPE_REFERENCE_NEWS:
                         if (mReferenceNewsList == null) {
                             return false;
                         }
-                        newsTitle = mReferenceNewsList.get(vViewPager.getCurrentItem()).title;
-                        newsId = mReferenceNewsList.get(vViewPager.getCurrentItem())._id;
+                        newsTitle = mReferenceNewsList.get(vViewPager.getCurrentItem()).getShortTitle();
+                        newsId = mReferenceNewsList.get(vViewPager.getCurrentItem()).getSn();
+                        break;
+                    case TYPE_SPECIAL_NEWS:
+                        if(mSpecialNewsList == null){
+                            return false;
+                        }
+                        newsTitle = mSpecialNewsList.get(vViewPager.getCurrentItem()).getShortTitle();
+                        newsId = mSpecialNewsList.get(vViewPager.getCurrentItem()).getSn();
                         break;
                     case TYPE_SINGAL_NEWS:
                         Log.d(TAG, "TYPE_SINGAL_NEWS");
@@ -353,8 +370,8 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
                         if(newsInfo==null){
                             return false;
                         }
-                        newsTitle = newsInfo.title;
-                        newsId = newsInfo.nodeId;
+                        newsTitle = newsInfo.getTitle();
+                        newsId = newsInfo.getSn();
                         break;
                 }
 
@@ -469,7 +486,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
     }
     //For AD2 Page AD End
 
-    public void gotoReferenceNewsPage(int position, List<ReferenceNewsInfo> aReferenceNewsList) {
+    public void gotoReferenceNewsPage(int position, List<RelationsNewsInfoJson.RelationsNewsBean> aReferenceNewsList) {
 
         if (aReferenceNewsList == null
                 || aReferenceNewsList.get(position) == null) {
@@ -477,7 +494,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             return;
         }
 
-        int newsId = aReferenceNewsList.get(position)._id;
+        int newsId = aReferenceNewsList.get(position).getSn();
         if (newsId == -1) {
             Toast.makeText(this, getString(R.string.reference_error), Toast.LENGTH_LONG).show();
             return;
@@ -504,7 +521,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
         }
     }
 
-    public void gotoHeadlineNewsPage(int position, List<NewsContent> aHeadlineNewsList) {
+    public void gotoHeadlineNewsPage(int position, List<HeadlineNewsJson.CarouselsBean> aHeadlineNewsList) {
 
         if (aHeadlineNewsList == null
                 || aHeadlineNewsList.get(position) == null) {
@@ -512,7 +529,7 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             return;
         }
 
-        int newsId = aHeadlineNewsList.get(position)._id;
+        int newsId = aHeadlineNewsList.get(position).getSn();
         if (newsId == -1) {
             Toast.makeText(this, getString(R.string.reference_error), Toast.LENGTH_LONG).show();
             return;
@@ -669,6 +686,9 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             case TYPE_REFERENCE_NEWS:
                 listSize = mReferenceNewsList.size();
                 break;
+            case TYPE_SPECIAL_NEWS:
+                listSize = mSpecialNewsList.size();
+                break;
         }
         int currentPage = getCurrentPage();
         if ((currentPage + 1) == listSize) {
@@ -717,6 +737,9 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             case TYPE_REFERENCE_NEWS:
                 listSize = mReferenceNewsList.size();
                 break;
+            case TYPE_SPECIAL_NEWS:
+                listSize = mSpecialNewsList.size();
+                break;
         }
         int currentPage = getCurrentPage();
         if (currentPage == 0) {
@@ -731,16 +754,19 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
         String title = null;
         switch (mNewsType) {
             case TYPE_HEADLINE_NEWS:
-                title = mHeadlineNewsList.get(aIndex).field_short_title.value;
+                title = mHeadlineNewsList.get(aIndex).getShortTitle();
                 break;
             case TYPE_NORMAL_NEWS:
-                title = mNewsList.get(aIndex).field_short_title.value;
+                title = mNewsList.get(aIndex).getShortTitle();
                 break;
             case TYPE_SEARCH_NEWS:
-                title = mSearchList.get(aIndex).field_short_title.value;
+                title = mSearchList.get(aIndex).getShortTitle();
                 break;
             case TYPE_REFERENCE_NEWS:
-                title = mReferenceNewsList.get(aIndex).title;
+                title = mReferenceNewsList.get(aIndex).getShortTitle();
+                break;
+            case TYPE_SPECIAL_NEWS:
+                title = mSpecialNewsList.get(aIndex).getShortTitle();
                 break;
         }
         return title;

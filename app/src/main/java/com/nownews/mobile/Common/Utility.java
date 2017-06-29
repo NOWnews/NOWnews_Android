@@ -53,6 +53,7 @@ import com.nownews.R;
 import com.nownews.mobile.AlbumCategory.AlbumsCategoryColor;
 import com.nownews.mobile.AlbumPage.AlbumPage;
 import com.nownews.mobile.Api.WebAPIUrl;
+import com.nownews.mobile.Api.WebApi;
 import com.nownews.mobile.FavoriteAlbum.FavoriteAlbum;
 import com.nownews.mobile.FavoriteAlbum.FavoriteAlbumPage;
 import com.nownews.mobile.NewsCategory.NewsCategoryColor;
@@ -106,6 +107,7 @@ public class Utility {
     public static boolean isUserKnowNetworkSlow = false;
     public static boolean isVponTestMode = false;
     private static Context mAppilicationContext;
+    public static int NEWS_LIST_LIMIT_COUNT = 20;
 
     //TODO getOptions()
 //    public static DisplayImageOptions getOptions(){
@@ -161,31 +163,22 @@ public class Utility {
     //通知GCM推播ID使用
     private static void sendRegisterId(Context aContext, String regId) {
         Log.v(TAG, "sendRegisterId()");
-        HttpURLConnection Conn = null;
+        String BuildSERIAL = android.os.Build.SERIAL;
+        Log.v("Utility", "BuildSERIAL:" + BuildSERIAL);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        String dts = sdf.format(date);
+        String returnString = null;
         try {
-            String BuildSERIAL = android.os.Build.SERIAL;
-            Log.v("Utility", "BuildSERIAL:" + BuildSERIAL);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-            Date date = new Date();
-            String dts = sdf.format(date);
-            URL url = new URL(WebAPIUrl.REGIST_ID_RETURN + "?token=" + regId + "&uid=" + BuildSERIAL + "&platform=android&date=" + dts);
-            if (Utility.DEBUG) Log.d(TAG, TAG + " url: " + url.toString());
-            Conn = (HttpURLConnection) url.openConnection();
-            Conn.setRequestProperty(WebAPIUrl.HEADER_KEY, WebAPIUrl.HEADER_VALUE);
-            Conn.connect();
-            int responeseCode = Conn.getResponseCode();
-            if (Utility.DEBUG) Log.e(TAG, "responeseCode: " + responeseCode);
-            if(responeseCode==HttpURLConnection.HTTP_OK){
-                GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message), aContext.getString(R.string.cloud_message_regist), regId);
-                storeRegistrationId(aContext, regId);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (Conn != null) {
-                Conn.disconnect();
-            }
+            returnString = WebApi.DoPost(WebAPIUrl.REGIST_ID_RETURN, "token=" + regId + "&deviceId=" + BuildSERIAL + "&os=ANDROID");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        if (Utility.DEBUG) Log.d(TAG, TAG + " returnString: " + returnString);
+//            if(responeseCode==HttpURLConnection.HTTP_OK){
+//                GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message), aContext.getString(R.string.cloud_message_regist), regId);
+//                storeRegistrationId(aContext, regId);
+//            }
     }
 
     //TODO writeJsonToFile()
@@ -1161,7 +1154,7 @@ public class Utility {
     }
 
     public static String getSrcFromImgapi(String aUrl) {
-        if (aUrl.contains("imgapi")) {
+        if (aUrl.contains("imgapiv2")) {
             aUrl = aUrl.substring(aUrl.lastIndexOf("http"));
         }
         if(aUrl.contains("%3A")){
@@ -1174,7 +1167,7 @@ public class Utility {
     }
 
     public static String processDate(String aDateString) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date;
         try {
             date = simpleDateFormat.parse(aDateString);
@@ -1249,34 +1242,36 @@ public class Utility {
         News, Album, Video
     }
     public static void setCategoryTextColor(String aCategory, TextView aTextView, ColorType aColorType) {
-        int colorString = 0xFFFFFFFF;
-        switch(aColorType){
-            case News:
-                for (NewsCategoryColor colorInfo : NewsCategoryColor.values()) {
-                    if (colorInfo.name().equals(aCategory)) {
-                        colorString = colorInfo.getColor();
-                        break;
-                    }
-                }
-                break;
-            case Album:
-                for (AlbumsCategoryColor colorInfo : AlbumsCategoryColor.values()) {
-                    if (colorInfo.name().equals(aCategory)) {
-                        colorString = colorInfo.getColor();
-                        break;
-                    }
-                }
-                break;
-            case Video:
-                for (VideoNewsCategoryColor colorInfo : VideoNewsCategoryColor.values()) {
-                    if (colorInfo.name().equals(aCategory)) {
-                        colorString = colorInfo.getColor();
-                        break;
-                    }
-                }
-                break;
-        }
-
+//        int colorString = 0xFFFFFFFF;
+//        switch(aColorType){
+//            case News:
+//                for (NewsCategoryColor colorInfo : NewsCategoryColor.values()) {
+//                    if (colorInfo.name().equals(aCategory)) {
+//                        colorString = colorInfo.getColor();
+//                        break;
+//                    }
+//                }
+//                break;
+//            case Album:
+//                for (AlbumsCategoryColor colorInfo : AlbumsCategoryColor.values()) {
+//                    if (colorInfo.name().equals(aCategory)) {
+//                        colorString = colorInfo.getColor();
+//                        break;
+//                    }
+//                }
+//                break;
+//            case Video:
+//                for (VideoNewsCategoryColor colorInfo : VideoNewsCategoryColor.values()) {
+//                    if (colorInfo.name().equals(aCategory)) {
+//                        colorString = colorInfo.getColor();
+//                        break;
+//                    }
+//                }
+//                break;
+//        }
+//
+//        aTextView.setTextColor(colorString);
+        int colorString = 0xFF0099FF;
         aTextView.setTextColor(colorString);
     }
 

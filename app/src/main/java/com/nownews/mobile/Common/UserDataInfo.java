@@ -8,18 +8,20 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.comscore.Analytics;
+import com.nownews.mobile.Json.HeadlineNewsJson;
+import com.nownews.mobile.Json.InstantNewsJson;
 import com.nownews.mobile.Json.LiveListJson;
 import com.nownews.mobile.Json.NewsCategoryJson.CategoryInfo;
-import com.nownews.mobile.Json.NewsInfoJson.ReferenceNewsInfo;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
+import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Json.PhotosCategoryJson;
-import com.nownews.mobile.Json.SearchInfoJson.SearchInfoContent;
+import com.nownews.mobile.Json.RelationsNewsInfoJson;
+import com.nownews.mobile.Json.SearchInfoJson;
+import com.nownews.mobile.Json.SpecialNewsListJson;
 import com.nownews.mobile.Json.VideosCategoryJson;
 import com.nownews.mobile.Json.VideosListJson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class UserDataInfo {
 
@@ -42,22 +44,23 @@ public class UserDataInfo {
     public static List<VideosCategoryJson.CategoryInfo> mVideosCategoryContent;
     private static Context mCurrentContext;
     private static List<CategoryInfo> mNewsCategoryContent;
-    private static List<NewsContent> mHeadlineContent;
-    private static List<NewsContent> mHotNewsContent;
-    private static List<NewsContent> mInstantNewsContent;
-    private static List<ReferenceNewsInfo> mReferenceNewsList;
-    private static List<NewsContent> mNewsList;
+    private static List<HeadlineNewsJson.CarouselsBean> mHeadlineContent;
+    private static List<NewsListJson.NewsListBean> mHotNewsContent;
+    private static List<InstantNewsJson.NewsListBean> mInstantNewsContent;
+    private static List<RelationsNewsInfoJson.RelationsNewsBean> mReferenceNewsList;
+    private static List<NewsListJson.NewsListBean> mNewsList;
+    private static List<SpecialNewsListJson.NewsListBean> mSpecialNewsList;
     private static List<VideosListJson.VideosContent> mVideoNewsList;
-    private static List<SearchInfoContent> mSearchList;
+    private static List<SearchInfoJson.NewsListBean> mSearchList;
     private static ArrayList<Integer> mDisplayIndexList;
     private static boolean activityVisible;
-    private static List<LiveListJson.Data> mLiveList;
+    private static List<LiveListJson.DataBean> mLiveList;
 
-    public static void setLiveList(List<LiveListJson.Data> aLiveList){
+    public static void setLiveList(List<LiveListJson.DataBean> aLiveList){
         mLiveList = aLiveList;
     }
 
-    public static List<LiveListJson.Data> getLiveList(){
+    public static List<LiveListJson.DataBean> getLiveList(){
         return mLiveList;
     }
 
@@ -115,12 +118,20 @@ public class UserDataInfo {
         mVideosCategoryContent = aVideosCategoryContent;
     }
 
-    public static List<NewsContent> getNewsList() {
+    public static List<NewsListJson.NewsListBean> getNewsList() {
         return mNewsList;
     }
 
-    public static void setNewsList(List<NewsContent> aNewsList) {
+    public static void setNewsList(List<NewsListJson.NewsListBean> aNewsList) {
         mNewsList = aNewsList;
+    }
+
+    public static List<SpecialNewsListJson.NewsListBean> getSpecialNewsList() {
+        return mSpecialNewsList;
+    }
+
+    public static void setSpecialNewsList(List<SpecialNewsListJson.NewsListBean> aNewsList) {
+        mSpecialNewsList = aNewsList;
     }
 
     public static List<VideosListJson.VideosContent> getVideoNewsList() {
@@ -131,19 +142,20 @@ public class UserDataInfo {
         mVideoNewsList = aVideoNewsList;
     }
 
-    public static List<SearchInfoContent> getSearchList() {
+    public static List<SearchInfoJson.NewsListBean> getSearchList() {
         return mSearchList;
     }
 
-    public static void setSearchList(List<SearchInfoContent> aSearchList) {
+    public static void setSearchList(List<SearchInfoJson.NewsListBean> aSearchList) {
         mSearchList = aSearchList;
     }
 
-    public static List<NewsContent> getHeadlineContent() {
+    public static List<HeadlineNewsJson.CarouselsBean> getHeadlineContent() {
         return mHeadlineContent;
     }
 
-    public static void setHeadlineContent(List<NewsContent> aHeadlineContent) {
+    public static void setHeadlineContent(List<HeadlineNewsJson.CarouselsBean> aHeadlineContent) {
+        Log.d(TAG, "aHeadlineContent: " + aHeadlineContent);
         UserDataInfo.mHeadlineContent = aHeadlineContent;
     }
 
@@ -155,32 +167,31 @@ public class UserDataInfo {
         mDisplayIndexList = aDisplayIndexList;
     }
 
-    public static List<NewsContent> getHotNewsContent() {
+    public static List<NewsListJson.NewsListBean> getHotNewsContent() {
         return mHotNewsContent;
     }
 
-    public static void setHotNewsContent(List<NewsContent> aHotNewsContent) {
+    public static void setHotNewsContent(List<NewsListJson.NewsListBean> aHotNewsContent) {
         UserDataInfo.mHotNewsContent = aHotNewsContent;
     }
 
-    public static List<NewsContent> getInstantNewsContent() {
+    public static List<InstantNewsJson.NewsListBean> getInstantNewsContent() {
         return mInstantNewsContent;
     }
 
-    public static void setInstantNewsContent(List<NewsContent> aInstantNewsContent) {
+    public static void setInstantNewsContent(List<InstantNewsJson.NewsListBean> aInstantNewsContent) {
         UserDataInfo.mInstantNewsContent = aInstantNewsContent;
     }
 
-    public static List<ReferenceNewsInfo> getReferenceNewsList() {
+    public static List<RelationsNewsInfoJson.RelationsNewsBean> getReferenceNewsList() {
         return mReferenceNewsList;
     }
 
-    public static void setReferenceNewsList(List<ReferenceNewsInfo> aHotNewsContent) {
-        UserDataInfo.mReferenceNewsList = aHotNewsContent;
+    public static void setReferenceNewsList(List<RelationsNewsInfoJson.RelationsNewsBean> aRelationsNewsContent) {
+        UserDataInfo.mReferenceNewsList = aRelationsNewsContent;
     }
 
     public static boolean isActivityVisible() {
-        if (Utility.DEBUG) Log.e(TAG, "activityVisible: " + activityVisible);
         return activityVisible;
     }
 

@@ -1,7 +1,6 @@
 package com.nownews.mobile.AlbumPage;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
-import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;

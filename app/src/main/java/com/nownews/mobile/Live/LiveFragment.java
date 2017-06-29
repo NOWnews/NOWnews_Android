@@ -99,7 +99,7 @@ public class LiveFragment extends Fragment {
     }
 
     private LiveListJson mLiveInfoJson;
-    private List<LiveListJson.Data> mLiveList;
+    private List<LiveListJson.DataBean> mLiveList;
     private class ApiHandler extends Handler{
 
         @Override
@@ -109,7 +109,7 @@ public class LiveFragment extends Fragment {
                 case ParameterSet.GET_LIVE_LIST_DONE:
                     mLiveInfoJson = (LiveListJson) msg.obj;
                     if(mLiveInfoJson!=null){
-                        mLiveList = mLiveInfoJson.data;
+                        mLiveList = mLiveInfoJson.getData();
                         if(mLiveList!=null){
                             processList();
                         }
@@ -124,9 +124,9 @@ public class LiveFragment extends Fragment {
 
     private void processList(){
         List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-        for(LiveListJson.Data data : mLiveList){
+        for(LiveListJson.DataBean data : mLiveList){
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("categoryName", data.categoryName);
+            map.put("categoryName", data.getCategoryName());
             items.add(map);
         }
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.widget_live_gategory_item, new String[]{"categoryName"}, new int[]{R.id.gategory_item});
@@ -150,13 +150,13 @@ public class LiveFragment extends Fragment {
         startFragment();
     }
 
-    private List<LiveListJson.ChannelList> mCurrentChannelList;
+    private List<LiveListJson.DataBean.ListBean> mCurrentChannelList;
     private int mCurrentCategoryIndex;
     private void processChannelList(int position){
 
         mCurrentCategoryIndex = position;
-        mCurrentChannelList = mLiveList.get(position).list;
-        String iconUrl = mLiveInfoJson.liveInfo.icon;
+        mCurrentChannelList = mLiveList.get(position).getList();
+        String iconUrl = mLiveInfoJson.getLiveInfo().getIcon();
         if(mBitmapController!=null){
             mBitmapController.preloadOriginalImageFromUrl(iconUrl, null, BitmapController.IMAGE_SRC, 0, 0, new BitmapController.ImageLoadingListener() {
                 @Override
@@ -171,9 +171,9 @@ public class LiveFragment extends Fragment {
                 public void onLoadingComplete(String aImageUrl, View aView, Bitmap aBitmap) {
 
                     List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-                    for(LiveListJson.ChannelList list : mCurrentChannelList){
+                    for(LiveListJson.DataBean.ListBean list : mCurrentChannelList){
                         Map<String, Object> map = new HashMap<String, Object>();
-                        map.put("channelName", list.title);
+                        map.put("channelName", list.getTitle());
                         map.put("channelIcon", aBitmap);
 //                        map.put("channelIcon", R.drawable.watch_now);
                         items.add(map);
@@ -221,8 +221,8 @@ public class LiveFragment extends Fragment {
         if(mCSTVDownloadDialog!=null && mCSTVDownloadDialog.isShowing()){
             return;
         }
-        String title = mCurrentChannelList.get(position).title;
-        String path = mCurrentChannelList.get(position).path;
+        String title = mCurrentChannelList.get(position).getTitle();
+        String path = mCurrentChannelList.get(position).getPath();
         mCSTVDownloadDialog = new LiveAppDownloadDialog(getActivity(), title, mLiveList, path,
                 mCurrentCategoryIndex, position, mLiveInfoJson);
         mCSTVDownloadDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {

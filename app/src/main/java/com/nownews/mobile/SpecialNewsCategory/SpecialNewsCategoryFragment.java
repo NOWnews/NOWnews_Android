@@ -22,12 +22,11 @@ import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
-import com.nownews.mobile.Json.NewsListJson.NewsContent;
-import com.nownews.mobile.Json.SpecialNewsCategoryJson.CategoryInfo;
+import com.nownews.mobile.Json.SpecialNewsCategoryJson.*;
+import com.nownews.mobile.Json.SpecialNewsListJson;
 import com.nownews.mobile.NewsCategory.NewsListRecyclerViewAdapter;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SpecialNewsCategoryFragment extends Fragment {
@@ -44,12 +43,13 @@ public class SpecialNewsCategoryFragment extends Fragment {
     private TextView vErrorMessage;
 
     private ApiController mApiController;
-    private List<NewsContent> mNewsList;
-    private NewsListRecyclerViewAdapter mAdapter;
+    private List<SpecialNewsListJson.NewsListBean> mNewsList;
+    private SpecialNewsListRecyclerViewAdapter mAdapter;
+    private NewsListRecyclerViewAdapter mErrorAdapter;
     private boolean isRefereshing = false;
     private boolean isScrollToBottom = false;
     private boolean isOnDestroy = false;
-    private List<CategoryInfo> mCategoryInfo;
+    private List<SpecialChannelsBean> mCategoryInfo;
     private int mRetryCount;
     private final static int RELOAD_SPECIAL_NEWS_LIST_API = 0x159;
     private final static int RELOAD_SPECIAL_NEWS_CATEGORY_API = 0x357;
@@ -72,7 +72,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
                 case ParameterSet.GET_SPECIAL_NEWS_CATEGORY_DONE:
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;
-                    fragment.mCategoryInfo = (List<CategoryInfo>) msg.obj;
+                    fragment.mCategoryInfo = (List<SpecialChannelsBean>) msg.obj;
                     fragment.processCategoryList();
                     break;
                 case ParameterSet.GET_SPECIAL_NEWS_CATEGORY_FAILED:
@@ -95,7 +95,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
                 case ParameterSet.GET_SPECIAL_NEWS_LIST_DONE:
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;
-                    fragment.mNewsList = (List<NewsContent>) msg.obj;
+                    fragment.mNewsList = (List<SpecialNewsListJson.NewsListBean>) msg.obj;
                     if (fragment.isRefereshing) {
                         // Stop refresh animation
                         fragment.isRefereshing = false;
@@ -148,8 +148,8 @@ public class SpecialNewsCategoryFragment extends Fragment {
     };
 
     private void setReplaceNews(){
-        Log.w(TAG, "mCurrentItem: " + mCurrentItem);
-        List<NewsContent> list = null;
+        if(Utility.DEBUG)Log.w(TAG, "mCurrentItem: " + mCurrentItem);
+        List<?> list = null;
         switch(mCurrentItem%3){
             case 0:
                 list = UserDataInfo.getHeadlineContent();
@@ -193,7 +193,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
         }
         if(list!=null){
             if (!isOnDestroy) {
-                processList(list);
+                processErrorList(list);
             }
         }
     }
@@ -201,6 +201,8 @@ public class SpecialNewsCategoryFragment extends Fragment {
     private GridLayoutManager mGridLayoutManager;
     private SpecialNewsCategoryAdapter mSpecialNewsCategoryAdapter;
     private void processCategoryList(){
+
+        Log.w(TAG, "mCategoryInfo: " + mCategoryInfo);
 
         mGridLayoutManager = new GridLayoutManager(getActivity(), 2, LinearLayoutManager.VERTICAL, false);
         vCategoryList.setLayoutManager(mGridLayoutManager);
@@ -239,7 +241,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
             vCategoryName.setText(aCategoryName);
             closeCategoryList();
             clearNewsList();
-            getSpecialNewsList(mCategoryInfo.get(aPosition).nodeId);
+            getSpecialNewsList(mCategoryInfo.get(aPosition).getSn());
 
         }
     };
@@ -248,7 +250,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
         if(mNewsList!=null){
             mNewsList.clear();
             if(mAdapter!=null){
-                mAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).name, getChildFragmentManager(), getActivity().getString(R.string.special));
+                mAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getActivity().getString(R.string.special));
             }
         }
     }
@@ -355,7 +357,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
     }
 
     private LinearLayoutManager mLinearLayoutManager;
-    private void processList(List<NewsContent> mNewsList) {
+    private void processList(List<SpecialNewsListJson.NewsListBean> mNewsList) {
 
         if (Utility.DEBUG) Log.e(TAG, "processList()");
         if (isScrollToBottom) {
@@ -365,11 +367,34 @@ public class SpecialNewsCategoryFragment extends Fragment {
         if (mAdapter == null) {
             mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             vList.setLayoutManager(mLinearLayoutManager);
-            mAdapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryInfo.get(mCurrentItem).name, getChildFragmentManager(), getString(R.string.special));
+            mAdapter = new SpecialNewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special));
             vList.setAdapter(mAdapter);
             vList.addOnScrollListener(mListScrollListener);
         } else {
-            mAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).name, getChildFragmentManager(), getString(R.string.special));
+            mAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special));
+        }
+
+        vLoadingLayout.setVisibility(View.GONE);
+        vErrorMessage.setVisibility(View.GONE);
+        Log.e(TAG, "1237456");
+
+    }
+
+    private void processErrorList(List<?> newsList) {
+
+        if (Utility.DEBUG) Log.e(TAG, "processList()");
+        if (isScrollToBottom) {
+            isScrollToBottom = false;
+        }
+
+        if (mAdapter == null) {
+            mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            vList.setLayoutManager(mLinearLayoutManager);
+            mErrorAdapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special));
+            vList.setAdapter(mAdapter);
+            vList.addOnScrollListener(mListScrollListener);
+        } else {
+            mErrorAdapter.setData(newsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special));
         }
 
         vLoadingLayout.setVisibility(View.GONE);

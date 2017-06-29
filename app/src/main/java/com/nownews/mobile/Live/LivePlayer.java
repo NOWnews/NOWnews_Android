@@ -50,7 +50,7 @@ public class LivePlayer extends Activity {
     private LinearLayout vChannelListGroup;
     private ListView vCategoryList;
     private ListView vChannelList;
-    private List<LiveListJson.Data> mLiveList;
+    private List<LiveListJson.DataBean> mLiveList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +87,9 @@ public class LivePlayer extends Activity {
     private void processMenu(){
 
         List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-        for(LiveListJson.Data data : mLiveList){
+        for(LiveListJson.DataBean data : mLiveList){
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("categoryName", data.categoryName);
+            map.put("categoryName", data.getCategoryName());
             items.add(map);
         }
         SimpleAdapter adapter = new SimpleAdapter(this, items, R.layout.widget_live_player_gategory_item, new String[]{"categoryName"}, new int[]{R.id.gategory_item});
@@ -111,14 +111,14 @@ public class LivePlayer extends Activity {
         }
     };
 
-    private List<LiveListJson.ChannelList> mCurrentChannelList;
+    private List<LiveListJson.DataBean.ListBean> mCurrentChannelList;
     private void processChannelList(int position){
 
-        mCurrentChannelList = mLiveList.get(position).list;
+        mCurrentChannelList = mLiveList.get(position).getList();
         List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-        for(LiveListJson.ChannelList list : mCurrentChannelList){
+        for(LiveListJson.DataBean.ListBean list : mCurrentChannelList){
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("channelName", list.title);
+            map.put("channelName", list.getTitle());
             items.add(map);
         }
         SimpleAdapter adapter = new SimpleAdapter(this, items, R.layout.widget_live_player_channel_item, new String[]{"channelName"}, new int[]{R.id.channel_item});
@@ -133,9 +133,9 @@ public class LivePlayer extends Activity {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-            String title = mCurrentChannelList.get(position).title;
+            String title = mCurrentChannelList.get(position).getTitle();
             if(Utility.DEBUG) Log.v(TAG, "title: " + title);
-            mUrl = mCurrentChannelList.get(position).path;
+            mUrl = mCurrentChannelList.get(position).getPath();
             play(position);
 
         }
@@ -214,8 +214,8 @@ public class LivePlayer extends Activity {
     }
 
     private void setHitInfo(int position){
-        String title = mCurrentChannelList.get(position).title;
-        String categoryName = mLiveList.get(mCategoryIndex).categoryName;
+        String title = mCurrentChannelList.get(position).getTitle();
+        String categoryName = mLiveList.get(mCategoryIndex).getCategoryName();
         GoogleAnalyticsFunction.sendHitInfo(this, getString(R.string.live), categoryName, title);
     }
 

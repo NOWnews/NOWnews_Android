@@ -54,7 +54,7 @@ public class NewsCategoryFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        String mTitle = mCategoryContent.get(position).name;
+        String mTitle = mCategoryContent.get(position).getName();
         mTitle = "	" + mTitle.substring(mTitle.lastIndexOf("_") + 1, mTitle.length()) + "	";
         return mTitle;
     }
@@ -63,7 +63,7 @@ public class NewsCategoryFragmentAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         if (Utility.DEBUG) Log.e(TAG, "getItem::: " + position);
         Fragment fragment = null;
-        int id = -1;
+        String aNewsCategoryUrl = null;
 //        if (mNewsListFragmentList == null) {
 //            mNewsListFragmentList = new HashMap<String, Fragment>();
 //        } else {
@@ -83,50 +83,65 @@ public class NewsCategoryFragmentAdapter extends FragmentStatePagerAdapter {
 //                }
 //            }
 //        }
-        String itemName = mCategoryContent.get(position).name;
+        String itemName = mCategoryContent.get(position).getName();
         itemName = itemName.substring(itemName.lastIndexOf("_") + 1, itemName.length());
         if (Utility.DEBUG) Log.e(TAG, "itemName: " + itemName);
         if (mCategoryContent != null) {
             for (int i = 0; i < mCategoryContent.size(); i++) {
                 if (mCategoryContent.get(i) != null
-                        && mCategoryContent.get(i).name != null
-                        && !mCategoryContent.get(i).name.trim().isEmpty()) {
-                    String categoryName = mCategoryContent.get(i).name;
+                        && mCategoryContent.get(i).getName() != null
+                        && !mCategoryContent.get(i).getName().trim().isEmpty()) {
+                    String categoryName = mCategoryContent.get(i).getName();
                     if (itemName.equals(categoryName)) {
-                        id = mCategoryContent.get(i).tid;
+                        aNewsCategoryUrl = mCategoryContent.get(i).getUrl();
                         break;
                     }
                 }
             }
         }
-        if (id == -1) {
-            if (itemName.equals(mContext.getString(R.string.food))) {
-                fragment = new WebFragment();
+
+        boolean isExternal = mCategoryContent.get(position).isIsExternal();
+        if(isExternal){
+            String webUrl = mCategoryContent.get(position).getUrl();
+            fragment = new WebFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString(WebFragment.KEY_URL, WebAPIUrl.FOOD);
+                bundle.putString(WebFragment.KEY_URL, webUrl);
                 fragment.setArguments(bundle);
-//                mNewsListFragmentList.put(KEY_FRAGMENT_INDEX + position, fragment);
-            } else if (itemName.equals(mContext.getString(R.string.health))) {
-                fragment = new WebFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(WebFragment.KEY_URL, WebAPIUrl.Health);
-                fragment.setArguments(bundle);
-//                mNewsListFragmentList.put(KEY_FRAGMENT_INDEX + position, fragment);
-            } else {
-                fragment = new OtherNewsListFragment();
-                ((OtherNewsListFragment) fragment).setData(mHandler, mPool);
-                Bundle bundle = new Bundle();
-                bundle.putString(OtherNewsListFragment.KEY_CATEGORY_NAME, itemName);
-                fragment.setArguments(bundle);
-//                mNewsListFragmentList.put(KEY_FRAGMENT_INDEX + position, fragment);
-            }
-        } else {
+        }else{
             fragment = new NewsListFragment();
-            ((NewsListFragment) fragment).setData(id, mHandler, itemName, mPool, position);
-//            mNewsListFragmentList.put(KEY_FRAGMENT_INDEX + position, fragment);
+            ((NewsListFragment) fragment).setData(aNewsCategoryUrl, mHandler, itemName, mPool, position);
         }
         Log.d(TAG, "is fragment null or not?? " + (fragment == null ? "true" : "false"));
         return fragment;
+
+        // Not use in v4
+//        if (aNewsCategoryUrl == null) {
+//            if (itemName.equals(mContext.getString(R.string.food))) {
+//                fragment = new WebFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putString(WebFragment.KEY_URL, WebAPIUrl.FOOD);
+//                fragment.setArguments(bundle);
+////                mNewsListFragmentList.put(KEY_FRAGMENT_INDEX + position, fragment);
+//            } else if (itemName.equals(mContext.getString(R.string.health))) {
+//                fragment = new WebFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putString(WebFragment.KEY_URL, WebAPIUrl.Health);
+//                fragment.setArguments(bundle);
+////                mNewsListFragmentList.put(KEY_FRAGMENT_INDEX + position, fragment);
+//            } else {
+//                fragment = new OtherNewsListFragment();
+//                ((OtherNewsListFragment) fragment).setData(mHandler, mPool);
+//                Bundle bundle = new Bundle();
+//                bundle.putString(OtherNewsListFragment.KEY_CATEGORY_NAME, itemName);
+//                fragment.setArguments(bundle);
+////                mNewsListFragmentList.put(KEY_FRAGMENT_INDEX + position, fragment);
+//            }
+//        } else {
+//            fragment = new NewsListFragment();
+//            ((NewsListFragment) fragment).setData(aNewsCategoryUrl, mHandler, itemName, mPool, position);
+//            mNewsListFragmentList.put(KEY_FRAGMENT_INDEX + position, fragment);
+//        }
+
     }
 
     @Override

@@ -67,7 +67,7 @@ public class GetSplashImageService extends Service {
                     if (splashImageInfo == null) {
                         break;
                     }
-                    splash.mSplashImageUrl = splashImageInfo.url;
+                    splash.mSplashImageUrl = splashImageInfo.getImage().getUrl();
                     splash.mSplashImageUrl = Utility.getSrcFromImgapi(splash.mSplashImageUrl);
                     int screenHeight = Utility.getScreenHeight(splash);
                     int screenWidth = Utility.getScreenWidth(splash);

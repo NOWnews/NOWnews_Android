@@ -212,6 +212,17 @@
             android:enabled="true"
             android:exported="false" />
 
+        <!-- Custom Campaign Tracking Receiver -->
+        <receiver
+            android:name=".CustomCampaignTrackingReceiver"
+            android:exported="true"
+            android:permission="android.permission.INSTALL_PACKAGES">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+        <!--
         <receiver
             android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
             android:exported="true">
@@ -219,6 +230,7 @@
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
+        -->
 
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
 
@@ -290,6 +302,10 @@
             android:name=".mobile.BroadcastReceiver.GcmShareAppReceiver"
             android:enabled="true"
             android:exported="true" />
+
+        <service
+            android:name=".mobile.Service.GetApiService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

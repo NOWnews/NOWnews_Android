@@ -47,14 +47,17 @@ import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.FavoriteAlbum.FavoriteAlbumPage;
+import com.nownews.mobile.Json.HeadlineNewsJson;
 import com.nownews.mobile.Json.NewsInfoJson;
-import com.nownews.mobile.Json.NewsListJson;
+import com.nownews.mobile.Json.RelationsNewsInfoJson;
 import com.nownews.mobile.Widget.CustomImageTopcrop;
 import com.nownews.mobile.Widget.WebActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by cindy on 2017/1/25.
@@ -68,9 +71,10 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private SharedPreferencesMethods mSharedPref;
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
     private ArrayList<ConcurrentHashMap<String, Object>> mVideoContentList;
+    private List<RelationsNewsInfoJson.RelationsNewsBean> mRelationsNewsList;
     private NewsInfoJson mNewsInfo;
     private int mListSize;
-    private List<NewsListJson.NewsContent> mHeadline;
+    private List<HeadlineNewsJson.CarouselsBean> mHeadline;
     private ArrayList<Integer> mViewTypeList;
     private ArrayList<String> mImageUrlList;
     private String mShareImgUrl;
@@ -94,7 +98,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private final int VIEW_TYPE_WEB_BODY = R.layout.widget_news_page_web_body;
 
     public NewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aVideoContentList, ArrayList<ConcurrentHashMap<String, Object>> aContentList,
-                                       NewsInfoJson aNewsInfo, ArrayList<String> aImageUrlList, OnVideoPlayButtonClick aListener){
+                                       NewsInfoJson aNewsInfo, ArrayList<String> aImageUrlList, OnVideoPlayButtonClick aListener, List<RelationsNewsInfoJson.RelationsNewsBean> aRelationsNewsList){
         mContext = aContext;
         if(Utility.DEBUG)Log.i(TAG, "mContext is null nor not?? " + (mContext==null? "true":"false"));
         mContentList = aContentList;
@@ -102,6 +106,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         mNewsInfo = aNewsInfo;
         mImageUrlList = aImageUrlList;
         mListener = aListener;
+        mRelationsNewsList = aRelationsNewsList;
         initController();
         initListInfo();
 
@@ -161,13 +166,13 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         mViewTypeList.add(VIEW_TYPE_BOTTOM_AD);
         mViewTypeList.add(VIEW_TYPE_PRE_NEXT_NEWS);
 
-        if(mNewsInfo.refNews!=null && mNewsInfo.refNews.size()>0){
-            if(Utility.DEBUG)Log.d(TAG, "mNewsInfo.refNews.size(): " + mNewsInfo.refNews.size());
+        if(mRelationsNewsList!=null && mRelationsNewsList.size()>0){
+            if(Utility.DEBUG)Log.d(TAG, "mNewsInfo.refNews.size(): " + mRelationsNewsList.size());
             mReferenceTitlePosition = mListSize;
             mListSize++; //VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS_TITLE
             mViewTypeList.add(VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS_TITLE);
             mReferenceListStartPosition = mListSize;
-            mReferenceListSize = mNewsInfo.refNews.size();
+            mReferenceListSize = mRelationsNewsList.size();
             if (mReferenceListSize > 5) {
                 mReferenceListSize = 5;
             }
@@ -358,9 +363,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                         vPlayIcon.setVisibility(View.VISIBLE);
                         hasYoutubeVideo = true;
                         mYoutubeId = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IFRAME_YOUTUBE);
-                        if(mYoutubeId.contains("?")){
-                            mYoutubeId = mYoutubeId.substring(0, mYoutubeId.indexOf("?"));
-                        }
+                        mYoutubeId = getYoutubeIdFromUrl(mYoutubeId);
                         break;
                     }
                 }
@@ -373,17 +376,17 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             addDFPAD(vTopDFP, mContext.getString(R.string.dfp_news_info_top));
 
             //Title
-            if(mNewsInfo.title!=null && !mNewsInfo.title.isEmpty()){
-                vTitle.setText(mNewsInfo.title);
+            if(mNewsInfo.getTitle()!=null && !mNewsInfo.getTitle().isEmpty()){
+                vTitle.setText(mNewsInfo.getTitle());
                 vTitle.setTextSize(mTitleTextSize);
             }
 
             //Category
             String categoryName = null;
-            if (mNewsInfo.category != null
-                    && mNewsInfo.category.name != null
-                    && !mNewsInfo.category.name.isEmpty()) {
-                categoryName = mNewsInfo.category.name;
+            if (mNewsInfo.getMainMenu() != null
+                    && mNewsInfo.getMainMenu().getName() != null
+                    && !mNewsInfo.getMainMenu().getName().isEmpty()) {
+                categoryName = mNewsInfo.getMainMenu().getName();
                 vCategory.setVisibility(View.VISIBLE);
                 vCategory.setText(categoryName);
                 vCategory.setTextSize(mRefTitleTextSize);
@@ -392,13 +395,13 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             }
 
             //Author
-            if (mNewsInfo.author != null) {
-                String from = mNewsInfo.author;
+            if (mNewsInfo.getNewsBy() != null) {
+                String from = mNewsInfo.getNewsBy();
                 vFrom.setText(from);
                 vFrom.setTextSize(mRefTitleTextSize);
-                if (mNewsInfo.createdAt != null
-                        && !mNewsInfo.createdAt.trim().isEmpty()) {
-                    String createAt = Utility.processDate(mNewsInfo.createdAt);
+                if (mNewsInfo.getFormatStartedAt() != null
+                        && !mNewsInfo.getFormatStartedAt().trim().isEmpty()) {
+                    String createAt = Utility.processDate(mNewsInfo.getFormatStartedAt());
                     vCreateAt.setVisibility(View.VISIBLE);
                     vCreateAt.setText(createAt);
                     vCreateAt.setTextSize(mRefTitleTextSize);
@@ -408,8 +411,8 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             }
 
             //LikeView
-            if(mNewsInfo.url!=null){
-                String url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsInfo.url;
+            if(mNewsInfo.getParseUrl()!=null){
+                String url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsInfo.getParseUrl();
                 vLikeView.setLikeViewStyle(LikeView.Style.STANDARD);
                 vLikeView.setObjectIdAndType(url, LikeView.ObjectType.PAGE);
                 vLikeView.setAuxiliaryViewPosition(LikeView.AuxiliaryViewPosition.INLINE);
@@ -423,26 +426,23 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             }
 
             //BigImage
-
-            if (mNewsInfo.image != null
-                    && mNewsInfo.image.thumbnail != null
-                    && !mNewsInfo.image.thumbnail.trim().isEmpty()
-                    && mNewsInfo.image.url != null
-                    && !mNewsInfo.image.url.trim().isEmpty()) {
-                String bigImgUrl = mNewsInfo.image.url;
+            if (mNewsInfo.getMainPhoto() != null
+                    && mNewsInfo.getMainPhoto().getUrl() != null
+                    && !mNewsInfo.getMainPhoto().getUrl().trim().isEmpty()) {
+                String bigImgUrl = mNewsInfo.getMainPhoto().getUrl();
                 if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
 //                bigImgUrl = Utility.getSrcFromImgapi(bigImgUrl);
                 mBitmapController.loadImageWithOriginalSize(bigImgUrl, vBigImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE, 0, 0, mBigImgLoadingListener);
                 setImageClickListener(vBigImage, bigImgUrl, mYoutubeId);
 
                 //For Share
-                mShareImgUrl = mNewsInfo.image.thumbnail;
+                mShareImgUrl = mNewsInfo.getMainPhoto().getUrl();
                 mShareImgUrl = Utility.getSrcFromImgapi(mShareImgUrl);
                 mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, 50, mShareImgUrl);
                 if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
                 mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
             } else if (categoryName!=null && categoryName.contains(mContext.getString(R.string.eco))) {
-                int newsId = mNewsInfo.nodeId;
+                int newsId = mNewsInfo.getSn();
                 int digit = newsId % 10;
                 int imagePosition = digit % 5;
                 String bigImgUrl = mEcoDefaultImageList[imagePosition];
@@ -455,16 +455,44 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
                 mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
             } else {
-                vImageLayout.setVisibility(View.GONE);
+                mBitmapController.setDefaultImage(vBigImage);
+                setImageClickListener(vBigImage, null, mYoutubeId);
             }
 
-            if (mNewsInfo.image != null
-                    && mNewsInfo.image.title != null
-                    && !mNewsInfo.image.title.trim().isEmpty()) {
-                vBigImgageText.setText(mNewsInfo.image.title);
+            if (mNewsInfo.getMainPhoto() != null
+                    && mNewsInfo.getMainPhoto().getDesc() != null
+                    && !mNewsInfo.getMainPhoto().getDesc().trim().isEmpty()) {
+                vBigImgageText.setText(mNewsInfo.getMainPhoto().getDesc());
                 vBigImgageText.setTextSize(mRefCategoryTextSize);
             }
 
+        }
+
+        private String getYoutubeIdFromUrl(String aUrl){
+            if(aUrl.contains("http") || aUrl.contains("https")){
+
+                if(aUrl.contains("v=")){
+                    final String regex = "v=([^\\s&#]*)";
+                    final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+                    final Matcher matcher = pattern.matcher(aUrl);
+
+                    if(matcher.find()) {
+                        System.out.println(matcher.group(1));
+                        aUrl = matcher.group(1);
+                    }
+                }
+
+                if(aUrl.contains("/")){
+                    aUrl = aUrl.substring(aUrl.lastIndexOf("/")+1);
+                }
+
+                if(aUrl.contains("?")){
+                    aUrl = aUrl.substring(0, aUrl.indexOf("?"));
+                }
+
+                Log.i(TAG, "aUrl: " + aUrl);
+            }
+            return aUrl;
         }
 
         private void setImageClickListener(ImageView aImgView, final String aImgUrl, final String aYoutubeId) {
@@ -487,7 +515,9 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                             goToNewsAlbumPage(position);
                         }
                     }else{
-                        return;
+                        if(hasYoutubeVideo && aYoutubeId!=null && !aYoutubeId.isEmpty()){
+                            goToPlayYoutube(aYoutubeId);
+                        }
                     }
 
                 }
@@ -544,8 +574,8 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         intent.putExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_POSITION, position);
         intent.putStringArrayListExtra(FavoriteAlbumPage.KEY_FAVORITE_ALBUM_LIST, mImageUrlList);
         intent.putExtra(FavoriteAlbumPage.KEY_TYPE, FavoriteAlbumPage.TYPE_NEWS_IMAGES);
-        intent.putExtra(FavoriteAlbumPage.KEY_IMAGE_TITLE, mNewsInfo.title);
-        intent.putExtra(FavoriteAlbumPage.KEY_NEWS_URL, WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + mNewsInfo.nodeId);
+        intent.putExtra(FavoriteAlbumPage.KEY_IMAGE_TITLE, mNewsInfo.getMainPhoto().getDesc());
+        intent.putExtra(FavoriteAlbumPage.KEY_NEWS_URL, WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + mNewsInfo.getSn());
         mContext.startActivity(intent);
     }
 
@@ -718,6 +748,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 //                imageUrl = Utility.getSrcFromImgapi(imageUrl);
                 mBitmapController.loadImageWithOriginalSize(imageUrl, vImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE, 0, 0, null);
                 String imageText = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE_TEXT);
+                if(Utility.DEBUG)Log.e(TAG, "imageText: " + imageText);
                 if(imageText!=null){
                     vImageText.setVisibility(View.VISIBLE);
                     vImageText.setText(imageText);
@@ -868,7 +899,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         public void referenceNewsBind(int position){
 
             //Set ReferenceNews
-            if(mNewsInfo.refNews==null || mNewsInfo.refNews.size()==0){
+            if(mRelationsNewsList==null || mRelationsNewsList.size()==0){
                 return;
             }
 
@@ -919,31 +950,32 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             int realPosition = position-mReferenceListStartPosition;
             if(Utility.DEBUG)Log.i(TAG, "referenceNewsbind realPosition: " + realPosition);
             mCurrentPosition = realPosition;
-            String imageUrl = mNewsInfo.refNews.get(realPosition).image.url;
+            String imageUrl = mRelationsNewsList.get(realPosition).getMainPhoto().getThumbnail();
             if(Utility.DEBUG)Log.i(TAG, "referenceNewsbind imageUrl: " + imageUrl);
             mBitmapController.loadImageWithOriginalSize(imageUrl, vNewsImage, BitmapController.IMAGE_SRC_FROM_NEWS_LIST, 0, 0, null);
 
-            NewsInfoJson.ReferenceNewsInfo.CategoryInfo categoryInfo = mNewsInfo.refNews.get(realPosition).category;
+            RelationsNewsInfoJson.RelationsNewsBean categoryInfo = mRelationsNewsList.get(realPosition);
             String category;
             if (categoryInfo == null
-                    || categoryInfo.name == null) {
+                    || categoryInfo.getMainMenu() == null
+                    || categoryInfo.getMainMenu().getName() == null) {
                 category = mContext.getString(R.string.non_category);
             } else {
-                category = categoryInfo.name;
+                category = categoryInfo.getMainMenu().getName();
             }
             Utility.setCategoryTextColor(category, vCategory, Utility.ColorType.News);
             vCategory.setText(category);
             vCategory.setTextSize(mRefCategoryTextSize);
 
-            String title = mNewsInfo.refNews.get(realPosition).title;
+            String title = mRelationsNewsList.get(realPosition).getTitle();
             vTitle.setText(title);
             vTitle.setTextSize(mRefTitleTextSize);
 
             vNewsItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UserDataInfo.setReferenceNewsList(mNewsInfo.refNews);
-                    ((NewsPage) mContext).gotoReferenceNewsPage(mCurrentPosition, mNewsInfo.refNews);
+                    UserDataInfo.setReferenceNewsList(mRelationsNewsList);
+                    ((NewsPage) mContext).gotoReferenceNewsPage(mCurrentPosition, mRelationsNewsList);
                 }
             });
 
@@ -954,22 +986,23 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             int realPosition = position-mHeadlineListStartPosition;
             if(Utility.DEBUG)Log.i(TAG, "realPosition: " + realPosition);
             mCurrentPosition = realPosition;
-            String imageUrl = mHeadline.get(realPosition).image.url;
+            String imageUrl = mHeadline.get(realPosition).getMainPhoto().getThumbnail();
             mBitmapController.loadImageWithOriginalSize(imageUrl, vNewsImage, BitmapController.IMAGE_SRC_FROM_NEWS_LIST, 0, 0, null);
 
-            NewsListJson.CategoryInfo categoryInfo = mHeadline.get(realPosition).category;
+            HeadlineNewsJson.CarouselsBean categoryInfo = mHeadline.get(realPosition);
             String category;
             if (categoryInfo == null
-                    || categoryInfo.name == null) {
+                    || categoryInfo.getMainMenu() == null
+                    || categoryInfo.getMainMenu().getName() == null) {
                 category = mContext.getString(R.string.non_category);
             } else {
-                category = categoryInfo.name;
+                category = categoryInfo.getMainMenu().getName();
             }
             Utility.setCategoryTextColor(category, vCategory, Utility.ColorType.News);
             vCategory.setText(category);
             vCategory.setTextSize(mRefCategoryTextSize);
 
-            String title = mHeadline.get(realPosition).field_short_title.value;
+            String title = mHeadline.get(realPosition).getShortTitle();
             vTitle.setText(title);
             vTitle.setTextSize(mRefTitleTextSize);
 
@@ -998,7 +1031,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
         public void bind(int position){
 
-            String body = mNewsInfo.htmlBody;
+            String body = mNewsInfo.getContent();
             body = "<html><body>" + body + "</body></html>";
             vWebView.loadData(body, "text/html; charset=utf-8", "UTF-8");
             vWebView.getSettings().setJavaScriptEnabled(true);

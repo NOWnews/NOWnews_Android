@@ -44,7 +44,7 @@ public class GetNewsCategory implements Runnable {
 
             Utility.writeJsonToFile(TAG, jsonValue);
 
-            message.obj = checkNull(jsonValueClb.newsCategory);
+            message.obj =jsonValueClb.getCategoryInfo();
             message.what = ParameterSet.GET_NEWS_CATEGORY_DONE;
 
             if (Utility.DEBUG) Log.v(TAG, "GET_NEWS_CATEGORY_DONE");
@@ -67,18 +67,5 @@ public class GetNewsCategory implements Runnable {
 //            ApiController.mApiControllerInstance.getApiQueueSize();
         }
         if (Utility.DEBUG) Log.d(TAG, "######### " + TAG + " END!! #########");
-    }
-
-    private List<CategoryInfo> checkNull(List<CategoryInfo> aData) {
-        Iterator<CategoryInfo> iterator = aData.iterator();
-        while (iterator.hasNext()) {
-            CategoryInfo content = iterator.next();
-            if (content.tid == -1
-                    || content.name == null
-                    || content.name.trim().equals("")) {
-                iterator.remove();
-            }
-        }
-        return aData;
     }
 }

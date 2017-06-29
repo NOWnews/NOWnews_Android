@@ -212,6 +212,12 @@ public class BitmapController {
 
     }
 
+    public void setDefaultImage(ImageView aView){
+        Glide.with(mContext)
+                .load(R.drawable.default_img)
+                .into(aView);
+    }
+
     public void loadImageWithGlide(final String aUrl, final View aView, final int aImageType, final int aImgW,
                                     final int aImgH, final ImageLoadingListener aImageLoadingListener, final int aImageLoadType){
         Glide.with(mContext)

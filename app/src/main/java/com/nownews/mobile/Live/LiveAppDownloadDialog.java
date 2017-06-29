@@ -51,7 +51,7 @@ public class LiveAppDownloadDialog extends Dialog {
     private BitmapController mBitmapController;
 
     private String mTitle;
-    private List<LiveListJson.Data> mLiveList;
+    private List<LiveListJson.DataBean> mLiveList;
     private String mPath;
     private int mCategoryIndex;
     private int mChannelIndex;
@@ -65,7 +65,7 @@ public class LiveAppDownloadDialog extends Dialog {
     private LiveListJson mLiveInfoJson;
     private boolean isCountdownType;
 
-    public LiveAppDownloadDialog(Context context, String aTitle, List<LiveListJson.Data> aLiveList, String aPath,
+    public LiveAppDownloadDialog(Context context, String aTitle, List<LiveListJson.DataBean> aLiveList, String aPath,
                                  int aCategoryIndex, int aChannelIndex, LiveListJson aLiveInfoJson) {
         super(context, R.style.FullScreenDialogStyle);
 
@@ -76,12 +76,12 @@ public class LiveAppDownloadDialog extends Dialog {
         mChannelIndex = aChannelIndex;
         mLiveInfoJson = aLiveInfoJson;
         if(mLiveInfoJson!=null){
-            mWatchTime = mLiveInfoJson.liveInfo.watchTime;
-            mLockTime = mLiveInfoJson.liveInfo.lockTime;
-            mIconUrl = mLiveInfoJson.liveInfo.icon;
-            mTitleMessage = mLiveInfoJson.liveInfo.titleMessage;
-            watchable = mLiveInfoJson.liveInfo.watchable;
-            downloadLink = mLiveInfoJson.liveInfo.androidDownloadLink;
+            mWatchTime = mLiveInfoJson.getLiveInfo().getWatchTime();
+            mLockTime = mLiveInfoJson.getLiveInfo().getLockTime();
+            mIconUrl = mLiveInfoJson.getLiveInfo().getIcon();
+            mTitleMessage = mLiveInfoJson.getLiveInfo().getTitleMessage();
+            watchable = mLiveInfoJson.getLiveInfo().isWatchable();
+            downloadLink = mLiveInfoJson.getLiveInfo().getAndroidDownloadLink();
         }
         if(mChannelIndex==-1){
             isCountdownType = true;
@@ -238,7 +238,8 @@ public class LiveAppDownloadDialog extends Dialog {
         vMessage = (TextView)findViewById(R.id.message);
         vMessage.setLayoutParams(mResize.setMargins(vMessage, 0, 0, 0, 10));
         mResize.setTextSize(vMessage);
-        vMessage.setText(mTitleMessage);
+//        vMessage.setText(mTitleMessage);
+        vMessage.setText("本直播由 watchNOW APP 提供精彩試看\n請密切關注 watchNOW 的下載通知！\n\n本服務由華夏新媒體有限公司提供\n客服專線: 0903-892-221\n聯絡我們: 0903899221@gmail.com");
 
         vButtonsGroup = (LinearLayout)findViewById(R.id.buttons_group);
         vButtonsGroup.setLayoutParams(mResize.setMargins(vButtonsGroup, 10, 10, 10, 10));

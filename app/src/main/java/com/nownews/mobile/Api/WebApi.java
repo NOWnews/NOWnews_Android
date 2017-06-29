@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
 import com.nownews.mobile.Common.Utility;
+import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -14,12 +15,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WebApi {
 
     private final static String TAG = "WebApi";
 
-    public static String DoPost(String aUrl, String aData) throws Exception {
+    public static String DoPost(String aUrl, String aData1) throws Exception {
 
         URL apiUrl = new URL(aUrl);
         HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
@@ -31,7 +35,7 @@ public class WebApi {
         connection.setUseCaches(false);
 
         DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
-        dataOutputStream.writeBytes(aData);
+        dataOutputStream.writeBytes(aData1);
 
         int statusCode = connection.getResponseCode();
         if (Utility.DEBUG) Log.d(TAG, "statusCode: " + statusCode);
@@ -59,16 +63,32 @@ public class WebApi {
 
     @SuppressWarnings("deprecation")
     public static String DoGet(String aUrl, boolean isHadHeader) throws Exception {
+        return DoGet(aUrl, isHadHeader, null);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static String DoGet(String aUrl, boolean isHadHeader, ConcurrentHashMap<String, String> params) throws Exception {
 
         Log.w(TAG, "DoGet Start!!");
 
         long StartTime = System.currentTimeMillis();
 
         OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(aUrl)
-                .addHeader(WebAPIUrl.HEADER_KEY, WebAPIUrl.HEADER_VALUE)
-                .build();
+        Request.Builder builder = new Request.Builder();
+
+        builder.url(aUrl);
+        if(isHadHeader){
+            builder.addHeader(WebAPIUrl.HEADER_KEY, WebAPIUrl.HEADER_VALUE);
+        }
+
+        HttpUrl.Builder httpBuilder = HttpUrl.parse(aUrl).newBuilder();
+        if(params!=null){
+            for(Map.Entry<String, String> param : params.entrySet()){
+                httpBuilder.addEncodedQueryParameter(param.getKey(), URLDecoder.decode(param.getValue(), "UTF-8"));
+            }
+        }
+
+        Request request = builder.url(httpBuilder.build()).build();
         Response response = okHttpClient.newCall(request).execute();
         int statusCode = response.code();
         String message = response.body().string();

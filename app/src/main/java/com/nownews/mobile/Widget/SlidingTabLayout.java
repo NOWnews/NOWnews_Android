@@ -231,7 +231,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
             if (i == mViewPager.getCurrentItem()) {
                 tabView.setSelected(true);
                 if (mNewsCategoryContent != null) {
-                    String categoryName = mNewsCategoryContent.get(i).name;
+                    String categoryName = mNewsCategoryContent.get(i).getName();
                     Utility.setCategoryTextColor(categoryName, tabTitleView, Utility.ColorType.News);
                 } else if(mPhotosCategoryContent!=null) {
                     String categoryname = mPhotosCategoryContent.get(i).name;
@@ -372,7 +372,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 }
                 if (position == i) {
                     if (mNewsCategoryContent != null) {
-                        String categoryName = mNewsCategoryContent.get(position).name;
+                        String categoryName = mNewsCategoryContent.get(position).getName();
                         Utility.setCategoryTextColor(categoryName, tabTitleView, Utility.ColorType.News);
                     } else if(mPhotosCategoryContent != null) {
                         String categoryname = mPhotosCategoryContent.get(position).name;

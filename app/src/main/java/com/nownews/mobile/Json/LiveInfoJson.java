@@ -1,34 +1,38 @@
 package com.nownews.mobile.Json;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Created by cindy on 2017/4/19.
  */
 
 public class LiveInfoJson {
+
     /**
-     *
-     * {
-     *   "title": "直播 /「龍談大小事」- 藍營準黨魁大PK",
-     *   "teaserTitle": "19:00 「龍談大小事」- 藍營準黨魁大PK",
-     *   "url": "https://www.youtube.com/embed/Ps1SpLK-pqw",
-     *   "wowza": "http://59.124.93.43/live/KMT.stream/playlist.m3u8?pf=mm",
-     *   "youtubeId": "Ps1SpLK-pqw",
-     *   "livePage": "https://m.nownews.com/live/Ps1SpLK-pqw",
-     *   "background": "https://legacy.nownews.com/NOWnews_static/live-background.jpg",
-     *   "isOnAir": false,
-     *   "campainStatus": false
-     *   }
+     * title : 第28屆金曲獎頒獎典禮紅毯 ！#NOW直擊 媒體採訪區
+     * teaserTitle : 第28屆金曲獎頒獎典禮紅毯 ！#NOW直擊 媒體採訪區
+     * banner : http://legacy.nownews.com/NOWnews_static/live-banner.jpg
+     * alt : 第28屆金曲獎頒獎典禮紅毯 ！#NOW直擊 媒體採訪區
+     * url : https://www.youtube.com/embed/rqESGX2vt3M
+     * wowza :
+     * youtubeId : rqESGX2vt3M
+     * livePage : https://m.nownews.com/live/rqESGX2vt3M
+     * background : https://legacy.nownews.com/NOWnews_static/live-background.jpg
+     * backgroundColor : #403534
+     * redirect :
+     * isOnAir : false
+     * campainStatus : false
      */
+
     private String title;
     private String teaserTitle;
+    private String banner;
+    private String alt;
     private String url;
     private String wowza;
     private String youtubeId;
     private String livePage;
     private String background;
-    @JsonProperty("isOnAir")
+    private String backgroundColor;
+    private String redirect;
     private boolean isOnAir;
     private boolean campainStatus;
 
@@ -46,6 +50,22 @@ public class LiveInfoJson {
 
     public void setTeaserTitle(String teaserTitle) {
         this.teaserTitle = teaserTitle;
+    }
+
+    public String getBanner() {
+        return banner;
+    }
+
+    public void setBanner(String banner) {
+        this.banner = banner;
+    }
+
+    public String getAlt() {
+        return alt;
+    }
+
+    public void setAlt(String alt) {
+        this.alt = alt;
     }
 
     public String getUrl() {
@@ -88,12 +108,28 @@ public class LiveInfoJson {
         this.background = background;
     }
 
-    public boolean isOnAir() {
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public String getRedirect() {
+        return redirect;
+    }
+
+    public void setRedirect(String redirect) {
+        this.redirect = redirect;
+    }
+
+    public boolean isIsOnAir() {
         return isOnAir;
     }
 
-    public void setOnAir(boolean onAir) {
-        isOnAir = onAir;
+    public void setIsOnAir(boolean isOnAir) {
+        this.isOnAir = isOnAir;
     }
 
     public boolean isCampainStatus() {

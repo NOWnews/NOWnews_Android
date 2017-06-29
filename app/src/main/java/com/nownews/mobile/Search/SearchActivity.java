@@ -1,10 +1,11 @@
 package com.nownews.mobile.Search;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,13 +30,14 @@ import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
-import com.nownews.mobile.Json.SearchInfoJson.SearchInfoContent;
+import com.nownews.mobile.Json.SearchInfoJson;
+import com.nownews.mobile.NewsCategory.NewsListRecyclerViewAdapter;
 import com.nownews.mobile.Widget.CustomAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -43,14 +45,18 @@ public class SearchActivity extends Activity {
     private CustomAutoCompleteTextView vSearchView;
     private ImageButton vClearButton;
     private RecyclerView vSearchList;
+    private RelativeLayout vSearchHistoryLayout;
     private RelativeLayout vLoadingLayout;
+    private TextView vLoadingText;
+    private TextView vLoadingTextKeywords;
+    private SwipeRefreshLayout vSwipeRefreshLayout;
     private ListView vSearchHistory;
     private TextView vHint;
 
     private String[] mSearchKeywords;
     private ApiController mApiController;
-    private List<SearchInfoContent> mSearchInfo;
-    private SearchPageAdapter mAdapter;
+    private List<SearchInfoJson.NewsListBean> mSearchInfo;
+    private NewsListRecyclerViewAdapter mAdapter;
 
     private SharedPreferencesMethods mSharedPref;
     private ArrayList<String> mSearchHistoryList;
@@ -85,9 +91,9 @@ public class SearchActivity extends Activity {
 
             switch (msg.what) {
                 case ParameterSet.GET_SEARCH_INFO_DONE:
-                    mSearchInfo = (List<SearchInfoContent>) msg.obj;
+                    mSearchInfo = (List<SearchInfoJson.NewsListBean>) msg.obj;
                     if (mSearchInfo.size() == 0) {
-                        vLoadingLayout.setVisibility(View.GONE);
+                        vSearchHistoryLayout.setVisibility(View.GONE);
                         vSearchList.setVisibility(View.GONE);
                         vHint.setVisibility(View.VISIBLE);
                         String hint = getString(R.string.no_search_resourt);
@@ -96,8 +102,18 @@ public class SearchActivity extends Activity {
                     } else {
                         processList();
                     }
+                    if (isRefereshing) {
+                        // Stop refresh animation
+                        isRefereshing = false;
+                        vSwipeRefreshLayout.setRefreshing(false);
+                    }
                     break;
                 case ParameterSet.GET_SEARCH_INFO_FAILED:
+                    if (isRefereshing) {
+                        // Stop refresh animation
+                        isRefereshing = false;
+                        vSwipeRefreshLayout.setRefreshing(false);
+                    }
                     break;
                 case ParameterSet.SOCKET_TIME_OUT:
                     Utility.openSocketTimeoutDialog(SearchActivity.this);
@@ -163,6 +179,7 @@ public class SearchActivity extends Activity {
         mSharedPref = new SharedPreferencesMethods(this);
     }
 
+    private boolean isRefereshing = false;
     private void processView() {
 
         vBack = (ImageButton) findViewById(R.id.btn_back);
@@ -171,9 +188,24 @@ public class SearchActivity extends Activity {
         vSearchList = (RecyclerView) findViewById(R.id.list);
         vSearchList.setLayoutManager(new LinearLayoutManager(this));
 
-        vLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
+        vSearchHistoryLayout = (RelativeLayout) findViewById(R.id.search_history_layout);
         vSearchHistory = (ListView) findViewById(R.id.search_history);
         vHint = (TextView) findViewById(R.id.hint);
+
+        vSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        vSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                if (Utility.DEBUG) Log.e(TAG, "vList refresh!!");
+                isRefereshing = true;
+                reload();
+            }
+        });
+
+        vLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
+        vLoadingText = (TextView) findViewById(R.id.image_loading_txt);
+        vLoadingTextKeywords = (TextView) findViewById(R.id.image_loading_keywords);
 
     }
 
@@ -194,9 +226,10 @@ public class SearchActivity extends Activity {
     }
 
     private void processSearchHistory() {
+        vLoadingLayout.setVisibility(View.GONE);
         vHint.setVisibility(View.GONE);
-        vLoadingLayout.setVisibility(View.VISIBLE);
-        vSearchList.setVisibility(View.GONE);
+        vSearchHistoryLayout.setVisibility(View.VISIBLE);
+        vSwipeRefreshLayout.setVisibility(View.GONE);
         mSearchHistoryList = mSharedPref.getSearchHistoryList();
         if (mSearchHistoryList.size() > 0) {
             mSearchHistoryList.add("清除最近搜尋關鍵字");
@@ -207,6 +240,9 @@ public class SearchActivity extends Activity {
     }
 
     private void startSearch(String searchKeyWords) {
+        vLoadingLayout.setVisibility(View.VISIBLE);
+        vLoadingTextKeywords.setText(searchKeyWords);
+        vSearchHistoryLayout.setVisibility(View.GONE);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(vSearchView.getWindowToken(), 0);
         vSearchView.isKeyboardShowing = false;
@@ -216,6 +252,12 @@ public class SearchActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        if(vSwipeRefreshLayout.getVisibility()==View.VISIBLE){
+            vSwipeRefreshLayout.setVisibility(View.GONE);
+            vSearchHistoryLayout.setVisibility(View.VISIBLE);
+            vLoadingLayout.setVisibility(View.GONE);
+            return;
+        }
         super.onBackPressed();
     }
 
@@ -227,11 +269,17 @@ public class SearchActivity extends Activity {
     }
 
     private void processList() {
-        mAdapter = new SearchPageAdapter(this, mSearchInfo);
-        vSearchList.setAdapter(mAdapter);
+        String categoryName = getString(R.string.search);
         vHint.setVisibility(View.GONE);
+        vSearchHistoryLayout.setVisibility(View.GONE);
+        vSwipeRefreshLayout.setVisibility(View.VISIBLE);
         vLoadingLayout.setVisibility(View.GONE);
-        vSearchList.setVisibility(View.VISIBLE);
+        if(mAdapter==null) {
+            mAdapter = new NewsListRecyclerViewAdapter(this, mSearchInfo, categoryName, getSupportFragmentManager(), categoryName);
+            vSearchList.setAdapter(mAdapter);
+        }else{
+            mAdapter.setData(mSearchInfo, categoryName, getSupportFragmentManager(), categoryName);
+        }
     }
 
     @Override

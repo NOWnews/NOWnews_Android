@@ -2,12 +2,9 @@ package com.nownews.mobile.VideoNewsPage;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -24,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cmcm.adsdk.banner.CMAdView;
 import com.cmcm.adsdk.banner.CMBannerAdListener;
@@ -34,18 +30,13 @@ import com.facebook.share.widget.LikeView;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherAdView;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
-import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.BitmapController;
-import com.nownews.mobile.FavoriteAlbum.FavoriteAlbumPage;
-import com.nownews.mobile.Json.NewsListJson;
+import com.nownews.mobile.Json.HeadlineNewsJson;
 import com.nownews.mobile.Json.VideosInfoJson;
 import com.nownews.mobile.Widget.CustomImageTopcrop;
 
@@ -66,7 +57,7 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
     private VideosInfoJson mNewsInfo;
     private int mListSize;
-    private List<NewsListJson.NewsContent> mHeadline;
+    private List<HeadlineNewsJson.CarouselsBean> mHeadline;
     private ArrayList<Integer> mViewTypeList;
     private ArrayList<String> mImageUrlList;
     private String mShareImgUrl;
@@ -714,22 +705,23 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             int realPosition = position-mHeadlineListStartPosition;
             Log.i(TAG, "realPosition: " + realPosition);
             mCurrentPosition = realPosition;
-            String imageUrl = mHeadline.get(realPosition).image.url;
+            String imageUrl = mHeadline.get(realPosition).getMainPhoto().getThumbnail();
             mBitmapController.loadImageWithOriginalSize(imageUrl, vNewsImage, BitmapController.IMAGE_SRC_FROM_NEWS_LIST, 0, 0, null);
 
-            NewsListJson.CategoryInfo categoryInfo = mHeadline.get(realPosition).category;
+            HeadlineNewsJson.CarouselsBean categoryInfo = mHeadline.get(realPosition);
             String category;
             if (categoryInfo == null
-                    || categoryInfo.name == null) {
+                    || categoryInfo.getMainMenu() == null
+                    || categoryInfo.getMainMenu().getName() == null) {
                 category = mContext.getString(R.string.non_category);
             } else {
-                category = categoryInfo.name;
+                category = categoryInfo.getMainMenu().getName();
             }
             Utility.setCategoryTextColor(category, vCategory, Utility.ColorType.News);
             vCategory.setText(category);
             vCategory.setTextSize(mRefCategoryTextSize);
 
-            String title = mHeadline.get(realPosition).field_short_title.value;
+            String title = mHeadline.get(realPosition).getShortTitle();
             vTitle.setText(title);
             vTitle.setTextSize(mRefTitleTextSize);
 

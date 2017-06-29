@@ -192,7 +192,7 @@ public class NewsCategoryFragment extends Fragment {
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;
                     fragment.mNewsCategoryContent = (List<CategoryInfo>) msg.obj;
-                    fragment.processCategory();
+//                    fragment.processCategory();
                     fragment.setTab();
                     break;
                 case ParameterSet.GET_NEWS_CATEGORY_FAILED:
@@ -209,7 +209,7 @@ public class NewsCategoryFragment extends Fragment {
                         fragment.mRetryCount = 0;
 //                        fragment.vErrorMessage.setText(String.format(fragment.getString(R.string.api_loading_error), ParameterSet.GET_NEWS_CATEGORY_FAILED));
                         //補洞
-                        fragment.processCategory();
+//                        fragment.processCategory();
                         fragment.setTab();
                     }
                     break;
@@ -360,34 +360,35 @@ public class NewsCategoryFragment extends Fragment {
         startFragment();
     }
 
-    private void processCategory() {
-
-        //News
-        //TODO: Need to add Headline, HotNews and InstanceNews, Food, Health and nearbynews
-        //Headline
-        addCategoryInfo(getString(R.string.headline), -1, 0);
-        //HotNews
-        addCategoryInfo(getString(R.string.hot_news), -1, 1);
-        //InstanceNews
-        addCategoryInfo(getString(R.string.instant_news), -1, 2);
-        //Food
-        addCategoryInfo(getString(R.string.food), -1, mNewsCategoryContent.size());
-        //Health
-        addCategoryInfo(getString(R.string.health), -1, mNewsCategoryContent.size());
-        //Nearby
-        addCategoryInfo(getString(R.string.nearbynews), -1, mNewsCategoryContent.size());
-
-    }
-
-    private void addCategoryInfo(String aCategoryName, int aTid, int aPosition) {
-        NewsCategoryJson categoryJson = new NewsCategoryJson();
-        NewsCategoryJson.CategoryInfo categoryInfo = categoryJson.new CategoryInfo();
-        categoryInfo.name = aCategoryName;
-        categoryInfo.tid = aTid;
-        if(mNewsCategoryContent == null){
-            mNewsCategoryContent = new ArrayList<>();
-        }
-        mNewsCategoryContent.add(aPosition, categoryInfo);
-    }
+    //Not use in v4
+//    private void processCategory() {
+//
+//        //News
+//        //TODO: Need to add Headline, HotNews and InstanceNews, Food, Health and nearbynews
+//        //Headline
+//        addCategoryInfo(getString(R.string.headline), -1, 0);
+//        //HotNews
+//        addCategoryInfo(getString(R.string.hot_news), -1, 1);
+//        //InstanceNews
+//        addCategoryInfo(getString(R.string.instant_news), -1, 2);
+//        //Food
+//        addCategoryInfo(getString(R.string.food), -1, mNewsCategoryContent.size());
+//        //Health
+//        addCategoryInfo(getString(R.string.health), -1, mNewsCategoryContent.size());
+//        //Nearby
+//        addCategoryInfo(getString(R.string.nearbynews), -1, mNewsCategoryContent.size());
+//
+//    }
+//
+//    private void addCategoryInfo(String aCategoryName, int aTid, int aPosition) {
+//        NewsCategoryJson categoryJson = new NewsCategoryJson();
+//        NewsCategoryJson.CategoryInfo categoryInfo = categoryJson.new CategoryInfo();
+//        categoryInfo.name = aCategoryName;
+//        categoryInfo.tid = aTid;
+//        if(mNewsCategoryContent == null){
+//            mNewsCategoryContent = new ArrayList<>();
+//        }
+//        mNewsCategoryContent.add(aPosition, categoryInfo);
+//    }
 
 }

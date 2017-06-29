@@ -32,7 +32,7 @@ public class GetLiveList implements Runnable {
 
             String webApiUrl = WebAPIUrl.LIVE_LIST;
 
-            String jsonValue = WebApi.DoGet(webApiUrl, false);
+            String jsonValue = WebApi.DoGet(webApiUrl, true);
 //			Log.e(TAG, "jsonValue: " + jsonValue);
             LiveListJson jsonValueClb = new Gson().fromJson(jsonValue, LiveListJson.class);
 

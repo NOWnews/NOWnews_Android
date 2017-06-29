@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Json.SpecialNewsCategoryJson;
-import com.nownews.mobile.Json.SpecialNewsCategoryJson.CategoryInfo;
 
 import java.net.SocketTimeoutException;
 import java.util.Iterator;
@@ -34,13 +33,12 @@ public class GetSpecialNewsCategory implements Runnable {
             String webApiUrl = WebAPIUrl.SPECIAL_NEWS_CATEGORY;
 
             String jsonValue = WebApi.DoGet(webApiUrl, true);
-            jsonValue = "{\"specialNewsCategory\":" + jsonValue + "}";
 //			if(Utility.DEBUG)Log.e(TAG, "jsonValue: " + jsonValue);
             SpecialNewsCategoryJson jsonValueClb = new Gson().fromJson(jsonValue, SpecialNewsCategoryJson.class);
 
             Utility.writeJsonToFile(TAG, jsonValue);
 
-            message.obj = checkNull(jsonValueClb.specialNewsCategory);
+            message.obj = checkNull(jsonValueClb.getSpecialChannels());
             message.what = ParameterSet.GET_SPECIAL_NEWS_CATEGORY_DONE;
 
             if (Utility.DEBUG) Log.v(TAG, "GET_SPECIAL_NEWS_CATEGORY_DONE");
@@ -64,16 +62,32 @@ public class GetSpecialNewsCategory implements Runnable {
         if (Utility.DEBUG) Log.d(TAG, "######### " + TAG + " END!! #########");
     }
 
-    private List<CategoryInfo> checkNull(List<CategoryInfo> aData) {
-        Iterator<CategoryInfo> iterator = aData.iterator();
+    private List<SpecialNewsCategoryJson.SpecialChannelsBean> checkNull(List<SpecialNewsCategoryJson.SpecialChannelsBean> specialChannels) {
+
+        Iterator<SpecialNewsCategoryJson.SpecialChannelsBean> iterator = specialChannels.iterator();
         while (iterator.hasNext()) {
-            CategoryInfo content = iterator.next();
-            if (content.nodeId == -1
-                    || content.name == null
-                    || content.name.trim().equals("")) {
+            SpecialNewsCategoryJson.SpecialChannelsBean content = iterator.next();
+            if (content.getSn() == -1
+                    || content.getTitle() == null
+                    || content.getTitle().trim().isEmpty()
+                    || content.getNewsList() == null
+                    || content.getNewsList().size() == 0) {
                 iterator.remove();
+            }else if (content!=null && content.getNewsList()!=null) {
+                Iterator<String> newsList = content.getNewsList().iterator();
+                while (newsList.hasNext()){
+                    String id = newsList.next();
+                    if(id==null){
+                        newsList.remove();
+                    }
+                }
+                if(content.getNewsList().size()==0){
+                    iterator.remove();
+                }
             }
         }
-        return aData;
+        return specialChannels;
+
     }
+
 }

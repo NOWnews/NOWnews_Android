@@ -29,9 +29,8 @@ import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
-import com.nownews.mobile.GCM.GcmIntentService;
 import com.nownews.mobile.Json.NewsInfoJson;
-import com.nownews.mobile.Json.NewsInfoJson.MobileBody;
+import com.nownews.mobile.Json.RelationsNewsInfoJson;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -56,6 +55,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
     private String mBigCategory;
     private int mNewsId;
     private NewsInfoJson mNewsInfo;
+    private List<RelationsNewsInfoJson.RelationsNewsBean> mRelationsNewsList;
     private ArrayList<String> mImageUrlList;
     private SharedPreferencesMethods mSharedPref;
     private String[] mEcoDefaultImageList;
@@ -77,7 +77,6 @@ public class NewsPageRecyclerViewFragment extends Fragment {
     public final static String KEY_CONTEXT_IMAGE = "context_image";
     public final static String KEY_CONTEXT_IMAGE_TEXT = "context_image_text";
     public final static String KEY_CONTEXT_IFRAME_YOUTUBE = "context_iframe_youtube";
-    public final static String KEY_CONTEXT_IFRAME_YOUTUBE_TEXT = "context_iframe_youtube_text";
 
     private boolean isNewsInfoLoadSucess = false;
     public boolean isNewsInfoLoadSucess(){
@@ -102,28 +101,40 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
             switch (msg.what) {
                 case ParameterSet.GET_NEWS_INFO_DONE:
-                    if (fragment.isRefereshing) {
-                        // Stop refresh animation
-                        fragment.isRefereshing = false;
-                        fragment.vRefreshLayout.setRefreshing(false);
-                    }
                     fragment.mNewsInfo = (NewsInfoJson) msg.obj;
                     if (fragment.mNewsInfo != null) {
-                        fragment.isNewsInfoLoadSucess = true;
-//                        while (true) {
-                            if (fragment.isAdded()) {
-                                fragment.processNews();
-                                break;
-                            }
-//                        }
+                        if (fragment.isAdded()) {
+                            fragment.processNews();
+                        }
                     }
                     break;
                 case ParameterSet.GET_NEWS_INFO_FAILED:
+                    //TODO [v4] Error process 錯誤處理
+                    break;
+
+                case ParameterSet.GET_RELATIONS_NEWS_INFO_DONE:
+                    fragment.mRelationsNewsList = (List<RelationsNewsInfoJson.RelationsNewsBean>) msg.obj;
+                    if (fragment.mRelationsNewsList != null) {
+                        fragment.isNewsInfoLoadSucess = true;
+                        if (fragment.isRefereshing) {
+                            // Stop refresh animation
+                            fragment.isRefereshing = false;
+                            fragment.vRefreshLayout.setRefreshing(false);
+                        }
+                        if (fragment.isAdded()) {
+                            fragment.processRecyclerView();
+                        }
+                    }
+                    break;
+                case ParameterSet.GET_RELATIONS_NEWS_INFO_FAILED:
                     fragment.isNewsInfoLoadSucess = false;
                     if (fragment.isRefereshing) {
                         // Stop refresh animation
                         fragment.isRefereshing = false;
                         fragment.vRefreshLayout.setRefreshing(false);
+                    }
+                    if (fragment.isAdded()) {
+                        fragment.processRecyclerView();
                     }
                     break;
                 case ParameterSet.SOCKET_TIME_OUT:
@@ -207,6 +218,12 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         }
     }
 
+    public void getRelationsNewsInfo() {
+        if (mApiController != null) {
+            mApiController.getRelationsNewsInfo(mHandler, mNewsId);
+        }
+    }
+
     public void processView() {
 
         View view = getView();
@@ -238,17 +255,16 @@ public class NewsPageRecyclerViewFragment extends Fragment {
             mImageUrlList = null;
         }
         mImageUrlList = new ArrayList<String>();
-        vLoadingLayout.setVisibility(View.GONE);
 
         String mCategoryName = ((NewsPage) getActivity()).getCurrentNewsCategory();
-        if (mNewsInfo.image != null
-                && mNewsInfo.image.thumbnail != null
-                && !mNewsInfo.image.thumbnail.trim().isEmpty()) {
-            String bigImgUrl = mNewsInfo.image.url;
+        if (mNewsInfo.getMainPhoto() != null
+                && mNewsInfo.getMainPhoto().getUrl() != null
+                && !mNewsInfo.getMainPhoto().getUrl().trim().isEmpty()) {
+            String bigImgUrl = mNewsInfo.getMainPhoto().getUrl();
             if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
             mImageUrlList.add(bigImgUrl);
         } else if (mCategoryName.contains(getString(R.string.eco))) {
-            int newsId = mNewsInfo.nodeId;
+            int newsId = mNewsInfo.getSn();
             int digit = newsId % 10;
             int imagePosition = digit % 5;
             String bigImgUrl = mEcoDefaultImageList[imagePosition];
@@ -256,50 +272,129 @@ public class NewsPageRecyclerViewFragment extends Fragment {
             mImageUrlList.add(bigImgUrl);
         }
 
-        if (mNewsInfo.htmlBody != null) {
-            String body = mNewsInfo.htmlBody;
+        if (mNewsInfo.getContent() != null) {
+
+            if(mContentList==null){
+                mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+            }else{
+                mContentList.clear();
+            }
+
+            if(mVideoContentList==null){
+                mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+            }else{
+                mVideoContentList.clear();
+            }
+
+            String body = mNewsInfo.getContent();
             processBody(body);
-            if (mNewsInfo.freeBody != null) {
-                processFreeBody(mNewsInfo.freeBody);
+
+            if (mNewsInfo.getFreeContent() != null) {
+
+                if(mContentList==null){
+                    mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+                }
+
+                if(mVideoContentList==null){
+                    mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+                }
+
+                processBody(mNewsInfo.getFreeContent());
             }
-            if(mNewsInfo.videos!=null && mNewsInfo.videos.size()>0){
-                processVideos(mNewsInfo.videos);
+            if(mNewsInfo.getMainVideo()!=null
+                    && mNewsInfo.getMainVideo().getUrl()!=null
+                    && !mNewsInfo.getMainVideo().getUrl().trim().isEmpty()){
+                processVideo(mNewsInfo.getMainVideo().getUrl());
             }
-            processRecyclerView();
-        } else if (mNewsInfo.mobileBody != null) {
-            processBody(mNewsInfo.mobileBody);
-            if (mNewsInfo.freeBody != null) {
-                processFreeBody(mNewsInfo.freeBody);
+            if(mNewsInfo.getPhotos()!=null
+                    && mNewsInfo.getPhotos().size()>0){
+                processPhotos(mNewsInfo.getPhotos());
             }
-            if(mNewsInfo.videos!=null && mNewsInfo.videos.size()>0){
-                processVideos(mNewsInfo.videos);
+            //TODO: [v4] getVideos() Not Ready
+//            if(mNewsInfo.getVideos()!=null){
+//                processVideo(mNewsInfo.getVideos());
+//            }
+            getRelationsNewsInfo();
+        }
+
+        //Not use in v4
+//        else if (mNewsInfo.mobileBody != null) {
+//            processBody(mNewsInfo.mobileBody);
+//            if (mNewsInfo.freeBody != null) {
+//                processFreeBody(mNewsInfo.freeBody);
+//            }
+//            if(mNewsInfo.videos!=null && mNewsInfo.videos.size()>0){
+//                processVideos(mNewsInfo.videos);
+//            }
+//            processRecyclerView();
+//        }
+
+    }
+
+    private void processPhotos(List<NewsInfoJson.Photos> photos){
+
+        if(mContentList==null){
+            mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+        }
+
+        for(NewsInfoJson.Photos photoInfo : photos){
+
+            if(photoInfo==null){
+                continue;
             }
-            processRecyclerView();
+
+            ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+
+            String imgUrl = photoInfo.getUrl();
+            if (imgUrl != null && !imgUrl.trim().isEmpty()) {
+                imgUrl = Utility.getSrcFromImgapi(imgUrl);
+                if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + imgUrl);
+                map.put(KEY_CONTEXT_IMAGE, imgUrl);
+                if (photoInfo.getDesc() != null && !photoInfo.getDesc().trim().isEmpty() && !photoInfo.getDesc().trim().equals("▲")) {
+                    map.put(KEY_CONTEXT_IMAGE_TEXT, photoInfo.getDesc());
+                }
+                mContentList.add(map);
+                mImageUrlList.add(imgUrl);
+            }
+
         }
 
     }
 
-    private void processVideos(List<NewsInfoJson.VideoInfo> videos){
+    private void processVideo(String aMainVideoUrl){
 
         if(mVideoContentList==null){
             mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
         }
 
-        for(NewsInfoJson.VideoInfo videoInfo : videos){
-            if(videoInfo!=null && videoInfo.type.equals("youtube")){
-                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-                map.put(KEY_CONTEXT_IFRAME_YOUTUBE, videoInfo.youtubeId);
-                mVideoContentList.add(map);
-            }
-        }
+        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+        map.put(KEY_CONTEXT_IFRAME_YOUTUBE, aMainVideoUrl);
+        mVideoContentList.add(map);
 
     }
 
+//    private void processVideos(List<NewsInfoJson.VideoInfo> videos){
+//
+//        if(mVideoContentList==null){
+//            mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+//        }
+//
+//        for(NewsInfoJson.VideoInfo videoInfo : videos){
+//            if(videoInfo!=null && videoInfo.type.equals("youtube")){
+//                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+//                map.put(KEY_CONTEXT_IFRAME_YOUTUBE, videoInfo.youtubeId);
+//                mVideoContentList.add(map);
+//            }
+//        }
+//
+//    }
+
     private void processRecyclerView(){
 
+        vLoadingLayout.setVisibility(View.GONE);
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         vContentRecyclerView.setLayoutManager(mLinearLayoutManager);
-        NewsPageRecyclerViewAdapter mAdapter = new NewsPageRecyclerViewAdapter(getActivity(), mVideoContentList, mContentList, mNewsInfo, mImageUrlList, mVideoListener);
+        NewsPageRecyclerViewAdapter mAdapter = new NewsPageRecyclerViewAdapter(getActivity(), mVideoContentList, mContentList, mNewsInfo, mImageUrlList, mVideoListener, mRelationsNewsList);
         vContentRecyclerView.setAdapter(mAdapter);
 
     }
@@ -397,89 +492,77 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         }
     };
 
-    private void processBody(List<MobileBody> jbody) {
-        if (Utility.DEBUG) Log.e(TAG, "processBody(List<JsonBody> jbody)");
-
-        if(mContentList==null){
-            mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
-        }else{
-            mContentList.clear();
-        }
-
-        for (int i = 0; i < jbody.size(); i++) {
-            String type = jbody.get(i).tag;
-            String content = jbody.get(i).content;
-            if (Utility.DEBUG) Log.w(TAG, "type: " + type);
-            if (type.equals("image")) {
-
-                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-
-                String img = jbody.get(i).src;
-                if (img != null && !img.trim().isEmpty()) {
-                    if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + img);
-                    map.put(KEY_CONTEXT_IMAGE, img);
-                    mImageUrlList.add(img);
-                }
-
-                if (content != null && !content.trim().equals("") && !content.trim().equals("▲")) {
-                    map.put(KEY_CONTEXT_IMAGE_TEXT, content);
-                }
-
-                mContentList.add(map);
-
-            } else if (type.equals("p")) {
-
-                if (content != null && !content.trim().equals("")) {
-
-                    if (content.contains("延伸閱讀")) {
-                        break;
-                    }
-
-                    if(content.contains("&nbsp;")){
-                        content = content.replace("&nbsp;", "");
-                        if(content.trim().isEmpty()){
-                            continue;
-                        }
-                    }
-
-                    if(content.contains("&lt;")){
-                        content = content.replace("&lt;", "<");
-                        if(content.trim().isEmpty()){
-                            continue;
-                        }
-                    }
-
-                    if(content.contains("&gt;")){
-                        content = content.replace("&gt;", ">");
-                        if(content.trim().isEmpty()){
-                            continue;
-                        }
-                    }
-
-                    ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-                    map.put(KEY_CONTEXT_TEXT, content);
-                    mContentList.add(map);
-
-                }
-            }
-        }
-    }
+//    private void processBody(List<MobileBody> jbody) {
+//        if (Utility.DEBUG) Log.e(TAG, "processBody(List<JsonBody> jbody)");
+//
+//        if(mContentList==null){
+//            mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+//        }else{
+//            mContentList.clear();
+//        }
+//
+//        for (int i = 0; i < jbody.size(); i++) {
+//            String type = jbody.get(i).tag;
+//            String content = jbody.get(i).content;
+//            if (Utility.DEBUG) Log.w(TAG, "type: " + type);
+//            if (type.equals("image")) {
+//
+//                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+//
+//                String img = jbody.get(i).src;
+//                if (img != null && !img.trim().isEmpty()) {
+//                    if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + img);
+//                    map.put(KEY_CONTEXT_IMAGE, img);
+//                    mImageUrlList.add(img);
+//                }
+//
+//                if (content != null && !content.trim().equals("") && !content.trim().equals("▲")) {
+//                    map.put(KEY_CONTEXT_IMAGE_TEXT, content);
+//                }
+//
+//                mContentList.add(map);
+//
+//            } else if (type.equals("p")) {
+//
+//                if (content != null && !content.trim().equals("")) {
+//
+//                    if (content.contains("延伸閱讀")) {
+//                        break;
+//                    }
+//
+//                    if(content.contains("&nbsp;")){
+//                        content = content.replace("&nbsp;", "");
+//                        if(content.trim().isEmpty()){
+//                            continue;
+//                        }
+//                    }
+//
+//                    if(content.contains("&lt;")){
+//                        content = content.replace("&lt;", "<");
+//                        if(content.trim().isEmpty()){
+//                            continue;
+//                        }
+//                    }
+//
+//                    if(content.contains("&gt;")){
+//                        content = content.replace("&gt;", ">");
+//                        if(content.trim().isEmpty()){
+//                            continue;
+//                        }
+//                    }
+//
+//                    ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+//                    map.put(KEY_CONTEXT_TEXT, content);
+//                    mContentList.add(map);
+//
+//                }
+//            }
+//        }
+//    }
 
     private void processBody(String body) {
         if (Utility.DEBUG) Log.e(TAG, "body: " + body);
 
-        if(mContentList==null){
-            mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
-        }else{
-            mContentList.clear();
-        }
-
-        if(mVideoContentList==null){
-            mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
-        }else{
-            mVideoContentList.clear();
-        }
-
         String citeContent = null;
         String textLinkHtml = null;
         String textLink = null;
@@ -499,6 +582,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
             pHtml = null;
             textLink = null;
             textLinkHtml = null;
+            citeContent = null;
 
             Element pContent = paragraph.get(i);
             String p = pContent.text();
@@ -541,52 +625,24 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 }
             }
 
-            if (p != null && !p.trim().isEmpty()) {
-                if (p.contains("延伸閱讀")) {
-                    break;
-                }
-
-                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-                map.put(KEY_CONTEXT_TEXT, p);
-
-                if(textLinkHtml!=null && !textLinkHtml.trim().isEmpty()){
-                    map.put(KEY_CONTEXT_TEXT_LINK_HTML, textLinkHtml);
-                }
-                if(textLink!=null && !textLink.trim().isEmpty()){
-                    map.put(KEY_CONTEXT_TEXT_LINK, textLink);
-                }
-                if(pHtml!=null && !pHtml.trim().isEmpty()){
-                    map.put(KEY_CONTEXT_TEXT_HTML, pHtml);
-                }
-
-                mContentList.add(map);
-
-            }
-
             Elements img = pContent.select("img[src]");
             if (img != null && img.size() > 0) {
 
-                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-
                 for (int j = 0; j < img.size(); j++) {
+
                     Element imgElement = img.get(j);
                     String imgUrl = imgElement.attr("src");
                     imgUrl = Utility.getSrcFromImgapi(imgUrl);
-//                    if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + imgUrl);
-
                     if (imgUrl != null && !imgUrl.trim().isEmpty()) {
-                        if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + imgUrl);
+                        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
                         map.put(KEY_CONTEXT_IMAGE, imgUrl);
+                        if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + imgUrl);
                         mImageUrlList.add(imgUrl);
+                        mContentList.add(map);
                     }
 
                 }
 
-                if (citeContent != null && !citeContent.trim().equals("") && !citeContent.trim().equals("▲")) {
-                    map.put(KEY_CONTEXT_IMAGE_TEXT, citeContent);
-                }
-
-                mContentList.add(map);
             }
 
             Elements iframe = pContent.select("iframe[src]");
@@ -599,91 +655,11 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                     String iframeUrl = iframeElement.attr("src");
                     if (iframeUrl != null && !iframeUrl.trim().isEmpty() && iframeUrl.contains("youtube")) {
                         if (Utility.DEBUG) Log.w(TAG, "iframeUrl in body: " + iframeUrl);
-                        String youtubeId = iframeUrl.substring(iframeUrl.lastIndexOf("/")+1);
-                        map.put(KEY_CONTEXT_IFRAME_YOUTUBE, youtubeId);
+                        map.put(KEY_CONTEXT_IFRAME_YOUTUBE, iframeUrl);
+                        mVideoContentList.add(map);
                     }
                 }
 
-                if (citeContent != null && !citeContent.trim().equals("") && !citeContent.trim().equals("▲")) {
-                    map.put(KEY_CONTEXT_IFRAME_YOUTUBE_TEXT, citeContent);
-                }
-
-                mVideoContentList.add(map);
-            }
-
-        }
-    }
-
-    private void processFreeBody(String body) {
-        if (Utility.DEBUG) Log.e(TAG, "processFreeBody: " + body);
-
-        if(mContentList==null){
-            mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
-        }
-
-        if(mVideoContentList==null){
-            mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
-        }
-
-        String citeContent = null;
-        String textLinkHtml = null;
-        String textLink = null;
-        String pHtml = null;
-        body = body.replace("<br />", "$$$");
-        body = body.replace("<br>", "&&&");
-        body = body.replace("<strong>", "(((");
-        body = body.replace("</strong>", ")))");
-        body = body.replace("&nbsp;", "");
-        body = body.trim();
-        if (Utility.DEBUG) Log.i(TAG, "body: " + body);
-        Document doc = Jsoup.parse(body);
-        Elements paragraph = doc.select("p");
-        for (int i = 0; i < paragraph.size(); i++) {
-
-            //init
-            pHtml = null;
-            textLink = null;
-            textLinkHtml = null;
-
-            Element pContent = paragraph.get(i);
-            String p = pContent.text();
-            if(p.contains("(影片擷取自YouTube.com，若遭移除請見諒)")){
-                continue;
-            }
-            p = p.replace("$$$", "\n");
-            p = p.replace("&&&", "\n");
-            if (Utility.DEBUG) Log.w(TAG, "p: " + p);
-
-            Elements cite = pContent.select("cite");
-            if (cite != null && cite.size() > 0) {
-                for (int j = 0; j < cite.size(); j++) {
-                    Element imgElement = cite.get(j);
-                    if (!imgElement.text().trim().equals("▲")) {
-                        citeContent = imgElement.text();
-                        if (Utility.DEBUG) Log.w(TAG, "citeContent: " + citeContent);
-                        break;
-                    }
-                }
-            }
-
-            if (p.contains("▲")) {
-                citeContent = p;
-            }
-
-            if (citeContent != null) {
-                p = p.replace(citeContent, "");
-                if (Utility.DEBUG) Log.d(TAG, "[p] after replace: " + p);
-            }
-
-            Elements a = pContent.select("a[href]");
-            if(a !=null && a.size() > 0){
-                pHtml = pContent.toString();
-                if(Utility.DEBUG)Log.v(TAG, "pHtml: " + pHtml);
-                for (int j = 0; j < a.size(); j++) {
-                    Element href = a.get(j);
-                    textLink = href.attr("href");
-                    textLinkHtml = href.toString();
-                }
             }
 
             if (p != null && !p.trim().isEmpty()) {
@@ -708,53 +684,14 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
             }
 
-            Elements img = pContent.select("img[src]");
-            if (img != null && img.size() > 0) {
+            if(citeContent != null && !citeContent.trim().isEmpty()){
 
                 ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-
-                for (int j = 0; j < img.size(); j++) {
-                    Element imgElement = img.get(j);
-                    String imgUrl = imgElement.attr("src");
-                    imgUrl = Utility.getSrcFromImgapi(imgUrl);
-//                    if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + imgUrl);
-
-                    if (imgUrl != null && !imgUrl.trim().isEmpty()) {
-                        if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + imgUrl);
-                        map.put(KEY_CONTEXT_IMAGE, imgUrl);
-                        mImageUrlList.add(imgUrl);
-                    }
-
-                }
-
-                if (citeContent != null && !citeContent.trim().equals("") && !citeContent.trim().equals("▲")) {
-                    map.put(KEY_CONTEXT_IMAGE_TEXT, citeContent);
-                }
-
+                map.put(KEY_CONTEXT_TEXT, citeContent);
                 mContentList.add(map);
+
             }
 
-            Elements iframe = pContent.select("iframe[src]");
-            if (iframe != null && iframe.size() > 0) {
-
-                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-
-                for (int j = 0; j < iframe.size(); j++) {
-                    Element iframeElement = iframe.get(j);
-                    String iframeUrl = iframeElement.attr("src");
-                    if (iframeUrl != null && !iframeUrl.trim().isEmpty() && iframeUrl.contains("youtube")) {
-                        if (Utility.DEBUG) Log.w(TAG, "iframeUrl in body: " + iframeUrl);
-                        String youtubeId = iframeUrl.substring(iframeUrl.lastIndexOf("/")+1);
-                        map.put(KEY_CONTEXT_IFRAME_YOUTUBE, youtubeId);
-                    }
-                }
-
-                if (citeContent != null && !citeContent.trim().equals("") && !citeContent.trim().equals("▲")) {
-                    map.put(KEY_CONTEXT_IFRAME_YOUTUBE_TEXT, citeContent);
-                }
-
-                mVideoContentList.add(map);
-            }
         }
     }
 
@@ -811,11 +748,11 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         String url = null;
         String title = null;
         String label = null;
-        if(mNewsInfo!=null && mNewsInfo.url!=null && !mNewsInfo.url.trim().isEmpty()){
-            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsInfo.url;
+        if(mNewsInfo!=null && mNewsInfo.getParseUrl()!=null && !mNewsInfo.getParseUrl().trim().isEmpty()){
+            url = WebAPIUrl.NOWNEWS_PC_DOMAIN + mNewsInfo.getParseUrl();
         }
-        if(mNewsInfo!=null && mNewsInfo.shortTitle!=null && !mNewsInfo.shortTitle.isEmpty()){
-            title = mNewsInfo.shortTitle;
+        if(mNewsInfo!=null && mNewsInfo.getShortTitle()!=null && !mNewsInfo.getShortTitle().isEmpty()){
+            title = mNewsInfo.getShortTitle();
         }
         if(url!=null && title!=null){
             label = title + " " + url;

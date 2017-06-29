@@ -83,7 +83,7 @@ public class SplashActivity extends AppCompatActivity{
                         splash.mHandler.sendEmptyMessageDelayed(GOTO_HOME, 2000);
                         break;
                     }
-                    splash.mSplashImageUrl = splashImageInfo.url;
+                    splash.mSplashImageUrl = splashImageInfo.getImage().getUrl();
                     int screenHeight = Utility.getScreenHeight(splash);
                     int screenWidth = Utility.getScreenWidth(splash);
                     splash.mSplashImageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, screenHeight, Utility.IMG_QUALITY, splash.mSplashImageUrl);
