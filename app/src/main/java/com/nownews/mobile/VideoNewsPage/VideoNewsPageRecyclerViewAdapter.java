@@ -813,7 +813,6 @@ public class VideoNewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         }
         if(mBitmapController!=null){
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
             mBitmapController.unregistBitmapController(mContext);
         }
     }

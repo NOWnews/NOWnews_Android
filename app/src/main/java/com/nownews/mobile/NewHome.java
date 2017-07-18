@@ -242,7 +242,6 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         UserDataInfo.activityDestroy(this);
         if (BitmapController.getInstance(this) != null) {
             BitmapController.getInstance(this).clearCache();
-            BitmapController.getInstance(this).closeBitmapController();
             BitmapController.getInstance(this).unregistBitmapController(this);
         }
         if (this.mSharedPref != null) {
@@ -552,7 +551,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     @Override
     public void onBackPressed() {
         Fragment fragment = getVisibleFragment();
-        if (fragment instanceof NewsCategoryFragment) {
+        if (fragment!=null && fragment instanceof NewsCategoryFragment) {
             boolean isWebFragment = ((NewsCategoryFragment) fragment).checkIsWebFragment();
             if (isWebFragment) {
                 boolean canGoBack = ((NewsCategoryFragment) fragment).checkIsWebFragmentCanGoBack();
@@ -789,16 +788,16 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                     public void onResult(@NonNull AppInviteInvitationResult appInviteInvitationResult) {
 
                         if(appInviteInvitationResult.getStatus().isSuccess()){
-                            Log.i(TAG, "status: " + appInviteInvitationResult.getStatus().getStatus());
-                            Log.i(TAG, "status message: " + appInviteInvitationResult.getStatus().getStatusMessage());
+                            if (Utility.DEBUG) Log.i(TAG, "status: " + appInviteInvitationResult.getStatus().getStatus());
+                            if (Utility.DEBUG) Log.i(TAG, "status message: " + appInviteInvitationResult.getStatus().getStatusMessage());
 
                             Intent intent = appInviteInvitationResult.getInvitationIntent();
-                            Log.i(TAG, "intent data: " + intent.getData());
-                            Log.i(TAG, "intent action: " + intent.getAction());
+                            if (Utility.DEBUG) Log.i(TAG, "intent data: " + intent.getData());
+                            if (Utility.DEBUG) Log.i(TAG, "intent action: " + intent.getAction());
                             String deepLink = AppInviteReferral.getDeepLink(intent);
-                            Log.i(TAG, "deepLink: " + deepLink);
+                            if (Utility.DEBUG) Log.i(TAG, "deepLink: " + deepLink);
                             String inviteId = AppInviteReferral.getInvitationId(intent);
-                            Log.i(TAG, "inviteId: " + inviteId);
+                            if (Utility.DEBUG) Log.i(TAG, "inviteId: " + inviteId);
 
                             try{
                                 deepLink = URLDecoder.decode(deepLink, "UTF-8");
@@ -808,11 +807,11 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                             Uri uri = Uri.parse(deepLink);
                             String utmSource = uri.getQueryParameter("utm_source");
                             String utmMedium = uri.getQueryParameter("utm_medium");
-                            Log.i(TAG, "utmSource: " + utmSource);
-                            Log.i(TAG, "utmMedium: " + utmMedium);
+                            if (Utility.DEBUG) Log.i(TAG, "utmSource: " + utmSource);
+                            if (Utility.DEBUG) Log.i(TAG, "utmMedium: " + utmMedium);
 
                         } else {
-                            Log.d(TAG, "getInvitation: no deep link found.");
+                            if (Utility.DEBUG) Log.d(TAG, "getInvitation: no deep link found.");
                         }
 
                     }
@@ -822,7 +821,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e(TAG, "onConnectionFailed.");
+        if (Utility.DEBUG) Log.e(TAG, "onConnectionFailed.");
     }
 
 }

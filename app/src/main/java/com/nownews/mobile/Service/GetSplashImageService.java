@@ -13,9 +13,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.nownews.R;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Api.WebAPIUrl;
@@ -116,14 +118,15 @@ public class GetSplashImageService extends Service {
 //            mSplashImageUrl = "http://s.nownews.com/d3/5b/d35b4954e132a62a9bf87d6d5cb1875d.jpg";
 
             Glide.with(this)
-                    .load(mSplashImageUrl)
+                    .setDefaultRequestOptions(new RequestOptions().format(DecodeFormat.PREFER_RGB_565)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .error(R.drawable.default_img))
                     .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .error(R.drawable.default_img)
+                    .load(mSplashImageUrl)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                             if (Utility.DEBUG)Log.v(TAG, "onResourceReady");
 
                             try {
@@ -138,11 +141,12 @@ public class GetSplashImageService extends Service {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-
                         }
 
                         @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) { }
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            super.onLoadFailed(errorDrawable);
+                        }
                     });
 
 //            mBitmapController.loadImageWithOriginalSize(mSplashImageUrl, null, BitmapController.IMAGE_SRC, 0, 0, new BitmapController.ImageLoadingListener() {

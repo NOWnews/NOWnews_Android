@@ -163,7 +163,6 @@ public class VideoNewsPageRecyclerViewFragment extends Fragment{
         mApiController = ApiController.getInstance();
         mBitmapController = BitmapController.getInstance(getActivity());
 //        mBitmapController = new BitmapController(getActivity());
-        mBitmapController.closeBitmapController();
         mBitmapController.clearCache();
         mSharedPref = new SharedPreferencesMethods(getActivity());
         mHandler = new ApiHandler(this);

@@ -165,7 +165,6 @@ public class AlbumPageFragment extends Fragment {
 
         if(mBitmapController!=null){
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
             mBitmapController.unregistBitmapController(getActivity());
         }
     }

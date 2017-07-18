@@ -15,13 +15,13 @@ public class WebAPIUrl {
 
     //region Domain
     // -Nownews Pc版首頁
-    public final static String NOWNEWS_PC_DOMAIN = "http://www.nownews.com";
+    public final static String NOWNEWS_PC_DOMAIN = "https://www.nownews.com";
     // -Nownews Pc版新聞內頁
-    public final static String NOWNEWS_PC_NEWS_DOMAIN = "http://www.nownews.com/n/";
+    public final static String NOWNEWS_PC_NEWS_DOMAIN = "https://www.nownews.com/n/";
     // -Nownews Pc版圖集內頁
-    public final static String NOWNEWS_PC_PHOTO_DOMAIN = "http://www.nownews.com/p/";
+    public final static String NOWNEWS_PC_PHOTO_DOMAIN = "https://www.nownews.com/p/";
     // -Nownews Pc版影音內頁
-    public final static String NOWNEWS_PC_VIDEO_DOMAIN = "http://www.nownews.com/v/";
+    public final static String NOWNEWS_PC_VIDEO_DOMAIN = "https://www.nownews.com/v/";
     //endregion
 
     // -Nownews Mobile Web新聞內頁

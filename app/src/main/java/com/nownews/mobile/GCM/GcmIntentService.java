@@ -72,7 +72,6 @@ public class GcmIntentService extends FirebaseMessagingService {
         unregisterReceiver(mFCMReceiver);
         if(mBitmapController!=null){
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
             mBitmapController.unregistBitmapController(this);
         }
     }
@@ -151,6 +150,7 @@ public class GcmIntentService extends FirebaseMessagingService {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setNotification() {
+        if (Utility.DEBUG) Log.w(TAG, "mNotificationInfo: " + mNotificationInfo);
         if (mNotificationInfo == null || mNotificationInfo.type == null) {
             return;
         }
@@ -165,6 +165,9 @@ public class GcmIntentService extends FirebaseMessagingService {
         type = mNotificationInfo.type;
         notificationUrl = mNotificationInfo.url;
         notificationTitle = mNotificationInfo.title;
+        if (Utility.DEBUG) Log.e(TAG, "type: " + type);
+        if (Utility.DEBUG) Log.e(TAG, "notificationUrl: " + notificationUrl);
+        if (Utility.DEBUG) Log.e(TAG, "notificationTitle: " + notificationTitle);
 
         notificationId = -1;
         if (notificationUrl != null && !notificationUrl.isEmpty()) {
@@ -176,6 +179,8 @@ public class GcmIntentService extends FirebaseMessagingService {
                 notificationId = Integer.parseInt(notificationUrl.substring(notificationUrl.lastIndexOf("/") + 1));
             }
         }
+        if (Utility.DEBUG) Log.w(TAG, "type: " + type);
+        if (Utility.DEBUG) Log.w(TAG, "notificationId: " + notificationId);
 
         //設置標題
         newsTitle = getString(R.string.nownews);

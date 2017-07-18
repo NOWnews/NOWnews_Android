@@ -4,10 +4,6 @@ import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
 import com.nownews.mobile.Common.Utility;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -19,17 +15,25 @@ import java.net.URLDecoder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class WebApi {
 
     private final static String TAG = "WebApi";
 
-    public static String DoPost(String aUrl, String aData1) throws Exception {
+    public static int DoPost(String aUrl, String aData1, boolean isHadHeader) throws Exception {
+
+        long StartTime = System.currentTimeMillis();
 
         URL apiUrl = new URL(aUrl);
         HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
+        if(isHadHeader){
+            connection.setRequestProperty(WebAPIUrl.HEADER_KEY, WebAPIUrl.HEADER_VALUE);
+        }
         connection.setRequestMethod("POST");
-//        connection.setConnectTimeout(8000);
-//        connection.setReadTimeout(8000);
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.setUseCaches(false);
@@ -37,8 +41,22 @@ public class WebApi {
         DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
         dataOutputStream.writeBytes(aData1);
 
+        String message = connection.getResponseMessage();
+        long ProcessTime = System.currentTimeMillis() - StartTime;
         int statusCode = connection.getResponseCode();
-        if (Utility.DEBUG) Log.d(TAG, "statusCode: " + statusCode);
+        if (Utility.DEBUG) {
+            Log.e(TAG, "----------------------------------------- \n"
+                    + "statusCode: " + statusCode
+                    + "\nurl: " + aUrl
+                    + "\nProcessTime: " + ProcessTime + "ms"
+                    + "\nmessage: " + message + "\nDoGet End!!"
+                    + "\n-----------------------------------------");
+        }
+        if(statusCode!=HttpURLConnection.HTTP_OK){
+            Log.e(TAG, "Error Message: " + connection.getResponseMessage());
+            FirebaseCrash.logcat(Log.WARN, TAG, "statusCode: " + statusCode + " / Error Message: " + connection.getResponseMessage() + " / Url: " + aUrl);
+            throw new HttpConnectionException(connection.getResponseMessage());
+        }
 
         if (statusCode == 200 || statusCode == 400) {
             InputStream inputStream = null;
@@ -53,12 +71,11 @@ public class WebApi {
             while ((line = reader.readLine()) != null) {
                 result.append(line);
             }
-            return result.toString();
         } else if (statusCode == 500) {
-            return "未知的錯誤";
+            return -1;
         }
 
-        return null;
+        return statusCode;
     }
 
     @SuppressWarnings("deprecation")

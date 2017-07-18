@@ -184,4 +184,8 @@
     <string name="NEWS">NEWS</string>
     <string name="PHOTO">PHOTO</string>
     <string name="VIDEO">VIDEO</string>
+
+    <string name="copyright_content">本服務刊載之一切內容所有版權均屬於今日傳媒股份有限公司合法持有。未經本公司授權不得隨意節錄、抄襲、轉讓本公司或本服務被授權產生之服務。若您有不當違法之使用，本公司將保留審查限制提供其服務的權利。</string>
+    <string name="copyright_positive">我知道了</string>
+
 </resources>

@@ -1,7 +1,6 @@
 package com.nownews.mobile;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
@@ -9,7 +8,6 @@ import android.util.Log;
 import com.cmcm.adsdk.CMAdManager;
 import com.comscore.Analytics;
 import com.comscore.PublisherConfiguration;
-import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.nownews.R;
 import com.nownews.mobile.Common.Utility;
@@ -55,6 +53,7 @@ public class NownewsApplication extends MultiDexApplication {
                 .build();
         Analytics.getConfiguration().addClient(myPublisherConfig);
         Analytics.start(this);
+
     }
 
     @Override
@@ -62,4 +61,5 @@ public class NownewsApplication extends MultiDexApplication {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
 }

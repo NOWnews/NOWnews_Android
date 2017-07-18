@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">ImageDownloadManager</string>
+    <string name="copyright_title">版權聲明</string>
+
+    <string name="choose_size_title">選擇圖片尺寸</string>
+    <string-array name="choose_size_items">
+        <item>@string/choose_size_original_size</item>
+        <item>@string/choose_size_thumbnail_size</item>
+    </string-array>
+    <string name="choose_size_original_size">原圖下載 %1$d x %2$d</string>
+    <string name="choose_size_thumbnail_size">縮圖下載 %1$d x %2$d</string>
+    <string name="original_size">原圖下載</string>
+    <string name="thumbnail_size">縮圖下載</string>
+    <string name="choose_size_positive">選擇下載資料夾</string>
+    <string name="choose_size_negative">取消</string>
+    <string name="folder_chooser_start_download">開始下載</string>
+    <string name="folder_chooser_new_folder">新增資料夾</string>
+</resources>

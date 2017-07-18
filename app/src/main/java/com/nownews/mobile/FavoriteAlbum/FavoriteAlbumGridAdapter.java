@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.nownews.R;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
+import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Widget.CustomImageTopcrop;
 
@@ -82,10 +83,20 @@ public class FavoriteAlbumGridAdapter extends RecyclerView.Adapter<FavoriteAlbum
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private CustomImageTopcrop vAlbumImage;
+        private ReSizeLayoutParams mResize;
 
         public ViewHolder(View itemView) {
             super(itemView);
+
+            mResize = new ReSizeLayoutParams(mContext);
+            mResize.setDoResize(true);
+
             vAlbumImage = (CustomImageTopcrop) itemView.findViewById(R.id.album_img);
+            vAlbumImage.setLayoutParams(mResize.setOnSize(vAlbumImage, 0, 0, 0, 0));
+
+            mResize.setDoResize(false);
+            mResize.unregisterCallback(mContext);
+
         }
 
     }
@@ -93,7 +104,6 @@ public class FavoriteAlbumGridAdapter extends RecyclerView.Adapter<FavoriteAlbum
     public void destoryView(){
         if(mBitmapController!=null){
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
             mBitmapController.unregistBitmapController(mContext);
         }
     }

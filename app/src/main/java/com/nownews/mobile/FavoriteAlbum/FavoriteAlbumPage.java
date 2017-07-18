@@ -2,6 +2,7 @@ package com.nownews.mobile.FavoriteAlbum;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBarActivity;
@@ -18,7 +19,9 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.nownews.R;
+import com.nownews.imagedownloadmanager.ImageDownloadManagerActivity;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
@@ -26,9 +29,10 @@ import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Common.Utility.ShareType;
 import com.nownews.mobile.Widget.CustomViewPager;
 
+import java.io.File;
 import java.util.ArrayList;
 
-public class FavoriteAlbumPage extends AppCompatActivity {
+public class FavoriteAlbumPage extends ImageDownloadManagerActivity implements FolderChooserDialog.FolderCallback {
 
     public static final String KEY_FAVORITE_ALBUM_POSITION = "position";
     public static final String KEY_FAVORITE_ALBUM_LIST = "favoritAlbumList";
@@ -330,5 +334,20 @@ public class FavoriteAlbumPage extends AppCompatActivity {
     }
 
     public enum Type {FavoriteAlbum, NewsImages}
+
+    @Override
+    public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
+        String folderPath = folder.getAbsolutePath();
+        Log.d(TAG, "folderPath: " + folderPath);
+        FavoritePageFragment favoritePageFragment = (FavoritePageFragment) mAdapter.getItem(mIndex);
+        if (favoritePageFragment != null) {
+            favoritePageFragment.startDownload(folderPath);
+        }
+    }
+
+    @Override
+    public void onFolderChooserDismissed(@NonNull FolderChooserDialog dialog) {
+
+    }
 
 }

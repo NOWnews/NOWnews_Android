@@ -54,6 +54,7 @@ import com.nownews.mobile.AlbumCategory.AlbumsCategoryColor;
 import com.nownews.mobile.AlbumPage.AlbumPage;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Api.WebApi;
+import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.FavoriteAlbum.FavoriteAlbum;
 import com.nownews.mobile.FavoriteAlbum.FavoriteAlbumPage;
 import com.nownews.mobile.NewsCategory.NewsCategoryColor;
@@ -86,12 +87,15 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 //import com.nostra13.universalimageloader.core.DisplayImageOptions;
 //import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class Utility {
 
-    public final static int IMG_QUALITY = 60;
+    public final static int IMG_QUALITY = 50;
     public final static boolean DEBUG = true;
     public final static boolean SAVE_JSON = false;
     //    private static DisplayImageOptions options;
@@ -107,7 +111,7 @@ public class Utility {
     public static boolean isUserKnowNetworkSlow = false;
     public static boolean isVponTestMode = false;
     private static Context mAppilicationContext;
-    public static int NEWS_LIST_LIMIT_COUNT = 20;
+    public static int NEWS_LIST_LIMIT_COUNT = 30;
 
     //TODO getOptions()
 //    public static DisplayImageOptions getOptions(){
@@ -152,7 +156,7 @@ public class Utility {
     }
 
     //傳送推播ID給伺服器
-    private static void storeRegistrationId(Context context, String aRegistId) {
+    public static void storeRegistrationId(Context context, String aRegistId) {
         SharedPreferencesMethods sharePref = new SharedPreferencesMethods(context);
         int currentVerstionCode = Utility.getAppVersionCode(context);
         sharePref.setGcmRegistId(aRegistId);
@@ -165,20 +169,8 @@ public class Utility {
         Log.v(TAG, "sendRegisterId()");
         String BuildSERIAL = android.os.Build.SERIAL;
         Log.v("Utility", "BuildSERIAL:" + BuildSERIAL);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        Date date = new Date();
-        String dts = sdf.format(date);
-        String returnString = null;
-        try {
-            returnString = WebApi.DoPost(WebAPIUrl.REGIST_ID_RETURN, "token=" + regId + "&deviceId=" + BuildSERIAL + "&os=ANDROID");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (Utility.DEBUG) Log.d(TAG, TAG + " returnString: " + returnString);
-//            if(responeseCode==HttpURLConnection.HTTP_OK){
-//                GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message), aContext.getString(R.string.cloud_message_regist), regId);
-//                storeRegistrationId(aContext, regId);
-//            }
+        ApiController apiController = ApiController.getInstance();
+        apiController.sendFCMRegisterID(aContext, regId, BuildSERIAL);
     }
 
     //TODO writeJsonToFile()
@@ -1502,6 +1494,16 @@ public class Utility {
         if(!isGPSEnabled && !isNetworkEnabled){
             return longitudeLatitude;
         }else if(isGPSEnabled){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                int accessFineLocationPermission = aContext.checkSelfPermission(ACCESS_FINE_LOCATION);
+                int accessCoarseLocationPermission = aContext.checkSelfPermission(ACCESS_COARSE_LOCATION);
+                if(accessFineLocationPermission != PackageManager.PERMISSION_GRANTED
+                        || accessCoarseLocationPermission != PackageManager.PERMISSION_GRANTED){
+                    //未取得權限，向使用者要求允許權限
+                    if (Utility.DEBUG)Log.e(TAG, "未取得Location權限");
+                    return longitudeLatitude;
+                }
+            }
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                     MIN_TIME_BW_UPDATES,
                     MIN_DISTANCE_CHANGE_FOR_UPDATES,
@@ -1588,17 +1590,11 @@ public class Utility {
     public static void UnMuteAudio(Context aContext){
         AudioManager mAlramMAnager = (AudioManager) aContext.getSystemService(aContext.AUDIO_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_UNMUTE, 0);
             mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_ALARM, AudioManager.ADJUST_UNMUTE, 0);
             mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE,0);
-            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_UNMUTE, 0);
-            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_SYSTEM, AudioManager.ADJUST_UNMUTE, 0);
         } else {
-            mAlramMAnager.setStreamMute(AudioManager.STREAM_NOTIFICATION, false);
             mAlramMAnager.setStreamMute(AudioManager.STREAM_ALARM, false);
             mAlramMAnager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-            mAlramMAnager.setStreamMute(AudioManager.STREAM_RING, false);
-            mAlramMAnager.setStreamMute(AudioManager.STREAM_SYSTEM, false);
         }
     }
 

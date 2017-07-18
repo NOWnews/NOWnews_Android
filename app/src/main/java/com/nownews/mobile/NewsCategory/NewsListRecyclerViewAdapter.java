@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,8 +25,10 @@ import com.ad2iction.nativeads.NativeErrorCode;
 import com.ad2iction.nativeads.NativeResponse;
 import com.ad2iction.nativeads.RequestParameters;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
@@ -36,6 +39,7 @@ import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.BitmapController;
+import com.nownews.mobile.Json.HeadlineNewsJson;
 import com.nownews.mobile.Json.InstantNewsJson;
 import com.nownews.mobile.Json.NewsListJson;
 import com.nownews.mobile.Json.SearchInfoJson;
@@ -66,6 +70,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     private List<NewsListJson.NewsListBean> mNewsList;
     private List<SearchInfoJson.NewsListBean> mSearchNewsList;
     private List<InstantNewsJson.NewsListBean> mInstantNewsList;
+    private List<HeadlineNewsJson.CarouselsBean> mHeadlineNewsList;
     private String mCategoryName;
     private String mBigCategory;
     private FragmentManager mChidFragmentManger;
@@ -74,17 +79,30 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     private String[] mEcoDefaultImageList;
     private String[] mDFPIdList;
     private String[] mVPONIdList;
+    public enum ReplaceType{Headline, Instant}
+    private ReplaceType mReplaceType;
 
     public NewsListRecyclerViewAdapter(Context aContext, List<?> aNewsList,
-                                       String aCategoryName, FragmentManager aChidFragmentManger, String aBigCategory) {
+                                       String aCategoryName, FragmentManager aChidFragmentManger, String aBigCategory, ReplaceType aReplaceType) {
         mContext = aContext;
         mCategoryName = aCategoryName;
+        mReplaceType = aReplaceType;
         if(mCategoryName.equals(mContext.getString(R.string.search))){
             mSearchNewsList = (List<SearchInfoJson.NewsListBean>)aNewsList;
         }else if(mCategoryName.equals(mContext.getString(R.string.instant_news))){
             mInstantNewsList = (List<InstantNewsJson.NewsListBean>)aNewsList;
         }else{
             mNewsList = (List<NewsListJson.NewsListBean>)aNewsList;
+            if(mReplaceType!=null){
+                switch(mReplaceType){
+                    case Headline:
+                        mHeadlineNewsList = (List<HeadlineNewsJson.CarouselsBean>)aNewsList;
+                        break;
+                    case Instant:
+                        mInstantNewsList = (List<InstantNewsJson.NewsListBean>)aNewsList;
+                        break;
+                }
+            }
         }
         mBigCategory = aBigCategory;
         mChidFragmentManger = aChidFragmentManger;
@@ -260,6 +278,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                     if (imageUrl != null) {
                         int screenWidth = Utility.getScreenWidth(mContext);
                         imageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, imageUrl);
+                        if(Utility.DEBUG)Log.i(TAG, "imageUrl: " + imageUrl);
                         mBitmapController.loadImageWithOriginalSize(imageUrl, ((NormalViewHolder)holder).vNewsImage, BitmapController.IMAGE_SRC_FROM_NEWS_LIST, 0, 0, null);
                     }
                 }else{
@@ -331,6 +350,9 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                         imageUrl = mEcoDefaultImageList[imagePosition];
                     }
                     if (imageUrl != null) {
+                        int screenWidth = Utility.getScreenWidth(mContext);
+                        imageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, imageUrl);
+                        if(Utility.DEBUG)Log.i(TAG, "imageUrl: " + imageUrl);
                         mBitmapController.loadImageWithOriginalSize(imageUrl, ((NormalViewHolder)holder).vNewsImage, BitmapController.IMAGE_SRC_FROM_NEWS_LIST, 0, 0, null);
                     }
                 }else{
@@ -377,6 +399,80 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 }
                 setCardViewClickListener(((NormalViewHolder)holder).vNewsItem, realPosition, mTitle);
 
+            }else if(mHeadlineNewsList!=null){
+                //TODO Headline News 熱門新聞
+
+                type = mHeadlineNewsList.get(realPosition).getType();
+
+                if(type.equals(mContext.getString(R.string.VIDEO))){
+                    ((NormalViewHolder)holder).vVideoIcon.setVisibility(View.VISIBLE);
+                }
+
+                //Image
+                ((NormalViewHolder)holder).vNewsImage.setImageDrawable(null);
+                if (mHeadlineNewsList != null
+                        && mHeadlineNewsList.get(realPosition) != null
+                        && mHeadlineNewsList.get(realPosition).getMainPhoto() != null
+                        && mHeadlineNewsList.get(realPosition).getMainPhoto().getUrl() != null
+                        && !mHeadlineNewsList.get(realPosition).getMainPhoto().getUrl().trim().isEmpty()) {
+                    String imageUrl = mHeadlineNewsList.get(realPosition).getMainPhoto().getUrl();
+                    if (mCategoryName.equals(mContext.getString(R.string.eco))
+                            && imageUrl.contains("defaultimg.gif")) {
+                        int newsId = mHeadlineNewsList.get(realPosition).getSn();
+                        int digit = newsId % 10;
+                        int imagePosition = digit % 5;
+                        imageUrl = mEcoDefaultImageList[imagePosition];
+                    }
+                    if (imageUrl != null) {
+                        int screenWidth = Utility.getScreenWidth(mContext);
+                        imageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, imageUrl);
+                        if(Utility.DEBUG)Log.i(TAG, "imageUrl: " + imageUrl);
+                        mBitmapController.loadImageWithOriginalSize(imageUrl, ((NormalViewHolder)holder).vNewsImage, BitmapController.IMAGE_SRC_FROM_NEWS_LIST, 0, 0, null);
+                    }
+                }else{
+                    ((NormalViewHolder)holder).vNewsImage.setCenterCrop();
+                    mBitmapController.setDefaultImage(((NormalViewHolder)holder).vNewsImage);
+                }
+
+                //Category
+                String mCategory = null;
+                if (mHeadlineNewsList != null
+                        && mHeadlineNewsList.get(realPosition) != null
+                        && mHeadlineNewsList.get(realPosition).getMainMenu() != null
+                        && mHeadlineNewsList.get(realPosition).getMainMenu().getName() != null
+                        && !mHeadlineNewsList.get(realPosition).getMainMenu().getName().trim().isEmpty()) {
+                    ((NormalViewHolder)holder).vNewsCategory.setVisibility(View.VISIBLE);
+                    String category = mHeadlineNewsList.get(realPosition).getMainMenu().getName();
+                    ((NormalViewHolder)holder).vNewsCategory.setText(category);
+                    Utility.setCategoryTextColor(category, ((NormalViewHolder)holder).vNewsCategory, Utility.ColorType.News);
+                } else {
+                    ((NormalViewHolder)holder).vNewsCategory.setVisibility(View.GONE);
+                }
+
+                //Title
+                String mTitle = null;
+                if (mHeadlineNewsList != null
+                        && mHeadlineNewsList.get(realPosition) != null
+                        && mHeadlineNewsList.get(realPosition).getShortTitle() != null
+                        && !mHeadlineNewsList.get(realPosition).getShortTitle().trim().isEmpty()) {
+                    mTitle = mHeadlineNewsList.get(realPosition).getShortTitle();
+                    ((NormalViewHolder)holder).vNewsTitle.setText(mTitle);
+                    if (Utility.DEBUG) Log.w(TAG, "mTitle: " + mTitle);
+                }
+                //Date
+                if (mHeadlineNewsList != null
+                        && mHeadlineNewsList.get(realPosition) != null
+                        && mHeadlineNewsList.get(realPosition).getFormatStartedAt() != null
+                        && !mHeadlineNewsList.get(realPosition).getFormatStartedAt().trim().equals("")) {
+                    String date = mHeadlineNewsList.get(realPosition).getFormatStartedAt();
+                    date = Utility.processDate(date);
+                    ((NormalViewHolder)holder).vNewsDate.setVisibility(View.VISIBLE);
+                    ((NormalViewHolder)holder).vNewsDate.setText(date);
+                }else{
+                    ((NormalViewHolder)holder).vNewsDate.setVisibility(View.GONE);
+                }
+                setCardViewClickListener(((NormalViewHolder)holder).vNewsItem, realPosition, mTitle);
+
             }else{
                 //TODO Normal List 一般新聞
 
@@ -401,6 +497,9 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                         imageUrl = mEcoDefaultImageList[imagePosition];
                     }
                     if (imageUrl != null) {
+                        int screenWidth = Utility.getScreenWidth(mContext);
+                        imageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, imageUrl);
+                        if(Utility.DEBUG)Log.i(TAG, "imageUrl: " + imageUrl);
                         mBitmapController.loadImageWithOriginalSize(imageUrl, ((NormalViewHolder)holder).vNewsImage, BitmapController.IMAGE_SRC_FROM_NEWS_LIST, 0, 0, null);
                     }
                 }else{
@@ -594,7 +693,11 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
                 if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
                 if(mContext!=null){
-                    Glide.with(mContext).load(adCoverImage.getUrl()).override(screenWidth, newHeight).into(aImage);
+                    Glide.with(mContext)
+                            .setDefaultRequestOptions(new RequestOptions().format(DecodeFormat.PREFER_RGB_565)
+                            .override(screenWidth, newHeight))
+                            .load(adCoverImage.getUrl())
+                            .into(aImage);
                 }
 //                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
                 nativeAd.registerViewForInteraction(aNewsItem);
@@ -685,13 +788,13 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 aTitle.setText(text);
                 aCallToAction.setText(callToActionText);
                 Glide.with(mContext)
-                        .load(imageUrl)
+                        .setDefaultRequestOptions(new RequestOptions().skipMemoryCache(true)
+                                .error(R.drawable.default_img))
                         .asBitmap()
-                        .skipMemoryCache(true)
-                        .error(R.drawable.default_img)
+                        .load(imageUrl)
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                                 if (Utility.DEBUG) Log.v(TAG, "onResourceReady");
                                 if (Utility.DEBUG) Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
                                 if (Utility.DEBUG) Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
@@ -706,16 +809,20 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                                 if (Utility.DEBUG) Log.i(TAG, "screenWidth: " + screenWidth);
                                 if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
                                 if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
-                                Glide.with(mContext).load(imageUrl).override(screenWidth, newHeight).into(aImage);
+                                Glide.with(mContext)
+                                        .setDefaultRequestOptions(new RequestOptions().skipMemoryCache(true)
+                                                .error(R.drawable.default_img)
+                                                .override(screenWidth, newHeight))
+                                        .load(imageUrl)
+                                        .into(aImage);
                                 setItemVisibility(true, aItemView);
-
                             }
 
                             @Override
-                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            public void onLoadFailed(@Nullable Drawable errorDrawable) {
                                 aImage.setImageResource(R.drawable.default_img);
                                 setItemVisibility(true, aItemView);
-                                super.onLoadFailed(e, errorDrawable);
+                                super.onLoadFailed(errorDrawable);
                             }
                         });
             }
@@ -866,7 +973,6 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     public void clearBitmapController() {
         if (mBitmapController != null) {
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
         }
     }
 

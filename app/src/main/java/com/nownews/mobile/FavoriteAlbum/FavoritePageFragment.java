@@ -5,6 +5,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,14 +18,31 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.nownews.R;
+import com.nownews.imagedownloadmanager.ImageDownloadManager;
+import com.nownews.imagedownloadmanager.ImageDownloadManagerActivity;
+import com.nownews.imagedownloadmanager.ImageInfo;
 import com.nownews.mobile.Api.WebAPIUrl;
+import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Widget.ZoomImageView;
 
-public class FavoritePageFragment extends Fragment {
+import java.io.File;
+
+import static com.nownews.mobile.Common.Utility.getApplicationContext;
+
+public class FavoritePageFragment extends Fragment{
 
     public static final String KEY_NEWS_URL = "newsUrl";
     public final static String KEY_IMAGE_URL = "imageUrl";
@@ -123,12 +142,6 @@ public class FavoritePageFragment extends Fragment {
                 if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
             }
 
-            if (imageUrl.startsWith("http://s.nownews.com")) {
-                int screenWidth = Utility.getScreenWidth(getActivity());
-                imageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, imageUrl);
-                if (Utility.DEBUG) Log.v(TAG, "imageUrl: " + imageUrl);
-            }
-
             mImageUrl = imageUrl;
             mImageTitle = imageTitle;
             mImageNewsUrl = imageNewsUrl;
@@ -141,12 +154,46 @@ public class FavoritePageFragment extends Fragment {
 //        mBitmapController = new BitmapController(getActivity());
     }
 
+    private int mImageWidth;
+    private int mImageHeight;
     public void setData() {
 
+        //TODO load original image
+        Glide.with(this)
+                .setDefaultRequestOptions(new RequestOptions().format(DecodeFormat.PREFER_RGB_565))
+                .asBitmap()
+                .load(mImageUrl)
+                .listener(new RequestListener<Bitmap>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                        Log.e(TAG, "onLoadFailed");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d(TAG, "onResourceReady");
+                        mImageWidth = resource.getWidth();
+                        mImageHeight = resource.getHeight();
+                        Log.d(TAG, "mImageWidth: " + mImageWidth);
+                        Log.d(TAG, "mImageHeight: " + mImageHeight);
+                        return false;
+                    }
+                }).submit();
+
+
+        if (mImageUrl.startsWith("http://s.nownews.com")) {
+            int screenWidth = Utility.getScreenWidth(getActivity());
+            mImageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, mImageUrl);
+            if (Utility.DEBUG) Log.v(TAG, "imageUrl: " + mImageUrl);
+        }
         mBitmapController.loadImageWithOriginalSize(mImageUrl, vImage, BitmapController.IMAGE_SRC, 0, 0, null);
+
+        //share image
         if (mShareImgUrl != null) {
             mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, vImage, BitmapController.IMAGE_SRC, 0, 0, null);
         }
+
         if (mImageTitle == null || mImageTitle.trim().equals("")) {
             vTitle.setVisibility(View.GONE);
         } else {
@@ -170,6 +217,58 @@ public class FavoritePageFragment extends Fragment {
 
     private void processListener() {
         vImage.setOnClickListener(mImageClickListener);
+//        vImage.setLongClickable(true);
+//        vImage.setOnLongClickListener(mDownloagImage);
+    }
+
+    private ImageDownloadManager mImageDownloadManager;
+    private View.OnLongClickListener mDownloagImage = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+
+//            Toast.makeText(getActivity(), "Image Long Click!!", Toast.LENGTH_LONG).show();
+            String originalImageUrl = getArguments().getString(KEY_IMAGE_URL);
+            ImageInfo originalImageInfo = new ImageInfo();
+            originalImageInfo.setUrl(originalImageUrl);
+            originalImageInfo.setImgW(mImageWidth);
+            originalImageInfo.setImgH(mImageHeight);
+
+            ImageInfo thumbnailImageInfo = null;
+            int screenWidth = Utility.getScreenWidth(getActivity());
+            if(mImageWidth>screenWidth){
+                float scale = ((float) screenWidth) / mImageWidth;
+                int newHeight = (int) (mImageHeight * scale);
+                String thumbnailUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, newHeight, Utility.IMG_QUALITY, originalImageUrl);
+                thumbnailImageInfo = new ImageInfo();
+                thumbnailImageInfo.setUrl(thumbnailUrl);
+                thumbnailImageInfo.setImgW(screenWidth);
+                thumbnailImageInfo.setImgH(newHeight);
+            }
+
+            String fileName = getString(R.string.nownews) + "_" + originalImageUrl.substring(originalImageUrl.lastIndexOf("/")+1);
+
+//            if(getActivity().hasWindowFocus()){
+                mImageDownloadManager = new ImageDownloadManager(getActivity());
+                if(originalImageInfo!=null){
+                    mImageDownloadManager.setOriginalImageInfo(originalImageInfo);
+                }
+                if(thumbnailImageInfo!=null){
+                    mImageDownloadManager.setThumbnailImageInfo(thumbnailImageInfo);
+                }
+                mImageDownloadManager.isCopyrightDialogShow(true, getString(R.string.copyright_content), getString(R.string.copyright_positive));
+                mImageDownloadManager.setDefaultDownloadFolderPath("/sdcard/Download");
+                mImageDownloadManager.setDownloadDialogTitle("圖片下載中");
+                mImageDownloadManager.setDownloadDialogContent("再等一下下就好囉...");
+                mImageDownloadManager.setDownloadFileName(fileName);
+                mImageDownloadManager.start();
+//            }
+
+            return false;
+        }
+    };
+
+    public void startDownload(String folderPath){
+        mImageDownloadManager.startDownload(folderPath);
     }
 
     public String getImageTitle() {
@@ -234,7 +333,6 @@ public class FavoritePageFragment extends Fragment {
         super.onDestroyView();
         if(mBitmapController!=null){
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
             mBitmapController.unregistBitmapController(getActivity());
         }
     }

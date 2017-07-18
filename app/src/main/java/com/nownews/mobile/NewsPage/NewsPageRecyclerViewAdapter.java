@@ -42,6 +42,7 @@ import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherAdView;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
+import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
@@ -432,13 +433,15 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 String bigImgUrl = mNewsInfo.getMainPhoto().getUrl();
                 if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
 //                bigImgUrl = Utility.getSrcFromImgapi(bigImgUrl);
+                int screenWidth = Utility.getScreenWidth(mContext);
+                bigImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, bigImgUrl);
                 mBitmapController.loadImageWithOriginalSize(bigImgUrl, vBigImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE, 0, 0, mBigImgLoadingListener);
-                setImageClickListener(vBigImage, bigImgUrl, mYoutubeId);
+                setImageClickListener(vBigImage, mNewsInfo.getMainPhoto().getUrl(), mYoutubeId);
 
                 //For Share
                 mShareImgUrl = mNewsInfo.getMainPhoto().getUrl();
                 mShareImgUrl = Utility.getSrcFromImgapi(mShareImgUrl);
-                mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, 50, mShareImgUrl);
+                mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, Utility.IMG_QUALITY, mShareImgUrl);
                 if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
                 mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
             } else if (categoryName!=null && categoryName.contains(mContext.getString(R.string.eco))) {
@@ -451,7 +454,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 setImageClickListener(vBigImage, bigImgUrl, mYoutubeId);
 
                 //For Share
-                mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, 50, bigImgUrl);
+                mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, Utility.IMG_QUALITY, bigImgUrl);
                 if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
                 mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
             } else {
@@ -746,6 +749,8 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 String imageUrl = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE);
                 mCurrentImageUrl = imageUrl;
 //                imageUrl = Utility.getSrcFromImgapi(imageUrl);
+                int screenWidth = Utility.getScreenWidth(mContext);
+                imageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, imageUrl);
                 mBitmapController.loadImageWithOriginalSize(imageUrl, vImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE, 0, 0, null);
                 String imageText = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE_TEXT);
                 if(Utility.DEBUG)Log.e(TAG, "imageText: " + imageText);
@@ -1094,7 +1099,6 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         }
         if(mBitmapController!=null){
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
             mBitmapController.unregistBitmapController(mContext);
         }
     }

@@ -150,14 +150,15 @@ public class SpecialNewsCategoryFragment extends Fragment {
     private void setReplaceNews(){
         if(Utility.DEBUG)Log.w(TAG, "mCurrentItem: " + mCurrentItem);
         List<?> list = null;
-        switch(mCurrentItem%3){
+        NewsListRecyclerViewAdapter.ReplaceType replaceType = null;
+        switch(mCurrentItem%2){
             case 0:
                 list = UserDataInfo.getHeadlineContent();
+                replaceType = NewsListRecyclerViewAdapter.ReplaceType.Headline;
                 if(list==null){
-                    if(UserDataInfo.getHotNewsContent()!=null){
-                        list = UserDataInfo.getHotNewsContent();
-                    }else if(UserDataInfo.getInstantNewsContent()!=null){
+                    if(UserDataInfo.getInstantNewsContent()!=null){
                         list = UserDataInfo.getInstantNewsContent();
+                        replaceType = NewsListRecyclerViewAdapter.ReplaceType.Instant;
                     }else{
                         vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
                     }
@@ -165,25 +166,12 @@ public class SpecialNewsCategoryFragment extends Fragment {
                 if (Utility.DEBUG) Log.e(TAG, "list: " + list);
                 break;
             case 1:
-                list = UserDataInfo.getHotNewsContent();
-                if(list==null){
-                    if(UserDataInfo.getHeadlineContent()!=null){
-                        list = UserDataInfo.getHeadlineContent();
-                    }else if(UserDataInfo.getInstantNewsContent()!=null){
-                        list = UserDataInfo.getInstantNewsContent();
-                    }else{
-                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
-                    }
-                }
-                if (Utility.DEBUG) Log.e(TAG, "list: " + list);
-                break;
-            case 2:
                 list = UserDataInfo.getInstantNewsContent();
+                replaceType = NewsListRecyclerViewAdapter.ReplaceType.Instant;
                 if(list==null){
                     if(UserDataInfo.getHeadlineContent()!=null){
                         list = UserDataInfo.getHeadlineContent();
-                    }else if(UserDataInfo.getHotNewsContent()!=null){
-                        list = UserDataInfo.getHotNewsContent();
+                        replaceType = NewsListRecyclerViewAdapter.ReplaceType.Headline;
                     }else{
                         vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_SPECIAL_NEWS_LIST_FAILED));
                     }
@@ -193,7 +181,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
         }
         if(list!=null){
             if (!isOnDestroy) {
-                processErrorList(list);
+                processErrorList(list, replaceType);
             }
         }
     }
@@ -380,7 +368,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
 
     }
 
-    private void processErrorList(List<?> newsList) {
+    private void processErrorList(List<?> newsList, NewsListRecyclerViewAdapter.ReplaceType aReplaceType) {
 
         if (Utility.DEBUG) Log.e(TAG, "processList()");
         if (isScrollToBottom) {
@@ -390,7 +378,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
         if (mAdapter == null) {
             mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             vList.setLayoutManager(mLinearLayoutManager);
-            mErrorAdapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special));
+            mErrorAdapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special), aReplaceType);
             vList.setAdapter(mAdapter);
             vList.addOnScrollListener(mListScrollListener);
         } else {

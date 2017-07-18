@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -35,6 +36,10 @@ public class ZoomImageView extends ImageView {
     ScaleGestureDetector mScaleDetector;
     Context context;
     Handler mHandler;
+
+    public int getMode(){
+        return mode;
+    }
 
     public ZoomImageView(Context context, AttributeSet attr) {
         super(context, attr);
@@ -72,10 +77,12 @@ public class ZoomImageView extends ImageView {
                         last.set(event.getX(), event.getY());
                         start.set(last);
                         mode = ZOOM;
+//                        setLongClickable(false);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         if (mode == ZOOM || (mode == DRAG && saveScale > minScale)) {
 
+//                            setLongClickable(false);
                             float deltaX = curr.x - last.x;
                             float deltaY = curr.y - last.y;
                             float scaleWidth = Math.round(origWidth * saveScale);
@@ -115,6 +122,8 @@ public class ZoomImageView extends ImageView {
 
                     case MotionEvent.ACTION_UP:
                         mode = NONE;
+//                        setLongClickable(true);
+//                        setOnLongClickListener(mLongClickListener);
                         int xDiff = (int) Math.abs(curr.x - start.x);
                         int yDiff = (int) Math.abs(curr.y - start.y);
                         if (xDiff < CLICK && yDiff < CLICK) {
@@ -124,11 +133,13 @@ public class ZoomImageView extends ImageView {
 
                     case MotionEvent.ACTION_POINTER_UP:
                         mode = NONE;
+//                        setLongClickable(true);
+//                        setOnLongClickListener(mLongClickListener);
                         break;
                 }
                 setImageMatrix(matrix);
                 invalidate();
-                return true;
+                return false;
             }
 
         });
@@ -183,6 +194,7 @@ public class ZoomImageView extends ImageView {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             mode = ZOOM;
+//            setLongClickable(false);
             return true;
         }
 
@@ -238,5 +250,12 @@ public class ZoomImageView extends ImageView {
             }
             return true;
         }
+    }
+
+    private OnLongClickListener mLongClickListener;
+    @Override
+    public void setOnLongClickListener(@Nullable OnLongClickListener l) {
+        mLongClickListener = l;
+        super.setOnLongClickListener(l);
     }
 }

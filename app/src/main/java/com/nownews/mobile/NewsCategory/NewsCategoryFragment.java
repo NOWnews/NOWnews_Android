@@ -106,34 +106,45 @@ public class NewsCategoryFragment extends Fragment {
             }
         }
     };
-    private boolean isLadingLayoutVisible = false;
     private ApiController mApiController;
     private List<CategoryInfo> mNewsCategoryContent;
     private UiHandler mUiHandler;
 
     public boolean checkIsWebFragment() {
-        int currentPage = vViewPager.getCurrentItem();
-        Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
-        if(fragment instanceof WebFragment){
-            return true;
+        if(vViewPager!=null){
+            int currentPage = vViewPager.getCurrentItem();
+            if(mAdapter!=null){
+                Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
+                if(fragment!=null && fragment instanceof WebFragment){
+                    return true;
+                }
+            }
         }
         return false;
     }
 
     public boolean checkIsWebFragmentCanGoBack() {
-        int currentPage = vViewPager.getCurrentItem();
-        Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
-        if(fragment instanceof WebFragment){
-            return ((WebFragment)fragment).canGoBack();
+        if(vViewPager!=null){
+            int currentPage = vViewPager.getCurrentItem();
+            if(mAdapter!=null){
+                Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
+                if(fragment!=null && fragment instanceof WebFragment){
+                    return ((WebFragment)fragment).canGoBack();
+                }
+            }
         }
         return false;
     }
 
     public void doWebFragmentGoBack() {
-        int currentPage = vViewPager.getCurrentItem();
-        Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
-        if(fragment instanceof WebFragment){
-            ((WebFragment)fragment).goBack();
+        if(vViewPager!=null){
+            int currentPage = vViewPager.getCurrentItem();
+            if(mAdapter!=null){
+                Fragment fragment = (Fragment) mAdapter.instantiateItem(vViewPager, currentPage);
+                if(fragment!=null && fragment instanceof WebFragment){
+                    ((WebFragment)fragment).goBack();
+                }
+            }
         }
     }
 

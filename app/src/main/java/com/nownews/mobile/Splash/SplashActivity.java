@@ -1,34 +1,28 @@
 package com.nownews.mobile.Splash;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.appinvite.AppInvite;
-import com.google.android.gms.appinvite.AppInviteInvitationResult;
-import com.google.android.gms.appinvite.AppInviteReferral;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.bumptech.glide.request.transition.Transition;
 import com.nownews.R;
-import com.nownews.mobile.NewHome;
 import com.nownews.mobile.Api.ParameterSet;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
@@ -39,14 +33,11 @@ import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
 import com.nownews.mobile.Json.SplashImageJson;
-import com.nownews.mobile.NownewsApplication;
+import com.nownews.mobile.NewHome;
 import com.nownews.mobile.Service.GetSplashImageService;
+import static android.Manifest.permission.*;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
-import java.net.URLDecoder;
 
 public class SplashActivity extends AppCompatActivity{
 
@@ -127,7 +118,12 @@ public class SplashActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        startSplashActivity();
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            checkExternalStoragePermission();
+        }else{
+            startSplashActivity();
+        }
 
     }
 
@@ -269,7 +265,6 @@ public class SplashActivity extends AppCompatActivity{
         //clear bitmapcontroller
         if (mBitmapController != null) {
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
             mBitmapController.unregistBitmapController(this);
         }
 
@@ -322,44 +317,111 @@ public class SplashActivity extends AppCompatActivity{
         String thumbnailPath = UserDataInfo.ThumbnailPath + "Splash.jpg";
         if (Utility.DEBUG)Log.d(TAG, "thumbnailPath: " + thumbnailPath);
         Glide.with(this)
-                .load(thumbnailPath)
+                .setDefaultRequestOptions(new RequestOptions()
+                        .format(DecodeFormat.PREFER_RGB_565)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .error(R.drawable.default_img))
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .error(R.drawable.default_img)
+                .load(thumbnailPath)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
 
                         if (resource != null) {
                             vSplashImage.setImageBitmap(resource);
                         } else {
                             vSplashImage.setImageResource(R.drawable.default_img);
                         }
+                        getSplashImage();
 
-                        boolean connectStatus = Utility.getConnectivityStatus(SplashActivity.this);
-                        if (!connectStatus) {
-                            Utility.openNetworkErrorDialog();
-                            return;
-                        }
-                        if (!Utility.showNetworkSlowDialog(SplashActivity.this, mHandler, true)) {
-                            getSplashImage();
-                        }
+//                        boolean connectStatus = Utility.getConnectivityStatus(SplashActivity.this);
+//                        if (!connectStatus) {
+//                            Utility.openNetworkErrorDialog();
+//                            return;
+//                        }
+//                        if (!Utility.showNetworkSlowDialog(SplashActivity.this, mHandler, true)) {
+//                            getSplashImage();
+//                        }
 
                     }
 
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
 
                         vSplashImage.setImageDrawable(errorDrawable);
                         if (!Utility.showNetworkSlowDialog(SplashActivity.this, mHandler, true)) {
                             getSplashImage();
                         }
 
-                        super.onLoadFailed(e, errorDrawable);
+                        super.onLoadFailed(errorDrawable);
                     }
                 });
 
     }
 
+    private final int EXTERNAL_PERMISSION = 0x123;
+    private final int LOCATION_PERMISSION = 0x321;
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void checkExternalStoragePermission(){
+
+        int writeExternalPermission = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
+        int readExternalPermission = checkSelfPermission(READ_EXTERNAL_STORAGE);
+        if(writeExternalPermission != PackageManager.PERMISSION_GRANTED
+                || readExternalPermission != PackageManager.PERMISSION_GRANTED){
+            //未取得權限，向使用者要求允許權限
+            if (Utility.DEBUG)Log.e(TAG, "未取得權限，向使用者要求允許權限");
+            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, EXTERNAL_PERMISSION);
+        }else{
+            //已有權限，可進行檔案存取
+            if (Utility.DEBUG)Log.d(TAG, "已有權限，可進行檔案存取");
+            checkLocationPermission();
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void checkLocationPermission(){
+
+        int accessFineLocationPermission = checkSelfPermission(ACCESS_FINE_LOCATION);
+        int accessCoarseLocationPermission = checkSelfPermission(ACCESS_COARSE_LOCATION);
+        if(accessFineLocationPermission != PackageManager.PERMISSION_GRANTED
+                || accessCoarseLocationPermission != PackageManager.PERMISSION_GRANTED){
+            //未取得權限，向使用者要求允許權限
+            if (Utility.DEBUG)Log.e(TAG, "未取得權限，向使用者要求允許權限");
+            requestPermissions(new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION);
+        }else{
+            //已有權限，可進行檔案存取
+            if (Utility.DEBUG)Log.d(TAG, "已有權限，可進行檔案存取");
+            startSplashActivity();
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch(requestCode){
+            case EXTERNAL_PERMISSION:
+                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //使用者按下允許，可進行檔案存取
+                    if (Utility.DEBUG)Log.e(TAG, "使用者按下允許，可進行檔案存取");
+                    checkLocationPermission();
+                }else{
+                    //使用者拒絕權限，停用檔案存取功能
+                    if (Utility.DEBUG)Log.e(TAG, "使用者拒絕權限，停用檔案存取功能");
+                }
+                break;
+            case LOCATION_PERMISSION:
+                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //使用者按下允許，可進行檔案存取
+                    if (Utility.DEBUG)Log.e(TAG, "使用者按下允許，可進行檔案存取");
+                    startSplashActivity();
+                }else{
+                    //使用者拒絕權限，停用檔案存取功能
+                    if (Utility.DEBUG)Log.e(TAG, "使用者拒絕權限，停用檔案存取功能");
+                }
+                break;
+        }
+    }
 }

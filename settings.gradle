@@ -1,1 +1,1 @@
-include ':app', ':ad2iction-sdk', ':ad2iction-mediation-adapter'
+include ':app', ':ad2iction-sdk', ':ad2iction-mediation-adapter', ':imagedownloadmanager'

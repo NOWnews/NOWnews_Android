@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.FragmentActivity;
+import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,41 +19,34 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ad2iction.nativeads.Ad2ictionAdLocalEventHandler;
 import com.ad2iction.nativeads.Ad2ictionNative;
-import com.ad2iction.nativeads.AdapterHelper;
 import com.ad2iction.nativeads.NativeErrorCode;
 import com.ad2iction.nativeads.NativeResponse;
 import com.ad2iction.nativeads.RequestParameters;
-import com.ad2iction.nativeads.ViewBinder;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherAdView;
-import com.google.android.gms.ads.formats.NativeAdOptions;
-import com.google.android.gms.ads.formats.NativeAppInstallAd;
-import com.google.android.gms.ads.formats.NativeContentAd;
 import com.nownews.R;
-import com.nownews.mobile.Api.WebAPIUrl;
-import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Json.VideosListJson;
 import com.nownews.mobile.Json.VideosListJson.VideosContent;
 import com.nownews.mobile.NewHome;
-import com.nownews.mobile.NewsCategory.NewsListRecyclerViewAdapter;
-import com.nownews.mobile.NewsPage.NewsPage;
 import com.nownews.mobile.VideoNewsPage.VideoNewsPage;
-import com.nownews.mobile.Widget.CustomImageTopcrop;
 import com.vpadn.ads.VpadnAd;
 import com.vpadn.ads.VpadnAdListener;
 import com.vpadn.ads.VpadnAdRequest;
 import com.vpadn.ads.VpadnNativeAd;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 
@@ -360,7 +353,11 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 if (Utility.DEBUG) Log.i(TAG, "screenWidth: " + screenWidth);
                 if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
                 if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
-                Glide.with(mContext).load(adCoverImage.getUrl()).override(screenWidth, newHeight).into(aImage);
+                Glide.with(mContext)
+                        .setDefaultRequestOptions(new RequestOptions().format(DecodeFormat.PREFER_RGB_565)
+                                .override(screenWidth, newHeight))
+                        .load(adCoverImage.getUrl())
+                        .into(aImage);
 //                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
                 nativeAd.registerViewForInteraction(aNewsItem);
                 setItemVisibility(true, aItemView);
@@ -400,161 +397,143 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
     private String mAd2Native;
     private Ad2ictionNative vAD2Native;
+    private NativeResponse mNativeResponse;
+    private Ad2ictionAdLocalEventHandler mAd2ictionAdLocalEventHandler;
     private void processAD2(final int aPosition, final TextView aCategory, final TextView aTitle,
                             final ImageView aImage, final RelativeLayout aNewsItem, final Button aCallToAction,
                             final View aItemView) {
 
+        if(vAD2Native!=null){
+            vAD2Native.destroy();
+            vAD2Native = null;
+        }
+
+        if(mAd2ictionAdLocalEventHandler!=null){
+            mAd2ictionAdLocalEventHandler.recycle();
+        }
+
         mAd2Native = mContext.getString(R.string.ad2_native);
-        AdLoader adLoader = new AdLoader.Builder(mContext, mAd2Native)
-                .forAppInstallAd(new NativeAppInstallAd.OnAppInstallAdLoadedListener() {
-                    @Override
-                    public void onAppInstallAdLoaded(NativeAppInstallAd nativeAppInstallAd) {
+        if (Utility.DEBUG) Log.e(TAG, "===mAd2Native: " + mAd2Native);
 
-                        Log.v(TAG, "onAppInstallAdLoaded");
+        Ad2ictionNative.Ad2ictionNativeListener listener = new Ad2ictionNative.Ad2ictionNativeListener() {
+            @Override
+            public void onNativeImpression(View view) { }
 
-                        if(nativeAppInstallAd==null){
-                            return;
-                        }
-                        aCategory.setText(mContext.getString(R.string.sponsored));
-                        aCategory.setTextColor(mContext.getResources().getColor(android.R.color.white));
-                        aTitle.setText(nativeAppInstallAd.getHeadline());
-                        aCallToAction.setText(nativeAppInstallAd.getCallToAction());
-                        Glide.with(mContext)
-                                .load(nativeAppInstallAd.getImages().get(0))
-                                .asBitmap()
+            @Override
+            public void onNativeClick(View view) { }
+
+            @Override
+            public void onNativeLoad(NativeResponse nativeResponse) {
+
+                mNativeResponse = nativeResponse;
+                mAd2ictionAdLocalEventHandler = new Ad2ictionAdLocalEventHandler(mContext);
+                mAd2ictionAdLocalEventHandler.handleEvent(aItemView, mNativeResponse);
+
+                if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
+                if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
+                if (Utility.DEBUG) Log.e(TAG, "mNativeResponse is null or not??" + mNativeResponse.toString());
+
+                String text = mNativeResponse.getText();
+                final String imageUrl = mNativeResponse.getMainImageUrl();
+                String callToActionText = mNativeResponse.getCallToAction();
+                String link = mNativeResponse.getClickDestinationUrl();
+                if (Utility.DEBUG) Log.v(TAG, "text: " + text);
+                if (Utility.DEBUG) Log.v(TAG, "imageUrl: " + imageUrl);
+                if (Utility.DEBUG) Log.v(TAG, "link: " + link);
+
+                aCategory.setText(mContext.getString(R.string.sponsored));
+                aCategory.setTextColor(mContext.getResources().getColor(android.R.color.black));
+                aTitle.setText(text);
+                aCallToAction.setText(callToActionText);
+                Glide.with(mContext)
+                        .setDefaultRequestOptions(new RequestOptions().format(DecodeFormat.PREFER_RGB_565)
                                 .skipMemoryCache(true)
-                                .error(R.drawable.default_img)
-                                .into(new SimpleTarget<Bitmap>() {
-                                    @Override
-                                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                        Log.v(TAG, "onResourceReady");
-                                        Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
-                                        Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
+                                .error(R.drawable.default_img))
+                        .asBitmap()
+                        .load(imageUrl)
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
 
-                                        //                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                        //                                params.setMargins(0, 15, 0, 0);
-                                        //                                aImage.setLayoutParams(params);
+                                if (Utility.DEBUG) Log.v(TAG, "onResourceReady");
+                                if (Utility.DEBUG) Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
+                                if (Utility.DEBUG) Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
 
-//                                        int screenWidth = Utility.getScreenWidth(mContext);
-//                                        float scale = (float)screenWidth / (float)resource.getWidth();
-//                                        int newHeight = (int)(resource.getHeight() * scale);
-//                                        Log.i(TAG, "screenWidth: " + screenWidth);
-//                                        Log.i(TAG, "scale: " + scale);
-//                                        Log.i(TAG, "newHeight: " + newHeight);
-//                                        Glide.with(mContext).load(imageUrl).override(screenWidth, newHeight).into(aImage);
-                                        setItemVisibility(true, aItemView);
+//                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                                params.setMargins(0, 15, 0, 0);
+//                                aImage.setLayoutParams(params);
 
-                                    }
+                                int screenWidth = Utility.getScreenWidth(mContext);
+                                float scale = (float)screenWidth / (float)resource.getWidth();
+                                int newHeight = (int)(resource.getHeight() * scale);
+                                if (Utility.DEBUG) Log.i(TAG, "screenWidth: " + screenWidth);
+                                if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
+                                if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
+                                Glide.with(mContext)
+                                        .setDefaultRequestOptions(new RequestOptions().skipMemoryCache(true)
+                                                .error(R.drawable.default_img)
+                                                .override(screenWidth, newHeight))
+                                        .load(imageUrl)
+                                        .into(aImage);
+                                setItemVisibility(true, aItemView);
 
-                                    @Override
-                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                        aImage.setImageResource(R.drawable.default_img);
-                                        setItemVisibility(true, aItemView);
-                                        super.onLoadFailed(e, errorDrawable);
-                                    }
-                                });
+                            }
+                        });
+            }
 
+            @Override
+            public void onNativeFail(NativeErrorCode nativeErrorCode) { }
+        };
 
-                    }
-                })
-                .forContentAd(new NativeContentAd.OnContentAdLoadedListener() {
-                    @Override
-                    public void onContentAdLoaded(NativeContentAd nativeContentAd) {
+        vAD2Native = new Ad2ictionNative((Activity) mContext, mAd2Native, "native", listener);
+        Location currentLocation = Utility.getLocation(mContext);
+        if(currentLocation!=null){
+            currentLocation.setAccuracy(100);
+        }
+        EnumSet<RequestParameters.NativeAdAsset> assetsSet = EnumSet.of(RequestParameters.NativeAdAsset.TITLE,
+                RequestParameters.NativeAdAsset.CALL_TO_ACTION_TEXT,
+                RequestParameters.NativeAdAsset.MAIN_IMAGE);
 
-                        Log.v(TAG, "onContentAdLoaded");
-
-                        if(nativeContentAd==null){
-                            return;
-                        }
-                        aCategory.setText(mContext.getString(R.string.sponsored));
-                        aCategory.setTextColor(mContext.getResources().getColor(android.R.color.white));
-                        aTitle.setText(nativeContentAd.getHeadline());
-                        aCallToAction.setText(nativeContentAd.getCallToAction());
-                        Glide.with(mContext)
-                                .load(nativeContentAd.getImages().get(0))
-                                .asBitmap()
-                                .skipMemoryCache(true)
-                                .error(R.drawable.default_img)
-                                .into(new SimpleTarget<Bitmap>() {
-                                    @Override
-                                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                        Log.v(TAG, "onResourceReady");
-                                        Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
-                                        Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
-
-                                        //                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                        //                                params.setMargins(0, 15, 0, 0);
-                                        //                                aImage.setLayoutParams(params);
-
-//                                        int screenWidth = Utility.getScreenWidth(mContext);
-//                                        float scale = (float)screenWidth / (float)resource.getWidth();
-//                                        int newHeight = (int)(resource.getHeight() * scale);
-//                                        Log.i(TAG, "screenWidth: " + screenWidth);
-//                                        Log.i(TAG, "scale: " + scale);
-//                                        Log.i(TAG, "newHeight: " + newHeight);
-//                                        Glide.with(mContext).load(imageUrl).override(screenWidth, newHeight).into(aImage);
-                                        setItemVisibility(true, aItemView);
-
-                                    }
-
-                                    @Override
-                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                        aImage.setImageResource(R.drawable.default_img);
-                                        setItemVisibility(true, aItemView);
-                                        super.onLoadFailed(e, errorDrawable);
-                                    }
-                                });
-
-                    }
-                })
-                .withAdListener(new AdListener() {
-
-                    @Override
-                    public void onAdLoaded() {
-
-                        Log.v(TAG, "onAdLoaded");
-
-                        super.onAdLoaded();
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(int i) {
-
-                        Log.v(TAG, "onAdFailedToLoad");
-
-                        super.onAdFailedToLoad(i);
-                    }
-                })
-                .withNativeAdOptions(new NativeAdOptions.Builder().build())
+        RequestParameters requestParameters = new RequestParameters.Builder()
+                .location(currentLocation)
+                .desiredAssets(assetsSet)
                 .build();
 
-        adLoader.loadAd(new PublisherAdRequest.Builder().build());
+        vAD2Native.makeRequest(requestParameters);
 
-//        if(vAD2Native!=null){
-//            vAD2Native.destroy();
-//            vAD2Native = null;
-//        }
+//        aItemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
 //
-//        mAd2Native = mContext.getString(R.string.ad2_native);
-//        if (Utility.DEBUG) Log.e(TAG, "===mAd2Native: " + mAd2Native);
+//                Log.d(TAG, "aItemView 111");
+//                if(mNativeResponse!=null){
+//                    Log.d(TAG, "aItemView 222");
+//                    mAd2ictionAdLocalEventHandler.handleEvent(aItemView, mNativeResponse);
+//                }
 //
+//            }
+//        });
+
 //        Ad2ictionNative.Ad2ictionNativeNetworkListener ad2ictionNativeNetworkListener = new Ad2ictionNative.Ad2ictionNativeNetworkListener() {
 //            @Override
 //            public void onNativeLoad(NativeResponse nativeResponse) {
-//                if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
-//                if (Utility.DEBUG) Log.v(TAG, "mFirstVisibleItem: " + mFirstVisibleItem);
-//                if (Utility.DEBUG) Log.v(TAG, "mLastVisibleItem: " + mLastVisibleItem);
-//                if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
-//                if (Utility.DEBUG) Log.e(TAG, "nativeResponse is null or not??" + nativeResponse.toString());
 //
-//                String text = nativeResponse.getText();
-//                final String imageUrl = nativeResponse.getMainImageUrl();
-//                String callToActionText = nativeResponse.getCallToAction();
+//                mNativeResponse = nativeResponse;
+//
+//                if (Utility.DEBUG) Log.v(TAG, "aPosition: " + aPosition);
+//                if (Utility.DEBUG) Log.e(TAG, "onNativeLoad!!!!!!");
+//                if (Utility.DEBUG) Log.e(TAG, "mNativeResponse is null or not??" + mNativeResponse.toString());
+//
+//                String text = mNativeResponse.getText();
+//                final String imageUrl = mNativeResponse.getMainImageUrl();
+//                String callToActionText = mNativeResponse.getCallToAction();
+//                String link = mNativeResponse.getClickDestinationUrl();
 //                if (Utility.DEBUG) Log.v(TAG, "text: " + text);
 //                if (Utility.DEBUG) Log.v(TAG, "imageUrl: " + imageUrl);
+//                if (Utility.DEBUG) Log.v(TAG, "link: " + link);
 //
 //                aCategory.setText(mContext.getString(R.string.sponsored));
-//                aCategory.setTextColor(mContext.getResources().getColor(android.R.color.white));
+//                aCategory.setTextColor(mContext.getResources().getColor(android.R.color.black));
 //                aTitle.setText(text);
 //                aCallToAction.setText(callToActionText);
 //                Glide.with(mContext)
@@ -565,9 +544,9 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 //                        .into(new SimpleTarget<Bitmap>() {
 //                            @Override
 //                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                                Log.v(TAG, "onResourceReady");
-//                                Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
-//                                Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
+//                                if (Utility.DEBUG) Log.v(TAG, "onResourceReady");
+//                                if (Utility.DEBUG) Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
+//                                if (Utility.DEBUG) Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
 //
 ////                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 ////                                params.setMargins(0, 15, 0, 0);
@@ -576,16 +555,18 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 //                                int screenWidth = Utility.getScreenWidth(mContext);
 //                                float scale = (float)screenWidth / (float)resource.getWidth();
 //                                int newHeight = (int)(resource.getHeight() * scale);
-//                                Log.i(TAG, "screenWidth: " + screenWidth);
-//                                Log.i(TAG, "scale: " + scale);
-//                                Log.i(TAG, "newHeight: " + newHeight);
+//                                if (Utility.DEBUG) Log.i(TAG, "screenWidth: " + screenWidth);
+//                                if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
+//                                if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
 //                                Glide.with(mContext).load(imageUrl).override(screenWidth, newHeight).into(aImage);
+//                                setItemVisibility(true, aItemView);
 //
 //                            }
 //
 //                            @Override
 //                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
 //                                aImage.setImageResource(R.drawable.default_img);
+//                                setItemVisibility(true, aItemView);
 //                                super.onLoadFailed(e, errorDrawable);
 //                            }
 //                        });
@@ -593,13 +574,38 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 //
 //            @Override
 //            public void onNativeFail(NativeErrorCode nativeErrorCode) {
-//
+//                setItemVisibility(false, aItemView);
 //            }
 //        };
 //
+//        Ad2ictionNative.Ad2ictionNativeEventListener ad2ictionNativeEventListener = new Ad2ictionNative.Ad2ictionNativeEventListener() {
+//            @Override
+//            public void onNativeImpression(View view) {
+//
+//            }
+//
+//            @Override
+//            public void onNativeClick(View view) {
+//                Log.d(TAG, "vAD2Native click!!");
+//            }
+//        };
+//
+//        aItemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                if(mNativeResponse!=null){
+////                    mNativeResponse.prepare(aItemView);
+//                    mNativeResponse.handleClick(aItemView);
+//                }
+//
+//            }
+//        });
+//
 //        RequestParameters requestParameters = new RequestParameters.Builder().build();
 //
-//        vAD2Native = new Ad2ictionNative(mContext, mAd2Native, "native", ad2ictionNativeNetworkListener);
+//        vAD2Native = new Ad2ictionNative((Activity)mContext, mAd2Native, "native", ad2ictionNativeNetworkListener);
+//        vAD2Native.setNativeEventListener(ad2ictionNativeEventListener);
 //        vAD2Native.makeRequest(requestParameters);
 
     }
@@ -621,7 +627,6 @@ public class VideoNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     public void clearBitmapController() {
         if (mBitmapController != null) {
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
         }
     }
 

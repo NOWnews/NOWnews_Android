@@ -87,7 +87,7 @@ public class NewsListFragment extends Fragment {
                         fragment.vRefreshLayout.setRefreshing(false);
                     }
                     if (!fragment.isOnDestroy && fragment.isAdded()) {
-                        fragment.processList(fragment.mNewsList);
+                        fragment.processList(fragment.mNewsList, null);
                     }
                     break;
                 case ParameterSet.GET_NEWS_LIST_FAILED:
@@ -138,38 +138,27 @@ public class NewsListFragment extends Fragment {
 
     private void setReplaceNews(){
         List<?> list = null;
-        switch(mCurrentPosition%3){
+        NewsListRecyclerViewAdapter.ReplaceType replaceType = null;
+        switch(mCurrentPosition%2){
             case 0:
                 list = UserDataInfo.getHeadlineContent();
+                replaceType = NewsListRecyclerViewAdapter.ReplaceType.Headline;
                 if(list==null){
-                    if(UserDataInfo.getHotNewsContent()!=null){
-                        list = UserDataInfo.getHotNewsContent();
-                    }else if(UserDataInfo.getInstantNewsContent()!=null){
+                    if(UserDataInfo.getInstantNewsContent()!=null){
                         list = UserDataInfo.getInstantNewsContent();
+                        replaceType = NewsListRecyclerViewAdapter.ReplaceType.Instant;
                     }else{
                         vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
                     }
                 }
                 break;
             case 1:
-                list = UserDataInfo.getHotNewsContent();
-                if(list==null){
-                    if(UserDataInfo.getHeadlineContent()!=null){
-                        list = UserDataInfo.getHeadlineContent();
-                    }else if(UserDataInfo.getInstantNewsContent()!=null){
-                        list = UserDataInfo.getInstantNewsContent();
-                    }else{
-                        vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
-                    }
-                }
-                break;
-            case 2:
                 list = UserDataInfo.getInstantNewsContent();
+                replaceType = NewsListRecyclerViewAdapter.ReplaceType.Instant;
                 if(list==null){
                     if(UserDataInfo.getHeadlineContent()!=null){
                         list = UserDataInfo.getHeadlineContent();
-                    }else if(UserDataInfo.getHotNewsContent()!=null){
-                        list = UserDataInfo.getHotNewsContent();
+                        replaceType = NewsListRecyclerViewAdapter.ReplaceType.Headline;
                     }else{
                         vErrorMessage.setText(String.format(getString(R.string.api_loading_error), ParameterSet.GET_NEWS_LIST_FAILED));
                     }
@@ -178,7 +167,7 @@ public class NewsListFragment extends Fragment {
         }
         if(list!=null){
             if (!isOnDestroy && isAdded()) {
-                processList(list);
+                processList(list, replaceType);
             }
         }
     }
@@ -315,7 +304,7 @@ public class NewsListFragment extends Fragment {
     }
 
     private LinearLayoutManager mLinearLayoutManager;
-    private void processList(List<?> newsList) {
+    private void processList(List<?> newsList, NewsListRecyclerViewAdapter.ReplaceType aReplaceType) {
 
         vLoadingLayout.setVisibility(View.GONE);
         vList.setVisibility(View.VISIBLE);
@@ -336,7 +325,7 @@ public class NewsListFragment extends Fragment {
                 vList.setRecycledViewPool(mPool);
             }
             NewsListRecyclerViewAdapter adapter = null;
-            adapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
+            adapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryName, getChildFragmentManager(), getString(R.string.news), aReplaceType);
             vList.setAdapter(adapter);
             vList.addOnScrollListener(mListScrollListener);
         }else{

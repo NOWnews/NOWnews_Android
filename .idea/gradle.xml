@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/ad2iction-mediation-adapter" />
             <option value="$PROJECT_DIR$/ad2iction-sdk" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/imagedownloadmanager" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

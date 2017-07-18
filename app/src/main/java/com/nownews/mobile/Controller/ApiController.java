@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.nownews.R;
 import com.nownews.mobile.Api.GetHeadlineNews;
 import com.nownews.mobile.Api.GetHotNews;
 import com.nownews.mobile.Api.GetInstantNews;
@@ -26,8 +27,13 @@ import com.nownews.mobile.Api.GetSplashImage;
 import com.nownews.mobile.Api.GetVideosCategory;
 import com.nownews.mobile.Api.GetVideosInfo;
 import com.nownews.mobile.Api.GetVideosList;
+import com.nownews.mobile.Api.WebAPIUrl;
+import com.nownews.mobile.Api.WebApi;
+import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Service.SignalService;
+
+import java.net.HttpURLConnection;
 
 public class ApiController {
 
@@ -55,6 +61,30 @@ public class ApiController {
         intent.setClass(aContext, SignalService.class);
         aContext.startService(intent);
     }
+
+
+    /**
+     * 取得新聞列表
+     */
+    public void sendFCMRegisterID(final Context aContext, final String regId, final String BuildSERIAL) {
+        if (Utility.DEBUG) Log.i(TAG, "getNewsList called");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int returnString = -1;
+                    returnString = WebApi.DoPost(WebAPIUrl.REGIST_ID_RETURN, "token=" + regId + "&deviceId=" + BuildSERIAL + "&os=ANDROID", true);
+                    if(returnString== HttpURLConnection.HTTP_OK){
+                        GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message), aContext.getString(R.string.cloud_message_regist), regId);
+                        Utility.storeRegistrationId(aContext, regId);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 
     /**
      * 取得頭條新聞

@@ -115,7 +115,6 @@ public class AlbumGridFragmentAdapter extends RecyclerView.Adapter<AlbumGridFrag
     public void clearBitmapController() {
         if (mBitmapController != null) {
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
         }
     }
 

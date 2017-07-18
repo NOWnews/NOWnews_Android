@@ -200,7 +200,6 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         mApiController = ApiController.getInstance();
         mBitmapController = BitmapController.getInstance(getActivity());
 //        mBitmapController = new BitmapController(getActivity());
-        mBitmapController.closeBitmapController();
         mBitmapController.clearCache();
         mSharedPref = new SharedPreferencesMethods(getActivity());
         mEcoDefaultImageList = new String[]{
@@ -777,10 +776,10 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         if(vContentRecyclerView.getAdapter()!=null){
             ((NewsPageRecyclerViewAdapter)vContentRecyclerView.getAdapter()).resumeDFP();
         }
-        if (isOnPause) {
-            isOnPause = false;
-            getNewsInfo();
-        }
+//        if (isOnPause) {
+//            isOnPause = false;
+//            getNewsInfo();
+//        }
         super.onResume();
     }
 

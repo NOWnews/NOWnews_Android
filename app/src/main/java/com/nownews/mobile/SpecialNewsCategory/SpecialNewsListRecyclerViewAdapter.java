@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,8 +25,10 @@ import com.ad2iction.nativeads.NativeErrorCode;
 import com.ad2iction.nativeads.NativeResponse;
 import com.ad2iction.nativeads.RequestParameters;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
@@ -399,7 +402,12 @@ public class SpecialNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 if (Utility.DEBUG) Log.i(TAG, "screenWidth: " + screenWidth);
                 if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
                 if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
-                Glide.with(mContext).load(adCoverImage.getUrl()).override(screenWidth, newHeight).into(aImage);
+                Glide.with(mContext)
+                        .setDefaultRequestOptions(new RequestOptions()
+                                .format(DecodeFormat.PREFER_RGB_565)
+                                .override(screenWidth, newHeight))
+                        .load(adCoverImage.getUrl())
+                        .into(aImage);
 //                VpadnNativeAd.downloadAndDisplayImage(adCoverImage, aImage);
                 nativeAd.registerViewForInteraction(aNewsItem);
                 setItemVisibility(true, aItemView);
@@ -489,13 +497,16 @@ public class SpecialNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 aTitle.setText(text);
                 aCallToAction.setText(callToActionText);
                 Glide.with(mContext)
-                        .load(imageUrl)
+                        .setDefaultRequestOptions(new RequestOptions()
+                                .format(DecodeFormat.PREFER_RGB_565)
+                                .skipMemoryCache(true)
+                                .error(R.drawable.default_img))
                         .asBitmap()
-                        .skipMemoryCache(true)
-                        .error(R.drawable.default_img)
+                        .load(imageUrl)
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+
                                 if (Utility.DEBUG) Log.v(TAG, "onResourceReady");
                                 if (Utility.DEBUG) Log.d(TAG, "resource.getWidth(): " + resource.getWidth());
                                 if (Utility.DEBUG) Log.d(TAG, "resource.getHeight(): " + resource.getHeight());
@@ -510,16 +521,23 @@ public class SpecialNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                                 if (Utility.DEBUG) Log.i(TAG, "screenWidth: " + screenWidth);
                                 if (Utility.DEBUG) Log.i(TAG, "scale: " + scale);
                                 if (Utility.DEBUG) Log.i(TAG, "newHeight: " + newHeight);
-                                Glide.with(mContext).load(imageUrl).override(screenWidth, newHeight).into(aImage);
+                                Glide.with(mContext)
+                                        .setDefaultRequestOptions(new RequestOptions()
+                                                .format(DecodeFormat.PREFER_RGB_565)
+                                                .skipMemoryCache(true)
+                                                .error(R.drawable.default_img)
+                                                .override(screenWidth, newHeight))
+                                        .load(imageUrl)
+                                        .into(aImage);
                                 setItemVisibility(true, aItemView);
 
                             }
 
                             @Override
-                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            public void onLoadFailed(@Nullable Drawable errorDrawable) {
                                 aImage.setImageResource(R.drawable.default_img);
                                 setItemVisibility(true, aItemView);
-                                super.onLoadFailed(e, errorDrawable);
+                                super.onLoadFailed(errorDrawable);
                             }
                         });
             }
@@ -670,7 +688,6 @@ public class SpecialNewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     public void clearBitmapController() {
         if (mBitmapController != null) {
             mBitmapController.clearCache();
-            mBitmapController.closeBitmapController();
         }
     }
 
