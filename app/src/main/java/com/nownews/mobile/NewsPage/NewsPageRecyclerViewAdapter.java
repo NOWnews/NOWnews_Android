@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Layout;
@@ -23,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -31,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
 import com.cmcm.adsdk.banner.CMAdView;
 import com.cmcm.adsdk.banner.CMBannerAdListener;
 import com.cmcm.adsdk.banner.CMBannerAdSize;
@@ -40,6 +43,9 @@ import com.facebook.share.widget.LikeView;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherAdView;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
+import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.nownews.R;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Common.ReSizeLayoutParams;
@@ -71,7 +77,6 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private BitmapController mBitmapController;
     private SharedPreferencesMethods mSharedPref;
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
-    private ArrayList<ConcurrentHashMap<String, Object>> mVideoContentList;
     private List<RelationsNewsInfoJson.RelationsNewsBean> mRelationsNewsList;
     private NewsInfoJson mNewsInfo;
     private int mListSize;
@@ -92,18 +97,18 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
     private final int VIEW_TYPE_NEWS_INFO = R.layout.widget_news_page_news_info_item;
     private final int VIEW_TYPE_CONTENT_TEXT = R.layout.widget_news_page_context_text_item;
     private final int VIEW_TYPE_CONTENT_IMAGE = R.layout.widget_news_page_context_image_item;
+    private final int VIEW_TYPE_CONTENT_VIDEO = R.layout.widget_news_page_context_video_item;
     private final int VIEW_TYPE_BOTTOM_AD = R.layout.widget_news_page_ad_item;
     private final int VIEW_TYPE_PRE_NEXT_NEWS = R.layout.widget_news_page_prev_next_item;
     private final int VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS_TITLE = R.layout.widget_news_page_reference_title_item;
     private final int VIEW_TYPE_REFERENCE_AND_HEADLINE_NEWS = R.layout.widget_reference_news_item;
     private final int VIEW_TYPE_WEB_BODY = R.layout.widget_news_page_web_body;
 
-    public NewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aVideoContentList, ArrayList<ConcurrentHashMap<String, Object>> aContentList,
+    public NewsPageRecyclerViewAdapter(Context aContext, ArrayList<ConcurrentHashMap<String, Object>> aContentList,
                                        NewsInfoJson aNewsInfo, ArrayList<String> aImageUrlList, OnVideoPlayButtonClick aListener, List<RelationsNewsInfoJson.RelationsNewsBean> aRelationsNewsList){
         mContext = aContext;
         if(Utility.DEBUG)Log.i(TAG, "mContext is null nor not?? " + (mContext==null? "true":"false"));
         mContentList = aContentList;
-        mVideoContentList = aVideoContentList;
         mNewsInfo = aNewsInfo;
         mImageUrlList = aImageUrlList;
         mListener = aListener;
@@ -155,11 +160,10 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                         mViewTypeList.add(VIEW_TYPE_CONTENT_TEXT);
                     }else if(map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE)!=null){
                         mViewTypeList.add(VIEW_TYPE_CONTENT_IMAGE);
+                    }else if(map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IFRAME_YOUTUBE)!=null){
+                        mViewTypeList.add(VIEW_TYPE_CONTENT_VIDEO);
                     }
                 }
-            }
-            if(mVideoContentList!=null && mVideoContentList.size()>1){
-                mListSize += mVideoContentList.size()-1;
             }
         }
 
@@ -225,6 +229,11 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 ContextImageViewHolder contextImageViewHolder = new ContextImageViewHolder(view);
                 return contextImageViewHolder;
 
+            case VIEW_TYPE_CONTENT_VIDEO:
+                view = LayoutInflater.from(mContext).inflate(VIEW_TYPE_CONTENT_VIDEO, null);
+                ContextVideoViewHolder contextVideoViewHolder = new ContextVideoViewHolder(view);
+                return contextVideoViewHolder;
+
             case VIEW_TYPE_BOTTOM_AD:
                 view = LayoutInflater.from(mContext).inflate(VIEW_TYPE_BOTTOM_AD, null);
                 ADViewHolder adViewHolder = new ADViewHolder(view);
@@ -274,6 +283,10 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
             case VIEW_TYPE_CONTENT_IMAGE:
                 ((ContextImageViewHolder)holder).bind(position);
+                break;
+
+            case VIEW_TYPE_CONTENT_VIDEO:
+                ((ContextVideoViewHolder)holder).bind(position);
                 break;
 
             case VIEW_TYPE_BOTTOM_AD:
@@ -357,9 +370,8 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
         public void bind(int position){
 
             //play icon
-            if(mVideoContentList!=null && mVideoContentList.size()>=1){
-                if(Utility.DEBUG)Log.w(TAG, "mVideoContentList: " + mVideoContentList);
-                for(ConcurrentHashMap<String, Object> map : mVideoContentList){
+            if(mContentList!=null && mContentList.size()>0){
+                for(ConcurrentHashMap<String, Object> map : mContentList){
                     if(map.containsKey(NewsPageRecyclerViewFragment.KEY_CONTEXT_IFRAME_YOUTUBE)){
                         vPlayIcon.setVisibility(View.VISIBLE);
                         hasYoutubeVideo = true;
@@ -471,33 +483,6 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
         }
 
-        private String getYoutubeIdFromUrl(String aUrl){
-            if(aUrl.contains("http") || aUrl.contains("https")){
-
-                if(aUrl.contains("v=")){
-                    final String regex = "v=([^\\s&#]*)";
-                    final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-                    final Matcher matcher = pattern.matcher(aUrl);
-
-                    if(matcher.find()) {
-                        System.out.println(matcher.group(1));
-                        aUrl = matcher.group(1);
-                    }
-                }
-
-                if(aUrl.contains("/")){
-                    aUrl = aUrl.substring(aUrl.lastIndexOf("/")+1);
-                }
-
-                if(aUrl.contains("?")){
-                    aUrl = aUrl.substring(0, aUrl.indexOf("?"));
-                }
-
-                Log.i(TAG, "aUrl: " + aUrl);
-            }
-            return aUrl;
-        }
-
         private void setImageClickListener(ImageView aImgView, final String aImgUrl, final String aYoutubeId) {
             aImgView.setOnClickListener(new View.OnClickListener() {
 
@@ -569,6 +554,33 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             public void onLoadingCancelled() {
             }
         };
+    }
+
+    private String getYoutubeIdFromUrl(String aUrl){
+        if(aUrl.contains("http") || aUrl.contains("https")){
+
+            if(aUrl.contains("v=")){
+                final String regex = "v=([^\\s&#]*)";
+                final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+                final Matcher matcher = pattern.matcher(aUrl);
+
+                if(matcher.find()) {
+                    System.out.println(matcher.group(1));
+                    aUrl = matcher.group(1);
+                }
+            }
+
+            if(aUrl.contains("/")){
+                aUrl = aUrl.substring(aUrl.lastIndexOf("/")+1);
+            }
+
+            if(aUrl.contains("?")){
+                aUrl = aUrl.substring(0, aUrl.indexOf("?"));
+            }
+
+            Log.i(TAG, "aUrl: " + aUrl);
+        }
+        return aUrl;
     }
 
     private void goToNewsAlbumPage(int position) {
@@ -777,6 +789,101 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             }
 
         }
+    }
+
+    public class ContextVideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+        private YouTubeThumbnailView vYoutubeView;
+        private String mCurrentYoutubeId;
+
+        public ContextVideoViewHolder(View itemView){
+            super(itemView);
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            itemView.setLayoutParams(layoutParams);
+
+            itemView.setOnClickListener(this);
+            vYoutubeView = (YouTubeThumbnailView)itemView.findViewById(R.id.content_video);
+
+        }
+
+        public void bind(int position){
+
+            int realPosition = position-1;
+            if(Utility.DEBUG)Log.w(TAG, "realPosition: " + realPosition);
+            ConcurrentHashMap<String, Object> map = mContentList.get(realPosition);
+            if(map!=null && map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IFRAME_YOUTUBE)!=null){
+                mCurrentYoutubeId = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IFRAME_YOUTUBE);
+                mCurrentYoutubeId = getYoutubeIdFromUrl(mCurrentYoutubeId);
+            }
+            if(Utility.DEBUG)Log.d(TAG, "mCurrentYoutubeId: " + mCurrentYoutubeId);
+
+            vYoutubeView.initialize(UserDataInfo.YOUTUBE_DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, final YouTubeThumbnailLoader youTubeThumbnailLoader) {
+
+                    youTubeThumbnailLoader.setVideo(mCurrentYoutubeId);
+                    youTubeThumbnailLoader.setOnThumbnailLoadedListener(new YouTubeThumbnailLoader.OnThumbnailLoadedListener() {
+                        @Override
+                        public void onThumbnailLoaded(final YouTubeThumbnailView youTubeThumbnailView, final String s) {
+
+                            if(Utility.DEBUG)Log.d(TAG, "onThumbnailLoaded Success!!");
+
+                            vYoutubeView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+
+                                    if(Utility.DEBUG)Log.e(TAG, "----------------- " + s + " -----------------");
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                        vYoutubeView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                    } else {
+                                        //noinspection deprecation
+                                        vYoutubeView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                                    }
+                                    int width = vYoutubeView.getWidth();
+                                    int height = vYoutubeView.getHeight();
+                                    if(Utility.DEBUG)Log.d(TAG, "before width: " + width);
+                                    if(Utility.DEBUG)Log.d(TAG, "before height: " + height);
+                                    float scale = ((float)Utility.getScreenWidth(mContext)) / width;
+                                    ViewGroup.LayoutParams layoutParams = vYoutubeView.getLayoutParams();
+                                    layoutParams.width = Utility.getScreenWidth(mContext);
+                                    layoutParams.height = (int)(height * scale);
+                                    if(Utility.DEBUG)Log.d(TAG, "after width: " + layoutParams.width);
+                                    if(Utility.DEBUG)Log.d(TAG, "after height: " + layoutParams.height);
+                                    vYoutubeView.setLayoutParams(layoutParams);
+
+                                }
+                            });
+
+                            youTubeThumbnailLoader.release();
+
+                        }
+
+                        @Override
+                        public void onThumbnailError(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader.ErrorReason errorReason) {
+
+                            if(Utility.DEBUG)Log.e(TAG, "onThumbnailError errorReason: " + errorReason.name());
+
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
+
+                }
+            });
+
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mListener != null) {
+                mListener.onVideoPlayButtonClick(mCurrentYoutubeId);
+            }
+        }
+
     }
 
     public class ADViewHolder extends RecyclerView.ViewHolder {

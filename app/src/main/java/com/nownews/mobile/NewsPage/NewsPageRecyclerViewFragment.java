@@ -69,7 +69,6 @@ public class NewsPageRecyclerViewFragment extends Fragment {
     private FrameLayout vVideoFrameLayout;
 
     private ArrayList<ConcurrentHashMap<String, Object>> mContentList;
-    private ArrayList<ConcurrentHashMap<String, Object>> mVideoContentList;
     public final static String KEY_CONTEXT_TEXT = "context_text";
     public final static String KEY_CONTEXT_TEXT_HTML = "context_text_html";
     public final static String KEY_CONTEXT_TEXT_LINK_HTML = "context_text_link_html";
@@ -271,50 +270,44 @@ public class NewsPageRecyclerViewFragment extends Fragment {
             mImageUrlList.add(bigImgUrl);
         }
 
+        //本文
         if (mNewsInfo.getContent() != null) {
-
             if(mContentList==null){
                 mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
             }else{
                 mContentList.clear();
             }
-
-            if(mVideoContentList==null){
-                mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
-            }else{
-                mVideoContentList.clear();
-            }
-
             String body = mNewsInfo.getContent();
             processBody(body);
+        }
 
-            if (mNewsInfo.getFreeContent() != null) {
+        //圖集類型
+        if(mNewsInfo.getPhotos()!=null
+                && mNewsInfo.getPhotos().size()>0){
+            processPhotos(mNewsInfo.getPhotos());
+        }
 
-                if(mContentList==null){
-                    mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
-                }
+        //影音類型
+        if(mNewsInfo.getMainVideo()!=null
+                && mNewsInfo.getMainVideo().getUrl()!=null
+                && !mNewsInfo.getMainVideo().getUrl().trim().isEmpty()){
+            processVideo(mNewsInfo.getMainVideo().getUrl());
+        }
 
-                if(mVideoContentList==null){
-                    mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
-                }
-
-                processBody(mNewsInfo.getFreeContent());
+        //自由欄位
+        if (mNewsInfo.getFreeContent() != null) {
+            if(mContentList==null){
+                mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
             }
-            if(mNewsInfo.getMainVideo()!=null
-                    && mNewsInfo.getMainVideo().getUrl()!=null
-                    && !mNewsInfo.getMainVideo().getUrl().trim().isEmpty()){
-                processVideo(mNewsInfo.getMainVideo().getUrl());
-            }
-            if(mNewsInfo.getPhotos()!=null
-                    && mNewsInfo.getPhotos().size()>0){
-                processPhotos(mNewsInfo.getPhotos());
-            }
-            //TODO: [v4] getVideos() Not Ready
+            processBody(mNewsInfo.getFreeContent());
+        }
+
+        getRelationsNewsInfo();
+
+        //TODO: [v4] getVideos() Not Ready
 //            if(mNewsInfo.getVideos()!=null){
 //                processVideo(mNewsInfo.getVideos());
 //            }
-            getRelationsNewsInfo();
-        }
 
         //Not use in v4
 //        else if (mNewsInfo.mobileBody != null) {
@@ -362,13 +355,13 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
     private void processVideo(String aMainVideoUrl){
 
-        if(mVideoContentList==null){
-            mVideoContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
+        if(mContentList==null){
+            mContentList = new ArrayList<ConcurrentHashMap<String, Object>>();
         }
 
         ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
         map.put(KEY_CONTEXT_IFRAME_YOUTUBE, aMainVideoUrl);
-        mVideoContentList.add(map);
+        mContentList.add(map);
 
     }
 
@@ -393,7 +386,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         vLoadingLayout.setVisibility(View.GONE);
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         vContentRecyclerView.setLayoutManager(mLinearLayoutManager);
-        NewsPageRecyclerViewAdapter mAdapter = new NewsPageRecyclerViewAdapter(getActivity(), mVideoContentList, mContentList, mNewsInfo, mImageUrlList, mVideoListener, mRelationsNewsList);
+        NewsPageRecyclerViewAdapter mAdapter = new NewsPageRecyclerViewAdapter(getActivity(), mContentList, mNewsInfo, mImageUrlList, mVideoListener, mRelationsNewsList);
         vContentRecyclerView.setAdapter(mAdapter);
 
     }
@@ -613,6 +606,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 if (Utility.DEBUG) Log.d(TAG, "[p] after replace: " + p);
             }
 
+            //超連結
             Elements a = pContent.select("a[href]");
             if(a !=null && a.size() > 0){
                 pHtml = pContent.toString();
@@ -624,6 +618,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 }
             }
 
+            //圖片
             Elements img = pContent.select("img[src]");
             if (img != null && img.size() > 0) {
 
@@ -644,23 +639,25 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
             }
 
+            //影音 目前只接受youtube
             Elements iframe = pContent.select("iframe[src]");
             if (iframe != null && iframe.size() > 0) {
 
-                ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
 
                 for (int j = 0; j < iframe.size(); j++) {
                     Element iframeElement = iframe.get(j);
                     String iframeUrl = iframeElement.attr("src");
                     if (iframeUrl != null && !iframeUrl.trim().isEmpty() && iframeUrl.contains("youtube")) {
+                        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
                         if (Utility.DEBUG) Log.w(TAG, "iframeUrl in body: " + iframeUrl);
                         map.put(KEY_CONTEXT_IFRAME_YOUTUBE, iframeUrl);
-                        mVideoContentList.add(map);
+                        mContentList.add(map);
                     }
                 }
 
             }
 
+            //延伸閱讀 需略過
             if (p != null && !p.trim().isEmpty()) {
                 if (p.contains("延伸閱讀")) {
                     break;
