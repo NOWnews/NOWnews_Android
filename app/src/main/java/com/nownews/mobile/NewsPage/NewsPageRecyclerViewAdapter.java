@@ -762,7 +762,9 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 mCurrentImageUrl = imageUrl;
 //                imageUrl = Utility.getSrcFromImgapi(imageUrl);
                 int screenWidth = Utility.getScreenWidth(mContext);
-                imageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, imageUrl);
+                if(imageUrl.contains("img.nownews.com") || imageUrl.contains("s.nownews.com")){
+                    imageUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, imageUrl);
+                }
                 mBitmapController.loadImageWithOriginalSize(imageUrl, vImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE, 0, 0, null);
                 String imageText = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE_TEXT);
                 if(Utility.DEBUG)Log.e(TAG, "imageText: " + imageText);

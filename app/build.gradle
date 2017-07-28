@@ -65,18 +65,18 @@ dependencies {
     compile 'com.android.support:customtabs:25.3.1'
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.google.code.gson:gson:2.7'
-    compile 'com.google.firebase:firebase-crash:10.0.1'
-    compile 'com.google.firebase:firebase-core:10.0.1'
-    compile 'com.google.firebase:firebase-ads:10.0.1'
-    compile 'com.google.firebase:firebase-auth:10.0.1'
-    compile 'com.google.firebase:firebase-messaging:10.0.1'
-    compile 'com.google.android.gms:play-services-analytics:10.0.1'
+    compile 'com.google.firebase:firebase-crash:11.0.1'
+    compile 'com.google.firebase:firebase-core:11.0.1'
+    compile 'com.google.firebase:firebase-ads:11.0.1'
+    compile 'com.google.firebase:firebase-auth:11.0.1'
+    compile 'com.google.firebase:firebase-messaging:11.0.1'
+    compile 'com.google.android.gms:play-services-analytics:11.0.1'
     compile 'com.afollestad.material-dialogs:commons:0.9.4.5'
     compile 'com.afollestad.material-dialogs:core:0.9.4.5'
     compile 'com.aurelhubert:ahbottomnavigation:2.0.2'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.github.bumptech.glide:okhttp3-integration:4.0.0-RC1'
-    compile 'com.google.firebase:firebase-invites:10.0.1'
+    compile 'com.google.firebase:firebase-invites:11.0.1'
     testCompile 'junit:junit:4.12'
     compile 'com.comscore:android-analytics:5.+'
     compile 'com.tapjoy:tapjoy-android-sdk:11.7.0@aar'
@@ -89,10 +89,10 @@ dependencies {
     // Ad2一般廣告
     compile project(':ad2iction-sdk')
     // Ad2進階互動廣告
-    compile 'com.google.android.gms:play-services-vision:10.0.1'
+    compile 'com.google.android.gms:play-services-vision:11.0.1'
     // Ad2廣告聯聯播網轉接器
     compile project(':ad2iction-mediation-adapter')
-    compile 'com.google.firebase:firebase-ads:10.0.1'
+    compile 'com.google.firebase:firebase-ads:11.0.1'
     compile project(':imagedownloadmanager')
 }
 

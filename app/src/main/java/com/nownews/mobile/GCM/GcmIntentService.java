@@ -61,6 +61,15 @@ public class GcmIntentService extends FirebaseMessagingService {
     }
 
     @Override
+    public void handleIntent(Intent intent) {
+        super.handleIntent(intent);
+        if (Utility.DEBUG) Log.i(TAG, "handleIntent intent: " + intent);
+        if (Utility.DEBUG) Log.i(TAG, "handleIntent intent: " + intent.getExtras());
+        if (Utility.DEBUG) Log.i(TAG, "handleIntent intent: " + intent.getStringExtra("data"));
+        if (Utility.DEBUG) Log.i(TAG, "handleIntent intent: " + intent.getStringExtra("notification"));
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         registerReceiver(mFCMReceiver, new IntentFilter(INTENT_FILTER));
@@ -101,13 +110,48 @@ public class GcmIntentService extends FirebaseMessagingService {
             if (from != null) {
                 if (Utility.DEBUG) Log.i(TAG, "from: " + from);
             }
+
+//            Map data = mRemoteMessage.getData();
+//            String messageFromServer = (String) data.get("message");
+//            if (messageFromServer != null) {
+//                if (Utility.DEBUG) Log.i(TAG, "messageFromServer: " + messageFromServer);
+//                processMessage(messageFromServer);
+//                setNotification();
+//            }
+
+            //TODO getData()
             Map data = mRemoteMessage.getData();
-            String messageFromServer = (String) data.get("message");
-            if (messageFromServer != null) {
-                if (Utility.DEBUG) Log.i(TAG, "messageFromServer: " + messageFromServer);
-                processMessage(messageFromServer);
-                setNotification();
+            RemoteMessage.Notification notification = mRemoteMessage.getNotification();
+            if(data!=null){
+                if (data.size() > 0) {
+                    if (Utility.DEBUG) Log.i(TAG, "data: " + data);
+                }
+                String title = (String)data.get("title");
+                String summary = (String)data.get("summary");
+                String image = (String)data.get("image");
+                String id = (String)data.get("id");
+                String type = (String)data.get("type");
+                String url = (String)data.get("url");
+                if (Utility.DEBUG) Log.i(TAG, "title: " + title);
+                if (Utility.DEBUG) Log.i(TAG, "summary: " + summary);
+                if (Utility.DEBUG) Log.i(TAG, "image: " + image);
+                if (Utility.DEBUG) Log.i(TAG, "id: " + id);
+                if (Utility.DEBUG) Log.i(TAG, "type: " + type);
+                if (Utility.DEBUG) Log.i(TAG, "url: " + url);
             }
+            if(notification!=null){
+                //TODO getNotification()
+                Log.w(TAG, "notification.toString(): " + notification.toString());
+                String title = notification.getTitle();
+                String body = notification.getBody();
+                String icon = notification.getIcon();
+                String clickAction = notification.getClickAction();
+                if (Utility.DEBUG) Log.i(TAG, "title: " + title);
+                if (Utility.DEBUG) Log.i(TAG, "body: " + body);
+                if (Utility.DEBUG) Log.i(TAG, "icon: " + icon);
+                if (Utility.DEBUG) Log.i(TAG, "clickAction: " + clickAction);
+            }
+
 
         }
     };
