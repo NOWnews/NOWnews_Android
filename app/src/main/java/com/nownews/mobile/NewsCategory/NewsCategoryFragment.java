@@ -319,7 +319,7 @@ public class NewsCategoryFragment extends Fragment {
             vViewPager.setCurrentItem(mPosition);
             vViewPager.addOnPageChangeListener(mViewPageChangeListener);
             vTab.setCustomTabView(R.layout.widget_tab_layout, 0);
-            vTab.setDistributeEvenly(true);
+//            vTab.setDistributeEvenly(true);
             vTab.setNewsCategoryContent(mNewsCategoryContent);
             vTab.setTextViewTextSize(20);
             vTab.setSelectedIndicatorColors(getResources().getColor(android.R.color.transparent));

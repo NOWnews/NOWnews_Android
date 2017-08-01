@@ -29,7 +29,8 @@ public class GetVideosInfo implements Runnable {
     public void run() {
 
         if (Utility.DEBUG) Log.d(TAG, "######### " + TAG + " START!! #########");
-        Message message = ApiController.mApiControllerInstance.mHandler.obtainMessage();
+//        Message message = ApiController.mApiControllerInstance.mHandler.obtainMessage();
+        Message message = new Message();
 
         try {
 

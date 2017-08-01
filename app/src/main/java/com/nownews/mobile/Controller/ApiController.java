@@ -286,6 +286,6 @@ public class ApiController {
         new Thread(new GetLiveInfo(aHandler)).start();
     }
 
-    public Handler mHandler = new Handler();
+//    public Handler mHandler = new Handler();
 
 }

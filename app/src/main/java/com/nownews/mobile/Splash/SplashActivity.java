@@ -410,6 +410,7 @@ public class SplashActivity extends AppCompatActivity{
                 }else{
                     //使用者拒絕權限，停用檔案存取功能
                     if (Utility.DEBUG)Log.e(TAG, "使用者拒絕權限，停用檔案存取功能");
+                    checkLocationPermission();
                 }
                 break;
             case LOCATION_PERMISSION:
@@ -420,6 +421,7 @@ public class SplashActivity extends AppCompatActivity{
                 }else{
                     //使用者拒絕權限，停用檔案存取功能
                     if (Utility.DEBUG)Log.e(TAG, "使用者拒絕權限，停用檔案存取功能");
+                    startSplashActivity();
                 }
                 break;
         }
