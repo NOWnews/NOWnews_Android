@@ -70,7 +70,7 @@
             android:name=".mobile.Widget.WebActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mobile.GCM.GcmDialog"
+            android:name=".mobile.FCM.FcmDialog"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent" />
         <activity
@@ -205,13 +205,13 @@
         </receiver>
         -->
 
-        <service android:name=".mobile.GCM.GcmIntentService">
+        <service android:name=".mobile.FCM.FcmIntentService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".mobile.GCM.GcmIDListenerService"
+            android:name=".mobile.FCM.FcmIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />

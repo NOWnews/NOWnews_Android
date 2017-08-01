@@ -1,4 +1,4 @@
-package com.nownews.mobile.GCM;
+package com.nownews.mobile.FCM;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +23,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.nownews.R;
 import com.nownews.mobile.AlbumPage.AlbumPage;
-import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.BroadcastReceiver.GcmShareAppReceiver;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
@@ -32,21 +32,20 @@ import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
 import com.nownews.mobile.Json.GetNotificationInfo;
 import com.nownews.mobile.NewsPage.NewsPage;
-import com.nownews.mobile.Widget.WebActivity;
 
 import java.util.Calendar;
 import java.util.Map;
 
-public class GcmIntentService extends FirebaseMessagingService {
+public class FcmIntentService extends FirebaseMessagingService {
 
     private final String TAG = getClass().getSimpleName();
     private NotificationManager mNotificationManager;
     private SharedPreferencesMethods mSharedPref;
-    private GetNotificationInfo mNotificationInfo;
     private Bitmap bitmap = null;
     private ImageLoadingListener mImageLoadingListener;
     private RemoteMessage mRemoteMessage;
     private final String INTENT_FILTER = "INTENT_FILTER";
+    private final String RECEIVE_ACTION = "com.google.android.c2dm.intent.RECEIVE";
 
     @Override
     public void onMessageReceived(RemoteMessage message) {
@@ -54,19 +53,19 @@ public class GcmIntentService extends FirebaseMessagingService {
          * onMessageReceived(RemoteMessage message) is called "in the background" (not on the UI/Main thread).
          * */
 
-        mRemoteMessage = message;
-        Intent intent = new Intent(INTENT_FILTER);
-        sendBroadcast(intent);
+//        mRemoteMessage = message;
 
     }
 
     @Override
     public void handleIntent(Intent intent) {
         super.handleIntent(intent);
-        if (Utility.DEBUG) Log.i(TAG, "handleIntent intent: " + intent);
-        if (Utility.DEBUG) Log.i(TAG, "handleIntent intent: " + intent.getExtras());
-        if (Utility.DEBUG) Log.i(TAG, "handleIntent intent: " + intent.getStringExtra("data"));
-        if (Utility.DEBUG) Log.i(TAG, "handleIntent intent: " + intent.getStringExtra("notification"));
+        String action = intent.getAction();
+        if(action.equals(RECEIVE_ACTION)){
+            Intent FcmIntent = new Intent(INTENT_FILTER);
+            FcmIntent.putExtras(intent);
+            sendBroadcast(FcmIntent);
+        }
     }
 
     @Override
@@ -106,51 +105,66 @@ public class GcmIntentService extends FirebaseMessagingService {
                 mSharedPref.unRegistContext(context);
             }
 
-            String from = mRemoteMessage.getFrom();
-            if (from != null) {
-                if (Utility.DEBUG) Log.i(TAG, "from: " + from);
-            }
-
-//            Map data = mRemoteMessage.getData();
-//            String messageFromServer = (String) data.get("message");
-//            if (messageFromServer != null) {
-//                if (Utility.DEBUG) Log.i(TAG, "messageFromServer: " + messageFromServer);
-//                processMessage(messageFromServer);
-//                setNotification();
-//            }
-
-            //TODO getData()
-            Map data = mRemoteMessage.getData();
-            RemoteMessage.Notification notification = mRemoteMessage.getNotification();
-            if(data!=null){
-                if (data.size() > 0) {
-                    if (Utility.DEBUG) Log.i(TAG, "data: " + data);
-                }
-                String title = (String)data.get("title");
-                String summary = (String)data.get("summary");
-                String image = (String)data.get("image");
-                String id = (String)data.get("id");
-                String type = (String)data.get("type");
-                String url = (String)data.get("url");
+            if (Utility.DEBUG) Log.i(TAG, "handleIntent intent: " + intent);
+            if (Utility.DEBUG) Log.w(TAG, "handleIntent intent.getExtras(): " + intent.getExtras());
+            Bundle bundle = intent.getExtras();
+            if(bundle!=null) {
+                String title = bundle.getString("gcm.notification.title");
+                String summary = bundle.getString("gcm.notification.body");
+                String imageUrl = bundle.getString("gcm.notification.icon");
+                String newsUrl = bundle.getString("gcm.notification.click_action");
                 if (Utility.DEBUG) Log.i(TAG, "title: " + title);
                 if (Utility.DEBUG) Log.i(TAG, "summary: " + summary);
-                if (Utility.DEBUG) Log.i(TAG, "image: " + image);
-                if (Utility.DEBUG) Log.i(TAG, "id: " + id);
-                if (Utility.DEBUG) Log.i(TAG, "type: " + type);
-                if (Utility.DEBUG) Log.i(TAG, "url: " + url);
+                if (Utility.DEBUG) Log.i(TAG, "imageUrl: " + imageUrl);
+                if (Utility.DEBUG) Log.i(TAG, "newsUrl: " + newsUrl);
+                setNotification(title, summary, newsUrl, imageUrl);
             }
-            if(notification!=null){
-                //TODO getNotification()
-                Log.w(TAG, "notification.toString(): " + notification.toString());
-                String title = notification.getTitle();
-                String body = notification.getBody();
-                String icon = notification.getIcon();
-                String clickAction = notification.getClickAction();
-                if (Utility.DEBUG) Log.i(TAG, "title: " + title);
-                if (Utility.DEBUG) Log.i(TAG, "body: " + body);
-                if (Utility.DEBUG) Log.i(TAG, "icon: " + icon);
-                if (Utility.DEBUG) Log.i(TAG, "clickAction: " + clickAction);
-            }
+
+//            String from = mRemoteMessage.getFrom();
+//            if (from != null) {
+//                if (Utility.DEBUG) Log.i(TAG, "from: " + from);
+//            }
+//
+////            Map data = mRemoteMessage.getData();
+////            String messageFromServer = (String) data.get("message");
+////            if (messageFromServer != null) {
+////                if (Utility.DEBUG) Log.i(TAG, "messageFromServer: " + messageFromServer);
+////                processMessage(messageFromServer);
+////                setNotification();
+////            }
+//
+//            //TODO getData()
+//            Map data = mRemoteMessage.getData();
+//            RemoteMessage.Notification notification = mRemoteMessage.getNotification();
+//            if(data!=null){
+//                if (data.size() > 0) {
+//                    if (Utility.DEBUG) Log.i(TAG, "data: " + data);
+//                }
+//                String title = (String)data.get("title");
+//                String summary = (String)data.get("summary");
+//                String image = (String)data.get("image");
+//                String id = (String)data.get("id");
+//                String type = (String)data.get("type");
+//                String url = (String)data.get("url");
+//                if (Utility.DEBUG) Log.i(TAG, "title: " + title);
+//                if (Utility.DEBUG) Log.i(TAG, "summary: " + summary);
+//                if (Utility.DEBUG) Log.i(TAG, "image: " + image);
+//                if (Utility.DEBUG) Log.i(TAG, "id: " + id);
+//                if (Utility.DEBUG) Log.i(TAG, "type: " + type);
+//                if (Utility.DEBUG) Log.i(TAG, "url: " + url);
+//            }
+//            if(notification!=null){
+//                //TODO getNotification()
+//                Log.w(TAG, "notification.toString(): " + notification.toString());
+//                String title = notification.getTitle();
+//                String body = notification.getBody();
+//                String icon = notification.getIcon();
+//                String clickAction = notification.getClickAction();
+//                if (Utility.DEBUG) Log.i(TAG, "title: " + title);
+//                if (Utility.DEBUG) Log.i(TAG, "body: " + body);
+//                if (Utility.DEBUG) Log.i(TAG, "icon: " + icon);
+//                if (Utility.DEBUG) Log.i(TAG, "clickAction: " + clickAction);
+//            }
 
 
         }
@@ -188,30 +202,11 @@ public class GcmIntentService extends FirebaseMessagingService {
         if (Utility.DEBUG) Log.w(TAG, "[onDeletedMessages]");
     }
 
-    private void processMessage(String aMessage) {
-        mNotificationInfo = new Gson().fromJson(aMessage, GetNotificationInfo.class);
-    }
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setNotification() {
-        if (Utility.DEBUG) Log.w(TAG, "mNotificationInfo: " + mNotificationInfo);
-        if (mNotificationInfo == null || mNotificationInfo.type == null) {
-            return;
-        }
+    private void setNotification(String newsTitle, String newsSummary, String notificationUrl, String imageUrl) {
 
-        String newsTitle;
-        String newsSummary;
-        String type;
-        String notificationUrl;
-        String notificationTitle;
         int notificationId;
-
-        type = mNotificationInfo.type;
-        notificationUrl = mNotificationInfo.url;
-        notificationTitle = mNotificationInfo.title;
-        if (Utility.DEBUG) Log.e(TAG, "type: " + type);
-        if (Utility.DEBUG) Log.e(TAG, "notificationUrl: " + notificationUrl);
-        if (Utility.DEBUG) Log.e(TAG, "notificationTitle: " + notificationTitle);
+        String type = null;
 
         notificationId = -1;
         if (notificationUrl != null && !notificationUrl.isEmpty()) {
@@ -226,16 +221,15 @@ public class GcmIntentService extends FirebaseMessagingService {
         if (Utility.DEBUG) Log.w(TAG, "type: " + type);
         if (Utility.DEBUG) Log.w(TAG, "notificationId: " + notificationId);
 
+        //設置內容
+        if (newsTitle != null) {
+            newsSummary = newsTitle;
+        }
+
         //設置標題
         newsTitle = getString(R.string.nownews);
         if (newsTitle == null) {
             newsTitle = "NOWnews今日新聞";
-        }
-        //設置內容
-        if (mNotificationInfo.title == null) {
-            newsSummary = "最新消息!!!";
-        } else {
-            newsSummary = mNotificationInfo.title;
         }
 
         if (mNotificationManager == null) {
@@ -243,7 +237,7 @@ public class GcmIntentService extends FirebaseMessagingService {
         }
 
         //建立按下訊息嵌板後所要轉跳的Intent
-        Intent intent = createNotificationGoWhere(type, notificationUrl, notificationId);
+        Intent intent = createNotificationGoWhere(type, notificationUrl, notificationId, newsTitle, newsSummary);
         //設定請求碼，請求碼若相同則會以最新的為準
         int requestCode = 1;
         PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -269,10 +263,11 @@ public class GcmIntentService extends FirebaseMessagingService {
                     .setLargeIcon(iconBitmap);
 
 
+            //watch
             if(currentSDKVersion >= Build.VERSION_CODES.KITKAT_WATCH){
 
                 //Share Intent
-                Intent shareIntent = createShareIntent(type, notificationUrl, notificationTitle);
+                Intent shareIntent = createShareIntent(type, notificationUrl, newsTitle);
                 PendingIntent sharePendingIntent = PendingIntent.getBroadcast(this, notificationId, shareIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                 Notification.Action action = new Notification.Action.Builder(R.drawable.ic_share_grey600_24dp, "立即分享", sharePendingIntent).build();
                 if(action!=null){
@@ -294,7 +289,7 @@ public class GcmIntentService extends FirebaseMessagingService {
                 //棒棒糖才有鎖屏通知
                 builder.setVisibility(Notification.VISIBILITY_PUBLIC);
             }
-            setBigStyleNotification(type, newsTitle, newsSummary, builder, notificationId);
+            setBigStyleNotification(type, newsTitle, newsSummary, builder, notificationId, imageUrl);
         } else {
             //Api Level 16 (4.1)以下不包含4.1
             setNormalNotification(newsTitle, newsSummary, pendingIntent, vibratepattern, sound, notificationId);
@@ -350,15 +345,16 @@ public class GcmIntentService extends FirebaseMessagingService {
     private String mImageUrl;
     private BitmapController mBitmapController;
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void setBigStyleNotification(String type, String newsTitle, final String newsSummary, final Builder builder, final int notificationId) {
+    private void setBigStyleNotification(String type, String newsTitle, final String newsSummary
+            , final Builder builder, final int notificationId, final String imageUrl) {
 
         builder.setSmallIcon(R.drawable.now);
 
-        if (type.equalsIgnoreCase("news")) {
-            builder.setSubText(getString(R.string.news));
-        } else if (type.equalsIgnoreCase("album")) {
-            builder.setSubText(getString(R.string.album));
-        }
+//        if (type.equalsIgnoreCase("news")) {
+//            builder.setSubText(getString(R.string.news));
+//        } else if (type.equalsIgnoreCase("album")) {
+//            builder.setSubText(getString(R.string.album));
+//        }
 
         if (newsTitle != null) {
             builder.setContentTitle(newsTitle);
@@ -369,7 +365,7 @@ public class GcmIntentService extends FirebaseMessagingService {
             builder.setContentText(newsSummary);
         }
 
-        mImageUrl = mNotificationInfo.image;
+        mImageUrl = imageUrl;
         if (mImageUrl == null || (mImageUrl != null && mImageUrl.isEmpty())) {
             //設定大圖
             Notification notification = builder.build();
@@ -415,41 +411,41 @@ public class GcmIntentService extends FirebaseMessagingService {
         }
     }
 
-    private Intent createNotificationGoWhere(String type, String notificationUrl, int notificationId) {
+    private Intent createNotificationGoWhere(String type, String notificationUrl, int notificationId, String title, String summary) {
         Intent intent = null;
 
         if (Utility.DEBUG && type != null) Log.d(TAG, "type: " + type);
         if (Utility.DEBUG && notificationUrl != null) Log.d(TAG, "url: " + notificationUrl);
         if (Utility.DEBUG && notificationId != -1) Log.d(TAG, "notificationId: " + notificationId);
 
-        if (type.equalsIgnoreCase("news")) {
+        if (type!=null && type.equalsIgnoreCase("news")) {
             if(Utility.DEBUG)Log.w(TAG, "news!!!!!");
             intent = new Intent();
             intent.setClass(this, NewsPage.class);
-            intent.putExtra(NewsPage.KEY_NEWS_ID, (mNotificationInfo.id.equals("") ? notificationId : mNotificationInfo.id));
+            intent.putExtra(NewsPage.KEY_NEWS_ID, notificationId);
             intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_SINGAL_NEWS);
             intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, getString(R.string.cloud_message));
             intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, getString(R.string.cloud_message_click));
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             UserDataInfo.isSingalNewsFromAction = true;
-        } else if (type.equalsIgnoreCase("album")) {
+        } else if (type!=null && type.equalsIgnoreCase("album")) {
             if(Utility.DEBUG)Log.w(TAG, "album!!!!!");
             intent = new Intent();
             intent.setClass(this, AlbumPage.class);
-            intent.putExtra(AlbumPage.KEY_ALBUM_ID, (mNotificationInfo.id.equals("") ? notificationId : mNotificationInfo.id));
-            intent.putExtra(AlbumPage.KEY_FROM_WHERE, GcmIntentService.this.getClass().getSimpleName());
-        } else if (type.equalsIgnoreCase("normal")) {
+            intent.putExtra(AlbumPage.KEY_ALBUM_ID, notificationId);
+            intent.putExtra(AlbumPage.KEY_FROM_WHERE, FcmIntentService.this.getClass().getSimpleName());
+        } else if (type!=null && type.equalsIgnoreCase("normal")) {
             if(Utility.DEBUG)Log.w(TAG, "normal!!!!!");
             intent = new Intent();
-            intent.setClass(this, GcmDialog.class);
-            intent.putExtra(GcmDialog.KEY_TITLE, mNotificationInfo.title);
-            intent.putExtra(GcmDialog.KEY_SUMMARY, mNotificationInfo.summary);
-            intent.putExtra(GcmDialog.KEY_URL, mNotificationInfo.url);
-            intent.putExtra(GcmDialog.KEY_FROM_WHERE, GcmIntentService.this.getClass().getSimpleName());
+            intent.setClass(this, FcmDialog.class);
+            intent.putExtra(FcmDialog.KEY_TITLE, title);
+            intent.putExtra(FcmDialog.KEY_SUMMARY, summary);
+            intent.putExtra(FcmDialog.KEY_URL, notificationUrl);
+            intent.putExtra(FcmDialog.KEY_FROM_WHERE, FcmIntentService.this.getClass().getSimpleName());
         }
         String action = null;
-        if(mNotificationInfo.title!=null){
-            action = mNotificationInfo.title;
+        if(title!=null){
+            action = title;
         }
         if(notificationUrl!=null){
             action = action + " " + notificationUrl;

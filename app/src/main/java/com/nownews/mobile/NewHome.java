@@ -58,7 +58,7 @@ import com.nownews.mobile.Dao.CheckVerDao;
 import com.nownews.mobile.Dao.LiveInfoDao;
 import com.nownews.mobile.Download.DownloadAsyncTask;
 import com.nownews.mobile.Download.DownloadListener;
-import com.nownews.mobile.GCM.GcmＭanager;
+import com.nownews.mobile.FCM.FcmＭanager;
 import com.nownews.mobile.Json.CheckVersionJson;
 import com.nownews.mobile.Json.InstantNewsJson;
 import com.nownews.mobile.Json.LiveInfoJson;
@@ -107,7 +107,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     public final static int RESULT_CODE_FROM_LIVE_BAR = 0x357;
 
     private SharedPreferencesMethods mSharedPref;
-    private GcmＭanager mGcmＭanager;
+    private FcmＭanager mGcmＭanager;
     private ReSizeLayoutParams mResize;
     private PublisherInterstitialAd mDFPInterstitial;
     private MaterialDialog mNotificationSwitchDialog;
@@ -252,7 +252,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
     private void startGCM() {
         if (this.mGcmＭanager == null) {
-            this.mGcmＭanager = new GcmＭanager(this);
+            this.mGcmＭanager = new FcmＭanager(this);
         }
         this.mGcmＭanager.startGCM();
         String FCMReistId = this.mSharedPref.getGcmRegistId();

@@ -1,4 +1,4 @@
-package com.nownews.mobile.GCM;
+package com.nownews.mobile.FCM;
 
 import android.app.Activity;
 
@@ -12,7 +12,7 @@ import com.nownews.mobile.NewHome;
  * Created by cindy on 2016/10/12.
  */
 
-public class GcmＭanager {
+public class FcmＭanager {
 
     public final static int SHOW_NEW_FUNCTION = 0x164;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -20,7 +20,7 @@ public class GcmＭanager {
     private NewHome mContext;
     private SharedPreferencesMethods mSharedPref;
 
-    public GcmＭanager(NewHome aContext) {
+    public FcmＭanager(NewHome aContext) {
         this.mContext = aContext;
         this.mSharedPref = new SharedPreferencesMethods(this.mContext);
     }

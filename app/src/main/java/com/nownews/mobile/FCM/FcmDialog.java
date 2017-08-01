@@ -1,6 +1,5 @@
-package com.nownews.mobile.GCM;
+package com.nownews.mobile.FCM;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -18,7 +17,7 @@ import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Widget.WebActivity;
 
-public class GcmDialog extends AppCompatActivity {
+public class FcmDialog extends AppCompatActivity {
 
     public final static String KEY_TITLE = "title";
     public final static String KEY_SUMMARY = "summary";
@@ -52,7 +51,7 @@ public class GcmDialog extends AppCompatActivity {
             if (Utility.DEBUG) Log.d(TAG, "mUrl: " + mUrl);
             if (Utility.DEBUG) Log.d(TAG, "mFromWhere: " + mFromWhere);
         }
-        if(mFromWhere!=null && mFromWhere.equals("GcmIntentService")){
+        if(mFromWhere!=null && mFromWhere.equals("FcmIntentService")){
             String action = null;
             if(mTitle!=null){
                 action = mTitle;
@@ -82,7 +81,7 @@ public class GcmDialog extends AppCompatActivity {
 
                         if(mUrl!=null){
                             Intent intent = new Intent();
-                            intent.setClass(GcmDialog.this, WebActivity.class);
+                            intent.setClass(FcmDialog.this, WebActivity.class);
                             intent.putExtra(WebActivity.KEY_URL, mUrl);
                             startActivity(intent);
                         }
