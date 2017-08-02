@@ -137,7 +137,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                     }
                     break;
                 case ParameterSet.SOCKET_TIME_OUT:
-                    Utility.openSocketTimeoutDialog(fragment.getActivity());
+//                    Utility.openSocketTimeoutDialog(fragment.getActivity());
                     if (fragment.isRefereshing) {
                         // Stop refresh animation
                         fragment.isRefereshing = false;

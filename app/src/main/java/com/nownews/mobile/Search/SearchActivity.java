@@ -115,9 +115,6 @@ public class SearchActivity extends AppCompatActivity {
                         vSwipeRefreshLayout.setRefreshing(false);
                     }
                     break;
-                case ParameterSet.SOCKET_TIME_OUT:
-                    Utility.openSocketTimeoutDialog(SearchActivity.this);
-                    break;
             }
 
         }

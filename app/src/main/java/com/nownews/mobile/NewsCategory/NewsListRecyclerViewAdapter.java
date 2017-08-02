@@ -767,6 +767,10 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
             @Override
             public void onNativeLoad(NativeResponse nativeResponse) {
 
+                if(mContext==null){
+                    return;
+                }
+
                 mNativeResponse = nativeResponse;
                 mAd2ictionAdLocalEventHandler = new Ad2ictionAdLocalEventHandler(mContext);
                 mAd2ictionAdLocalEventHandler.handleEvent(aItemView, mNativeResponse);

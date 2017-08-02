@@ -349,7 +349,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
     @Override
     public void onShow(DialogInterface dialog) {
-        if (dialog == this.mConfirmDialog) {
+        if (dialog!=null && dialog == this.mConfirmDialog) {
             View view = mConfirmDialog.getCustomView();
             ImageView image = (ImageView) view.findViewById(R.id.image);
             TextView title = (TextView) view.findViewById(R.id.title);

@@ -83,10 +83,6 @@ public class OtherNewsListFragment extends Fragment {
                     fragment.loadingFailed(ParameterSet.GET_HEADLINE_NEWS_FAILED);
                     break;
 
-                case ParameterSet.SOCKET_TIME_OUT:
-                    Utility.openSocketTimeoutDialog(fragment.getActivity());
-                    break;
-
                 case ParameterSet.GET_HOT_NEWS_DONE:
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;

@@ -130,10 +130,6 @@ public class SpecialNewsCategoryFragment extends Fragment {
                     }
                     break;
 
-                case ParameterSet.SOCKET_TIME_OUT:
-                    Utility.openSocketTimeoutDialog(fragment.getActivity());
-                    break;
-
                 case RELOAD_SPECIAL_NEWS_LIST_API:
                     fragment.getSpecialNewsList(fragment.mCategoryInfo.get(fragment.mCurrentItem).getSn());
                     break;

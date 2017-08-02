@@ -78,9 +78,6 @@ public class GetSplashImageService extends Service {
                     splash.processImage();
                     break;
                 case ParameterSet.GET_SPLASH_IMAGE_FAILED:
-                case ParameterSet.SOCKET_TIME_OUT:
-                    if (Utility.DEBUG) Log.d(TAG, "SOCKET_TIME_OUT!!!");
-                    Utility.openSocketTimeoutDialog(splash);
                     break;
             }
 

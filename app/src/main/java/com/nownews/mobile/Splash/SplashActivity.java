@@ -103,10 +103,6 @@ public class SplashActivity extends AppCompatActivity{
                 case NETWORK_SLOW_OK_CLICK:
                     splash.getSplashImage();
                     break;
-                case ParameterSet.SOCKET_TIME_OUT:
-                    if (Utility.DEBUG) Log.d(TAG, "SOCKET_TIME_OUT!!!");
-                    Utility.openSocketTimeoutDialog(splash);
-                    break;
             }
 
         }

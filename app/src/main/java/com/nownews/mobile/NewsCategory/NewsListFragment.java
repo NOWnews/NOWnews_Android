@@ -124,9 +124,6 @@ public class NewsListFragment extends Fragment {
                         }
                     }
                     break;
-                case ParameterSet.SOCKET_TIME_OUT:
-                    Utility.openSocketTimeoutDialog(fragment.getActivity());
-                    break;
                 case RELOAD_API:
                     fragment.getNewsList();
                     break;
