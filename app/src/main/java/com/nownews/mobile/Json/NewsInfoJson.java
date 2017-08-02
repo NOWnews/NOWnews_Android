@@ -83,6 +83,7 @@ public class NewsInfoJson {
     private String formatUpdatedAt;
     private String formatCreatedAt;
     private String parseUrl;
+    private String completeUrl;
     private String id;
     private PageViewBean pageView;
     private List<Double> location;
@@ -337,6 +338,14 @@ public class NewsInfoJson {
 
     public void setParseUrl(String parseUrl) {
         this.parseUrl = parseUrl;
+    }
+
+    public String getCompleteUrl() {
+        return completeUrl;
+    }
+
+    public void setCompleteUrl(String completeUrl) {
+        this.completeUrl = completeUrl;
     }
 
     public String getId() {

@@ -324,60 +324,16 @@ public class NewsPage extends AppCompatActivity implements InterstitialAdListene
             case R.id.action_share: //分享
 
                 String newsTitle = null;
-                int newsId = -1;
                 String newsUrl = null;
 
-                switch (mNewsType) {
-                    case TYPE_HEADLINE_NEWS:
-                        if (mHeadlineNewsList == null) {
-                            return false;
-                        }
-                        newsTitle = mHeadlineNewsList.get(vViewPager.getCurrentItem()).getShortTitle();
-                        newsId = mHeadlineNewsList.get(vViewPager.getCurrentItem()).getSn();
-                        break;
-                    case TYPE_NORMAL_NEWS:
-                        if (mNewsList == null) {
-                            return false;
-                        }
-                        newsTitle = mNewsList.get(vViewPager.getCurrentItem()).getShortTitle();
-                        newsId = mNewsList.get(vViewPager.getCurrentItem()).getSn();
-                        break;
-                    case TYPE_SEARCH_NEWS:
-                        if (mSearchList == null) {
-                            return false;
-                        }
-                        newsTitle = mSearchList.get(vViewPager.getCurrentItem()).getShortTitle();
-                        newsId = mSearchList.get(vViewPager.getCurrentItem()).getSn();
-                        break;
-                    case TYPE_REFERENCE_NEWS:
-                        if (mReferenceNewsList == null) {
-                            return false;
-                        }
-                        newsTitle = mReferenceNewsList.get(vViewPager.getCurrentItem()).getShortTitle();
-                        newsId = mReferenceNewsList.get(vViewPager.getCurrentItem()).getSn();
-                        break;
-                    case TYPE_SPECIAL_NEWS:
-                        if(mSpecialNewsList == null){
-                            return false;
-                        }
-                        newsTitle = mSpecialNewsList.get(vViewPager.getCurrentItem()).getShortTitle();
-                        newsId = mSpecialNewsList.get(vViewPager.getCurrentItem()).getSn();
-                        break;
-                    case TYPE_SINGAL_NEWS:
-                        Log.d(TAG, "TYPE_SINGAL_NEWS");
-                        NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, vViewPager.getCurrentItem());
-                        NewsInfoJson newsInfo = newsPageFragment.getCurrentNewsInfo();
-                        if(newsInfo==null){
-                            return false;
-                        }
-                        newsTitle = newsInfo.getTitle();
-                        newsId = newsInfo.getSn();
-                        break;
+                NewsPageRecyclerViewFragment newsPageFragment = (NewsPageRecyclerViewFragment) mAdapter.instantiateItem(vViewPager, vViewPager.getCurrentItem());
+                NewsInfoJson newsInfo = newsPageFragment.getCurrentNewsInfo();
+                if(newsInfo==null){
+                    return false;
                 }
+                newsTitle = newsInfo.getTitle();
+                newsUrl = newsInfo.getCompleteUrl();
 
-                if(newsId!=-1){
-                    newsUrl = WebAPIUrl.NOWNEWS_MOBIEL_WEB_NEWS_DOMAIN + newsId;
-                }
                 String shareMessage = Utility.getShareMessage(NewsPage.this, newsUrl, newsTitle, Utility.ShareType.news);
                 Utility.shareToSNS(this, shareMessage);
                 break;
