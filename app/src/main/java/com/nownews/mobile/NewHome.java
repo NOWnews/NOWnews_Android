@@ -151,8 +151,6 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         processDrawerLayout();
         startGCM();
         startApiService();
-        /* 取得KMT直播資訊 &  取得版本資訊 */
-        this.DoSync(new LiveInfoDao(this), new CheckVerDao(this));
     }
 
     private void startApiService(){
@@ -163,15 +161,19 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
     @Override
     protected void LoaderResult(Object result) {
+        if(result==null){
+            return;
+        }
         if (result instanceof CheckVersionJson) {
-            boolean isNeedToUpdate = this.checkVersion((CheckVersionJson) result);
+            mCheckVersionInfo = (CheckVersionJson) result;
+            boolean isNeedToUpdate = this.checkVersion();
             /**
              * 若需要跳更新訊息則不顯示蓋版廣告，反之，顯示
              * */
             if (!isNeedToUpdate && !this.isMenu) {
                 this.showAllPageDFPAD();
             }else if(!isNeedToUpdate && this.isMenu){
-                this.getVersion(false, (CheckVersionJson) result);
+                this.getVersion(false);
             }
             this.isMenu = false;
         } else if (result instanceof LiveInfoJson) {
@@ -227,8 +229,10 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         if (UserDataInfo.mPageSwapCount > 0) {
             UserDataInfo.mPageSwapCount = 0;
         }
-        super.onResume();
+        /* 取得KMT直播資訊 &  取得版本資訊 */
+        this.DoSync(new LiveInfoDao(this), new CheckVerDao(this));
         checkIsAlreadyShowNotificationSetting();
+        super.onResume();
     }
 
     @Override
@@ -331,6 +335,10 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                     this.mSharedPref.setNotificationStatus(this.isNotificationOpen);
                     this.mSharedPref.setAskOpenNotificationStatus(true);
                     startGCM();
+                } else {
+                    // 退出
+                    isNeedToLeave = true;
+                    onBackPressed();
                 }
                 break;
 
@@ -466,6 +474,9 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         new MaterialDialog.Builder(NewHome.this)
                 .title("請選擇更新方式")
                 .adapter(adapter, null)
+                .canceledOnTouchOutside(false)
+                .cancelable(false)
+                .cancelListener(mVersionDialogCancelListener)
                 .show();
     }
 
@@ -722,17 +733,17 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         startActivity(intent);
     }
 
-    private boolean checkVersion(CheckVersionJson data) {
+    private boolean checkVersion() {
         boolean result = false;
         String currentVersionName = Utility.getAppVersionName(this);
         Log.d(TAG, "currentVersionName: " + currentVersionName);
         currentVersionName = currentVersionName.replace(".", "");
         Log.d(TAG, "currentVersionName: " + currentVersionName);
         int currentVersion = Integer.valueOf(currentVersionName);
-        if (currentVersion != 0 && currentVersion < Integer.parseInt(data.getVersion().replace(".", ""))) {
+        if (currentVersion != 0 && currentVersion < Integer.parseInt(mCheckVersionInfo.getVersion().replace(".", ""))) {
             result = true;
             //update
-            getVersion(result, data);
+            getVersion(result);
         }
         this.vMenuContent.setHasNewVersion(result);
         return result;
@@ -746,24 +757,25 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     }
 
     private CheckVersionJson mCheckVersionInfo;
-    public void getVersion(boolean isHasNewVersion, CheckVersionJson data) {
-        mCheckVersionInfo = data;
+    public void getVersion(boolean isHasNewVersion) {
         String versionName = Utility.getAppVersionName(this);
         String currentVersionText = getString(R.string.current_version);
         currentVersionText = String.format(currentVersionText, versionName);
-        if (data != null
-                && data.getVersion() != null
-                && !data.getVersion().trim().isEmpty()) {
-            currentVersionText = currentVersionText + "\n" + String.format(getString(R.string.newest_version), data.getVersion());
+        if (mCheckVersionInfo != null
+                && mCheckVersionInfo.getVersion() != null
+                && !mCheckVersionInfo.getVersion().trim().isEmpty()) {
+            currentVersionText = currentVersionText + "\n" + String.format(getString(R.string.newest_version), mCheckVersionInfo.getVersion());
         }
         if (isHasNewVersion) {
             new MaterialDialog.Builder(this)
                     .title(getString(R.string.update_dialog_title))
                     .content(currentVersionText + "\n" + getString(R.string.update_dialog_message))
-                    .positiveText(getString(R.string.next_time))
+                    .positiveText(getString(R.string.exit))
                     .negativeText(getString(R.string.go_now))
                     .onPositive(this)
                     .onNegative(this)
+                    .cancelable(false)
+                    .canceledOnTouchOutside(false)
                     .show();
             UserDataInfo.isVersionDialogShow = true;
         } else {
@@ -776,6 +788,14 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         }
     }
 
+    private DialogInterface.OnCancelListener mVersionDialogCancelListener = new DialogInterface.OnCancelListener() {
+        @Override
+        public void onCancel(DialogInterface dialogInterface) {
+
+            checkVersion();
+
+        }
+    };
 
     private FirebaseAnalytics mFirebaseAnalytics;
     private GoogleApiClient mGoogleApiClient;
