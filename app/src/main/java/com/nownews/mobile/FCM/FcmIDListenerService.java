@@ -14,7 +14,9 @@ public class FcmIDListenerService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         if (Utility.DEBUG) Log.v(TAG, "FcmIDListenerService onTokenRefresh()");
         String newToken = FirebaseInstanceId.getInstance().getToken();
-        Utility.processGCMRegisterId(getApplicationContext(), newToken);
+        if(newToken!=null && !newToken.trim().isEmpty()){
+            Utility.processGCMRegisterId(getApplicationContext(), newToken);
+        }
         super.onTokenRefresh();
     }
 

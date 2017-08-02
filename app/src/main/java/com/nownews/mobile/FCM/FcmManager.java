@@ -12,7 +12,7 @@ import com.nownews.mobile.NewHome;
  * Created by cindy on 2016/10/12.
  */
 
-public class FcmＭanager {
+public class FcmManager {
 
     public final static int SHOW_NEW_FUNCTION = 0x164;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -20,12 +20,12 @@ public class FcmＭanager {
     private NewHome mContext;
     private SharedPreferencesMethods mSharedPref;
 
-    public FcmＭanager(NewHome aContext) {
+    public FcmManager(NewHome aContext) {
         this.mContext = aContext;
         this.mSharedPref = new SharedPreferencesMethods(this.mContext);
     }
 
-    public void startGCM() {
+    public void startFCM() {
         boolean isAlreadyAskOpenNotification = this.mSharedPref.getAskOpenNotificationStatus();
         if (!isAlreadyAskOpenNotification) {
             //Ask User to open notification

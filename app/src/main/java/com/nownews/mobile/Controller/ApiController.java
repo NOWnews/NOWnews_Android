@@ -75,6 +75,7 @@ public class ApiController {
                     int returnString = -1;
                     returnString = WebApi.DoPost(WebAPIUrl.REGIST_ID_RETURN, "token=" + regId + "&deviceId=" + BuildSERIAL + "&os=ANDROID", true);
                     if(returnString== HttpURLConnection.HTTP_OK){
+                        if (Utility.DEBUG) Log.i(TAG, "sendFCMRegisterID returnString: " + returnString);
                         GoogleAnalyticsFunction.sendHitInfo(aContext, aContext.getString(R.string.cloud_message), aContext.getString(R.string.cloud_message_regist), regId);
                         Utility.storeRegistrationId(aContext, regId);
                     }

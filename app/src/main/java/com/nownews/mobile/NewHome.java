@@ -58,7 +58,7 @@ import com.nownews.mobile.Dao.CheckVerDao;
 import com.nownews.mobile.Dao.LiveInfoDao;
 import com.nownews.mobile.Download.DownloadAsyncTask;
 import com.nownews.mobile.Download.DownloadListener;
-import com.nownews.mobile.FCM.FcmＭanager;
+import com.nownews.mobile.FCM.FcmManager;
 import com.nownews.mobile.Json.CheckVersionJson;
 import com.nownews.mobile.Json.InstantNewsJson;
 import com.nownews.mobile.Json.LiveInfoJson;
@@ -107,7 +107,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     public final static int RESULT_CODE_FROM_LIVE_BAR = 0x357;
 
     private SharedPreferencesMethods mSharedPref;
-    private FcmＭanager mGcmＭanager;
+    private FcmManager mFcmManager;
     private ReSizeLayoutParams mResize;
     private PublisherInterstitialAd mDFPInterstitial;
     private MaterialDialog mNotificationSwitchDialog;
@@ -251,17 +251,24 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
     }
 
     private void startGCM() {
-        if (this.mGcmＭanager == null) {
-            this.mGcmＭanager = new FcmＭanager(this);
+        if (this.mFcmManager == null) {
+            this.mFcmManager = new FcmManager(this);
         }
-        this.mGcmＭanager.startGCM();
-        String FCMReistId = this.mSharedPref.getGcmRegistId();
-        if (FCMReistId == null
-                || FCMReistId.trim().isEmpty()) {
-            FCMReistId = this.mGcmＭanager.getToken();
+        this.mFcmManager.startFCM();
+        String FCMReistId = this.mFcmManager.getToken();
+        if(FCMReistId!=null && !FCMReistId.trim().isEmpty()){
             Utility.processGCMRegisterId(getApplicationContext(), FCMReistId);
         }
         if (Utility.DEBUG) Log.i(TAG, "###FCMReistId: " + FCMReistId);
+
+//        String FCMReistId = this.mSharedPref.getGcmRegistId();
+//        if (FCMReistId == null
+//                || FCMReistId.trim().isEmpty()) {
+//            FCMReistId = this.mFcmManager.getToken();
+//            if(FCMReistId!=null && !FCMReistId.trim().isEmpty()){
+//                Utility.processGCMRegisterId(getApplicationContext(), FCMReistId);
+//            }
+//        }
     }
 
     @Override
