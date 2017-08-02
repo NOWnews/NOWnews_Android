@@ -52,12 +52,6 @@
             android:name=".mobile.NewsPage.NewsPage"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mobile.VideoNewsPage.VideoNewsPage"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".mobile.AlbumPage.AlbumPage"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".mobile.FavoriteAlbum.FavoriteAlbum"
             android:screenOrientation="portrait" />
         <activity
@@ -74,27 +68,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent" />
         <activity
-            android:name=".mobile.AlbumCategory.AlbumActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".mobile.Live.LivePlayer"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-        <activity
-            android:name="com.tapjoy.TJAdUnitActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:hardwareAccelerated="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-        <activity
-            android:name="com.tapjoy.mraid.view.ActionHandler"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.tapjoy.mraid.view.Browser"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name="com.tapjoy.TJContentActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <service android:name=".mobile.Service.DetectNetworkFlowService" />
         <service android:name=".mobile.Service.SignalService" />

@@ -20,9 +20,7 @@ import android.view.View;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.Gson;
 import com.nownews.R;
-import com.nownews.mobile.AlbumPage.AlbumPage;
 import com.nownews.mobile.BroadcastReceiver.GcmShareAppReceiver;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
@@ -30,11 +28,9 @@ import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.BitmapController;
 import com.nownews.mobile.Controller.BitmapController.ImageLoadingListener;
-import com.nownews.mobile.Json.GetNotificationInfo;
 import com.nownews.mobile.NewsPage.NewsPage;
 
 import java.util.Calendar;
-import java.util.Map;
 
 public class FcmIntentService extends FirebaseMessagingService {
 
@@ -428,12 +424,6 @@ public class FcmIntentService extends FirebaseMessagingService {
             intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, getString(R.string.cloud_message_click));
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             UserDataInfo.isSingalNewsFromAction = true;
-        } else if (type!=null && type.equalsIgnoreCase("album")) {
-            if(Utility.DEBUG)Log.w(TAG, "album!!!!!");
-            intent = new Intent();
-            intent.setClass(this, AlbumPage.class);
-            intent.putExtra(AlbumPage.KEY_ALBUM_ID, notificationId);
-            intent.putExtra(AlbumPage.KEY_FROM_WHERE, FcmIntentService.this.getClass().getSimpleName());
         } else if (type!=null && type.equalsIgnoreCase("normal")) {
             if(Utility.DEBUG)Log.w(TAG, "normal!!!!!");
             intent = new Intent();

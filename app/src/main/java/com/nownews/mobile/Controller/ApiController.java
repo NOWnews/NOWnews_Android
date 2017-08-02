@@ -3,7 +3,6 @@ package com.nownews.mobile.Controller;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import com.nownews.R;
@@ -16,17 +15,11 @@ import com.nownews.mobile.Api.GetNearByNews;
 import com.nownews.mobile.Api.GetNewsCategory;
 import com.nownews.mobile.Api.GetNewsInfo;
 import com.nownews.mobile.Api.GetNewsList;
-import com.nownews.mobile.Api.GetPhotosCategory;
-import com.nownews.mobile.Api.GetPhotosInfo;
-import com.nownews.mobile.Api.GetPhotosList;
 import com.nownews.mobile.Api.GetRelationsNewsInfo;
 import com.nownews.mobile.Api.GetSearchInfo;
 import com.nownews.mobile.Api.GetSpecialNewsCategory;
 import com.nownews.mobile.Api.GetSpecialNewsList;
 import com.nownews.mobile.Api.GetSplashImage;
-import com.nownews.mobile.Api.GetVideosCategory;
-import com.nownews.mobile.Api.GetVideosInfo;
-import com.nownews.mobile.Api.GetVideosList;
 import com.nownews.mobile.Api.WebAPIUrl;
 import com.nownews.mobile.Api.WebApi;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
@@ -190,60 +183,6 @@ public class ApiController {
     public void getRelationsNewsInfo(Handler aHandler, int aNewsId) {
         if (Utility.DEBUG) Log.i(TAG, "getNewsInfo called");
         new Thread(new GetRelationsNewsInfo(aHandler, aNewsId)).start();
-    }
-    //endregion
-
-    //region 圖集系列
-
-    /**
-     * 取得圖集大分類
-     */
-    public void getPhotosCategory(Handler aHandler) {
-        if (Utility.DEBUG) Log.i(TAG, "getPhotosCategory called");
-        new Thread(new GetPhotosCategory(aHandler)).start();
-    }
-
-    /**
-     * 取得圖集列表
-     */
-    public void getPhotosList(Handler aHandler, int aNewsId, int aPage) {
-        if (Utility.DEBUG) Log.i(TAG, "getPhotosList called");
-        new Thread(new GetPhotosList(aHandler, aNewsId, aPage)).start();
-    }
-
-    /**
-     * 取得圖集內容
-     */
-    public void getPhotosInfo(Handler aHandler, int aNewsId) {
-        if (Utility.DEBUG) Log.i(TAG, "getPhotosInfo called");
-        new Thread(new GetPhotosInfo(aHandler, aNewsId)).start();
-    }
-    //endregion
-
-    //region 影音系列
-
-    /**
-     * 取得影音大分類
-     */
-    public void getVideosCategory(Handler aHandler) {
-        if (Utility.DEBUG) Log.i(TAG, "getVideosCategory called");
-        new Thread(new GetVideosCategory(aHandler)).start();
-    }
-
-    /**
-     * 取得影音列表
-     */
-    public void getVideosList(Handler aHandler, int aNewsId, int aPage) {
-        if (Utility.DEBUG) Log.i(TAG, "getVideosList called");
-        new Thread(new GetVideosList(aHandler, aNewsId, aPage)).start();
-    }
-
-    /**
-     * 取得影音內容
-     */
-    public void getVideosInfo(Handler aHandler, int aNewsId) {
-        if (Utility.DEBUG) Log.i(TAG, "getVideosInfo called");
-        new Thread(new GetVideosInfo(aHandler, aNewsId)).start();
     }
     //endregion
 
