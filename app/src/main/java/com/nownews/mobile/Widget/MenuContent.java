@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.nownews.R;
-import com.nownews.mobile.AlbumCategory.AlbumCategoryFragment;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Dao.CheckVerDao;
@@ -96,8 +95,6 @@ public class MenuContent extends RelativeLayout {
         if (itemName != null
                 && itemName.equals(this.mContext.getString(R.string.return_home))) {
             this.baseAct.goHomePage();
-        } else if (itemName != null && itemName.equals(this.mContext.getString(R.string.album))) {
-            gotoAlbum();
         } else if (itemName != null && itemName.equals(this.mContext.getString(R.string.favorite_album))) {
             gotoFavoriteAlbum();
         } else if (itemName != null && itemName.equals(this.mContext.getString(R.string.version))) {
@@ -130,14 +127,6 @@ public class MenuContent extends RelativeLayout {
 
     public void setHasNewVersion(boolean value) {
         this.menuRecyclerAdapter.setHasNewVersion(value);
-    }
-
-    private void gotoAlbum() {
-        Fragment mAlbumCategoryFragment = new AlbumCategoryFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(AlbumCategoryFragment.KEY_POSITION, 0);
-        this.baseAct.setBottomVisibility(View.GONE);
-        this.baseAct.changeFragment(mAlbumCategoryFragment, true, bundle);
     }
 
     private void gotoFavoriteAlbum() {

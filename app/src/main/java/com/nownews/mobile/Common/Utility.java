@@ -50,31 +50,22 @@ import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.nownews.R;
-import com.nownews.mobile.AlbumCategory.AlbumsCategoryColor;
-import com.nownews.mobile.AlbumPage.AlbumPage;
-import com.nownews.mobile.Api.WebAPIUrl;
-import com.nownews.mobile.Api.WebApi;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.FavoriteAlbum.FavoriteAlbum;
 import com.nownews.mobile.FavoriteAlbum.FavoriteAlbumPage;
-import com.nownews.mobile.NewsCategory.NewsCategoryColor;
 import com.nownews.mobile.NewsPage.NewsPage;
 import com.nownews.mobile.Search.SearchActivity;
 import com.nownews.mobile.Service.NetworkType;
 import com.nownews.mobile.Splash.SplashActivity;
-import com.nownews.mobile.VideoNewsCategory.VideoNewsCategoryColor;
-import com.nownews.mobile.VideoNewsPage.VideoNewsPage;
 import com.nownews.mobile.Widget.WebActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -1120,16 +1111,8 @@ public class Utility {
         }
         if (mCurrentContext instanceof SplashActivity) {
             ((SplashActivity) mCurrentContext).startSplashActivity();
-        }else if (mCurrentContext instanceof VideoNewsPage) {
-            ((VideoNewsPage) mCurrentContext).reload();
-        }
-//        else if (mCurrentContext instanceof AlbumCategoryFragment) {
-//            ((AlbumCategoryFragment) mCurrentContext).startSplashActivity();
-//        }
-        else if (mCurrentContext instanceof NewsPage) {
+        } else if (mCurrentContext instanceof NewsPage) {
             ((NewsPage) mCurrentContext).reload();
-        } else if (mCurrentContext instanceof AlbumPage) {
-            ((AlbumPage) mCurrentContext).reload();
         } else if (mCurrentContext instanceof FavoriteAlbum) {
             ((FavoriteAlbum) mCurrentContext).reload();
         } else if (mCurrentContext instanceof FavoriteAlbumPage) {
@@ -1139,10 +1122,6 @@ public class Utility {
         } else if (mCurrentContext instanceof WebActivity) {
             ((WebActivity) mCurrentContext).reload();
         }
-        //Not ready
-//		else if(mCurrentContext instanceof NotificationDialog){
-//			((NotificationDialog)mCurrentContext).startSplashActivity();
-//		}
     }
 
     public static String getSrcFromImgapi(String aUrl) {
