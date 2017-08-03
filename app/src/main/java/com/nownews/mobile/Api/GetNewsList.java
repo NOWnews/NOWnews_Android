@@ -50,7 +50,7 @@ public class GetNewsList implements Runnable {
                 queryMap.put(KEY_PAGE, String.valueOf(mPage));
             }
 
-            String jsonValue = WebApi.DoGet(webApiUrl, true, queryMap);
+            String jsonValue = WebApi.DoGet(webApiUrl, true, queryMap, null);
             if (Utility.DEBUG) Log.e(TAG, "jsonValue: " + jsonValue);
             NewsListJson jsonValueClb = new Gson().fromJson(jsonValue, NewsListJson.class);
 

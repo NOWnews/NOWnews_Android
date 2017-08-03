@@ -12,11 +12,15 @@ import com.nownews.mobile.Json.CheckVersionJson;
 import com.nownews.mobile.Json.LiveListJson;
 
 import java.net.SocketTimeoutException;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GetLiveList implements Runnable {
 
     private final String TAG = getClass().getSimpleName();
     private Handler mHandler;
+    public final static String KEY_VERSION = "X-NOWnewsAPP-Version";
+    public final static String KEY_OS = "X-NOWnewsAPP-OS";
+    public final static String KEY_MODE = "X-NOWnewsAPP-Mode";
 
     public GetLiveList(Handler aHandler) {
         mHandler = aHandler;
@@ -33,7 +37,13 @@ public class GetLiveList implements Runnable {
 
             String webApiUrl = WebAPIUrl.LIVE_LIST;
 
-            String jsonValue = WebApi.DoGet(webApiUrl, true);
+            ConcurrentHashMap<String, String> headerMap = null;
+            headerMap = new ConcurrentHashMap<>();
+            headerMap.put(KEY_VERSION, Utility.getAppVersionName(Utility.getApplicationContext()));
+            headerMap.put(KEY_OS, "ANDROID");
+            headerMap.put(KEY_MODE, (Utility.DEBUG? "develop":"production"));
+
+            String jsonValue = WebApi.DoGet(webApiUrl, true, null, headerMap);
 //			Log.e(TAG, "jsonValue: " + jsonValue);
             LiveListJson jsonValueClb = new Gson().fromJson(jsonValue, LiveListJson.class);
 

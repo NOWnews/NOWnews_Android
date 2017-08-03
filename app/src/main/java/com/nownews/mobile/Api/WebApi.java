@@ -78,13 +78,12 @@ public class WebApi {
         return statusCode;
     }
 
-    @SuppressWarnings("deprecation")
     public static String DoGet(String aUrl, boolean isHadHeader) throws Exception {
-        return DoGet(aUrl, isHadHeader, null);
+        return DoGet(aUrl, isHadHeader, null, null);
     }
 
-    @SuppressWarnings("deprecation")
-    public static String DoGet(String aUrl, boolean isHadHeader, ConcurrentHashMap<String, String> params) throws Exception {
+    public static String DoGet(String aUrl, boolean isHadHeader,
+                               ConcurrentHashMap<String, String> queryMap, ConcurrentHashMap<String, String> headerMap) throws Exception {
 
         Log.w(TAG, "DoGet Start!!");
 
@@ -95,12 +94,19 @@ public class WebApi {
 
         builder.url(aUrl);
         if(isHadHeader){
-            builder.addHeader(WebAPIUrl.HEADER_KEY, WebAPIUrl.HEADER_VALUE);
+            builder.addHeader(WebAPIUrl.HEADER_KEY, WebAPIUrl.HEADER_VALUE); //Default require
+            if(headerMap!=null){
+                for(Map.Entry<String, String> param : headerMap.entrySet()){
+                    if (Utility.DEBUG)Log.e(TAG, "param.getKey(): " + param.getKey());
+                    if (Utility.DEBUG)Log.e(TAG, "URLDecoder.decode(param.getValue(), \"UTF-8\"): " + URLDecoder.decode(param.getValue(), "UTF-8"));
+                    builder.addHeader(param.getKey(), URLDecoder.decode(param.getValue(), "UTF-8")); //Other require
+                }
+            }
         }
 
         HttpUrl.Builder httpBuilder = HttpUrl.parse(aUrl).newBuilder();
-        if(params!=null){
-            for(Map.Entry<String, String> param : params.entrySet()){
+        if(queryMap!=null){
+            for(Map.Entry<String, String> param : queryMap.entrySet()){
                 httpBuilder.addEncodedQueryParameter(param.getKey(), URLDecoder.decode(param.getValue(), "UTF-8"));
             }
         }
@@ -118,50 +124,12 @@ public class WebApi {
                     + "\nmessage: " + message + "\nDoGet End!!"
                     + "\n-----------------------------------------");
         if(statusCode!=HttpURLConnection.HTTP_OK){
-            Log.e(TAG, "Error Message: " + response.message());
+            if (Utility.DEBUG)Log.e(TAG, "Error Message: " + response.message());
             FirebaseCrash.logcat(Log.WARN, TAG, "statusCode: " + statusCode + " / Error Message: " + response.message() + " / Url: " + aUrl);
             throw new HttpConnectionException(response.message());
         }
         response.body().close();
         return message;
-
-//        long StartTime = System.currentTimeMillis();
-//        URL apiUrl = new URL(aUrl);
-//         HttpURLConnectionconnection = (HttpURLConnection) apiUrl.openConnection();
-//        connection.setRequestMethod("GET");
-//        if (isHadHeader) {
-//            connection.setRequestProperty(WebAPIUrl.HEADER_KEY, WebAPIUrl.HEADER_VALUE);
-//        }
-////        connection.setConnectTimeout(8000);
-////        connection.setReadTimeout(8000);
-//
-//        int statusCode = connection.getResponseCode();
-//        if (Utility.DEBUG) Log.d(TAG, "statusCode: " + statusCode);
-//
-//        if (statusCode == HttpURLConnection.HTTP_OK) {
-//            InputStream inputStream = null;
-//            inputStream = connection.getInputStream();
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-//            StringBuilder result = new StringBuilder();
-//            while(true){
-//                final String line = reader.readLine();
-//                if(line == null) break;
-//                result.append(line);
-//            }
-////            while ((line = reader.readLine()) != null) {
-////                result.append(line);
-////            }
-//            long ProcessTime = System.currentTimeMillis() - StartTime;
-//            if (Utility.DEBUG)
-//                Log.e(TAG, "----------------------------------------- \nurl: " + aUrl + "\nProcessTime: " + ProcessTime + "ms" + "\nresult: " + result.toString() + "\nDoGet End!!\n-----------------------------------------");
-//            reader.close();
-//            return result.toString();
-//        } else {
-//            long ProcessTime = System.currentTimeMillis() - StartTime;
-//            if (Utility.DEBUG)
-//                Log.e(TAG, "----------------------------------------- \nurl: " + aUrl + "\nProcessTime: " + ProcessTime + "ms DoGet End!!\n-----------------------------------------");
-//            throw new HttpConnectionException(connection.getResponseMessage());
-//        }
 
     }
 
