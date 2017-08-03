@@ -443,32 +443,38 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                     && mNewsInfo.getMainPhoto().getUrl() != null
                     && !mNewsInfo.getMainPhoto().getUrl().trim().isEmpty()) {
                 String bigImgUrl = mNewsInfo.getMainPhoto().getUrl();
-                if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
-//                bigImgUrl = Utility.getSrcFromImgapi(bigImgUrl);
-                int screenWidth = Utility.getScreenWidth(mContext);
-                bigImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, bigImgUrl);
-                mBitmapController.loadImageWithOriginalSize(bigImgUrl, vBigImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE, 0, 0, mBigImgLoadingListener);
-                setImageClickListener(vBigImage, mNewsInfo.getMainPhoto().getUrl(), mYoutubeId);
 
-                //For Share
-                mShareImgUrl = mNewsInfo.getMainPhoto().getUrl();
-                mShareImgUrl = Utility.getSrcFromImgapi(mShareImgUrl);
-                mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, Utility.IMG_QUALITY, mShareImgUrl);
-                if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
-                mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
-            } else if (categoryName!=null && categoryName.contains(mContext.getString(R.string.eco))) {
-                int newsId = mNewsInfo.getSn();
-                int digit = newsId % 10;
-                int imagePosition = digit % 5;
-                String bigImgUrl = mEcoDefaultImageList[imagePosition];
-                if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
-                mBitmapController.loadImageWithOriginalSize(bigImgUrl, vBigImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE, 0, 0, mBigImgLoadingListener);
-                setImageClickListener(vBigImage, bigImgUrl, mYoutubeId);
+                if (categoryName!=null && categoryName.contains(mContext.getString(R.string.eco))
+                        && (bigImgUrl.contains("defaultimg.gif") || bigImgUrl.contains("default_terry.jpg"))) {
+                    int newsId = mNewsInfo.getSn();
+                    int digit = newsId % 10;
+                    int imagePosition = digit % 5;
+                    bigImgUrl = mEcoDefaultImageList[imagePosition];
+                    if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
+                    mBitmapController.loadImageWithOriginalSize(bigImgUrl, vBigImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE, 0, 0, mBigImgLoadingListener);
+                    setImageClickListener(vBigImage, bigImgUrl, mYoutubeId);
 
-                //For Share
-                mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, Utility.IMG_QUALITY, bigImgUrl);
-                if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
-                mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
+                    //For Share
+                    mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, Utility.IMG_QUALITY, bigImgUrl);
+                    if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
+                    mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
+                }else{
+
+                    if (Utility.DEBUG) Log.v(TAG, "===@@###bigImgUrl: " + bigImgUrl);
+//                  bigImgUrl = Utility.getSrcFromImgapi(bigImgUrl);
+                    int screenWidth = Utility.getScreenWidth(mContext);
+                    bigImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, screenWidth, "", Utility.IMG_QUALITY, bigImgUrl);
+                    mBitmapController.loadImageWithOriginalSize(bigImgUrl, vBigImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE_TOP_IMAGE, 0, 0, mBigImgLoadingListener);
+                    setImageClickListener(vBigImage, mNewsInfo.getMainPhoto().getUrl(), mYoutubeId);
+
+                    //For Share
+                    mShareImgUrl = mNewsInfo.getMainPhoto().getUrl();
+                    mShareImgUrl = Utility.getSrcFromImgapi(mShareImgUrl);
+                    mShareImgUrl = String.format(WebAPIUrl.SCALE_IMAGE, 100, 100, Utility.IMG_QUALITY, mShareImgUrl);
+                    if (Utility.DEBUG) Log.v(TAG, "===@@###mShareImgUrl: " + mShareImgUrl);
+                    mBitmapController.preloadOriginalImageFromUrl(mShareImgUrl, null, BitmapController.IMAGE_SRC, 0, 0, null);
+                }
+
             } else {
                 mBitmapController.setDefaultImage(vBigImage);
                 setImageClickListener(vBigImage, null, mYoutubeId);

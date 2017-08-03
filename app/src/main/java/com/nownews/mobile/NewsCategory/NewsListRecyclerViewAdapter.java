@@ -268,8 +268,9 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                         && mSearchNewsList.get(realPosition).getMainPhoto().getUrl() != null
                         && !mSearchNewsList.get(realPosition).getMainPhoto().getUrl().trim().isEmpty()) {
                     String imageUrl = mSearchNewsList.get(realPosition).getMainPhoto().getUrl();
-                    if (mCategoryName.equals(mContext.getString(R.string.eco))
-                            && imageUrl.contains("defaultimg.gif")) {
+                    String category = mSearchNewsList.get(realPosition).getMainMenu().getName();
+                    if (category.equals(mContext.getString(R.string.eco))
+                            && (imageUrl.contains("defaultimg.gif") || imageUrl.contains("default_terry.jpg"))) {
                         int newsId = mSearchNewsList.get(realPosition).getSn();
                         int digit = newsId % 10;
                         int imagePosition = digit % 5;
@@ -342,8 +343,9 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                         && mInstantNewsList.get(realPosition).getMainPhoto().getUrl() != null
                         && !mInstantNewsList.get(realPosition).getMainPhoto().getUrl().trim().isEmpty()) {
                     String imageUrl = mInstantNewsList.get(realPosition).getMainPhoto().getUrl();
-                    if (mCategoryName.equals(mContext.getString(R.string.eco))
-                            && imageUrl.contains("defaultimg.gif")) {
+                    String category = mInstantNewsList.get(realPosition).getMainMenu().getName();
+                    if (category.equals(mContext.getString(R.string.eco))
+                            && (imageUrl.contains("defaultimg.gif") || imageUrl.contains("default_terry.jpg"))) {
                         int newsId = mInstantNewsList.get(realPosition).getSn();
                         int digit = newsId % 10;
                         int imagePosition = digit % 5;
@@ -416,8 +418,9 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                         && mHeadlineNewsList.get(realPosition).getMainPhoto().getUrl() != null
                         && !mHeadlineNewsList.get(realPosition).getMainPhoto().getUrl().trim().isEmpty()) {
                     String imageUrl = mHeadlineNewsList.get(realPosition).getMainPhoto().getUrl();
-                    if (mCategoryName.equals(mContext.getString(R.string.eco))
-                            && imageUrl.contains("defaultimg.gif")) {
+                    String category = mHeadlineNewsList.get(realPosition).getMainMenu().getName();
+                    if (category.equals(mContext.getString(R.string.eco))
+                            && (imageUrl.contains("defaultimg.gif") || imageUrl.contains("default_terry.jpg"))) {
                         int newsId = mHeadlineNewsList.get(realPosition).getSn();
                         int digit = newsId % 10;
                         int imagePosition = digit % 5;
@@ -489,8 +492,9 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                         && mNewsList.get(realPosition).getMainPhoto().getUrl() != null
                         && !mNewsList.get(realPosition).getMainPhoto().getUrl().trim().isEmpty()) {
                     String imageUrl = mNewsList.get(realPosition).getMainPhoto().getUrl();
-                    if (mCategoryName.equals(mContext.getString(R.string.eco))
-                            && imageUrl.contains("defaultimg.gif")) {
+                    String category = mNewsList.get(realPosition).getMainMenu().getName();
+                    if (category.equals(mContext.getString(R.string.eco))
+                            && (imageUrl.contains("defaultimg.gif") || imageUrl.contains("default_terry.jpg"))) {
                         int newsId = mNewsList.get(realPosition).getSn();
                         int digit = newsId % 10;
                         int imagePosition = digit % 5;
