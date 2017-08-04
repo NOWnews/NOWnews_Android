@@ -167,12 +167,13 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         if (result instanceof CheckVersionJson) {
             mCheckVersionInfo = (CheckVersionJson) result;
             boolean isNeedToUpdate = this.checkVersion();
-            /**
-             * 若需要跳更新訊息則不顯示蓋版廣告，反之，顯示
-             * */
-            if (!isNeedToUpdate && !this.isMenu) {
-                this.showAllPageDFPAD();
-            }else if(!isNeedToUpdate && this.isMenu){
+//            /**
+//             * 若需要跳更新訊息則不顯示蓋版廣告，反之，顯示
+//             * */
+//            if (!isNeedToUpdate && !this.isMenu) {
+//                this.showAllPageDFPAD();
+//            }else
+            if(!isNeedToUpdate && this.isMenu){
                 this.getVersion(false);
             }
             this.isMenu = false;
@@ -704,9 +705,9 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                 UserDataInfo.mHomeDFPCount++;
                 if (Utility.DEBUG)
                     Log.e(TAG, "UserDataInfo.mHomeDFPCount: " + UserDataInfo.mHomeDFPCount);
-                if (UserDataInfo.mHomeDFPCount == 2
-                        || UserDataInfo.mHomeDFPCount == 4
-                        || UserDataInfo.mHomeDFPCount == 6) {
+                if (UserDataInfo.mHomeDFPCount == 1
+                        || UserDataInfo.mHomeDFPCount == 3
+                        || UserDataInfo.mHomeDFPCount == 5) {
                     if (mDFPInterstitial != null && mDFPInterstitial.isLoaded()) {
                         Utility.MuteAudio(NewHome.this);
                         mDFPInterstitial.show();

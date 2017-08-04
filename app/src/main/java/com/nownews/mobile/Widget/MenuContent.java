@@ -1,5 +1,6 @@
 package com.nownews.mobile.Widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -111,13 +112,13 @@ public class MenuContent extends RelativeLayout {
             Intent intent = new Intent();
             intent.setClass(this.mContext, WebActivity.class);
             intent.putExtra(WebActivity.KEY_URL, url);
-            this.mContext.startActivity(intent);
+            ((Activity)this.mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
         } else if (itemName != null && itemName.equals(this.mContext.getString(R.string.nowvote))) {
             String url = "http://vote.nownews.com/";
             Intent intent = new Intent();
             intent.setClass(this.mContext, WebActivity.class);
             intent.putExtra(WebActivity.KEY_URL, url);
-            this.mContext.startActivity(intent);
+            ((Activity)this.mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
         } else if (itemName != null && itemName.equals(this.mContext.getString(R.string.share_app))) {
             Utility.shareApp(this.mContext);
             return;
@@ -132,7 +133,7 @@ public class MenuContent extends RelativeLayout {
     private void gotoFavoriteAlbum() {
         Intent intent = new Intent();
         intent.setClass(this.mContext, FavoriteAlbum.class);
-        this.mContext.startActivity(intent);
+        ((Activity)this.mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
     }
 
     private void openNewsPreference() {
