@@ -6,6 +6,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,6 +20,14 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.core.adnsdk.AdObject;
+import com.core.adnsdk.AdProfile;
+import com.core.adnsdk.AdReward;
+import com.core.adnsdk.AdRewardListener;
+import com.core.adnsdk.AdRewardType;
+import com.core.adnsdk.AuthList;
+import com.core.adnsdk.AuthListBuilder;
+import com.core.adnsdk.ErrorMessage;
 import com.nownews.R;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
 import com.nownews.mobile.Common.SharedPreferencesMethods;
@@ -34,23 +45,26 @@ import java.util.Map;
  * Created by cindy on 2017/1/24.
  */
 
-public class LivePlayer extends Activity {
+public class LivePlayer extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
     public final static String KEY_PLAY_URL = "keyPlayUrl";
     public final static String KEY_CATEGORY_INDEX = "categoryIndex";
     public final static String KEY_CHANNEL_INDEX = "channelIndex";
     public final static String KEY_WATCH_TIME = "watchTime";
+    public final static String KEY_VIDEO_AD = "videoAD";
     private String mUrl;
     private int mCategoryIndex;
     private int mChannelIndex;
     private int mWatchTime;
+    private boolean mVideoAD;
 
     private VideoView vLivePlayer;
     private LinearLayout vChannelListGroup;
     private ListView vCategoryList;
     private ListView vChannelList;
     private List<LiveListJson.DataBean> mLiveList;
+    private LinearLayout vAdFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +74,7 @@ public class LivePlayer extends Activity {
         processIntent();
         processView();
         processMenu();
+        playVM5AD();
         startTimer();
         play(mChannelIndex);
 
@@ -71,6 +86,7 @@ public class LivePlayer extends Activity {
             mCategoryIndex = getIntent().getIntExtra(KEY_CATEGORY_INDEX, 0);
             mChannelIndex = getIntent().getIntExtra(KEY_CHANNEL_INDEX, 0);
             mWatchTime = getIntent().getIntExtra(KEY_WATCH_TIME, 0);
+            mVideoAD = getIntent().getBooleanExtra(KEY_VIDEO_AD, false);
         }
         mLiveList = UserDataInfo.getLiveList();
     }
@@ -79,8 +95,21 @@ public class LivePlayer extends Activity {
 
         vLivePlayer = (VideoView)findViewById(R.id.live_player);
         vChannelListGroup = (LinearLayout)findViewById(R.id.channel_list_group);
+        vAdFragment = (LinearLayout)findViewById(R.id.ad_fragment);
         vCategoryList = (ListView)findViewById(R.id.category);
         vChannelList = (ListView)findViewById(R.id.channel_list);
+
+    }
+
+    private void playVM5AD(){
+        if(!mVideoAD){
+            return;
+        }
+        vAdFragment.setVisibility(View.VISIBLE);
+
+        Fragment reward = Reward.getInstance();
+        FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+        trans.add(R.id.ad_fragment, reward).commit();
 
     }
 
@@ -278,5 +307,115 @@ public class LivePlayer extends Activity {
 
         }
     };
+
+
+    public static class Reward extends Fragment {
+
+        private String mApiKey = "5630c874cef2370b13942b8f";
+        private String mPlacementName = "placement(reward_video)";
+        private AdReward mAdReward;
+        private final String TAG = getClass().getSimpleName();
+
+        public static Fragment getInstance() {
+            return new Reward();
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            AuthList mAuthList = new AuthListBuilder()
+                    .add(mApiKey, mPlacementName)
+                    .build();
+
+            AdProfile mAdProfile = new AdProfile.AdProfileBuilder()
+                    .setAuthList(mAuthList)
+                    .setTestMode(true)
+                    .build();
+
+            mAdReward = new AdReward(getActivity(), mAdProfile, AdRewardType.REWARD);
+            mAdReward.setAdListener(new AdRewardListener() {
+                @Override
+                public void onAdLoaded(AdObject adObject) {
+                    Log.e(TAG, "廣告完成載入");
+                    mAdReward.showAd();
+                }
+
+                @Override
+                public void onError(ErrorMessage errorMessage) {
+                    Log.e(TAG, "SDK 出現錯誤\n errorMessage: " + errorMessage.toString());
+                }
+
+                @Override
+                public void onAdClicked() {
+                    Log.e(TAG, "廣告被點擊");
+                }
+
+                @Override
+                public void onAdFinished() {
+                    Log.e(TAG, "廣告點擊完成跳轉後");
+                }
+
+                @Override
+                public void onAdReleased() {
+                    Log.e(TAG, "廣告完成卸載並且釋放所有資源");
+                }
+
+                @Override
+                public boolean onAdWatched() {
+                    Log.e(TAG, "影片播放完畢，要自動載入下一檔廣告請回傳 true，否則回傳 false");
+                    return false;
+                }
+
+                @Override
+                public void onAdImpressed() {
+                    Log.e(TAG, "廣告曝光");
+                }
+
+                @Override
+                public String onAdRewarded(AdReward.RewardInfo rewardInfo) {
+                    Log.e(TAG, "獎勵廣告\n rewardInfo: " + rewardInfo.toString());
+                    return null;
+                }
+
+                @Override
+                public void onAdReplayed() {
+                    Log.e(TAG, "廣告完成載入");
+                }
+
+                @Override
+                public void onAdClosed() {
+                    Log.e(TAG, "廣告完成載入");
+                }
+            });
+            mAdReward.setTestMode(true);
+            mAdReward.loadAd();
+
+        }
+
+        @Override
+        public void onResume() {
+            if (mAdReward != null) {
+                mAdReward.onResume();
+            }
+            super.onResume();
+        }
+
+        @Override
+        public void onPause() {
+            if (mAdReward != null) {
+                mAdReward.onPause();
+            }
+            super.onPause();
+        }
+
+        @Override
+        public void onDestroy() {
+            if (mAdReward != null) {
+                mAdReward.onDestroy();
+                mAdReward = null;
+            }
+            super.onDestroy();
+        }
+    }
 
 }

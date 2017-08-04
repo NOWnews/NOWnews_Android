@@ -64,6 +64,7 @@ public class LiveAppDownloadDialog extends Dialog {
     private String downloadLink;
     private LiveListJson mLiveInfoJson;
     private boolean isCountdownType;
+    private boolean videoAD;
 
     public LiveAppDownloadDialog(Context context, String aTitle, List<LiveListJson.DataBean> aLiveList, String aPath,
                                  int aCategoryIndex, int aChannelIndex, LiveListJson aLiveInfoJson) {
@@ -82,6 +83,7 @@ public class LiveAppDownloadDialog extends Dialog {
             mTitleMessage = mLiveInfoJson.getLiveInfo().getTitleMessage();
             watchable = mLiveInfoJson.getLiveInfo().isWatchable();
             downloadLink = mLiveInfoJson.getLiveInfo().getAndroidDownloadLink();
+            videoAD = mLiveInfoJson.getLiveInfo().isVideoAD();
         }
         if(mChannelIndex==-1){
             isCountdownType = true;
@@ -343,6 +345,7 @@ public class LiveAppDownloadDialog extends Dialog {
             intent.putExtra(LivePlayer.KEY_CATEGORY_INDEX, mCategoryIndex);
             intent.putExtra(LivePlayer.KEY_CHANNEL_INDEX, mChannelIndex);
             intent.putExtra(LivePlayer.KEY_WATCH_TIME, mWatchTime);
+            intent.putExtra(LivePlayer.KEY_VIDEO_AD, videoAD);
             ((NewHome)mContext).startActivityForResult(intent, NewHome.RESULT_CODE_FROM_LIVE);
 
             dismiss();

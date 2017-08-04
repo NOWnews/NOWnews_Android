@@ -21,7 +21,6 @@
 -keep class  com.cmcm.adsdk.** { *;}
 -keep class  com.cleanmaster.** { *;}
 
--keep class com.tapjoy.** { *; }
 -keepattributes JavascriptInterface
 -keepattributes *Annotation*
 -keep class * extends java.util.ListResourceBundle {
@@ -64,3 +63,8 @@ public static final ** CREATOR;
 -dontwarn com.fasterxml.jackson.databind.**
 -keep class org.codehaus.** { *; }
 # jackson End
+
+# VM5 Start
+-keep class com.comscore.** { *; }
+-dontwarn com.comscore.**
+# VM5 End

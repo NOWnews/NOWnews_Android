@@ -54,6 +54,7 @@ public class LiveListJson {
         private boolean downloadable;
         private String iosDownloadLink;
         private String androidDownloadLink;
+        private boolean videoAD;
 
         public int getWatchTime() {
             return watchTime;
@@ -118,6 +119,15 @@ public class LiveListJson {
         public void setAndroidDownloadLink(String androidDownloadLink) {
             this.androidDownloadLink = androidDownloadLink;
         }
+
+        public boolean isVideoAD() {
+            return videoAD;
+        }
+
+        public void setVideoAD(boolean videoAD) {
+            this.videoAD = videoAD;
+        }
+
     }
 
     public static class DataBean {

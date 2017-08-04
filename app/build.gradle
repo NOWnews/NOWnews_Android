@@ -7,13 +7,16 @@ repositories {
     maven{
         url 'https://comscore.bintray.com/Analytics'
     }
-    maven{
-        name "Tapjoy's maven repo"
-        url 'https://tapjoy.bintray.com/maven'
+    maven {
+        url 'https://raw.githubusercontent.com/VMFive/android-sdk-3.0/master/VMFiveADNSDK/'
     }
     flatDir {
         dirs 'libs'
     }
+}
+
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor(0, 'seconds')
 }
 
 android {
@@ -101,6 +104,12 @@ android {
         // Ad2廣告聯聯播網轉接器
         compile project(':ad2iction-mediation-adapter')
         compile project(':imagedownloadmanager')
+
+//    For VM5
+        compile 'com.google.android.gms:play-services-ads:11.0.1'
+        debugCompile 'com.vmfive:VMFiveADNSDK:+:debug@aar'
+        releaseCompile 'com.vmfive:VMFiveADNSDK:+:release@aar'
+
 
 //    Other
         testCompile 'junit:junit:4.12'

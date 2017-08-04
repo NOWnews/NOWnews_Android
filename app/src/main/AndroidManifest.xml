@@ -305,6 +305,18 @@
             android:name=".mobile.Service.GetApiService"
             android:exported="false"></service>
 
+        <!--For VM5-->
+        <activity
+            android:name="com.core.adnsdk.ExpandScreenVideoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:hardwareAccelerated="true">
+        </activity>
+        <activity
+            android:name="com.core.adnsdk.RewardActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="sensorLandscape"></activity>
+
     </application>
 
 </manifest>
