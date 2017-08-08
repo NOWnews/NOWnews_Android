@@ -49,7 +49,6 @@ public class GetApiService extends Service {
 
         initController();
         getInstantNews();
-        getHeadlineNews();
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -60,12 +59,6 @@ public class GetApiService extends Service {
 
     }
 
-    private void getHeadlineNews(){
-        if(mApiController!=null){
-            mApiController.getHeadlineNews(mHandler);
-        }
-    }
-
     private void getInstantNews(){
         if(mApiController!=null){
             mApiController.getInstantNews(mHandler);
@@ -73,7 +66,6 @@ public class GetApiService extends Service {
     }
 
     private boolean isGetInstantNewsDone;
-    private boolean isGetHeadlineNewsDone;
     private static class ApiHandler extends Handler {
 
         private final WeakReference<GetApiService> mService;
@@ -99,17 +91,6 @@ public class GetApiService extends Service {
                     service.isGetInstantNewsDone = true;
                     service.checkStatus();
                     break;
-
-                case ParameterSet.GET_HEADLINE_NEWS_DONE:
-                    List<HeadlineNewsJson.CarouselsBean> headlineList = (List<HeadlineNewsJson.CarouselsBean>)msg.obj;
-                    UserDataInfo.setHeadlineContent(headlineList);
-                    service.isGetHeadlineNewsDone = true;
-                    service.checkStatus();
-                    break;
-                case ParameterSet.GET_HEADLINE_NEWS_FAILED:
-                    service.isGetHeadlineNewsDone = true;
-                    service.checkStatus();
-                    break;
             }
 
         }
@@ -117,7 +98,7 @@ public class GetApiService extends Service {
     };
 
     private void checkStatus(){
-        if(isGetInstantNewsDone && isGetHeadlineNewsDone){
+        if(isGetInstantNewsDone){
             if(Utility.DEBUG)Log.v(TAG, "checkStatus()");
             stopSelf();
         }

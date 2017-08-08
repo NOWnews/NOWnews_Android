@@ -237,7 +237,7 @@ public class SpecialNewsCategoryFragment extends Fragment {
                 mAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getActivity().getString(R.string.special));
             }
             if(mErrorAdapter!=null){
-                mErrorAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getActivity().getString(R.string.special));
+                mErrorAdapter.setData(mNewsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getActivity().getString(R.string.special), mReplaceType, null);
             }
         }
     }
@@ -371,7 +371,10 @@ public class SpecialNewsCategoryFragment extends Fragment {
 
     }
 
+    private NewsListRecyclerViewAdapter.ReplaceType mReplaceType;
     private void processErrorList(List<?> newsList, NewsListRecyclerViewAdapter.ReplaceType aReplaceType) {
+
+        mReplaceType = aReplaceType;
 
         if (Utility.DEBUG) Log.e(TAG, "processErrorList()");
         if (isScrollToBottom) {
@@ -381,11 +384,11 @@ public class SpecialNewsCategoryFragment extends Fragment {
         if (mErrorAdapter == null) {
             mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             vList.setLayoutManager(mLinearLayoutManager);
-            mErrorAdapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special), aReplaceType);
+            mErrorAdapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special), aReplaceType, null);
             vList.setAdapter(mErrorAdapter);
             vList.addOnScrollListener(mListScrollListener);
         } else {
-            mErrorAdapter.setData(newsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special));
+            mErrorAdapter.setData(newsList, mCategoryInfo.get(mCurrentItem).getTitle(), getChildFragmentManager(), getString(R.string.special), aReplaceType, null);
         }
 
         vLoadingLayout.setVisibility(View.GONE);

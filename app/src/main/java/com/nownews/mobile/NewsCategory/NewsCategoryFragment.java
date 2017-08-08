@@ -22,6 +22,7 @@ import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
+import com.nownews.mobile.Json.HeadlineNewsJson;
 import com.nownews.mobile.Json.NewsCategoryJson;
 import com.nownews.mobile.Json.NewsCategoryJson.CategoryInfo;
 import com.nownews.mobile.NewHome;
@@ -39,6 +40,7 @@ public class NewsCategoryFragment extends Fragment {
     public final static String KEY_POSITION = "position";
     public static final int LOAD_PAGE_START = 0x617;
     public static final int LOAD_PAGE_END = 0x357;
+    public static final int GOTO_NEWS_PAGE_ERROR = 0x789;
     private final int REQUEST_CODE = 0x123;
     private final int RESULT_CODE = 0x321;
     //View
@@ -171,6 +173,9 @@ public class NewsCategoryFragment extends Fragment {
                 case LOAD_PAGE_END:
                     ((NewHome)fragment.getActivity()).dissmissSnackBar();
                     break;
+                case GOTO_NEWS_PAGE_ERROR:
+                    ((NewHome)fragment.getActivity()).showSnackBarWhenError(fragment.getString(R.string.data_error));
+                    break;
             }
 
         }
@@ -203,7 +208,7 @@ public class NewsCategoryFragment extends Fragment {
                     fragment.isApiLoadingSuccess = true;
                     fragment.mRetryCount = 0;
                     fragment.mNewsCategoryContent = (List<CategoryInfo>) msg.obj;
-//                    fragment.processCategory();
+                    fragment.processCategory();
                     fragment.setTab();
                     break;
                 case ParameterSet.GET_NEWS_CATEGORY_FAILED:
@@ -230,7 +235,18 @@ public class NewsCategoryFragment extends Fragment {
             }
 
         }
-    };
+    }
+
+    private CategoryInfo mHeadlineCategoryInfo;
+    private void processCategory() {
+
+        if(mNewsCategoryContent!=null && mNewsCategoryContent.size()>0){
+            mHeadlineCategoryInfo = new CategoryInfo();
+            mHeadlineCategoryInfo.setName(getString(R.string.headline));
+            mNewsCategoryContent.add(0, mHeadlineCategoryInfo);
+        }
+
+    }
 
     @Nullable
     @Override

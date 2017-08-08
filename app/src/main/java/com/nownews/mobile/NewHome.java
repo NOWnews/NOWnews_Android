@@ -120,6 +120,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
 
     private MaterialDialog mConfirmDialog;
     public Snackbar mSnackbar;
+    public Snackbar mNewsPageErrorSnackbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -609,6 +610,17 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         this.vBottomNavigation.setInactiveColor(Color.parseColor("#b0b0b0"));
         this.vBottomNavigation.setOnTabSelectedListener(this);
         this.vBottomNavigation.setCurrentItem(0);
+    }
+
+    public void showSnackBarWhenError(String errorMessage){
+        if (this.mNewsPageErrorSnackbar != null && this.mNewsPageErrorSnackbar.isShown()) {
+            return;
+        }
+        if (this.mNewsPageErrorSnackbar == null) {
+            this.mNewsPageErrorSnackbar = Snackbar.make(this.vCoordinatorLayout, "", Snackbar.LENGTH_SHORT);
+        }
+        this.mNewsPageErrorSnackbar.setText(errorMessage);
+        this.mNewsPageErrorSnackbar.show();
     }
 
     public void showSnackBar() {

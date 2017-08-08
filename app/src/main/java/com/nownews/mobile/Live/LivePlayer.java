@@ -1,7 +1,5 @@
 package com.nownews.mobile.Live;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,7 +7,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,12 +18,8 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.core.adnsdk.AdObject;
-import com.core.adnsdk.AdProfile;
 import com.core.adnsdk.AdReward;
 import com.core.adnsdk.AdRewardListener;
-import com.core.adnsdk.AdRewardType;
-import com.core.adnsdk.AuthList;
-import com.core.adnsdk.AuthListBuilder;
 import com.core.adnsdk.ErrorMessage;
 import com.nownews.R;
 import com.nownews.mobile.Common.GoogleAnalyticsFunction;
@@ -75,8 +68,6 @@ public class LivePlayer extends AppCompatActivity {
         processView();
         processMenu();
         playVM5AD();
-        startTimer();
-        play(mChannelIndex);
 
     }
 
@@ -101,15 +92,16 @@ public class LivePlayer extends AppCompatActivity {
 
     }
 
+    private Fragment mRewardAD;
     private void playVM5AD(){
         if(!mVideoAD){
             return;
         }
         vAdFragment.setVisibility(View.VISIBLE);
 
-        Fragment reward = Reward.getInstance();
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
-        trans.add(R.id.ad_fragment, reward).commit();
+        mRewardAD = LiveRewardAD.getInstance(mVM5ADListener);
+        trans.add(R.id.ad_fragment, mRewardAD).commit();
 
     }
 
@@ -198,12 +190,17 @@ public class LivePlayer extends AppCompatActivity {
 //            if(minutes>0 && minutes%1==0){ //1分鐘到
                 if(Utility.DEBUG)Log.e(TAG, mWatchTime + "分鐘到");
 //                if(Utility.DEBUG)Log.e(TAG, "1分鐘到");
-                SharedPreferencesMethods sharedPreferencesMethods = new SharedPreferencesMethods(LivePlayer.this);
-                sharedPreferencesMethods.setLiveStopWatchingTime(currentTime);
-                sharedPreferencesMethods.setShareAppSuccess(false);
-                sharedPreferencesMethods.unRegistContext(LivePlayer.this);
-                setResult(NewHome.RESULT_CODE_FROM_LIVE);
-                finish();
+                if(!mVideoAD){
+                    SharedPreferencesMethods sharedPreferencesMethods = new SharedPreferencesMethods(LivePlayer.this);
+                    sharedPreferencesMethods.setLiveStopWatchingTime(currentTime);
+                    sharedPreferencesMethods.setShareAppSuccess(false);
+                    sharedPreferencesMethods.unRegistContext(LivePlayer.this);
+                    setResult(NewHome.RESULT_CODE_FROM_LIVE);
+                    finish();
+                }else{
+                    vLivePlayer.stopPlayback();
+                    playVM5AD();
+                }
             }else{
                 if(mTimeCounterHandler!=null){
                     mTimeCounterHandler.postDelayed(this, 1000);
@@ -308,114 +305,69 @@ public class LivePlayer extends AppCompatActivity {
         }
     };
 
-
-    public static class Reward extends Fragment {
-
-        private String mApiKey = "5630c874cef2370b13942b8f";
-        private String mPlacementName = "placement(reward_video)";
-        private AdReward mAdReward;
-        private final String TAG = getClass().getSimpleName();
-
-        public static Fragment getInstance() {
-            return new Reward();
-        }
-
+    private AdRewardListener mVM5ADListener = new AdRewardListener() {
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            AuthList mAuthList = new AuthListBuilder()
-                    .add(mApiKey, mPlacementName)
-                    .build();
-
-            AdProfile mAdProfile = new AdProfile.AdProfileBuilder()
-                    .setAuthList(mAuthList)
-                    .setTestMode(true)
-                    .build();
-
-            mAdReward = new AdReward(getActivity(), mAdProfile, AdRewardType.REWARD);
-            mAdReward.setAdListener(new AdRewardListener() {
-                @Override
-                public void onAdLoaded(AdObject adObject) {
-                    Log.e(TAG, "廣告完成載入");
-                    mAdReward.showAd();
-                }
-
-                @Override
-                public void onError(ErrorMessage errorMessage) {
-                    Log.e(TAG, "SDK 出現錯誤\n errorMessage: " + errorMessage.toString());
-                }
-
-                @Override
-                public void onAdClicked() {
-                    Log.e(TAG, "廣告被點擊");
-                }
-
-                @Override
-                public void onAdFinished() {
-                    Log.e(TAG, "廣告點擊完成跳轉後");
-                }
-
-                @Override
-                public void onAdReleased() {
-                    Log.e(TAG, "廣告完成卸載並且釋放所有資源");
-                }
-
-                @Override
-                public boolean onAdWatched() {
-                    Log.e(TAG, "影片播放完畢，要自動載入下一檔廣告請回傳 true，否則回傳 false");
-                    return false;
-                }
-
-                @Override
-                public void onAdImpressed() {
-                    Log.e(TAG, "廣告曝光");
-                }
-
-                @Override
-                public String onAdRewarded(AdReward.RewardInfo rewardInfo) {
-                    Log.e(TAG, "獎勵廣告\n rewardInfo: " + rewardInfo.toString());
-                    return null;
-                }
-
-                @Override
-                public void onAdReplayed() {
-                    Log.e(TAG, "廣告完成載入");
-                }
-
-                @Override
-                public void onAdClosed() {
-                    Log.e(TAG, "廣告完成載入");
-                }
-            });
-            mAdReward.setTestMode(true);
-            mAdReward.loadAd();
-
-        }
-
-        @Override
-        public void onResume() {
-            if (mAdReward != null) {
-                mAdReward.onResume();
+        public void onAdLoaded(AdObject adObject) {
+            if(Utility.DEBUG)Log.e(TAG, "廣告完成載入");
+            if(mRewardAD !=null){
+                ((LiveRewardAD) mRewardAD).showAD();
             }
-            super.onResume();
         }
 
         @Override
-        public void onPause() {
-            if (mAdReward != null) {
-                mAdReward.onPause();
-            }
-            super.onPause();
+        public void onError(ErrorMessage errorMessage) {
+            if(Utility.DEBUG)Log.e(TAG, "SDK 出現錯誤\n errorMessage: " + errorMessage.toString());
+            startVideo();
         }
 
         @Override
-        public void onDestroy() {
-            if (mAdReward != null) {
-                mAdReward.onDestroy();
-                mAdReward = null;
-            }
-            super.onDestroy();
+        public void onAdClicked() {
+            if(Utility.DEBUG)Log.e(TAG, "廣告被點擊");
         }
+
+        @Override
+        public void onAdFinished() {
+            if(Utility.DEBUG)Log.e(TAG, "廣告點擊完成跳轉後");
+            startVideo();
+        }
+
+        @Override
+        public void onAdReleased() {
+            if(Utility.DEBUG)Log.e(TAG, "廣告完成卸載並且釋放所有資源");
+        }
+
+        @Override
+        public boolean onAdWatched() {
+            if(Utility.DEBUG)Log.e(TAG, "影片播放完畢，要自動載入下一檔廣告請回傳 true，否則回傳 false");
+            return false;
+        }
+
+        @Override
+        public void onAdImpressed() {
+            if(Utility.DEBUG)Log.e(TAG, "廣告曝光");
+        }
+
+        @Override
+        public String onAdRewarded(AdReward.RewardInfo rewardInfo) {
+            if(Utility.DEBUG)Log.e(TAG, "獎勵廣告\n rewardInfo: " + rewardInfo.toString());
+            return null;
+        }
+
+        @Override
+        public void onAdReplayed() {
+            if(Utility.DEBUG)Log.e(TAG, "廣告重新撥放");
+        }
+
+        @Override
+        public void onAdClosed() {
+            if(Utility.DEBUG)Log.e(TAG, "廣告關閉");
+            startVideo();
+        }
+    };
+
+    private void startVideo(){
+        startTimer();
+        play(mChannelIndex);
     }
 
 }

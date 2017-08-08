@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ad2iction.nativeads.Ad2ictionAdLocalEventHandler;
 import com.ad2iction.nativeads.Ad2ictionNative;
@@ -71,6 +73,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     private List<SearchInfoJson.NewsListBean> mSearchNewsList;
     private List<InstantNewsJson.NewsListBean> mInstantNewsList;
     private List<HeadlineNewsJson.CarouselsBean> mHeadlineNewsList;
+    private List<?> mList;
     private String mCategoryName;
     private String mBigCategory;
     private FragmentManager mChidFragmentManger;
@@ -81,16 +84,21 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     private String[] mVPONIdList;
     public enum ReplaceType{Headline, Instant}
     private ReplaceType mReplaceType;
+    private Handler mHandler;
 
     public NewsListRecyclerViewAdapter(Context aContext, List<?> aNewsList,
-                                       String aCategoryName, FragmentManager aChidFragmentManger, String aBigCategory, ReplaceType aReplaceType) {
+                                       String aCategoryName, FragmentManager aChidFragmentManger, String aBigCategory, ReplaceType aReplaceType, Handler aHandler) {
         mContext = aContext;
         mCategoryName = aCategoryName;
         mReplaceType = aReplaceType;
+        mList = aNewsList;
+        mHandler = aHandler;
         if(mCategoryName.equals(mContext.getString(R.string.search))){
             mSearchNewsList = (List<SearchInfoJson.NewsListBean>)aNewsList;
         }else if(mCategoryName.equals(mContext.getString(R.string.instant_news))){
             mInstantNewsList = (List<InstantNewsJson.NewsListBean>)aNewsList;
+        }else if(mCategoryName.equals(mContext.getString(R.string.headline))){
+            mHeadlineNewsList = (List<HeadlineNewsJson.CarouselsBean>)aNewsList;
         }else{
             mNewsList = (List<NewsListJson.NewsListBean>)aNewsList;
             if(mReplaceType!=null){
@@ -109,14 +117,30 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
         init();
     }
 
-    public void setData(List<?> aNewsList, String aCategoryName, FragmentManager aChidFragmentManger, String aBigCategory) {
+    public void setData(List<?> aNewsList, String aCategoryName, FragmentManager aChidFragmentManger, String aBigCategory, ReplaceType aReplaceType, Handler aHandler) {
         mCategoryName = aCategoryName;
+        mCategoryName = aCategoryName;
+        mReplaceType = aReplaceType;
+        mList = aNewsList;
+        mHandler = aHandler;
         if(mCategoryName.equals(mContext.getString(R.string.search))){
             mSearchNewsList = (List<SearchInfoJson.NewsListBean>)aNewsList;
         }else if(mCategoryName.equals(mContext.getString(R.string.instant_news))){
             mInstantNewsList = (List<InstantNewsJson.NewsListBean>)aNewsList;
+        }else if(mCategoryName.equals(mContext.getString(R.string.headline))){
+            mHeadlineNewsList = (List<HeadlineNewsJson.CarouselsBean>)aNewsList;
         }else{
             mNewsList = (List<NewsListJson.NewsListBean>)aNewsList;
+            if(mReplaceType!=null){
+                switch(mReplaceType){
+                    case Headline:
+                        mHeadlineNewsList = (List<HeadlineNewsJson.CarouselsBean>)aNewsList;
+                        break;
+                    case Instant:
+                        mInstantNewsList = (List<InstantNewsJson.NewsListBean>)aNewsList;
+                        break;
+                }
+            }
         }
         mBigCategory = aBigCategory;
         mChidFragmentManger = aChidFragmentManger;
@@ -164,14 +188,8 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         int count = 0;
-        if (mNewsList == null && mSearchNewsList == null) {
-            count = 0;
-        } else {
-            if(mSearchNewsList!=null){
-                count = mSearchNewsList.size();
-            }else{
-                count = mNewsList.size();
-            }
+        if (mList != null) {
+            count = mList.size();
             if (count>2 && count<5) { //3 & 4
                 count = count + 1;
             } else if (count>=5 && count<=22) {
@@ -402,7 +420,7 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
                 setCardViewClickListener(((NormalViewHolder)holder).vNewsItem, realPosition, mTitle);
 
             }else if(mHeadlineNewsList!=null){
-                //TODO Headline News 熱門新聞
+                //TODO Headline News 頭條新聞
 
                 type = mHeadlineNewsList.get(realPosition).getType();
 
@@ -561,51 +579,73 @@ public class NewsListRecyclerViewAdapter extends RecyclerView.Adapter {
 
             @Override
             public void onClick(View v) {
-                if(mSearchNewsList!=null){
-                    gotoNewsPageFromSearchNews(realPosition, mTitle);
-                }else{
-                    gotoNewsPage(realPosition, mTitle);
-                }
+
+                gotoNewsPage(realPosition, mTitle);
 
             }
         });
     }
 
-    private void gotoNewsPageFromSearchNews(int position, String title) {
+//    private void gotoNewsPageFromSearchNews(int position, String title) {
+//
+//        if (Utility.DEBUG) Log.i(TAG, "position: " + position);
+//        if (Utility.DEBUG) Log.i(TAG, "title: " + title);
+//
+//        int newsId = mSearchNewsList.get(position).getSn();
+//        Intent intent = new Intent();
+//        intent.setClass(mContext, NewsPage.class);
+//        intent.putExtra(NewsPage.KEY_NEWS_ID, newsId);
+//        intent.putExtra(NewsPage.KEY_NEWS_INDEX, position);
+//        intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_SEARCH_NEWS);
+//        intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, mCategoryName);
+//        intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, mBigCategory);
+//        UserDataInfo.setSearchList(mSearchNewsList);
+//        UserDataInfo.isSingalNewsFromAction = false;
+//        ((Activity)mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
+//
+//    }
 
-        if (Utility.DEBUG) Log.i(TAG, "position: " + position);
-        if (Utility.DEBUG) Log.i(TAG, "title: " + title);
-
-        int newsId = mSearchNewsList.get(position).getSn();
-        Intent intent = new Intent();
-        intent.setClass(mContext, NewsPage.class);
-        intent.putExtra(NewsPage.KEY_NEWS_ID, newsId);
-        intent.putExtra(NewsPage.KEY_NEWS_INDEX, position);
-        intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_SEARCH_NEWS);
-        intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, mCategoryName);
-        intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, mBigCategory);
-        UserDataInfo.setSearchList(mSearchNewsList);
-        UserDataInfo.isSingalNewsFromAction = false;
-        ((Activity)mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
-
-    }
-
+    //TODO gotoNewsPage
     private void gotoNewsPage(int position, String title) {
 
         if (Utility.DEBUG) Log.i(TAG, "position: " + position);
         if (Utility.DEBUG) Log.i(TAG, "title: " + title);
 
-        int newsId = mNewsList.get(position).getSn();
-        Intent intent = new Intent();
-        intent.setClass(mContext, NewsPage.class);
-        intent.putExtra(NewsPage.KEY_NEWS_ID, newsId);
-        intent.putExtra(NewsPage.KEY_NEWS_INDEX, position);
-        intent.putExtra(NewsPage.KEY_NEWS_TYPE, NewsPage.TYPE_NORMAL_NEWS);
-        intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, mCategoryName);
-        intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, mBigCategory);
-        UserDataInfo.setNewsList(mNewsList);
-        UserDataInfo.isSingalNewsFromAction = false;
-        ((Activity)mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
+        int newsId = -1;
+        int newsType = -1;
+        if(mSearchNewsList!=null){
+            newsId = mSearchNewsList.get(position).getSn();
+            newsType = NewsPage.TYPE_SEARCH_NEWS;
+            UserDataInfo.setSearchList(mSearchNewsList);
+        }else if(mHeadlineNewsList!=null){
+            newsId = mHeadlineNewsList.get(position).getSn();
+            newsType = NewsPage.TYPE_HEADLINE_NEWS;
+            UserDataInfo.setHeadlineContent(mHeadlineNewsList);
+        }else if(mInstantNewsList!=null){
+            newsId = mInstantNewsList.get(position).getSn();
+            newsType = NewsPage.TYPE_INSTANT_NEWS;
+            UserDataInfo.setInstantNewsContent(mInstantNewsList);
+        }else if(mNewsList!=null){
+            newsId = mNewsList.get(position).getSn();
+            newsType = NewsPage.TYPE_NORMAL_NEWS;
+            UserDataInfo.setNewsList(mNewsList);
+        }
+        if(newsId!=-1){
+            if (Utility.DEBUG) Log.i(TAG, "newsId: " + newsId);
+            Intent intent = new Intent();
+            intent.setClass(mContext, NewsPage.class);
+            intent.putExtra(NewsPage.KEY_NEWS_ID, newsId);
+            intent.putExtra(NewsPage.KEY_NEWS_INDEX, position);
+            intent.putExtra(NewsPage.KEY_NEWS_TYPE, newsType);
+            intent.putExtra(NewsPage.KEY_NEWS_CATEGORY, mCategoryName);
+            intent.putExtra(NewsPage.KEY_NEWS_BIG_CATEGORY, mBigCategory);
+            UserDataInfo.isSingalNewsFromAction = false;
+            ((Activity)mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
+        }else{
+            if(mHandler!=null){
+                mHandler.sendEmptyMessage(NewsCategoryFragment.GOTO_NEWS_PAGE_ERROR);
+            }
+        }
 
     }
 

@@ -272,10 +272,10 @@ public class SearchActivity extends AppCompatActivity {
         vSwipeRefreshLayout.setVisibility(View.VISIBLE);
         vLoadingLayout.setVisibility(View.GONE);
         if(mAdapter==null) {
-            mAdapter = new NewsListRecyclerViewAdapter(this, mSearchInfo, categoryName, getSupportFragmentManager(), categoryName, null);
+            mAdapter = new NewsListRecyclerViewAdapter(this, mSearchInfo, categoryName, getSupportFragmentManager(), categoryName, null, null);
             vSearchList.setAdapter(mAdapter);
         }else{
-            mAdapter.setData(mSearchInfo, categoryName, getSupportFragmentManager(), categoryName);
+            mAdapter.setData(mSearchInfo, categoryName, getSupportFragmentManager(), categoryName, null, null);
         }
     }
 

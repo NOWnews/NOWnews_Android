@@ -84,20 +84,9 @@ public class NewsCategoryFragmentAdapter extends FragmentStatePagerAdapter {
 //            }
 //        }
         String itemName = mCategoryContent.get(position).getName();
-        itemName = itemName.substring(itemName.lastIndexOf("_") + 1, itemName.length());
         if (Utility.DEBUG) Log.e(TAG, "itemName: " + itemName);
-        if (mCategoryContent != null) {
-            for (int i = 0; i < mCategoryContent.size(); i++) {
-                if (mCategoryContent.get(i) != null
-                        && mCategoryContent.get(i).getName() != null
-                        && !mCategoryContent.get(i).getName().trim().isEmpty()) {
-                    String categoryName = mCategoryContent.get(i).getName();
-                    if (itemName.equals(categoryName)) {
-                        aNewsCategoryUrl = mCategoryContent.get(i).getUrl();
-                        break;
-                    }
-                }
-            }
+        if (itemName!=null) {
+            aNewsCategoryUrl = mCategoryContent.get(position).getUrl();
         }
 
         boolean isExternal = mCategoryContent.get(position).isIsExternal();
@@ -107,6 +96,12 @@ public class NewsCategoryFragmentAdapter extends FragmentStatePagerAdapter {
                 Bundle bundle = new Bundle();
                 bundle.putString(WebFragment.KEY_URL, webUrl);
                 fragment.setArguments(bundle);
+        }else if(itemName!=null && itemName.equals(mContext.getString(R.string.headline))){
+            fragment = new OtherNewsListFragment();
+            ((OtherNewsListFragment)fragment).setData(mPool, mHandler);
+            Bundle bundle = new Bundle();
+            bundle.putString(OtherNewsListFragment.KEY_CATEGORY_NAME, itemName);
+            fragment.setArguments(bundle);
         }else{
             fragment = new NewsListFragment();
             ((NewsListFragment) fragment).setData(aNewsCategoryUrl, mHandler, itemName, mPool, position);

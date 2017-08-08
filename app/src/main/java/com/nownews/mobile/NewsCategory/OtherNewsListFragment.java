@@ -121,13 +121,13 @@ public class OtherNewsListFragment extends Fragment {
                     if (fragment.isGetHeadLineDone && fragment.mHeadlineNewsList != null) {
                         UserDataInfo.setHeadlineContent(fragment.mHeadlineNewsList);
                         if(fragment.isAdded()){
-                            fragment.processList();
+                            fragment.processList(fragment.mHeadlineNewsList);
                         }
                         break;
                     } else if (fragment.isGetHotNewsDone && fragment.mNewsList != null) {
                         UserDataInfo.setHotNewsContent(fragment.mNewsList);
                         if(fragment.isAdded()) {
-                            fragment.processList();
+                            fragment.processList(fragment.mNewsList);
                         }
                         break;
                     } else if ((fragment.isGetInstantNewsDone || fragment.isGetNearByNewsDone) && fragment.mNewsList != null) {
@@ -135,7 +135,7 @@ public class OtherNewsListFragment extends Fragment {
                             UserDataInfo.setInstantNewsContent(fragment.mInstantNewsList);
                         }
                         if(fragment.isAdded()) {
-                            fragment.processList();
+                            fragment.processList(fragment.mInstantNewsList);
                         }
                         break;
                     } else {
@@ -199,15 +199,11 @@ public class OtherNewsListFragment extends Fragment {
         // Do nothing...
     }
 
-    private Handler mAdHandler;
     private RecyclerView.RecycledViewPool mPool;
-    public void setData(Handler aAdHandler, RecyclerView.RecycledViewPool aPool){
-        mAdHandler = aAdHandler;
+    private Handler mHandler;
+    public void setData(RecyclerView.RecycledViewPool aPool, Handler aHandler){
         mPool = aPool;
-    }
-
-    public void setData(String aCategoryName) {
-        mCategoryName = aCategoryName;
+        mHandler = aHandler;
     }
 
     @Override
@@ -226,13 +222,13 @@ public class OtherNewsListFragment extends Fragment {
         processArgument();
         processView();
         getNewsList();
-        if (mApiHandler != null) {
-            mApiHandler.sendEmptyMessage(CHECK_LIST);
-        }
+
     }
 
     private void getNewsList() {
-
+        if (mApiHandler != null) {
+            mApiHandler.sendEmptyMessage(CHECK_LIST);
+        }
         if(isRefereshing){
             if(mNewsList!=null && mNewsList.size()>0){
                 vLoadingLayout.setVisibility(View.GONE);
@@ -288,8 +284,6 @@ public class OtherNewsListFragment extends Fragment {
         }
     }
 
-
-
     private void processArgument() {
         mCategoryName = getArguments().getString(KEY_CATEGORY_NAME);
     }
@@ -329,12 +323,9 @@ public class OtherNewsListFragment extends Fragment {
     }
 
     private LinearLayoutManager mLinearLayoutManager;
-    private void processList() {
+    private void processList(List<?> aList) {
 
         if (Utility.DEBUG) Log.e(TAG, "processList() + mCategoryName: " + mCategoryName);
-
-        vLoadingLayout.setVisibility(View.GONE);
-        vList.setVisibility(View.VISIBLE);
 
 //		mAdapter = new NewsListFragmentAdapter(getActivity(), mNewsList);
 //		vList.setAdapter(mAdapter);
@@ -345,7 +336,7 @@ public class OtherNewsListFragment extends Fragment {
         if(mPool!=null){
             vList.setRecycledViewPool(mPool);
         }
-        NewsListRecyclerViewAdapter adapter = new NewsListRecyclerViewAdapter(getActivity(), mNewsList, mCategoryName, getChildFragmentManager(), getString(R.string.news), null);
+        NewsListRecyclerViewAdapter adapter = new NewsListRecyclerViewAdapter(getActivity(), aList, mCategoryName, getChildFragmentManager(), getString(R.string.news), null, mHandler);
         vList.setAdapter(adapter);
         vList.setVisibility(View.VISIBLE);
         vList.addOnScrollListener(mListScrollListener);

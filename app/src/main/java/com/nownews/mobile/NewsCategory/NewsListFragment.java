@@ -41,7 +41,7 @@ public class NewsListFragment extends Fragment {
     private RelativeLayout vLoadingLayout;
     private TextView vErrorMessage;
     private TextView vLoadingText;
-    private Handler mAdHandler;
+    private Handler mHandler;
     private String mCategoryName;
     private int mCurrentPage = 1;
     private boolean isRefereshing = false;
@@ -75,8 +75,8 @@ public class NewsListFragment extends Fragment {
                     fragment.mRetryCount = 0;
                     if (fragment.mCurrentPage > 1) {
                         fragment.mNewsList.addAll((List<NewsListJson.NewsListBean>) msg.obj);
-                        if (fragment.mAdHandler != null) {
-                            fragment.mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
+                        if (fragment.mHandler != null) {
+                            fragment.mHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
                         }
                     } else {
                         fragment.mNewsList = (List<NewsListJson.NewsListBean>) msg.obj;
@@ -109,8 +109,8 @@ public class NewsListFragment extends Fragment {
                             fragment.vRefreshLayout.setRefreshing(false);
                         }
                         if (fragment.isScrollToBottom) {
-                            if (fragment.mAdHandler != null) {
-                                fragment.mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
+                            if (fragment.mHandler != null) {
+                                fragment.mHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_END);
                             }
                             fragment.mCurrentPage--;
                             fragment.isScrollToBottom = false;
@@ -206,8 +206,8 @@ public class NewsListFragment extends Fragment {
                     if (!isScrollToBottom && mNewsList != null && mNewsList.size() > 0) {
                         isScrollToBottom = true;
 						if(Utility.DEBUG)Log.e(TAG, "滑到底了!!");
-                        if (mAdHandler != null) {
-                            mAdHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_START);
+                        if (mHandler != null) {
+                            mHandler.sendEmptyMessage(NewsCategoryFragment.LOAD_PAGE_START);
                         }
                         mCurrentPage++;
                         getNewsList();
@@ -224,9 +224,9 @@ public class NewsListFragment extends Fragment {
 
     private RecyclerView.RecycledViewPool mPool;
     private int mCurrentPosition;
-    public void setData(String aNewsCategoryUrl, Handler aAdHandler, String aCategoryName, RecyclerView.RecycledViewPool aPool, int aPosition) {
+    public void setData(String aNewsCategoryUrl, Handler aHandler, String aCategoryName, RecyclerView.RecycledViewPool aPool, int aPosition) {
         mNewsCategoryUrl = aNewsCategoryUrl;
-        mAdHandler = aAdHandler;
+        mHandler = aHandler;
         mCategoryName = aCategoryName;
         mPool = aPool;
         mCurrentPosition = aPosition;
@@ -322,11 +322,11 @@ public class NewsListFragment extends Fragment {
                 vList.setRecycledViewPool(mPool);
             }
             NewsListRecyclerViewAdapter adapter = null;
-            adapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryName, getChildFragmentManager(), getString(R.string.news), aReplaceType);
+            adapter = new NewsListRecyclerViewAdapter(getActivity(), newsList, mCategoryName, getChildFragmentManager(), getString(R.string.news), aReplaceType, mHandler);
             vList.setAdapter(adapter);
             vList.addOnScrollListener(mListScrollListener);
         }else{
-            ((NewsListRecyclerViewAdapter) vList.getAdapter()).setData(newsList, mCategoryName, getChildFragmentManager(), getString(R.string.news));
+            ((NewsListRecyclerViewAdapter) vList.getAdapter()).setData(newsList, mCategoryName, getChildFragmentManager(), getString(R.string.news), aReplaceType, mHandler);
         }
 
         vLoadingLayout.setVisibility(View.GONE);

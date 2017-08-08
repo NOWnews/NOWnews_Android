@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/NowNews_Mobile_V3.iml" filepath="$PROJECT_DIR$/NowNews_Mobile_V3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NOWnews_Android.iml" filepath="$PROJECT_DIR$/NOWnews_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/ad2iction-mediation-adapter/ad2iction-mediation-adapter.iml" filepath="$PROJECT_DIR$/ad2iction-mediation-adapter/ad2iction-mediation-adapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/ad2iction-sdk/ad2iction-sdk.iml" filepath="$PROJECT_DIR$/ad2iction-sdk/ad2iction-sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />

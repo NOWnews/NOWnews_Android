@@ -70,7 +70,7 @@
         <activity
             android:name=".mobile.Live.LivePlayer"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
 
         <service android:name=".mobile.Service.DetectNetworkFlowService" />
         <service android:name=".mobile.Service.SignalService" />

@@ -240,8 +240,8 @@ public class LiveAppDownloadDialog extends Dialog {
         vMessage = (TextView)findViewById(R.id.message);
         vMessage.setLayoutParams(mResize.setMargins(vMessage, 0, 0, 0, 10));
         mResize.setTextSize(vMessage);
-//        vMessage.setText(mTitleMessage);
-        vMessage.setText("本直播由 watchNOW APP 提供精彩試看\n請密切關注 watchNOW 的下載通知！\n\n本服務由華夏新媒體有限公司提供\n客服專線: 0903-892-221\n聯絡我們: 0903899221@gmail.com");
+        vMessage.setText(mTitleMessage);
+//        vMessage.setText("本服務由天暢國際股份有限公司提供\n\n線上客服請搜尋\nLINE/wechat ID：nowlink_cs");
 
         vButtonsGroup = (LinearLayout)findViewById(R.id.buttons_group);
         vButtonsGroup.setLayoutParams(mResize.setMargins(vButtonsGroup, 10, 10, 10, 10));

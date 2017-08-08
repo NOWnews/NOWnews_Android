@@ -4,9 +4,9 @@ apply plugin: 'com.jakewharton.butterknife'
 repositories {
     mavenCentral()
     //comscore
-    maven{
-        url 'https://comscore.bintray.com/Analytics'
-    }
+//    maven{
+//        url 'https://comscore.bintray.com/Analytics'
+//    }
     maven {
         url 'https://raw.githubusercontent.com/VMFive/android-sdk-3.0/master/VMFiveADNSDK/'
     }
@@ -94,7 +94,7 @@ android {
 
 //    For Analytics
         compile 'com.google.android.gms:play-services-analytics:11.0.1'
-        compile 'com.comscore:android-analytics:5.+'
+//        compile 'com.comscore:android-analytics:5.+'
 
 //    For Ad2
         // Ad2一般廣告
@@ -110,7 +110,6 @@ android {
         debugCompile 'com.vmfive:VMFiveADNSDK:+:debug@aar'
         releaseCompile 'com.vmfive:VMFiveADNSDK:+:release@aar'
 
-
 //    Other
         testCompile 'junit:junit:4.12'
         compile 'joda-time:joda-time:+'
@@ -120,3 +119,6 @@ android {
 
 
 apply plugin: 'com.google.gms.google-services'
+dependencies {
+    implementation 'com.android.support:support-v4:25.+'
+}
