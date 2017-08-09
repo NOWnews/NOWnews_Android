@@ -3,6 +3,7 @@ package com.nownews.mobile.NewsPage;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,9 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.QuickContactBadge;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -143,6 +148,9 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                         fragment.isRefereshing = false;
                         fragment.vRefreshLayout.setRefreshing(false);
                     }
+                    if (fragment.isAdded()) {
+                        fragment.processRecyclerView();
+                    }
                     break;
             }
 
@@ -222,6 +230,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         }
     }
 
+    private FloatingActionButton vActionButton;
     public void processView() {
 
         View view = getView();
@@ -241,6 +250,9 @@ public class NewsPageRecyclerViewFragment extends Fragment {
             }
         });
         vVideoFrameLayout = (FrameLayout) view.findViewById(R.id.youtube_content_view);
+        vActionButton = (FloatingActionButton) view.findViewById(R.id.scroll_to_top_action);
+        vActionButton.setOnClickListener(mActionButtonClickListener);
+
     }
 
     private LinearLayoutManager mLinearLayoutManager;
@@ -388,6 +400,74 @@ public class NewsPageRecyclerViewFragment extends Fragment {
         vContentRecyclerView.setLayoutManager(mLinearLayoutManager);
         NewsPageRecyclerViewAdapter mAdapter = new NewsPageRecyclerViewAdapter(getActivity(), mContentList, mNewsInfo, mImageUrlList, mVideoListener, mRelationsNewsList);
         vContentRecyclerView.setAdapter(mAdapter);
+        vContentRecyclerView.addOnScrollListener(mContentScrollChangeListener);
+
+    }
+
+    private View.OnClickListener mActionButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            if(vContentRecyclerView!=null){
+                vContentRecyclerView.smoothScrollToPosition(0);
+            }
+
+        }
+    };
+
+    private int mCurrentScrollDirection;
+    private RecyclerView.OnScrollListener mContentScrollChangeListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            if(newState==RecyclerView.SCROLL_STATE_IDLE){
+                Log.d(TAG, "onScrollStateChanged!!! " + newState);
+                if (!recyclerView.canScrollVertically(-1)) {
+                    if(Utility.DEBUG)Log.e(TAG, "滑到頂了!!");
+                    dismissScrollToTopActionButton();
+                }
+            }
+
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            mCurrentScrollDirection = dy;
+            int findLastVisibleItemPosition = mLinearLayoutManager.findLastVisibleItemPosition();
+
+            if(dy<0){
+                if(Utility.DEBUG)Log.d(TAG, "手指項下滑，頁面往上滾 dy: " + dy);
+            }else if(dy>0){
+                if(Utility.DEBUG)Log.d(TAG, "手指往上滑，頁面往下滾 dy: " + dy);
+                showScrollToTopActionButton();
+            }
+
+        }
+    };
+
+    private Animation mAnimation;
+    private void showScrollToTopActionButton(){
+
+        if(vActionButton!=null && vActionButton.getVisibility()==View.GONE){
+            mAnimation = new AnimationUtils().loadAnimation(getActivity(), R.anim.fab_scale_up);
+            vActionButton.setAnimation(mAnimation);
+            mAnimation.startNow();
+            vActionButton.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private void dismissScrollToTopActionButton(){
+
+        if(vActionButton!=null && vActionButton.getVisibility()==View.VISIBLE){
+            mAnimation = new AnimationUtils().loadAnimation(getActivity(), R.anim.fab_scale_down);
+            vActionButton.setAnimation(mAnimation);
+            mAnimation.startNow();
+            vActionButton.setVisibility(View.GONE);
+        }
 
     }
 

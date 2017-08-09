@@ -196,7 +196,7 @@ public class NewsListFragment extends Fragment {
             super.onScrolled(recyclerView, dx, dy);
 
             Log.d(TAG, "onScrolled");
-            int findLastVisibleItemPosition = mLinearLayoutManager.findLastVisibleItemPosition();
+            int findLastVisibleItemPosition = mLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
 
             if(Utility.DEBUG)Log.v(TAG, "mAdapter.getItemCount(): " + vList.getAdapter().getItemCount());
             if(Utility.DEBUG)Log.v(TAG, "findLastVisibleItemPosition: " + findLastVisibleItemPosition);
