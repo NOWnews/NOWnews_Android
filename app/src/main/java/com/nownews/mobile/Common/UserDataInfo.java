@@ -11,16 +11,11 @@ import com.comscore.Analytics;
 import com.nownews.mobile.Json.HeadlineNewsJson;
 import com.nownews.mobile.Json.InstantNewsJson;
 import com.nownews.mobile.Json.LiveListJson;
-import com.nownews.mobile.Json.NewsCategoryJson.CategoryInfo;
 import com.nownews.mobile.Json.NewsListJson;
-import com.nownews.mobile.Json.PhotosCategoryJson;
 import com.nownews.mobile.Json.RelationsNewsInfoJson;
 import com.nownews.mobile.Json.SearchInfoJson;
 import com.nownews.mobile.Json.SpecialNewsListJson;
-import com.nownews.mobile.Json.VideosCategoryJson;
-import com.nownews.mobile.Json.VideosListJson;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserDataInfo {
@@ -35,24 +30,18 @@ public class UserDataInfo {
     public final static String YOUTUBE_DEVELOPER_KEY = "AIzaSyAC9YhsrjGVszAjIxdxrHJJR8Jgwn3KU4k";
     public final static String WEIBO_APP_KEY = "2417128385";
     private static final String TAG = "UserDataInfo";
-    private static final boolean DEBUG = false;
     public static boolean isVersionDialogShow;
     public static int mPageSwapCount;
     public static int mHomeDFPCount;
     public static boolean isSingalNewsFromAction;
-    public static List<PhotosCategoryJson.CategoryInfo> mPhotosCategoryContent;
-    public static List<VideosCategoryJson.CategoryInfo> mVideosCategoryContent;
     private static Context mCurrentContext;
-    private static List<CategoryInfo> mNewsCategoryContent;
     private static List<HeadlineNewsJson.CarouselsBean> mHeadlineContent;
-    private static List<NewsListJson.NewsListBean> mHotNewsContent;
     private static List<InstantNewsJson.NewsListBean> mInstantNewsContent;
+    private static List<NewsListJson.NewsListBean> mHotNewsContent;
     private static List<RelationsNewsInfoJson.RelationsNewsBean> mReferenceNewsList;
     private static List<NewsListJson.NewsListBean> mNewsList;
     private static List<SpecialNewsListJson.NewsListBean> mSpecialNewsList;
-    private static List<VideosListJson.VideosContent> mVideoNewsList;
     private static List<SearchInfoJson.NewsListBean> mSearchList;
-    private static ArrayList<Integer> mDisplayIndexList;
     private static boolean activityVisible;
     private static List<LiveListJson.DataBean> mLiveList;
 
@@ -94,30 +83,6 @@ public class UserDataInfo {
         }
     }
 
-    public static List<CategoryInfo> getNewsCategoryContent() {
-        return mNewsCategoryContent;
-    }
-
-    public static void setNewsCategoryContent(List<CategoryInfo> aNewsCategoryContent) {
-        mNewsCategoryContent = aNewsCategoryContent;
-    }
-
-    public static List<PhotosCategoryJson.CategoryInfo> getPhotosCategoryContent() {
-        return mPhotosCategoryContent;
-    }
-
-    public static void setPhotosCategoryContent(List<PhotosCategoryJson.CategoryInfo> aPhotosCategoryContent) {
-        mPhotosCategoryContent = aPhotosCategoryContent;
-    }
-
-    public static List<VideosCategoryJson.CategoryInfo> getVideosCategoryContent() {
-        return mVideosCategoryContent;
-    }
-
-    public static void setVideosCategoryContent(List<VideosCategoryJson.CategoryInfo> aVideosCategoryContent) {
-        mVideosCategoryContent = aVideosCategoryContent;
-    }
-
     public static List<NewsListJson.NewsListBean> getNewsList() {
         return mNewsList;
     }
@@ -132,14 +97,6 @@ public class UserDataInfo {
 
     public static void setSpecialNewsList(List<SpecialNewsListJson.NewsListBean> aNewsList) {
         mSpecialNewsList = aNewsList;
-    }
-
-    public static List<VideosListJson.VideosContent> getVideoNewsList() {
-        return mVideoNewsList;
-    }
-
-    public static void setVideoNewsList(List<VideosListJson.VideosContent> aVideoNewsList) {
-        mVideoNewsList = aVideoNewsList;
     }
 
     public static List<SearchInfoJson.NewsListBean> getSearchList() {
@@ -157,18 +114,6 @@ public class UserDataInfo {
     public static void setHeadlineContent(List<HeadlineNewsJson.CarouselsBean> aHeadlineContent) {
         Log.d(TAG, "aHeadlineContent: " + aHeadlineContent);
         UserDataInfo.mHeadlineContent = aHeadlineContent;
-    }
-
-    public static ArrayList<Integer> getDisplayIndexList() {
-        return mDisplayIndexList;
-    }
-
-    public static void setDisplayIndexList(ArrayList<Integer> aDisplayIndexList) {
-        mDisplayIndexList = aDisplayIndexList;
-    }
-
-    public static List<NewsListJson.NewsListBean> getHotNewsContent() {
-        return mHotNewsContent;
     }
 
     public static void setHotNewsContent(List<NewsListJson.NewsListBean> aHotNewsContent) {

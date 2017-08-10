@@ -54,24 +54,11 @@ public class NewsInfoJson {
 
     private String _id;
     private int sn;
-    private String updatedAt;
     private String createdAt;
     private String title;
-    private AuthorBean Author;
-    private String CreatedBy;
-    private String UpdatedBy;
-    private boolean isTrashed;
-    private String LastReviewer;
-    private String feedFrom;
-    private boolean isFeed;
     private String newsBy;
-    private boolean isSponsored;
-    private boolean isDeliver;
-    private boolean isAdult;
-    private Object traceCode;
     private String status;
     private String type;
-    private String startedAt;
     private String freeContent;
     private String content;
     private MainVideoBean MainVideo;
@@ -80,17 +67,10 @@ public class NewsInfoJson {
     private String summary;
     private String shortTitle;
     private String formatStartedAt;
-    private String formatUpdatedAt;
-    private String formatCreatedAt;
     private String parseUrl;
     private String completeUrl;
     private String id;
-    private PageViewBean pageView;
-    private List<Double> location;
-    private List<TagsBean> Tags;
-    private List<?> Videos;
     private List<Photos> Photos;
-    private List<MenusBean> Menus;
 
     public String get_id() {
         return _id;
@@ -106,14 +86,6 @@ public class NewsInfoJson {
 
     public void setSn(int sn) {
         this.sn = sn;
-    }
-
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public String getCreatedAt() {
@@ -132,100 +104,12 @@ public class NewsInfoJson {
         this.title = title;
     }
 
-    public AuthorBean getAuthor() {
-        return Author;
-    }
-
-    public void setAuthor(AuthorBean Author) {
-        this.Author = Author;
-    }
-
-    public String getCreatedBy() {
-        return CreatedBy;
-    }
-
-    public void setCreatedBy(String CreatedBy) {
-        this.CreatedBy = CreatedBy;
-    }
-
-    public String getUpdatedBy() {
-        return UpdatedBy;
-    }
-
-    public void setUpdatedBy(String UpdatedBy) {
-        this.UpdatedBy = UpdatedBy;
-    }
-
-    public boolean isIsTrashed() {
-        return isTrashed;
-    }
-
-    public void setIsTrashed(boolean isTrashed) {
-        this.isTrashed = isTrashed;
-    }
-
-    public String getLastReviewer() {
-        return LastReviewer;
-    }
-
-    public void setLastReviewer(String LastReviewer) {
-        this.LastReviewer = LastReviewer;
-    }
-
-    public String getFeedFrom() {
-        return feedFrom;
-    }
-
-    public void setFeedFrom(String feedFrom) {
-        this.feedFrom = feedFrom;
-    }
-
-    public boolean isIsFeed() {
-        return isFeed;
-    }
-
-    public void setIsFeed(boolean isFeed) {
-        this.isFeed = isFeed;
-    }
-
     public String getNewsBy() {
         return newsBy;
     }
 
     public void setNewsBy(String newsBy) {
         this.newsBy = newsBy;
-    }
-
-    public boolean isIsSponsored() {
-        return isSponsored;
-    }
-
-    public void setIsSponsored(boolean isSponsored) {
-        this.isSponsored = isSponsored;
-    }
-
-    public boolean isIsDeliver() {
-        return isDeliver;
-    }
-
-    public void setIsDeliver(boolean isDeliver) {
-        this.isDeliver = isDeliver;
-    }
-
-    public boolean isIsAdult() {
-        return isAdult;
-    }
-
-    public void setIsAdult(boolean isAdult) {
-        this.isAdult = isAdult;
-    }
-
-    public Object getTraceCode() {
-        return traceCode;
-    }
-
-    public void setTraceCode(Object traceCode) {
-        this.traceCode = traceCode;
     }
 
     public String getStatus() {
@@ -242,14 +126,6 @@ public class NewsInfoJson {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getStartedAt() {
-        return startedAt;
-    }
-
-    public void setStartedAt(String startedAt) {
-        this.startedAt = startedAt;
     }
 
     public String getFreeContent() {
@@ -292,14 +168,6 @@ public class NewsInfoJson {
         this.MainMenu = MainMenu;
     }
 
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
     public String getShortTitle() {
         return shortTitle;
     }
@@ -314,22 +182,6 @@ public class NewsInfoJson {
 
     public void setFormatStartedAt(String formatStartedAt) {
         this.formatStartedAt = formatStartedAt;
-    }
-
-    public String getFormatUpdatedAt() {
-        return formatUpdatedAt;
-    }
-
-    public void setFormatUpdatedAt(String formatUpdatedAt) {
-        this.formatUpdatedAt = formatUpdatedAt;
-    }
-
-    public String getFormatCreatedAt() {
-        return formatCreatedAt;
-    }
-
-    public void setFormatCreatedAt(String formatCreatedAt) {
-        this.formatCreatedAt = formatCreatedAt;
     }
 
     public String getParseUrl() {
@@ -356,52 +208,12 @@ public class NewsInfoJson {
         this.id = id;
     }
 
-    public PageViewBean getPageView() {
-        return pageView;
-    }
-
-    public void setPageView(PageViewBean pageView) {
-        this.pageView = pageView;
-    }
-
-    public List<Double> getLocation() {
-        return location;
-    }
-
-    public void setLocation(List<Double> location) {
-        this.location = location;
-    }
-
-    public List<TagsBean> getTags() {
-        return Tags;
-    }
-
-    public void setTags(List<TagsBean> Tags) {
-        this.Tags = Tags;
-    }
-
-    public List<?> getVideos() {
-        return Videos;
-    }
-
-    public void setVideos(List<?> Videos) {
-        this.Videos = Videos;
-    }
-
     public List<Photos> getPhotos() {
         return Photos;
     }
 
     public void setPhotos(List<Photos> Photos) {
         this.Photos = Photos;
-    }
-
-    public List<MenusBean> getMenus() {
-        return Menus;
-    }
-
-    public void setMenus(List<MenusBean> Menus) {
-        this.Menus = Menus;
     }
 
     public static class Photos {
@@ -432,23 +244,13 @@ public class NewsInfoJson {
 
         private String _id;
         private int sn;
-        private String updatedAt;
         private String createdAt;
         private String url;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private boolean isTrashed;
         private Object Tag;
-        private boolean isDeliver;
         private int height;
         private int width;
-        private String mimetype;
-        private String mode;
         private String type;
         private String format;
-        private String originalname;
-        private String imageFrom;
-        private Object keyword;
         private String desc;
         private String title;
 
@@ -468,14 +270,6 @@ public class NewsInfoJson {
             this.sn = sn;
         }
 
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-        }
-
         public String getCreatedAt() {
             return createdAt;
         }
@@ -492,44 +286,12 @@ public class NewsInfoJson {
             this.url = url;
         }
 
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
         public Object getTag() {
             return Tag;
         }
 
         public void setTag(Object Tag) {
             this.Tag = Tag;
-        }
-
-        public boolean isIsDeliver() {
-            return isDeliver;
-        }
-
-        public void setIsDeliver(boolean isDeliver) {
-            this.isDeliver = isDeliver;
         }
 
         public int getHeight() {
@@ -548,22 +310,6 @@ public class NewsInfoJson {
             this.width = width;
         }
 
-        public String getMimetype() {
-            return mimetype;
-        }
-
-        public void setMimetype(String mimetype) {
-            this.mimetype = mimetype;
-        }
-
-        public String getMode() {
-            return mode;
-        }
-
-        public void setMode(String mode) {
-            this.mode = mode;
-        }
-
         public String getType() {
             return type;
         }
@@ -580,30 +326,6 @@ public class NewsInfoJson {
             this.format = format;
         }
 
-        public String getOriginalname() {
-            return originalname;
-        }
-
-        public void setOriginalname(String originalname) {
-            this.originalname = originalname;
-        }
-
-        public String getImageFrom() {
-            return imageFrom;
-        }
-
-        public void setImageFrom(String imageFrom) {
-            this.imageFrom = imageFrom;
-        }
-
-        public Object getKeyword() {
-            return keyword;
-        }
-
-        public void setKeyword(Object keyword) {
-            this.keyword = keyword;
-        }
-
         public String getDesc() {
             return desc;
         }
@@ -618,32 +340,6 @@ public class NewsInfoJson {
 
         public void setTitle(String title) {
             this.title = title;
-        }
-    }
-
-    public static class AuthorBean {
-        /**
-         * _id : 59159b00fbe08771e3294807
-         * Avatar : null
-         */
-
-        private String _id;
-        private Object Avatar;
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
-
-        public Object getAvatar() {
-            return Avatar;
-        }
-
-        public void setAvatar(Object Avatar) {
-            this.Avatar = Avatar;
         }
     }
 
@@ -674,24 +370,12 @@ public class NewsInfoJson {
 
         private String _id;
         private int sn;
-        private String updatedAt;
         private String createdAt;
         private String url;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private boolean isTrashed;
         private Object size;
-        private boolean isDeliver;
-        private Object mimetype;
-        private String mode;
         private String type;
         private Object format;
-        private Object originalname;
-        private String videoFrom;
-        private Object keyword;
-        private String desc;
         private String title;
-        private List<?> Tags;
 
         public String get_id() {
             return _id;
@@ -707,14 +391,6 @@ public class NewsInfoJson {
 
         public void setSn(int sn) {
             this.sn = sn;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
         }
 
         public String getCreatedAt() {
@@ -733,60 +409,12 @@ public class NewsInfoJson {
             this.url = url;
         }
 
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
         public Object getSize() {
             return size;
         }
 
         public void setSize(Object size) {
             this.size = size;
-        }
-
-        public boolean isIsDeliver() {
-            return isDeliver;
-        }
-
-        public void setIsDeliver(boolean isDeliver) {
-            this.isDeliver = isDeliver;
-        }
-
-        public Object getMimetype() {
-            return mimetype;
-        }
-
-        public void setMimetype(Object mimetype) {
-            this.mimetype = mimetype;
-        }
-
-        public String getMode() {
-            return mode;
-        }
-
-        public void setMode(String mode) {
-            this.mode = mode;
         }
 
         public String getType() {
@@ -805,38 +433,6 @@ public class NewsInfoJson {
             this.format = format;
         }
 
-        public Object getOriginalname() {
-            return originalname;
-        }
-
-        public void setOriginalname(Object originalname) {
-            this.originalname = originalname;
-        }
-
-        public String getVideoFrom() {
-            return videoFrom;
-        }
-
-        public void setVideoFrom(String videoFrom) {
-            this.videoFrom = videoFrom;
-        }
-
-        public Object getKeyword() {
-            return keyword;
-        }
-
-        public void setKeyword(Object keyword) {
-            this.keyword = keyword;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-
-        public void setDesc(String desc) {
-            this.desc = desc;
-        }
-
         public String getTitle() {
             return title;
         }
@@ -845,13 +441,6 @@ public class NewsInfoJson {
             this.title = title;
         }
 
-        public List<?> getTags() {
-            return Tags;
-        }
-
-        public void setTags(List<?> Tags) {
-            this.Tags = Tags;
-        }
     }
 
     public static class MainPhotoBean {
@@ -881,23 +470,13 @@ public class NewsInfoJson {
 
         private String _id;
         private int sn;
-        private String updatedAt;
         private String createdAt;
         private String url;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private boolean isTrashed;
         private Object Tag;
-        private boolean isDeliver;
         private int height;
         private int width;
-        private String mimetype;
-        private String mode;
         private String type;
         private String format;
-        private String originalname;
-        private String imageFrom;
-        private Object keyword;
         private String desc;
         private String title;
 
@@ -917,14 +496,6 @@ public class NewsInfoJson {
             this.sn = sn;
         }
 
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-        }
-
         public String getCreatedAt() {
             return createdAt;
         }
@@ -941,44 +512,12 @@ public class NewsInfoJson {
             this.url = url;
         }
 
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
         public Object getTag() {
             return Tag;
         }
 
         public void setTag(Object Tag) {
             this.Tag = Tag;
-        }
-
-        public boolean isIsDeliver() {
-            return isDeliver;
-        }
-
-        public void setIsDeliver(boolean isDeliver) {
-            this.isDeliver = isDeliver;
         }
 
         public int getHeight() {
@@ -997,22 +536,6 @@ public class NewsInfoJson {
             this.width = width;
         }
 
-        public String getMimetype() {
-            return mimetype;
-        }
-
-        public void setMimetype(String mimetype) {
-            this.mimetype = mimetype;
-        }
-
-        public String getMode() {
-            return mode;
-        }
-
-        public void setMode(String mode) {
-            this.mode = mode;
-        }
-
         public String getType() {
             return type;
         }
@@ -1027,30 +550,6 @@ public class NewsInfoJson {
 
         public void setFormat(String format) {
             this.format = format;
-        }
-
-        public String getOriginalname() {
-            return originalname;
-        }
-
-        public void setOriginalname(String originalname) {
-            this.originalname = originalname;
-        }
-
-        public String getImageFrom() {
-            return imageFrom;
-        }
-
-        public void setImageFrom(String imageFrom) {
-            this.imageFrom = imageFrom;
-        }
-
-        public Object getKeyword() {
-            return keyword;
-        }
-
-        public void setKeyword(Object keyword) {
-            this.keyword = keyword;
         }
 
         public String getDesc() {
@@ -1096,23 +595,10 @@ public class NewsInfoJson {
 
         private String _id;
         private int sn;
-        private String updatedAt;
         private String createdAt;
         private String name;
         private String url;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private boolean isTrashed;
         private String status;
-        private boolean isPermanented;
-        private Object endedAt;
-        private Object startedAt;
-        private int weight;
-        private int level;
-        private Object ParentId;
-        private boolean hasChild;
-        private boolean isAdult;
-        private boolean isExternal;
         private String categoryName;
 
         public String get_id() {
@@ -1129,14 +615,6 @@ public class NewsInfoJson {
 
         public void setSn(int sn) {
             this.sn = sn;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
         }
 
         public String getCreatedAt() {
@@ -1163,108 +641,12 @@ public class NewsInfoJson {
             this.url = url;
         }
 
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
         public String getStatus() {
             return status;
         }
 
         public void setStatus(String status) {
             this.status = status;
-        }
-
-        public boolean isIsPermanented() {
-            return isPermanented;
-        }
-
-        public void setIsPermanented(boolean isPermanented) {
-            this.isPermanented = isPermanented;
-        }
-
-        public Object getEndedAt() {
-            return endedAt;
-        }
-
-        public void setEndedAt(Object endedAt) {
-            this.endedAt = endedAt;
-        }
-
-        public Object getStartedAt() {
-            return startedAt;
-        }
-
-        public void setStartedAt(Object startedAt) {
-            this.startedAt = startedAt;
-        }
-
-        public int getWeight() {
-            return weight;
-        }
-
-        public void setWeight(int weight) {
-            this.weight = weight;
-        }
-
-        public int getLevel() {
-            return level;
-        }
-
-        public void setLevel(int level) {
-            this.level = level;
-        }
-
-        public Object getParentId() {
-            return ParentId;
-        }
-
-        public void setParentId(Object ParentId) {
-            this.ParentId = ParentId;
-        }
-
-        public boolean isHasChild() {
-            return hasChild;
-        }
-
-        public void setHasChild(boolean hasChild) {
-            this.hasChild = hasChild;
-        }
-
-        public boolean isIsAdult() {
-            return isAdult;
-        }
-
-        public void setIsAdult(boolean isAdult) {
-            this.isAdult = isAdult;
-        }
-
-        public boolean isIsExternal() {
-            return isExternal;
-        }
-
-        public void setIsExternal(boolean isExternal) {
-            this.isExternal = isExternal;
         }
 
         public String getCategoryName() {
@@ -1276,321 +658,4 @@ public class NewsInfoJson {
         }
     }
 
-    public static class PageViewBean {
-        /**
-         * _id : 5947318f99cce60300034d19
-         * totalScore : 9.9
-         */
-
-        private String _id;
-        private double totalScore;
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
-
-        public double getTotalScore() {
-            return totalScore;
-        }
-
-        public void setTotalScore(double totalScore) {
-            this.totalScore = totalScore;
-        }
-    }
-
-    public static class TagsBean {
-        /**
-         * _id : 5919d07afbe08771e3294e5d
-         * sn : 566
-         * updatedAt : 2017-05-15T15:59:54.009Z
-         * createdAt : 2017-05-15T15:59:54.009Z
-         * name : 新台幣
-         * CreatedBy : 59159b00fbe08771e3294807
-         * UpdatedBy : 59159b00fbe08771e3294807
-         * isTrashed : false
-         */
-
-        private String _id;
-        private int sn;
-        private String updatedAt;
-        private String createdAt;
-        private String name;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private boolean isTrashed;
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
-
-        public int getSn() {
-            return sn;
-        }
-
-        public void setSn(int sn) {
-            this.sn = sn;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-        }
-
-        public String getCreatedAt() {
-            return createdAt;
-        }
-
-        public void setCreatedAt(String createdAt) {
-            this.createdAt = createdAt;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-    }
-
-    public static class MenusBean {
-        /**
-         * _id : 59157d30fbe08771e3294756
-         * sn : 39
-         * updatedAt : 2017-05-12T09:26:39.993Z
-         * createdAt : 2017-05-12T09:15:28.977Z
-         * name : 財經總覽
-         * url : /cat/finance/r
-         * CreatedBy : 5915646fc634cc5cc9f17066
-         * UpdatedBy : 5915646fc634cc5cc9f17066
-         * isTrashed : false
-         * status : OPEN
-         * isPermanented : true
-         * endedAt : null
-         * startedAt : null
-         * weight : 0
-         * level : 1
-         * ParentId : 5915757cfbe08771e32946e0
-         * hasChild : false
-         * isAdult : false
-         * isExternal : false
-         * categoryName : finance/r
-         */
-
-        private String _id;
-        private int sn;
-        private String updatedAt;
-        private String createdAt;
-        private String name;
-        private String url;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private boolean isTrashed;
-        private String status;
-        private boolean isPermanented;
-        private Object endedAt;
-        private Object startedAt;
-        private int weight;
-        private int level;
-        private String ParentId;
-        private boolean hasChild;
-        private boolean isAdult;
-        private boolean isExternal;
-        private String categoryName;
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
-
-        public int getSn() {
-            return sn;
-        }
-
-        public void setSn(int sn) {
-            this.sn = sn;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-        }
-
-        public String getCreatedAt() {
-            return createdAt;
-        }
-
-        public void setCreatedAt(String createdAt) {
-            this.createdAt = createdAt;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
-
-        public boolean isIsPermanented() {
-            return isPermanented;
-        }
-
-        public void setIsPermanented(boolean isPermanented) {
-            this.isPermanented = isPermanented;
-        }
-
-        public Object getEndedAt() {
-            return endedAt;
-        }
-
-        public void setEndedAt(Object endedAt) {
-            this.endedAt = endedAt;
-        }
-
-        public Object getStartedAt() {
-            return startedAt;
-        }
-
-        public void setStartedAt(Object startedAt) {
-            this.startedAt = startedAt;
-        }
-
-        public int getWeight() {
-            return weight;
-        }
-
-        public void setWeight(int weight) {
-            this.weight = weight;
-        }
-
-        public int getLevel() {
-            return level;
-        }
-
-        public void setLevel(int level) {
-            this.level = level;
-        }
-
-        public String getParentId() {
-            return ParentId;
-        }
-
-        public void setParentId(String ParentId) {
-            this.ParentId = ParentId;
-        }
-
-        public boolean isHasChild() {
-            return hasChild;
-        }
-
-        public void setHasChild(boolean hasChild) {
-            this.hasChild = hasChild;
-        }
-
-        public boolean isIsAdult() {
-            return isAdult;
-        }
-
-        public void setIsAdult(boolean isAdult) {
-            this.isAdult = isAdult;
-        }
-
-        public boolean isIsExternal() {
-            return isExternal;
-        }
-
-        public void setIsExternal(boolean isExternal) {
-            this.isExternal = isExternal;
-        }
-
-        public String getCategoryName() {
-            return categoryName;
-        }
-
-        public void setCategoryName(String categoryName) {
-            this.categoryName = categoryName;
-        }
-    }
 }

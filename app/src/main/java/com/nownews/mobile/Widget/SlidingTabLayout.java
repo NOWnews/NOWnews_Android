@@ -35,8 +35,6 @@ import android.widget.TextView;
 import com.nownews.mobile.Common.ReSizeLayoutParams;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Json.NewsCategoryJson;
-import com.nownews.mobile.Json.PhotosCategoryJson;
-import com.nownews.mobile.Json.VideosCategoryJson;
 
 import java.util.List;
 
@@ -72,8 +70,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
     private int mTextViewTextSize = 15;
     private List<NewsCategoryJson.CategoryInfo> mNewsCategoryContent;
-    private List<PhotosCategoryJson.CategoryInfo> mPhotosCategoryContent;
-    private List<VideosCategoryJson.CategoryInfo> mVideosCategoryContent;
 
     public SlidingTabLayout(Context context) {
         this(context, null);
@@ -233,13 +229,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 if (mNewsCategoryContent != null) {
                     String categoryName = mNewsCategoryContent.get(i).getName();
                     Utility.setCategoryTextColor(categoryName, tabTitleView, Utility.ColorType.News);
-                } else if(mPhotosCategoryContent!=null) {
-                    String categoryname = mPhotosCategoryContent.get(i).name;
-                    Utility.setCategoryTextColor(categoryname, tabTitleView, Utility.ColorType.Album);
-                } else if(mVideosCategoryContent != null) {
-                    String categoryname = mVideosCategoryContent.get(i).name;
-                    Utility.setCategoryTextColor(categoryname, tabTitleView, Utility.ColorType.Video);
-                } else {
+                }else {
                     tabTitleView.setTextColor(getResources().getColor(android.R.color.white));
                 }
             } else {
@@ -304,13 +294,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
         mNewsCategoryContent = aNewsCategoryContent;
     }
 
-    public void setPhotosCategoryContent(List<PhotosCategoryJson.CategoryInfo> aPhotosCategoryContent) {
-        mPhotosCategoryContent = aPhotosCategoryContent;
-    }
-
-    public void setVideosCategoryContent(List<VideosCategoryJson.CategoryInfo> aVideosCategoryContent) {
-        mVideosCategoryContent = aVideosCategoryContent;
-    }
     /**
      * Allows complete control over the colors drawn in the tab layout. Set with
      * {@link #setCustomTabColorizer(TabColorizer)}.
@@ -374,13 +357,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                     if (mNewsCategoryContent != null) {
                         String categoryName = mNewsCategoryContent.get(position).getName();
                         Utility.setCategoryTextColor(categoryName, tabTitleView, Utility.ColorType.News);
-                    } else if(mPhotosCategoryContent != null) {
-                        String categoryname = mPhotosCategoryContent.get(position).name;
-                        Utility.setCategoryTextColor(categoryname, tabTitleView, Utility.ColorType.Album);
-                    } else if(mVideosCategoryContent != null) {
-                        String categoryname = mVideosCategoryContent.get(position).name;
-                        Utility.setCategoryTextColor(categoryname, tabTitleView, Utility.ColorType.Video);
-                    } else {
+                    }else {
                         tabTitleView.setTextColor(getResources().getColor(android.R.color.white));
                     }
                 } else {
