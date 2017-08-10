@@ -18,15 +18,8 @@ public class SplashImageJson {
      */
 
     private String _id;
-    private String updatedAt;
     private String createdAt;
-    private String device;
-    private String CreatedBy;
-    private String UpdatedBy;
-    private boolean isTrashed;
     private ImageBean Image;
-    private String formatUpdatedAt;
-    private String formatCreatedAt;
     private String id;
 
     public String get_id() {
@@ -37,14 +30,6 @@ public class SplashImageJson {
         this._id = _id;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public String getCreatedAt() {
         return createdAt;
     }
@@ -53,60 +38,12 @@ public class SplashImageJson {
         this.createdAt = createdAt;
     }
 
-    public String getDevice() {
-        return device;
-    }
-
-    public void setDevice(String device) {
-        this.device = device;
-    }
-
-    public String getCreatedBy() {
-        return CreatedBy;
-    }
-
-    public void setCreatedBy(String CreatedBy) {
-        this.CreatedBy = CreatedBy;
-    }
-
-    public String getUpdatedBy() {
-        return UpdatedBy;
-    }
-
-    public void setUpdatedBy(String UpdatedBy) {
-        this.UpdatedBy = UpdatedBy;
-    }
-
-    public boolean isIsTrashed() {
-        return isTrashed;
-    }
-
-    public void setIsTrashed(boolean isTrashed) {
-        this.isTrashed = isTrashed;
-    }
-
     public ImageBean getImage() {
         return Image;
     }
 
     public void setImage(ImageBean Image) {
         this.Image = Image;
-    }
-
-    public String getFormatUpdatedAt() {
-        return formatUpdatedAt;
-    }
-
-    public void setFormatUpdatedAt(String formatUpdatedAt) {
-        this.formatUpdatedAt = formatUpdatedAt;
-    }
-
-    public String getFormatCreatedAt() {
-        return formatCreatedAt;
-    }
-
-    public void setFormatCreatedAt(String formatCreatedAt) {
-        this.formatCreatedAt = formatCreatedAt;
     }
 
     public String getId() {
@@ -129,9 +66,6 @@ public class SplashImageJson {
 
         private String _id;
         private String url;
-        private String formatUpdatedAt;
-        private String formatCreatedAt;
-        private String thumbnail;
         private String id;
 
         public String get_id() {
@@ -148,30 +82,6 @@ public class SplashImageJson {
 
         public void setUrl(String url) {
             this.url = url;
-        }
-
-        public String getFormatUpdatedAt() {
-            return formatUpdatedAt;
-        }
-
-        public void setFormatUpdatedAt(String formatUpdatedAt) {
-            this.formatUpdatedAt = formatUpdatedAt;
-        }
-
-        public String getFormatCreatedAt() {
-            return formatCreatedAt;
-        }
-
-        public void setFormatCreatedAt(String formatCreatedAt) {
-            this.formatCreatedAt = formatCreatedAt;
-        }
-
-        public String getThumbnail() {
-            return thumbnail;
-        }
-
-        public void setThumbnail(String thumbnail) {
-            this.thumbnail = thumbnail;
         }
 
         public String getId() {

@@ -41,22 +41,10 @@ public class NewsCategoryJson {
 
         private String _id;
         private int sn;
-        private String updatedAt;
         private String createdAt;
         private String name;
         private String url;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private boolean isTrashed;
         private String status;
-        private boolean isPermanented;
-        private Object endedAt;
-        private Object startedAt;
-        private int weight;
-        private int level;
-        private Object ParentId;
-        private boolean hasChild;
-        private boolean isAdult;
         private boolean isExternal;
         private String categoryName;
         private List<ChildBean> child;
@@ -75,14 +63,6 @@ public class NewsCategoryJson {
 
         public void setSn(int sn) {
             this.sn = sn;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
         }
 
         public String getCreatedAt() {
@@ -109,30 +89,6 @@ public class NewsCategoryJson {
             this.url = url;
         }
 
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
         public String getStatus() {
             return status;
         }
@@ -141,76 +97,8 @@ public class NewsCategoryJson {
             this.status = status;
         }
 
-        public boolean isIsPermanented() {
-            return isPermanented;
-        }
-
-        public void setIsPermanented(boolean isPermanented) {
-            this.isPermanented = isPermanented;
-        }
-
-        public Object getEndedAt() {
-            return endedAt;
-        }
-
-        public void setEndedAt(Object endedAt) {
-            this.endedAt = endedAt;
-        }
-
-        public Object getStartedAt() {
-            return startedAt;
-        }
-
-        public void setStartedAt(Object startedAt) {
-            this.startedAt = startedAt;
-        }
-
-        public int getWeight() {
-            return weight;
-        }
-
-        public void setWeight(int weight) {
-            this.weight = weight;
-        }
-
-        public int getLevel() {
-            return level;
-        }
-
-        public void setLevel(int level) {
-            this.level = level;
-        }
-
-        public Object getParentId() {
-            return ParentId;
-        }
-
-        public void setParentId(Object ParentId) {
-            this.ParentId = ParentId;
-        }
-
-        public boolean isHasChild() {
-            return hasChild;
-        }
-
-        public void setHasChild(boolean hasChild) {
-            this.hasChild = hasChild;
-        }
-
-        public boolean isIsAdult() {
-            return isAdult;
-        }
-
-        public void setIsAdult(boolean isAdult) {
-            this.isAdult = isAdult;
-        }
-
         public boolean isIsExternal() {
             return isExternal;
-        }
-
-        public void setIsExternal(boolean isExternal) {
-            this.isExternal = isExternal;
         }
 
         public String getCategoryName() {
@@ -219,14 +107,6 @@ public class NewsCategoryJson {
 
         public void setCategoryName(String categoryName) {
             this.categoryName = categoryName;
-        }
-
-        public List<ChildBean> getChild() {
-            return child;
-        }
-
-        public void setChild(List<ChildBean> child) {
-            this.child = child;
         }
 
         public static class ChildBean {
@@ -255,23 +135,10 @@ public class NewsCategoryJson {
 
             private String _id;
             private int sn;
-            private String updatedAt;
             private String createdAt;
             private String name;
             private String url;
-            private String CreatedBy;
-            private String UpdatedBy;
-            private boolean isTrashed;
             private String status;
-            private boolean isPermanented;
-            private Object endedAt;
-            private Object startedAt;
-            private int weight;
-            private int level;
-            private String ParentId;
-            private boolean hasChild;
-            private boolean isAdult;
-            private boolean isExternal;
             private String categoryName;
 
             public String get_id() {
@@ -288,14 +155,6 @@ public class NewsCategoryJson {
 
             public void setSn(int sn) {
                 this.sn = sn;
-            }
-
-            public String getUpdatedAt() {
-                return updatedAt;
-            }
-
-            public void setUpdatedAt(String updatedAt) {
-                this.updatedAt = updatedAt;
             }
 
             public String getCreatedAt() {
@@ -322,108 +181,12 @@ public class NewsCategoryJson {
                 this.url = url;
             }
 
-            public String getCreatedBy() {
-                return CreatedBy;
-            }
-
-            public void setCreatedBy(String CreatedBy) {
-                this.CreatedBy = CreatedBy;
-            }
-
-            public String getUpdatedBy() {
-                return UpdatedBy;
-            }
-
-            public void setUpdatedBy(String UpdatedBy) {
-                this.UpdatedBy = UpdatedBy;
-            }
-
-            public boolean isIsTrashed() {
-                return isTrashed;
-            }
-
-            public void setIsTrashed(boolean isTrashed) {
-                this.isTrashed = isTrashed;
-            }
-
             public String getStatus() {
                 return status;
             }
 
             public void setStatus(String status) {
                 this.status = status;
-            }
-
-            public boolean isIsPermanented() {
-                return isPermanented;
-            }
-
-            public void setIsPermanented(boolean isPermanented) {
-                this.isPermanented = isPermanented;
-            }
-
-            public Object getEndedAt() {
-                return endedAt;
-            }
-
-            public void setEndedAt(Object endedAt) {
-                this.endedAt = endedAt;
-            }
-
-            public Object getStartedAt() {
-                return startedAt;
-            }
-
-            public void setStartedAt(Object startedAt) {
-                this.startedAt = startedAt;
-            }
-
-            public int getWeight() {
-                return weight;
-            }
-
-            public void setWeight(int weight) {
-                this.weight = weight;
-            }
-
-            public int getLevel() {
-                return level;
-            }
-
-            public void setLevel(int level) {
-                this.level = level;
-            }
-
-            public String getParentId() {
-                return ParentId;
-            }
-
-            public void setParentId(String ParentId) {
-                this.ParentId = ParentId;
-            }
-
-            public boolean isHasChild() {
-                return hasChild;
-            }
-
-            public void setHasChild(boolean hasChild) {
-                this.hasChild = hasChild;
-            }
-
-            public boolean isIsAdult() {
-                return isAdult;
-            }
-
-            public void setIsAdult(boolean isAdult) {
-                this.isAdult = isAdult;
-            }
-
-            public boolean isIsExternal() {
-                return isExternal;
-            }
-
-            public void setIsExternal(boolean isExternal) {
-                this.isExternal = isExternal;
             }
 
             public String getCategoryName() {

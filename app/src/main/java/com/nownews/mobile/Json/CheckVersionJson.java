@@ -18,9 +18,6 @@ public class CheckVersionJson {
     private int sn;
     private String version;
     private String os;
-    private String device;
-    private String formatUpdatedAt;
-    private String formatCreatedAt;
     private String id;
     private String downloadLink;
 
@@ -54,30 +51,6 @@ public class CheckVersionJson {
 
     public void setOs(String os) {
         this.os = os;
-    }
-
-    public String getDevice() {
-        return device;
-    }
-
-    public void setDevice(String device) {
-        this.device = device;
-    }
-
-    public String getFormatUpdatedAt() {
-        return formatUpdatedAt;
-    }
-
-    public void setFormatUpdatedAt(String formatUpdatedAt) {
-        this.formatUpdatedAt = formatUpdatedAt;
-    }
-
-    public String getFormatCreatedAt() {
-        return formatCreatedAt;
-    }
-
-    public void setFormatCreatedAt(String formatCreatedAt) {
-        this.formatCreatedAt = formatCreatedAt;
     }
 
     public String getId() {

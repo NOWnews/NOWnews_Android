@@ -23,16 +23,10 @@ public class SpecialNewsListJson {
 
     private String _id;
     private int sn;
-    private String updatedAt;
     private String createdAt;
     private String title;
-    private String CreatedBy;
-    private String UpdatedBy;
-    private boolean isTrashed;
     private Object Tag;
     private String MainPhoto;
-    private String formatUpdatedAt;
-    private String formatCreatedAt;
     private String id;
     private List<NewsListBean> newsList;
 
@@ -52,14 +46,6 @@ public class SpecialNewsListJson {
         this.sn = sn;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public String getCreatedAt() {
         return createdAt;
     }
@@ -76,30 +62,6 @@ public class SpecialNewsListJson {
         this.title = title;
     }
 
-    public String getCreatedBy() {
-        return CreatedBy;
-    }
-
-    public void setCreatedBy(String CreatedBy) {
-        this.CreatedBy = CreatedBy;
-    }
-
-    public String getUpdatedBy() {
-        return UpdatedBy;
-    }
-
-    public void setUpdatedBy(String UpdatedBy) {
-        this.UpdatedBy = UpdatedBy;
-    }
-
-    public boolean isIsTrashed() {
-        return isTrashed;
-    }
-
-    public void setIsTrashed(boolean isTrashed) {
-        this.isTrashed = isTrashed;
-    }
-
     public Object getTag() {
         return Tag;
     }
@@ -110,26 +72,6 @@ public class SpecialNewsListJson {
 
     public String getMainPhoto() {
         return MainPhoto;
-    }
-
-    public void setMainPhoto(String MainPhoto) {
-        this.MainPhoto = MainPhoto;
-    }
-
-    public String getFormatUpdatedAt() {
-        return formatUpdatedAt;
-    }
-
-    public void setFormatUpdatedAt(String formatUpdatedAt) {
-        this.formatUpdatedAt = formatUpdatedAt;
-    }
-
-    public String getFormatCreatedAt() {
-        return formatCreatedAt;
-    }
-
-    public void setFormatCreatedAt(String formatCreatedAt) {
-        this.formatCreatedAt = formatCreatedAt;
     }
 
     public String getId() {
@@ -202,41 +144,16 @@ public class SpecialNewsListJson {
 
         private String _id;
         private int sn;
-        private String updatedAt;
         private String createdAt;
         private String title;
-        private String Author;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private boolean isTrashed;
-        private String LastReviewer;
-        private String feedFrom;
-        private boolean isFeed;
-        private String newsBy;
-        private boolean isSponsored;
-        private boolean isDeliver;
-        private boolean isAdult;
-        private Object traceCode;
         private String status;
         private String type;
-        private String startedAt;
-        private Object freeContent;
         private String content;
-        private Object MainVideo;
         private MainPhotoBean MainPhoto;
         private MainMenuBean MainMenu;
-        private String summary;
         private String shortTitle;
         private String formatStartedAt;
-        private String formatUpdatedAt;
-        private String formatCreatedAt;
-        private String parseUrl;
         private String id;
-        private List<Double> location;
-        private List<String> Tags;
-        private List<?> Videos;
-        private List<?> Photos;
-        private List<String> Menus;
 
         public String get_id() {
             return _id;
@@ -252,14 +169,6 @@ public class SpecialNewsListJson {
 
         public void setSn(int sn) {
             this.sn = sn;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
         }
 
         public String getCreatedAt() {
@@ -278,102 +187,6 @@ public class SpecialNewsListJson {
             this.title = title;
         }
 
-        public String getAuthor() {
-            return Author;
-        }
-
-        public void setAuthor(String Author) {
-            this.Author = Author;
-        }
-
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
-        public String getLastReviewer() {
-            return LastReviewer;
-        }
-
-        public void setLastReviewer(String LastReviewer) {
-            this.LastReviewer = LastReviewer;
-        }
-
-        public String getFeedFrom() {
-            return feedFrom;
-        }
-
-        public void setFeedFrom(String feedFrom) {
-            this.feedFrom = feedFrom;
-        }
-
-        public boolean isIsFeed() {
-            return isFeed;
-        }
-
-        public void setIsFeed(boolean isFeed) {
-            this.isFeed = isFeed;
-        }
-
-        public String getNewsBy() {
-            return newsBy;
-        }
-
-        public void setNewsBy(String newsBy) {
-            this.newsBy = newsBy;
-        }
-
-        public boolean isIsSponsored() {
-            return isSponsored;
-        }
-
-        public void setIsSponsored(boolean isSponsored) {
-            this.isSponsored = isSponsored;
-        }
-
-        public boolean isIsDeliver() {
-            return isDeliver;
-        }
-
-        public void setIsDeliver(boolean isDeliver) {
-            this.isDeliver = isDeliver;
-        }
-
-        public boolean isIsAdult() {
-            return isAdult;
-        }
-
-        public void setIsAdult(boolean isAdult) {
-            this.isAdult = isAdult;
-        }
-
-        public Object getTraceCode() {
-            return traceCode;
-        }
-
-        public void setTraceCode(Object traceCode) {
-            this.traceCode = traceCode;
-        }
-
         public String getStatus() {
             return status;
         }
@@ -390,36 +203,12 @@ public class SpecialNewsListJson {
             this.type = type;
         }
 
-        public String getStartedAt() {
-            return startedAt;
-        }
-
-        public void setStartedAt(String startedAt) {
-            this.startedAt = startedAt;
-        }
-
-        public Object getFreeContent() {
-            return freeContent;
-        }
-
-        public void setFreeContent(Object freeContent) {
-            this.freeContent = freeContent;
-        }
-
         public String getContent() {
             return content;
         }
 
         public void setContent(String content) {
             this.content = content;
-        }
-
-        public Object getMainVideo() {
-            return MainVideo;
-        }
-
-        public void setMainVideo(Object MainVideo) {
-            this.MainVideo = MainVideo;
         }
 
         public MainPhotoBean getMainPhoto() {
@@ -438,14 +227,6 @@ public class SpecialNewsListJson {
             this.MainMenu = MainMenu;
         }
 
-        public String getSummary() {
-            return summary;
-        }
-
-        public void setSummary(String summary) {
-            this.summary = summary;
-        }
-
         public String getShortTitle() {
             return shortTitle;
         }
@@ -462,76 +243,12 @@ public class SpecialNewsListJson {
             this.formatStartedAt = formatStartedAt;
         }
 
-        public String getFormatUpdatedAt() {
-            return formatUpdatedAt;
-        }
-
-        public void setFormatUpdatedAt(String formatUpdatedAt) {
-            this.formatUpdatedAt = formatUpdatedAt;
-        }
-
-        public String getFormatCreatedAt() {
-            return formatCreatedAt;
-        }
-
-        public void setFormatCreatedAt(String formatCreatedAt) {
-            this.formatCreatedAt = formatCreatedAt;
-        }
-
-        public String getParseUrl() {
-            return parseUrl;
-        }
-
-        public void setParseUrl(String parseUrl) {
-            this.parseUrl = parseUrl;
-        }
-
         public String getId() {
             return id;
         }
 
         public void setId(String id) {
             this.id = id;
-        }
-
-        public List<Double> getLocation() {
-            return location;
-        }
-
-        public void setLocation(List<Double> location) {
-            this.location = location;
-        }
-
-        public List<String> getTags() {
-            return Tags;
-        }
-
-        public void setTags(List<String> Tags) {
-            this.Tags = Tags;
-        }
-
-        public List<?> getVideos() {
-            return Videos;
-        }
-
-        public void setVideos(List<?> Videos) {
-            this.Videos = Videos;
-        }
-
-        public List<?> getPhotos() {
-            return Photos;
-        }
-
-        public void setPhotos(List<?> Photos) {
-            this.Photos = Photos;
-        }
-
-        public List<String> getMenus() {
-            return Menus;
-        }
-
-        public void setMenus(List<String> Menus) {
-            this.Menus = Menus;
         }
 
         public static class MainPhotoBean {
@@ -546,9 +263,6 @@ public class SpecialNewsListJson {
 
             private String _id;
             private String url;
-            private String formatUpdatedAt;
-            private String formatCreatedAt;
-            private String thumbnail;
             private String id;
 
             public String get_id() {
@@ -565,30 +279,6 @@ public class SpecialNewsListJson {
 
             public void setUrl(String url) {
                 this.url = url;
-            }
-
-            public String getFormatUpdatedAt() {
-                return formatUpdatedAt;
-            }
-
-            public void setFormatUpdatedAt(String formatUpdatedAt) {
-                this.formatUpdatedAt = formatUpdatedAt;
-            }
-
-            public String getFormatCreatedAt() {
-                return formatCreatedAt;
-            }
-
-            public void setFormatCreatedAt(String formatCreatedAt) {
-                this.formatCreatedAt = formatCreatedAt;
-            }
-
-            public String getThumbnail() {
-                return thumbnail;
-            }
-
-            public void setThumbnail(String thumbnail) {
-                this.thumbnail = thumbnail;
             }
 
             public String getId() {
@@ -611,8 +301,6 @@ public class SpecialNewsListJson {
 
             private String _id;
             private String name;
-            private String formatUpdatedAt;
-            private String formatCreatedAt;
             private String id;
 
             public String get_id() {
@@ -629,22 +317,6 @@ public class SpecialNewsListJson {
 
             public void setName(String name) {
                 this.name = name;
-            }
-
-            public String getFormatUpdatedAt() {
-                return formatUpdatedAt;
-            }
-
-            public void setFormatUpdatedAt(String formatUpdatedAt) {
-                this.formatUpdatedAt = formatUpdatedAt;
-            }
-
-            public String getFormatCreatedAt() {
-                return formatCreatedAt;
-            }
-
-            public void setFormatCreatedAt(String formatCreatedAt) {
-                this.formatCreatedAt = formatCreatedAt;
             }
 
             public String getId() {

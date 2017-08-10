@@ -23,16 +23,9 @@ public class LiveInfoJson {
      */
 
     private String title;
-    private String teaserTitle;
-    private String banner;
-    private String alt;
     private String url;
-    private String wowza;
-    private String youtubeId;
     private String livePage;
     private String background;
-    private String backgroundColor;
-    private String redirect;
     private boolean isOnAir;
     private boolean campainStatus;
 
@@ -44,30 +37,6 @@ public class LiveInfoJson {
         this.title = title;
     }
 
-    public String getTeaserTitle() {
-        return teaserTitle;
-    }
-
-    public void setTeaserTitle(String teaserTitle) {
-        this.teaserTitle = teaserTitle;
-    }
-
-    public String getBanner() {
-        return banner;
-    }
-
-    public void setBanner(String banner) {
-        this.banner = banner;
-    }
-
-    public String getAlt() {
-        return alt;
-    }
-
-    public void setAlt(String alt) {
-        this.alt = alt;
-    }
-
     public String getUrl() {
         return url;
     }
@@ -76,28 +45,8 @@ public class LiveInfoJson {
         this.url = url;
     }
 
-    public String getWowza() {
-        return wowza;
-    }
-
-    public void setWowza(String wowza) {
-        this.wowza = wowza;
-    }
-
-    public String getYoutubeId() {
-        return youtubeId;
-    }
-
-    public void setYoutubeId(String youtubeId) {
-        this.youtubeId = youtubeId;
-    }
-
     public String getLivePage() {
         return livePage;
-    }
-
-    public void setLivePage(String livePage) {
-        this.livePage = livePage;
     }
 
     public String getBackground() {
@@ -106,22 +55,6 @@ public class LiveInfoJson {
 
     public void setBackground(String background) {
         this.background = background;
-    }
-
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-
-    public String getRedirect() {
-        return redirect;
-    }
-
-    public void setRedirect(String redirect) {
-        this.redirect = redirect;
     }
 
     public boolean isIsOnAir() {

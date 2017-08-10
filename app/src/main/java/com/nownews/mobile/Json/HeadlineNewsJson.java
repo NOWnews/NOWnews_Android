@@ -17,9 +17,9 @@ public class HeadlineNewsJson {
     private String _id;
     private String formatUpdatedAt;
     private String id;
-    private List<VideosBean> videos;
-    private List<SpecialChannelsBean> specialChannels;
-    private List<SpecialTopicsBean> specialTopics;
+//    private List<VideosBean> videos;
+//    private List<SpecialChannelsBean> specialChannels;
+//    private List<SpecialTopicsBean> specialTopics;
     private List<CarouselsBean> carousels;
 
     public String get_id() {
@@ -30,14 +30,6 @@ public class HeadlineNewsJson {
         this._id = _id;
     }
 
-    public String getFormatUpdatedAt() {
-        return formatUpdatedAt;
-    }
-
-    public void setFormatUpdatedAt(String formatUpdatedAt) {
-        this.formatUpdatedAt = formatUpdatedAt;
-    }
-
     public String getId() {
         return id;
     }
@@ -46,29 +38,29 @@ public class HeadlineNewsJson {
         this.id = id;
     }
 
-    public List<VideosBean> getVideos() {
-        return videos;
-    }
-
-    public void setVideos(List<VideosBean> videos) {
-        this.videos = videos;
-    }
-
-    public List<SpecialChannelsBean> getSpecialChannels() {
-        return specialChannels;
-    }
-
-    public void setSpecialChannels(List<SpecialChannelsBean> specialChannels) {
-        this.specialChannels = specialChannels;
-    }
-
-    public List<SpecialTopicsBean> getSpecialTopics() {
-        return specialTopics;
-    }
-
-    public void setSpecialTopics(List<SpecialTopicsBean> specialTopics) {
-        this.specialTopics = specialTopics;
-    }
+//    public List<VideosBean> getVideos() {
+//        return videos;
+//    }
+//
+//    public void setVideos(List<VideosBean> videos) {
+//        this.videos = videos;
+//    }
+//
+//    public List<SpecialChannelsBean> getSpecialChannels() {
+//        return specialChannels;
+//    }
+//
+//    public void setSpecialChannels(List<SpecialChannelsBean> specialChannels) {
+//        this.specialChannels = specialChannels;
+//    }
+//
+//    public List<SpecialTopicsBean> getSpecialTopics() {
+//        return specialTopics;
+//    }
+//
+//    public void setSpecialTopics(List<SpecialTopicsBean> specialTopics) {
+//        this.specialTopics = specialTopics;
+//    }
 
     public List<CarouselsBean> getCarousels() {
         return carousels;
@@ -78,1918 +70,1918 @@ public class HeadlineNewsJson {
         this.carousels = carousels;
     }
 
-    public static class VideosBean {
-        /**
-         * _id : 5952eeec19ce006702873403
-         * sn : 2582238
-         * title : 最佳樂團七搶一 死亡之組大對決
-         * location : [121.5914087,25.0693482]
-         * Author : 59528096b7a05b2fa409c54a
-         * CreatedBy : 59528093b7a05b2fa409c4b6
-         * UpdatedBy : 59528093b7a05b2fa409c4b6
-         * updatedAt : 2017-06-27T23:49:37.445Z
-         * createdAt : 2017-06-27T23:49:00.668Z
-         * isTrashed : false
-         * LastReviewer : 59528095b7a05b2fa409c53f
-         * feedFrom : OWN
-         * isFeed : false
-         * Tags : ["5952ec149c2d7166cb951257","5952eeec9c2d7166cb951280","5952ec149c2d7166cb95125c","5952cb019c2d7166cb9511ce","5952eeec9c2d7166cb951281","5952eeec9c2d7166cb951282","5952eeec9c2d7166cb951283"]
-         * newsBy : 影音中心/綜合報導
-         * isSponsored : false
-         * isDeliver : true
-         * isAdult : false
-         * traceCode : null
-         * status : RELEASE
-         * type : VIDEO
-         * startedAt : 2017-06-27T23:38:00.000Z
-         * freeContent : null
-         * Videos : []
-         * Photos : []
-         * content : <p><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">金曲殊榮競爭激烈，老將新秀</span></span><span lang="EN-US" style="color:black"> PK</span><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">對決，在所有獎項中，被各界視為死亡之組的，就是最佳樂團的爭奪了！</span></span></p>
-
-         <p><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">這屆最佳樂團入圍的除了同年出道的五月天和董事長樂團，</span></span><span lang="EN-US" style="color:black">20</span><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">年來纏鬥不休，再者就是新世代的獅子樂團和呼聲頗高的草東沒有派對。</span></span></p>
-
-         <p><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">新舊對決、天團與新秀的世代交替，本來就是話題保證，也讓這屆金曲充滿看頭！</span></span></p>
-
-         * MainVideo : {"_id":"5952ed139413e266c5ddadae","sn":5,"url":"https://www.youtube.com/watch?v=EdgLCHIsVQc","CreatedBy":"59528093b7a05b2fa409c4b6","UpdatedBy":"59528093b7a05b2fa409c4b6","updatedAt":"2017-06-28T03:24:38.151Z","createdAt":"2017-06-27T23:41:07.876Z","isTrashed":false,"size":null,"Tags":[],"isDeliver":true,"mimetype":null,"mode":"NORMAl","type":"NEWS","format":null,"originalname":null,"videoFrom":"EXTERNAL","keyword":null,"desc":"第28屆金曲獎競爭特別激烈，號稱最有看頭的，就是最佳樂團的爭奪了！五月天、董事長、草東沒有派對、獅子合唱團等等樂團，七搶一大對決，堪稱恐怖的死亡之組！","title":"最佳樂團七搶一 死亡之組大對決","formatUpdatedAt":"2017-06-28 11:24:38","formatCreatedAt":"2017-06-28 07:41:07","id":"5952ed139413e266c5ddadae"}
-         * MainPhoto : {"_id":"5952ed659413e266c5ddadb2","sn":810052,"url":"https://img.nownews.com/nownews_production/images/5952ed659413e266c5ddadb2_201706280742.jpg","CreatedBy":"59528093b7a05b2fa409c4b6","UpdatedBy":"59528093b7a05b2fa409c4b6","updatedAt":"2017-06-27T23:42:30.323Z","createdAt":"2017-06-27T23:42:30.323Z","isTrashed":false,"Tag":null,"isDeliver":true,"height":646,"width":970,"mimetype":"image/jpeg","mode":"NORMAl","type":"NEWS","format":"jpg","originalname":"最佳樂團.jpg","imageFrom":"INTERNAL","keyword":null,"desc":"（圖／林調遜攝 , 2017.6.24）","title":"（圖／林調遜攝 , 2017.6.24）","formatUpdatedAt":"2017-06-28 07:42:30","formatCreatedAt":"2017-06-28 07:42:30","thumbnail":"https://imgapiv2.nownews.com/?w=300&q=70&src=https%3A%2F%2Fimg.nownews.com%2Fnownews_production%2Fimages%2F5952ed659413e266c5ddadb2_201706280742.jpg","id":"5952ed659413e266c5ddadb2"}
-         * Menus : ["5952d5209c2d7166cb9511dc","5952d5649c2d7166cb9511de"]
-         * MainMenu : {"_id":"5952cf6c9c2d7166cb9511d6","sn":17,"name":"總覽","url":"/cat/index","CreatedBy":"59528091b7a05b2fa409c419","UpdatedBy":"59528091b7a05b2fa409c419","updatedAt":"2017-06-27T23:00:00.315Z","createdAt":"2017-06-27T21:34:36.222Z","isTrashed":false,"status":"OPEN","isPermanented":true,"endedAt":null,"startedAt":null,"weight":0,"level":0,"ParentId":null,"hasChild":true,"isAdult":false,"isExternal":false,"categoryName":"index","formatUpdatedAt":"2017-06-28 07:00:00","formatCreatedAt":"2017-06-28 05:34:36","id":"5952cf6c9c2d7166cb9511d6"}
-         * summary : 金曲殊榮競爭激烈，老將新秀PK對決，在所有獎項中，被各界視為死亡之組的，就是最佳樂團的爭奪了！這屆最佳樂團入圍的除了同年出道的五月天和董事長樂團，20年來纏鬥不休，再者就是新世代的獅子樂團和呼聲頗高的草東沒有派對。新舊對決、天團與新秀的世代交替，本來就是話題保證，也讓這
-         * shortTitle : 最佳樂團七搶一 死亡之組大對決
-         * formatStartedAt : 2017-06-28 07:38:00
-         * formatUpdatedAt : 2017-06-28 07:49:37
-         * formatCreatedAt : 2017-06-28 07:49:00
-         * parseUrl : /news/20170628/2582238
-         * id : 5952eeec19ce006702873403
-         */
-
-        private String _id;
-        private int sn;
-        private String title;
-        private String Author;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private String updatedAt;
-        private String createdAt;
-        private boolean isTrashed;
-        private String LastReviewer;
-        private String feedFrom;
-        private boolean isFeed;
-        private String newsBy;
-        private boolean isSponsored;
-        private boolean isDeliver;
-        private boolean isAdult;
-        private Object traceCode;
-        private String status;
-        private String type;
-        private String startedAt;
-        private Object freeContent;
-        private String content;
-        private MainVideoBean MainVideo;
-        private MainPhotoBean MainPhoto;
-        private MainMenuBean MainMenu;
-        private String summary;
-        private String shortTitle;
-        private String formatStartedAt;
-        private String formatUpdatedAt;
-        private String formatCreatedAt;
-        private String parseUrl;
-        private String id;
-        private List<Double> location;
-        private List<String> Tags;
-        private List<?> Videos;
-        private List<?> Photos;
-        private List<String> Menus;
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
-
-        public int getSn() {
-            return sn;
-        }
-
-        public void setSn(int sn) {
-            this.sn = sn;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getAuthor() {
-            return Author;
-        }
-
-        public void setAuthor(String Author) {
-            this.Author = Author;
-        }
-
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-        }
-
-        public String getCreatedAt() {
-            return createdAt;
-        }
-
-        public void setCreatedAt(String createdAt) {
-            this.createdAt = createdAt;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
-        public String getLastReviewer() {
-            return LastReviewer;
-        }
-
-        public void setLastReviewer(String LastReviewer) {
-            this.LastReviewer = LastReviewer;
-        }
-
-        public String getFeedFrom() {
-            return feedFrom;
-        }
-
-        public void setFeedFrom(String feedFrom) {
-            this.feedFrom = feedFrom;
-        }
-
-        public boolean isIsFeed() {
-            return isFeed;
-        }
-
-        public void setIsFeed(boolean isFeed) {
-            this.isFeed = isFeed;
-        }
-
-        public String getNewsBy() {
-            return newsBy;
-        }
-
-        public void setNewsBy(String newsBy) {
-            this.newsBy = newsBy;
-        }
-
-        public boolean isIsSponsored() {
-            return isSponsored;
-        }
-
-        public void setIsSponsored(boolean isSponsored) {
-            this.isSponsored = isSponsored;
-        }
-
-        public boolean isIsDeliver() {
-            return isDeliver;
-        }
-
-        public void setIsDeliver(boolean isDeliver) {
-            this.isDeliver = isDeliver;
-        }
-
-        public boolean isIsAdult() {
-            return isAdult;
-        }
-
-        public void setIsAdult(boolean isAdult) {
-            this.isAdult = isAdult;
-        }
-
-        public Object getTraceCode() {
-            return traceCode;
-        }
-
-        public void setTraceCode(Object traceCode) {
-            this.traceCode = traceCode;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getStartedAt() {
-            return startedAt;
-        }
-
-        public void setStartedAt(String startedAt) {
-            this.startedAt = startedAt;
-        }
-
-        public Object getFreeContent() {
-            return freeContent;
-        }
-
-        public void setFreeContent(Object freeContent) {
-            this.freeContent = freeContent;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-        public MainVideoBean getMainVideo() {
-            return MainVideo;
-        }
-
-        public void setMainVideo(MainVideoBean MainVideo) {
-            this.MainVideo = MainVideo;
-        }
-
-        public MainPhotoBean getMainPhoto() {
-            return MainPhoto;
-        }
-
-        public void setMainPhoto(MainPhotoBean MainPhoto) {
-            this.MainPhoto = MainPhoto;
-        }
-
-        public MainMenuBean getMainMenu() {
-            return MainMenu;
-        }
-
-        public void setMainMenu(MainMenuBean MainMenu) {
-            this.MainMenu = MainMenu;
-        }
-
-        public String getSummary() {
-            return summary;
-        }
-
-        public void setSummary(String summary) {
-            this.summary = summary;
-        }
-
-        public String getShortTitle() {
-            return shortTitle;
-        }
-
-        public void setShortTitle(String shortTitle) {
-            this.shortTitle = shortTitle;
-        }
-
-        public String getFormatStartedAt() {
-            return formatStartedAt;
-        }
-
-        public void setFormatStartedAt(String formatStartedAt) {
-            this.formatStartedAt = formatStartedAt;
-        }
-
-        public String getFormatUpdatedAt() {
-            return formatUpdatedAt;
-        }
-
-        public void setFormatUpdatedAt(String formatUpdatedAt) {
-            this.formatUpdatedAt = formatUpdatedAt;
-        }
-
-        public String getFormatCreatedAt() {
-            return formatCreatedAt;
-        }
-
-        public void setFormatCreatedAt(String formatCreatedAt) {
-            this.formatCreatedAt = formatCreatedAt;
-        }
-
-        public String getParseUrl() {
-            return parseUrl;
-        }
-
-        public void setParseUrl(String parseUrl) {
-            this.parseUrl = parseUrl;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public List<Double> getLocation() {
-            return location;
-        }
-
-        public void setLocation(List<Double> location) {
-            this.location = location;
-        }
-
-        public List<String> getTags() {
-            return Tags;
-        }
-
-        public void setTags(List<String> Tags) {
-            this.Tags = Tags;
-        }
-
-        public List<?> getVideos() {
-            return Videos;
-        }
-
-        public void setVideos(List<?> Videos) {
-            this.Videos = Videos;
-        }
-
-        public List<?> getPhotos() {
-            return Photos;
-        }
-
-        public void setPhotos(List<?> Photos) {
-            this.Photos = Photos;
-        }
-
-        public List<String> getMenus() {
-            return Menus;
-        }
-
-        public void setMenus(List<String> Menus) {
-            this.Menus = Menus;
-        }
-
-        public static class MainVideoBean {
-            /**
-             * _id : 5952ed139413e266c5ddadae
-             * sn : 5
-             * url : https://www.youtube.com/watch?v=EdgLCHIsVQc
-             * CreatedBy : 59528093b7a05b2fa409c4b6
-             * UpdatedBy : 59528093b7a05b2fa409c4b6
-             * updatedAt : 2017-06-28T03:24:38.151Z
-             * createdAt : 2017-06-27T23:41:07.876Z
-             * isTrashed : false
-             * size : null
-             * Tags : []
-             * isDeliver : true
-             * mimetype : null
-             * mode : NORMAl
-             * type : NEWS
-             * format : null
-             * originalname : null
-             * videoFrom : EXTERNAL
-             * keyword : null
-             * desc : 第28屆金曲獎競爭特別激烈，號稱最有看頭的，就是最佳樂團的爭奪了！五月天、董事長、草東沒有派對、獅子合唱團等等樂團，七搶一大對決，堪稱恐怖的死亡之組！
-             * title : 最佳樂團七搶一 死亡之組大對決
-             * formatUpdatedAt : 2017-06-28 11:24:38
-             * formatCreatedAt : 2017-06-28 07:41:07
-             * id : 5952ed139413e266c5ddadae
-             */
-
-            private String _id;
-            private int sn;
-            private String url;
-            private String CreatedBy;
-            private String UpdatedBy;
-            private String updatedAt;
-            private String createdAt;
-            private boolean isTrashed;
-            private Object size;
-            private boolean isDeliver;
-            private Object mimetype;
-            private String mode;
-            private String type;
-            private Object format;
-            private Object originalname;
-            private String videoFrom;
-            private Object keyword;
-            private String desc;
-            private String title;
-            private String formatUpdatedAt;
-            private String formatCreatedAt;
-            private String id;
-            private List<?> Tags;
-
-            public String get_id() {
-                return _id;
-            }
-
-            public void set_id(String _id) {
-                this._id = _id;
-            }
-
-            public int getSn() {
-                return sn;
-            }
-
-            public void setSn(int sn) {
-                this.sn = sn;
-            }
-
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-
-            public String getCreatedBy() {
-                return CreatedBy;
-            }
-
-            public void setCreatedBy(String CreatedBy) {
-                this.CreatedBy = CreatedBy;
-            }
-
-            public String getUpdatedBy() {
-                return UpdatedBy;
-            }
-
-            public void setUpdatedBy(String UpdatedBy) {
-                this.UpdatedBy = UpdatedBy;
-            }
-
-            public String getUpdatedAt() {
-                return updatedAt;
-            }
-
-            public void setUpdatedAt(String updatedAt) {
-                this.updatedAt = updatedAt;
-            }
-
-            public String getCreatedAt() {
-                return createdAt;
-            }
-
-            public void setCreatedAt(String createdAt) {
-                this.createdAt = createdAt;
-            }
-
-            public boolean isIsTrashed() {
-                return isTrashed;
-            }
-
-            public void setIsTrashed(boolean isTrashed) {
-                this.isTrashed = isTrashed;
-            }
-
-            public Object getSize() {
-                return size;
-            }
-
-            public void setSize(Object size) {
-                this.size = size;
-            }
-
-            public boolean isIsDeliver() {
-                return isDeliver;
-            }
-
-            public void setIsDeliver(boolean isDeliver) {
-                this.isDeliver = isDeliver;
-            }
-
-            public Object getMimetype() {
-                return mimetype;
-            }
-
-            public void setMimetype(Object mimetype) {
-                this.mimetype = mimetype;
-            }
-
-            public String getMode() {
-                return mode;
-            }
-
-            public void setMode(String mode) {
-                this.mode = mode;
-            }
-
-            public String getType() {
-                return type;
-            }
-
-            public void setType(String type) {
-                this.type = type;
-            }
-
-            public Object getFormat() {
-                return format;
-            }
-
-            public void setFormat(Object format) {
-                this.format = format;
-            }
-
-            public Object getOriginalname() {
-                return originalname;
-            }
-
-            public void setOriginalname(Object originalname) {
-                this.originalname = originalname;
-            }
-
-            public String getVideoFrom() {
-                return videoFrom;
-            }
-
-            public void setVideoFrom(String videoFrom) {
-                this.videoFrom = videoFrom;
-            }
-
-            public Object getKeyword() {
-                return keyword;
-            }
-
-            public void setKeyword(Object keyword) {
-                this.keyword = keyword;
-            }
-
-            public String getDesc() {
-                return desc;
-            }
-
-            public void setDesc(String desc) {
-                this.desc = desc;
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
-            public String getFormatUpdatedAt() {
-                return formatUpdatedAt;
-            }
-
-            public void setFormatUpdatedAt(String formatUpdatedAt) {
-                this.formatUpdatedAt = formatUpdatedAt;
-            }
-
-            public String getFormatCreatedAt() {
-                return formatCreatedAt;
-            }
-
-            public void setFormatCreatedAt(String formatCreatedAt) {
-                this.formatCreatedAt = formatCreatedAt;
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-
-            public List<?> getTags() {
-                return Tags;
-            }
-
-            public void setTags(List<?> Tags) {
-                this.Tags = Tags;
-            }
-        }
-
-        public static class MainPhotoBean {
-            /**
-             * _id : 5952ed659413e266c5ddadb2
-             * sn : 810052
-             * url : https://img.nownews.com/nownews_production/images/5952ed659413e266c5ddadb2_201706280742.jpg
-             * CreatedBy : 59528093b7a05b2fa409c4b6
-             * UpdatedBy : 59528093b7a05b2fa409c4b6
-             * updatedAt : 2017-06-27T23:42:30.323Z
-             * createdAt : 2017-06-27T23:42:30.323Z
-             * isTrashed : false
-             * Tag : null
-             * isDeliver : true
-             * height : 646
-             * width : 970
-             * mimetype : image/jpeg
-             * mode : NORMAl
-             * type : NEWS
-             * format : jpg
-             * originalname : 最佳樂團.jpg
-             * imageFrom : INTERNAL
-             * keyword : null
-             * desc : （圖／林調遜攝 , 2017.6.24）
-             * title : （圖／林調遜攝 , 2017.6.24）
-             * formatUpdatedAt : 2017-06-28 07:42:30
-             * formatCreatedAt : 2017-06-28 07:42:30
-             * thumbnail : https://imgapiv2.nownews.com/?w=300&q=70&src=https%3A%2F%2Fimg.nownews.com%2Fnownews_production%2Fimages%2F5952ed659413e266c5ddadb2_201706280742.jpg
-             * id : 5952ed659413e266c5ddadb2
-             */
-
-            private String _id;
-            private int sn;
-            private String url;
-            private String CreatedBy;
-            private String UpdatedBy;
-            private String updatedAt;
-            private String createdAt;
-            private boolean isTrashed;
-            private Object Tag;
-            private boolean isDeliver;
-            private int height;
-            private int width;
-            private String mimetype;
-            private String mode;
-            private String type;
-            private String format;
-            private String originalname;
-            private String imageFrom;
-            private Object keyword;
-            private String desc;
-            private String title;
-            private String formatUpdatedAt;
-            private String formatCreatedAt;
-            private String thumbnail;
-            private String id;
-
-            public String get_id() {
-                return _id;
-            }
-
-            public void set_id(String _id) {
-                this._id = _id;
-            }
-
-            public int getSn() {
-                return sn;
-            }
-
-            public void setSn(int sn) {
-                this.sn = sn;
-            }
-
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-
-            public String getCreatedBy() {
-                return CreatedBy;
-            }
-
-            public void setCreatedBy(String CreatedBy) {
-                this.CreatedBy = CreatedBy;
-            }
-
-            public String getUpdatedBy() {
-                return UpdatedBy;
-            }
-
-            public void setUpdatedBy(String UpdatedBy) {
-                this.UpdatedBy = UpdatedBy;
-            }
-
-            public String getUpdatedAt() {
-                return updatedAt;
-            }
-
-            public void setUpdatedAt(String updatedAt) {
-                this.updatedAt = updatedAt;
-            }
-
-            public String getCreatedAt() {
-                return createdAt;
-            }
-
-            public void setCreatedAt(String createdAt) {
-                this.createdAt = createdAt;
-            }
-
-            public boolean isIsTrashed() {
-                return isTrashed;
-            }
-
-            public void setIsTrashed(boolean isTrashed) {
-                this.isTrashed = isTrashed;
-            }
-
-            public Object getTag() {
-                return Tag;
-            }
-
-            public void setTag(Object Tag) {
-                this.Tag = Tag;
-            }
-
-            public boolean isIsDeliver() {
-                return isDeliver;
-            }
-
-            public void setIsDeliver(boolean isDeliver) {
-                this.isDeliver = isDeliver;
-            }
-
-            public int getHeight() {
-                return height;
-            }
-
-            public void setHeight(int height) {
-                this.height = height;
-            }
-
-            public int getWidth() {
-                return width;
-            }
-
-            public void setWidth(int width) {
-                this.width = width;
-            }
-
-            public String getMimetype() {
-                return mimetype;
-            }
-
-            public void setMimetype(String mimetype) {
-                this.mimetype = mimetype;
-            }
-
-            public String getMode() {
-                return mode;
-            }
-
-            public void setMode(String mode) {
-                this.mode = mode;
-            }
-
-            public String getType() {
-                return type;
-            }
-
-            public void setType(String type) {
-                this.type = type;
-            }
-
-            public String getFormat() {
-                return format;
-            }
-
-            public void setFormat(String format) {
-                this.format = format;
-            }
-
-            public String getOriginalname() {
-                return originalname;
-            }
-
-            public void setOriginalname(String originalname) {
-                this.originalname = originalname;
-            }
-
-            public String getImageFrom() {
-                return imageFrom;
-            }
-
-            public void setImageFrom(String imageFrom) {
-                this.imageFrom = imageFrom;
-            }
-
-            public Object getKeyword() {
-                return keyword;
-            }
-
-            public void setKeyword(Object keyword) {
-                this.keyword = keyword;
-            }
-
-            public String getDesc() {
-                return desc;
-            }
-
-            public void setDesc(String desc) {
-                this.desc = desc;
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
-            public String getFormatUpdatedAt() {
-                return formatUpdatedAt;
-            }
-
-            public void setFormatUpdatedAt(String formatUpdatedAt) {
-                this.formatUpdatedAt = formatUpdatedAt;
-            }
-
-            public String getFormatCreatedAt() {
-                return formatCreatedAt;
-            }
-
-            public void setFormatCreatedAt(String formatCreatedAt) {
-                this.formatCreatedAt = formatCreatedAt;
-            }
-
-            public String getThumbnail() {
-                return thumbnail;
-            }
-
-            public void setThumbnail(String thumbnail) {
-                this.thumbnail = thumbnail;
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-        }
-
-        public static class MainMenuBean {
-            /**
-             * _id : 5952cf6c9c2d7166cb9511d6
-             * sn : 17
-             * name : 總覽
-             * url : /cat/index
-             * CreatedBy : 59528091b7a05b2fa409c419
-             * UpdatedBy : 59528091b7a05b2fa409c419
-             * updatedAt : 2017-06-27T23:00:00.315Z
-             * createdAt : 2017-06-27T21:34:36.222Z
-             * isTrashed : false
-             * status : OPEN
-             * isPermanented : true
-             * endedAt : null
-             * startedAt : null
-             * weight : 0
-             * level : 0
-             * ParentId : null
-             * hasChild : true
-             * isAdult : false
-             * isExternal : false
-             * categoryName : index
-             * formatUpdatedAt : 2017-06-28 07:00:00
-             * formatCreatedAt : 2017-06-28 05:34:36
-             * id : 5952cf6c9c2d7166cb9511d6
-             */
-
-            private String _id;
-            private int sn;
-            private String name;
-            private String url;
-            private String CreatedBy;
-            private String UpdatedBy;
-            private String updatedAt;
-            private String createdAt;
-            private boolean isTrashed;
-            private String status;
-            private boolean isPermanented;
-            private Object endedAt;
-            private Object startedAt;
-            private int weight;
-            private int level;
-            private Object ParentId;
-            private boolean hasChild;
-            private boolean isAdult;
-            private boolean isExternal;
-            private String categoryName;
-            private String formatUpdatedAt;
-            private String formatCreatedAt;
-            private String id;
-
-            public String get_id() {
-                return _id;
-            }
-
-            public void set_id(String _id) {
-                this._id = _id;
-            }
-
-            public int getSn() {
-                return sn;
-            }
-
-            public void setSn(int sn) {
-                this.sn = sn;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-
-            public String getCreatedBy() {
-                return CreatedBy;
-            }
-
-            public void setCreatedBy(String CreatedBy) {
-                this.CreatedBy = CreatedBy;
-            }
-
-            public String getUpdatedBy() {
-                return UpdatedBy;
-            }
-
-            public void setUpdatedBy(String UpdatedBy) {
-                this.UpdatedBy = UpdatedBy;
-            }
-
-            public String getUpdatedAt() {
-                return updatedAt;
-            }
-
-            public void setUpdatedAt(String updatedAt) {
-                this.updatedAt = updatedAt;
-            }
-
-            public String getCreatedAt() {
-                return createdAt;
-            }
-
-            public void setCreatedAt(String createdAt) {
-                this.createdAt = createdAt;
-            }
-
-            public boolean isIsTrashed() {
-                return isTrashed;
-            }
-
-            public void setIsTrashed(boolean isTrashed) {
-                this.isTrashed = isTrashed;
-            }
-
-            public String getStatus() {
-                return status;
-            }
-
-            public void setStatus(String status) {
-                this.status = status;
-            }
-
-            public boolean isIsPermanented() {
-                return isPermanented;
-            }
-
-            public void setIsPermanented(boolean isPermanented) {
-                this.isPermanented = isPermanented;
-            }
-
-            public Object getEndedAt() {
-                return endedAt;
-            }
-
-            public void setEndedAt(Object endedAt) {
-                this.endedAt = endedAt;
-            }
-
-            public Object getStartedAt() {
-                return startedAt;
-            }
-
-            public void setStartedAt(Object startedAt) {
-                this.startedAt = startedAt;
-            }
-
-            public int getWeight() {
-                return weight;
-            }
-
-            public void setWeight(int weight) {
-                this.weight = weight;
-            }
-
-            public int getLevel() {
-                return level;
-            }
-
-            public void setLevel(int level) {
-                this.level = level;
-            }
-
-            public Object getParentId() {
-                return ParentId;
-            }
-
-            public void setParentId(Object ParentId) {
-                this.ParentId = ParentId;
-            }
-
-            public boolean isHasChild() {
-                return hasChild;
-            }
-
-            public void setHasChild(boolean hasChild) {
-                this.hasChild = hasChild;
-            }
-
-            public boolean isIsAdult() {
-                return isAdult;
-            }
-
-            public void setIsAdult(boolean isAdult) {
-                this.isAdult = isAdult;
-            }
-
-            public boolean isIsExternal() {
-                return isExternal;
-            }
-
-            public void setIsExternal(boolean isExternal) {
-                this.isExternal = isExternal;
-            }
-
-            public String getCategoryName() {
-                return categoryName;
-            }
-
-            public void setCategoryName(String categoryName) {
-                this.categoryName = categoryName;
-            }
-
-            public String getFormatUpdatedAt() {
-                return formatUpdatedAt;
-            }
-
-            public void setFormatUpdatedAt(String formatUpdatedAt) {
-                this.formatUpdatedAt = formatUpdatedAt;
-            }
-
-            public String getFormatCreatedAt() {
-                return formatCreatedAt;
-            }
-
-            public void setFormatCreatedAt(String formatCreatedAt) {
-                this.formatCreatedAt = formatCreatedAt;
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-        }
-    }
-
-    public static class SpecialChannelsBean {
-        /**
-         * _id : 5952f1aa9c2d7166cb9512af
-         * sn : 1
-         * title : 年金改革
-         * CreatedBy : 59528093b7a05b2fa409c48d
-         * UpdatedBy : 59528092b7a05b2fa409c468
-         * updatedAt : 2017-06-28T03:29:53.257Z
-         * createdAt : 2017-06-28T00:00:42.438Z
-         * isTrashed : false
-         * Tag : null
-         * newsList : ["5952bf0c9d4099ffd8a3a16e","5952bf0c9d4099ffd8a3a094","5952bf0c9d4099ffd8a3a231","5952bf0c9d4099ffd8a3a1b9","59530ff551157d4d2d1fa85b","5952bf0c9d4099ffd8a3a1bf","5952bf0c9d4099ffd8a3a1cd","5952bf0c9d4099ffd8a3a1c9","59531cb6905d7d2ff2546f0d","5952bf0c9d4099ffd8a3a185","5953003351157d4d2d1fa794"]
-         * MainPhoto : {"_id":"5952b4b6b7a05b2fa414be72","sn":809654,"url":"http://s.nownews.com/30/fd/30fddb0f780108be524f552a408efb83.jpg","CreatedBy":"530000000000000000000003","UpdatedBy":"530000000000000000000003","updatedAt":"2017-06-27T19:40:38.189Z","createdAt":"2017-06-27T19:40:38.189Z","isTrashed":false,"Tag":null,"isDeliver":false,"height":null,"width":null,"mimetype":null,"mode":"NORMAl","type":"NEWS","format":null,"originalname":null,"imageFrom":"INTERNAL","keyword":null,"desc":"立法院26日續審年金改革相關法案，將繼續挑燈夜戰至午夜12時。立法院外抗議民眾欲闖立院，與警推擠，國民黨立院黨團總召廖國棟（前排右3）等人出面與民眾喊話。中央社記者吳家昇攝　106年6月26日","title":"立法院26日續審年金改革相關法案，將繼續挑燈夜戰至午夜12時。立法院外抗議民眾欲闖立院，與警推擠，國民黨立院黨團總召廖國棟（前排右3）等人出面與民眾喊話。中央社記者吳家昇攝　106年6月26日","formatUpdatedAt":"2017-06-28 03:40:38","formatCreatedAt":"2017-06-28 03:40:38","thumbnail":"https://imgapiv2.nownews.com/?w=300&q=70&src=http%3A%2F%2Fs.nownews.com%2F30%2Ffd%2F30fddb0f780108be524f552a408efb83.jpg","id":"5952b4b6b7a05b2fa414be72"}
-         * formatUpdatedAt : 2017-06-28 11:29:53
-         * formatCreatedAt : 2017-06-28 08:00:42
-         * id : 5952f1aa9c2d7166cb9512af
-         */
-
-        private String _id;
-        private int sn;
-        private String title;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private String updatedAt;
-        private String createdAt;
-        private boolean isTrashed;
-        private Object Tag;
-        private MainPhotoBeanX MainPhoto;
-        private String formatUpdatedAt;
-        private String formatCreatedAt;
-        private String id;
-        private List<String> newsList;
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
-
-        public int getSn() {
-            return sn;
-        }
-
-        public void setSn(int sn) {
-            this.sn = sn;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-        }
-
-        public String getCreatedAt() {
-            return createdAt;
-        }
-
-        public void setCreatedAt(String createdAt) {
-            this.createdAt = createdAt;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
-        public Object getTag() {
-            return Tag;
-        }
-
-        public void setTag(Object Tag) {
-            this.Tag = Tag;
-        }
-
-        public MainPhotoBeanX getMainPhoto() {
-            return MainPhoto;
-        }
-
-        public void setMainPhoto(MainPhotoBeanX MainPhoto) {
-            this.MainPhoto = MainPhoto;
-        }
-
-        public String getFormatUpdatedAt() {
-            return formatUpdatedAt;
-        }
-
-        public void setFormatUpdatedAt(String formatUpdatedAt) {
-            this.formatUpdatedAt = formatUpdatedAt;
-        }
-
-        public String getFormatCreatedAt() {
-            return formatCreatedAt;
-        }
-
-        public void setFormatCreatedAt(String formatCreatedAt) {
-            this.formatCreatedAt = formatCreatedAt;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public List<String> getNewsList() {
-            return newsList;
-        }
-
-        public void setNewsList(List<String> newsList) {
-            this.newsList = newsList;
-        }
-
-        public static class MainPhotoBeanX {
-            /**
-             * _id : 5952b4b6b7a05b2fa414be72
-             * sn : 809654
-             * url : http://s.nownews.com/30/fd/30fddb0f780108be524f552a408efb83.jpg
-             * CreatedBy : 530000000000000000000003
-             * UpdatedBy : 530000000000000000000003
-             * updatedAt : 2017-06-27T19:40:38.189Z
-             * createdAt : 2017-06-27T19:40:38.189Z
-             * isTrashed : false
-             * Tag : null
-             * isDeliver : false
-             * height : null
-             * width : null
-             * mimetype : null
-             * mode : NORMAl
-             * type : NEWS
-             * format : null
-             * originalname : null
-             * imageFrom : INTERNAL
-             * keyword : null
-             * desc : 立法院26日續審年金改革相關法案，將繼續挑燈夜戰至午夜12時。立法院外抗議民眾欲闖立院，與警推擠，國民黨立院黨團總召廖國棟（前排右3）等人出面與民眾喊話。中央社記者吳家昇攝　106年6月26日
-             * title : 立法院26日續審年金改革相關法案，將繼續挑燈夜戰至午夜12時。立法院外抗議民眾欲闖立院，與警推擠，國民黨立院黨團總召廖國棟（前排右3）等人出面與民眾喊話。中央社記者吳家昇攝　106年6月26日
-             * formatUpdatedAt : 2017-06-28 03:40:38
-             * formatCreatedAt : 2017-06-28 03:40:38
-             * thumbnail : https://imgapiv2.nownews.com/?w=300&q=70&src=http%3A%2F%2Fs.nownews.com%2F30%2Ffd%2F30fddb0f780108be524f552a408efb83.jpg
-             * id : 5952b4b6b7a05b2fa414be72
-             */
-
-            private String _id;
-            private int sn;
-            private String url;
-            private String CreatedBy;
-            private String UpdatedBy;
-            private String updatedAt;
-            private String createdAt;
-            private boolean isTrashed;
-            private Object Tag;
-            private boolean isDeliver;
-            private Object height;
-            private Object width;
-            private Object mimetype;
-            private String mode;
-            private String type;
-            private Object format;
-            private Object originalname;
-            private String imageFrom;
-            private Object keyword;
-            private String desc;
-            private String title;
-            private String formatUpdatedAt;
-            private String formatCreatedAt;
-            private String thumbnail;
-            private String id;
-
-            public String get_id() {
-                return _id;
-            }
-
-            public void set_id(String _id) {
-                this._id = _id;
-            }
-
-            public int getSn() {
-                return sn;
-            }
-
-            public void setSn(int sn) {
-                this.sn = sn;
-            }
-
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-
-            public String getCreatedBy() {
-                return CreatedBy;
-            }
-
-            public void setCreatedBy(String CreatedBy) {
-                this.CreatedBy = CreatedBy;
-            }
-
-            public String getUpdatedBy() {
-                return UpdatedBy;
-            }
-
-            public void setUpdatedBy(String UpdatedBy) {
-                this.UpdatedBy = UpdatedBy;
-            }
-
-            public String getUpdatedAt() {
-                return updatedAt;
-            }
-
-            public void setUpdatedAt(String updatedAt) {
-                this.updatedAt = updatedAt;
-            }
-
-            public String getCreatedAt() {
-                return createdAt;
-            }
-
-            public void setCreatedAt(String createdAt) {
-                this.createdAt = createdAt;
-            }
-
-            public boolean isIsTrashed() {
-                return isTrashed;
-            }
-
-            public void setIsTrashed(boolean isTrashed) {
-                this.isTrashed = isTrashed;
-            }
-
-            public Object getTag() {
-                return Tag;
-            }
-
-            public void setTag(Object Tag) {
-                this.Tag = Tag;
-            }
-
-            public boolean isIsDeliver() {
-                return isDeliver;
-            }
-
-            public void setIsDeliver(boolean isDeliver) {
-                this.isDeliver = isDeliver;
-            }
-
-            public Object getHeight() {
-                return height;
-            }
-
-            public void setHeight(Object height) {
-                this.height = height;
-            }
-
-            public Object getWidth() {
-                return width;
-            }
-
-            public void setWidth(Object width) {
-                this.width = width;
-            }
-
-            public Object getMimetype() {
-                return mimetype;
-            }
-
-            public void setMimetype(Object mimetype) {
-                this.mimetype = mimetype;
-            }
-
-            public String getMode() {
-                return mode;
-            }
-
-            public void setMode(String mode) {
-                this.mode = mode;
-            }
-
-            public String getType() {
-                return type;
-            }
-
-            public void setType(String type) {
-                this.type = type;
-            }
-
-            public Object getFormat() {
-                return format;
-            }
-
-            public void setFormat(Object format) {
-                this.format = format;
-            }
-
-            public Object getOriginalname() {
-                return originalname;
-            }
-
-            public void setOriginalname(Object originalname) {
-                this.originalname = originalname;
-            }
-
-            public String getImageFrom() {
-                return imageFrom;
-            }
-
-            public void setImageFrom(String imageFrom) {
-                this.imageFrom = imageFrom;
-            }
-
-            public Object getKeyword() {
-                return keyword;
-            }
-
-            public void setKeyword(Object keyword) {
-                this.keyword = keyword;
-            }
-
-            public String getDesc() {
-                return desc;
-            }
-
-            public void setDesc(String desc) {
-                this.desc = desc;
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
-            public String getFormatUpdatedAt() {
-                return formatUpdatedAt;
-            }
-
-            public void setFormatUpdatedAt(String formatUpdatedAt) {
-                this.formatUpdatedAt = formatUpdatedAt;
-            }
-
-            public String getFormatCreatedAt() {
-                return formatCreatedAt;
-            }
-
-            public void setFormatCreatedAt(String formatCreatedAt) {
-                this.formatCreatedAt = formatCreatedAt;
-            }
-
-            public String getThumbnail() {
-                return thumbnail;
-            }
-
-            public void setThumbnail(String thumbnail) {
-                this.thumbnail = thumbnail;
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-        }
-    }
-
-    public static class SpecialTopicsBean {
-        /**
-         * _id : 5952eefb9c2d7166cb951285
-         * sn : 1
-         * title : 華航罷工周年　重點回顧秒懂始末
-         * url : /news/20170623/2576802
-         * CreatedBy : 59528091b7a05b2fa409c419
-         * UpdatedBy : 59528091b7a05b2fa409c40a
-         * updatedAt : 2017-06-28T04:28:10.439Z
-         * createdAt : 2017-06-27T23:49:15.752Z
-         * isTrashed : false
-         * Tag : null
-         * MainPhoto : {"_id":"5952b43eb7a05b2fa414bad9","sn":808734,"url":"http://s.nownews.com/f8/20/f820943e05e664b17662f6f311426af2.png","CreatedBy":"530000000000000000000003","UpdatedBy":"530000000000000000000003","updatedAt":"2017-06-27T19:38:38.749Z","createdAt":"2017-06-27T19:38:38.749Z","isTrashed":false,"Tag":null,"isDeliver":false,"height":null,"width":null,"mimetype":null,"mode":"NORMAl","type":"NEWS","format":null,"originalname":null,"imageFrom":"INTERNAL","keyword":null,"desc":"▲去年6月24日，華航空服員展開罷工，事發至今已經滿一周年。（NOWnews資料照）","title":"▲去年6月24日，華航空服員展開罷工，事發至今已經滿一周年。（NOWnews資料照）","formatUpdatedAt":"2017-06-28 03:38:38","formatCreatedAt":"2017-06-28 03:38:38","thumbnail":"https://imgapiv2.nownews.com/?w=300&q=70&src=http%3A%2F%2Fs.nownews.com%2Ff8%2F20%2Ff820943e05e664b17662f6f311426af2.png","id":"5952b43eb7a05b2fa414bad9"}
-         * formatUpdatedAt : 2017-06-28 12:28:10
-         * formatCreatedAt : 2017-06-28 07:49:15
-         * id : 5952eefb9c2d7166cb951285
-         */
-
-        private String _id;
-        private int sn;
-        private String title;
-        private String url;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private String updatedAt;
-        private String createdAt;
-        private boolean isTrashed;
-        private Object Tag;
-        private MainPhotoBeanXX MainPhoto;
-        private String formatUpdatedAt;
-        private String formatCreatedAt;
-        private String id;
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
-
-        public int getSn() {
-            return sn;
-        }
-
-        public void setSn(int sn) {
-            this.sn = sn;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-        }
-
-        public String getCreatedAt() {
-            return createdAt;
-        }
-
-        public void setCreatedAt(String createdAt) {
-            this.createdAt = createdAt;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
-        public Object getTag() {
-            return Tag;
-        }
-
-        public void setTag(Object Tag) {
-            this.Tag = Tag;
-        }
-
-        public MainPhotoBeanXX getMainPhoto() {
-            return MainPhoto;
-        }
-
-        public void setMainPhoto(MainPhotoBeanXX MainPhoto) {
-            this.MainPhoto = MainPhoto;
-        }
-
-        public String getFormatUpdatedAt() {
-            return formatUpdatedAt;
-        }
-
-        public void setFormatUpdatedAt(String formatUpdatedAt) {
-            this.formatUpdatedAt = formatUpdatedAt;
-        }
-
-        public String getFormatCreatedAt() {
-            return formatCreatedAt;
-        }
-
-        public void setFormatCreatedAt(String formatCreatedAt) {
-            this.formatCreatedAt = formatCreatedAt;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public static class MainPhotoBeanXX {
-            /**
-             * _id : 5952b43eb7a05b2fa414bad9
-             * sn : 808734
-             * url : http://s.nownews.com/f8/20/f820943e05e664b17662f6f311426af2.png
-             * CreatedBy : 530000000000000000000003
-             * UpdatedBy : 530000000000000000000003
-             * updatedAt : 2017-06-27T19:38:38.749Z
-             * createdAt : 2017-06-27T19:38:38.749Z
-             * isTrashed : false
-             * Tag : null
-             * isDeliver : false
-             * height : null
-             * width : null
-             * mimetype : null
-             * mode : NORMAl
-             * type : NEWS
-             * format : null
-             * originalname : null
-             * imageFrom : INTERNAL
-             * keyword : null
-             * desc : ▲去年6月24日，華航空服員展開罷工，事發至今已經滿一周年。（NOWnews資料照）
-             * title : ▲去年6月24日，華航空服員展開罷工，事發至今已經滿一周年。（NOWnews資料照）
-             * formatUpdatedAt : 2017-06-28 03:38:38
-             * formatCreatedAt : 2017-06-28 03:38:38
-             * thumbnail : https://imgapiv2.nownews.com/?w=300&q=70&src=http%3A%2F%2Fs.nownews.com%2Ff8%2F20%2Ff820943e05e664b17662f6f311426af2.png
-             * id : 5952b43eb7a05b2fa414bad9
-             */
-
-            private String _id;
-            private int sn;
-            private String url;
-            private String CreatedBy;
-            private String UpdatedBy;
-            private String updatedAt;
-            private String createdAt;
-            private boolean isTrashed;
-            private Object Tag;
-            private boolean isDeliver;
-            private Object height;
-            private Object width;
-            private Object mimetype;
-            private String mode;
-            private String type;
-            private Object format;
-            private Object originalname;
-            private String imageFrom;
-            private Object keyword;
-            private String desc;
-            private String title;
-            private String formatUpdatedAt;
-            private String formatCreatedAt;
-            private String thumbnail;
-            private String id;
-
-            public String get_id() {
-                return _id;
-            }
-
-            public void set_id(String _id) {
-                this._id = _id;
-            }
-
-            public int getSn() {
-                return sn;
-            }
-
-            public void setSn(int sn) {
-                this.sn = sn;
-            }
-
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-
-            public String getCreatedBy() {
-                return CreatedBy;
-            }
-
-            public void setCreatedBy(String CreatedBy) {
-                this.CreatedBy = CreatedBy;
-            }
-
-            public String getUpdatedBy() {
-                return UpdatedBy;
-            }
-
-            public void setUpdatedBy(String UpdatedBy) {
-                this.UpdatedBy = UpdatedBy;
-            }
-
-            public String getUpdatedAt() {
-                return updatedAt;
-            }
-
-            public void setUpdatedAt(String updatedAt) {
-                this.updatedAt = updatedAt;
-            }
-
-            public String getCreatedAt() {
-                return createdAt;
-            }
-
-            public void setCreatedAt(String createdAt) {
-                this.createdAt = createdAt;
-            }
-
-            public boolean isIsTrashed() {
-                return isTrashed;
-            }
-
-            public void setIsTrashed(boolean isTrashed) {
-                this.isTrashed = isTrashed;
-            }
-
-            public Object getTag() {
-                return Tag;
-            }
-
-            public void setTag(Object Tag) {
-                this.Tag = Tag;
-            }
-
-            public boolean isIsDeliver() {
-                return isDeliver;
-            }
-
-            public void setIsDeliver(boolean isDeliver) {
-                this.isDeliver = isDeliver;
-            }
-
-            public Object getHeight() {
-                return height;
-            }
-
-            public void setHeight(Object height) {
-                this.height = height;
-            }
-
-            public Object getWidth() {
-                return width;
-            }
-
-            public void setWidth(Object width) {
-                this.width = width;
-            }
-
-            public Object getMimetype() {
-                return mimetype;
-            }
-
-            public void setMimetype(Object mimetype) {
-                this.mimetype = mimetype;
-            }
-
-            public String getMode() {
-                return mode;
-            }
-
-            public void setMode(String mode) {
-                this.mode = mode;
-            }
-
-            public String getType() {
-                return type;
-            }
-
-            public void setType(String type) {
-                this.type = type;
-            }
-
-            public Object getFormat() {
-                return format;
-            }
-
-            public void setFormat(Object format) {
-                this.format = format;
-            }
-
-            public Object getOriginalname() {
-                return originalname;
-            }
-
-            public void setOriginalname(Object originalname) {
-                this.originalname = originalname;
-            }
-
-            public String getImageFrom() {
-                return imageFrom;
-            }
-
-            public void setImageFrom(String imageFrom) {
-                this.imageFrom = imageFrom;
-            }
-
-            public Object getKeyword() {
-                return keyword;
-            }
-
-            public void setKeyword(Object keyword) {
-                this.keyword = keyword;
-            }
-
-            public String getDesc() {
-                return desc;
-            }
-
-            public void setDesc(String desc) {
-                this.desc = desc;
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
-            public String getFormatUpdatedAt() {
-                return formatUpdatedAt;
-            }
-
-            public void setFormatUpdatedAt(String formatUpdatedAt) {
-                this.formatUpdatedAt = formatUpdatedAt;
-            }
-
-            public String getFormatCreatedAt() {
-                return formatCreatedAt;
-            }
-
-            public void setFormatCreatedAt(String formatCreatedAt) {
-                this.formatCreatedAt = formatCreatedAt;
-            }
-
-            public String getThumbnail() {
-                return thumbnail;
-            }
-
-            public void setThumbnail(String thumbnail) {
-                this.thumbnail = thumbnail;
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
-        }
-    }
+//    public static class VideosBean {
+//        /**
+//         * _id : 5952eeec19ce006702873403
+//         * sn : 2582238
+//         * title : 最佳樂團七搶一 死亡之組大對決
+//         * location : [121.5914087,25.0693482]
+//         * Author : 59528096b7a05b2fa409c54a
+//         * CreatedBy : 59528093b7a05b2fa409c4b6
+//         * UpdatedBy : 59528093b7a05b2fa409c4b6
+//         * updatedAt : 2017-06-27T23:49:37.445Z
+//         * createdAt : 2017-06-27T23:49:00.668Z
+//         * isTrashed : false
+//         * LastReviewer : 59528095b7a05b2fa409c53f
+//         * feedFrom : OWN
+//         * isFeed : false
+//         * Tags : ["5952ec149c2d7166cb951257","5952eeec9c2d7166cb951280","5952ec149c2d7166cb95125c","5952cb019c2d7166cb9511ce","5952eeec9c2d7166cb951281","5952eeec9c2d7166cb951282","5952eeec9c2d7166cb951283"]
+//         * newsBy : 影音中心/綜合報導
+//         * isSponsored : false
+//         * isDeliver : true
+//         * isAdult : false
+//         * traceCode : null
+//         * status : RELEASE
+//         * type : VIDEO
+//         * startedAt : 2017-06-27T23:38:00.000Z
+//         * freeContent : null
+//         * Videos : []
+//         * Photos : []
+//         * content : <p><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">金曲殊榮競爭激烈，老將新秀</span></span><span lang="EN-US" style="color:black"> PK</span><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">對決，在所有獎項中，被各界視為死亡之組的，就是最佳樂團的爭奪了！</span></span></p>
+//
+//         <p><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">這屆最佳樂團入圍的除了同年出道的五月天和董事長樂團，</span></span><span lang="EN-US" style="color:black">20</span><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">年來纏鬥不休，再者就是新世代的獅子樂團和呼聲頗高的草東沒有派對。</span></span></p>
+//
+//         <p><span style="font-family:&quot;新細明體&quot;,&quot;serif&quot;"><span style="color:black">新舊對決、天團與新秀的世代交替，本來就是話題保證，也讓這屆金曲充滿看頭！</span></span></p>
+//
+//         * MainVideo : {"_id":"5952ed139413e266c5ddadae","sn":5,"url":"https://www.youtube.com/watch?v=EdgLCHIsVQc","CreatedBy":"59528093b7a05b2fa409c4b6","UpdatedBy":"59528093b7a05b2fa409c4b6","updatedAt":"2017-06-28T03:24:38.151Z","createdAt":"2017-06-27T23:41:07.876Z","isTrashed":false,"size":null,"Tags":[],"isDeliver":true,"mimetype":null,"mode":"NORMAl","type":"NEWS","format":null,"originalname":null,"videoFrom":"EXTERNAL","keyword":null,"desc":"第28屆金曲獎競爭特別激烈，號稱最有看頭的，就是最佳樂團的爭奪了！五月天、董事長、草東沒有派對、獅子合唱團等等樂團，七搶一大對決，堪稱恐怖的死亡之組！","title":"最佳樂團七搶一 死亡之組大對決","formatUpdatedAt":"2017-06-28 11:24:38","formatCreatedAt":"2017-06-28 07:41:07","id":"5952ed139413e266c5ddadae"}
+//         * MainPhoto : {"_id":"5952ed659413e266c5ddadb2","sn":810052,"url":"https://img.nownews.com/nownews_production/images/5952ed659413e266c5ddadb2_201706280742.jpg","CreatedBy":"59528093b7a05b2fa409c4b6","UpdatedBy":"59528093b7a05b2fa409c4b6","updatedAt":"2017-06-27T23:42:30.323Z","createdAt":"2017-06-27T23:42:30.323Z","isTrashed":false,"Tag":null,"isDeliver":true,"height":646,"width":970,"mimetype":"image/jpeg","mode":"NORMAl","type":"NEWS","format":"jpg","originalname":"最佳樂團.jpg","imageFrom":"INTERNAL","keyword":null,"desc":"（圖／林調遜攝 , 2017.6.24）","title":"（圖／林調遜攝 , 2017.6.24）","formatUpdatedAt":"2017-06-28 07:42:30","formatCreatedAt":"2017-06-28 07:42:30","thumbnail":"https://imgapiv2.nownews.com/?w=300&q=70&src=https%3A%2F%2Fimg.nownews.com%2Fnownews_production%2Fimages%2F5952ed659413e266c5ddadb2_201706280742.jpg","id":"5952ed659413e266c5ddadb2"}
+//         * Menus : ["5952d5209c2d7166cb9511dc","5952d5649c2d7166cb9511de"]
+//         * MainMenu : {"_id":"5952cf6c9c2d7166cb9511d6","sn":17,"name":"總覽","url":"/cat/index","CreatedBy":"59528091b7a05b2fa409c419","UpdatedBy":"59528091b7a05b2fa409c419","updatedAt":"2017-06-27T23:00:00.315Z","createdAt":"2017-06-27T21:34:36.222Z","isTrashed":false,"status":"OPEN","isPermanented":true,"endedAt":null,"startedAt":null,"weight":0,"level":0,"ParentId":null,"hasChild":true,"isAdult":false,"isExternal":false,"categoryName":"index","formatUpdatedAt":"2017-06-28 07:00:00","formatCreatedAt":"2017-06-28 05:34:36","id":"5952cf6c9c2d7166cb9511d6"}
+//         * summary : 金曲殊榮競爭激烈，老將新秀PK對決，在所有獎項中，被各界視為死亡之組的，就是最佳樂團的爭奪了！這屆最佳樂團入圍的除了同年出道的五月天和董事長樂團，20年來纏鬥不休，再者就是新世代的獅子樂團和呼聲頗高的草東沒有派對。新舊對決、天團與新秀的世代交替，本來就是話題保證，也讓這
+//         * shortTitle : 最佳樂團七搶一 死亡之組大對決
+//         * formatStartedAt : 2017-06-28 07:38:00
+//         * formatUpdatedAt : 2017-06-28 07:49:37
+//         * formatCreatedAt : 2017-06-28 07:49:00
+//         * parseUrl : /news/20170628/2582238
+//         * id : 5952eeec19ce006702873403
+//         */
+//
+//        private String _id;
+//        private int sn;
+//        private String title;
+//        private String Author;
+//        private String CreatedBy;
+//        private String UpdatedBy;
+//        private String updatedAt;
+//        private String createdAt;
+//        private boolean isTrashed;
+//        private String LastReviewer;
+//        private String feedFrom;
+//        private boolean isFeed;
+//        private String newsBy;
+//        private boolean isSponsored;
+//        private boolean isDeliver;
+//        private boolean isAdult;
+//        private Object traceCode;
+//        private String status;
+//        private String type;
+//        private String startedAt;
+//        private Object freeContent;
+//        private String content;
+//        private MainVideoBean MainVideo;
+//        private MainPhotoBean MainPhoto;
+//        private MainMenuBean MainMenu;
+//        private String summary;
+//        private String shortTitle;
+//        private String formatStartedAt;
+//        private String formatUpdatedAt;
+//        private String formatCreatedAt;
+//        private String parseUrl;
+//        private String id;
+//        private List<Double> location;
+//        private List<String> Tags;
+//        private List<?> Videos;
+//        private List<?> Photos;
+//        private List<String> Menus;
+//
+//        public String get_id() {
+//            return _id;
+//        }
+//
+//        public void set_id(String _id) {
+//            this._id = _id;
+//        }
+//
+//        public int getSn() {
+//            return sn;
+//        }
+//
+//        public void setSn(int sn) {
+//            this.sn = sn;
+//        }
+//
+//        public String getTitle() {
+//            return title;
+//        }
+//
+//        public void setTitle(String title) {
+//            this.title = title;
+//        }
+//
+//        public String getAuthor() {
+//            return Author;
+//        }
+//
+//        public void setAuthor(String Author) {
+//            this.Author = Author;
+//        }
+//
+//        public String getCreatedBy() {
+//            return CreatedBy;
+//        }
+//
+//        public void setCreatedBy(String CreatedBy) {
+//            this.CreatedBy = CreatedBy;
+//        }
+//
+//        public String getUpdatedBy() {
+//            return UpdatedBy;
+//        }
+//
+//        public void setUpdatedBy(String UpdatedBy) {
+//            this.UpdatedBy = UpdatedBy;
+//        }
+//
+//        public String getUpdatedAt() {
+//            return updatedAt;
+//        }
+//
+//        public void setUpdatedAt(String updatedAt) {
+//            this.updatedAt = updatedAt;
+//        }
+//
+//        public String getCreatedAt() {
+//            return createdAt;
+//        }
+//
+//        public void setCreatedAt(String createdAt) {
+//            this.createdAt = createdAt;
+//        }
+//
+//        public boolean isIsTrashed() {
+//            return isTrashed;
+//        }
+//
+//        public void setIsTrashed(boolean isTrashed) {
+//            this.isTrashed = isTrashed;
+//        }
+//
+//        public String getLastReviewer() {
+//            return LastReviewer;
+//        }
+//
+//        public void setLastReviewer(String LastReviewer) {
+//            this.LastReviewer = LastReviewer;
+//        }
+//
+//        public String getFeedFrom() {
+//            return feedFrom;
+//        }
+//
+//        public void setFeedFrom(String feedFrom) {
+//            this.feedFrom = feedFrom;
+//        }
+//
+//        public boolean isIsFeed() {
+//            return isFeed;
+//        }
+//
+//        public void setIsFeed(boolean isFeed) {
+//            this.isFeed = isFeed;
+//        }
+//
+//        public String getNewsBy() {
+//            return newsBy;
+//        }
+//
+//        public void setNewsBy(String newsBy) {
+//            this.newsBy = newsBy;
+//        }
+//
+//        public boolean isIsSponsored() {
+//            return isSponsored;
+//        }
+//
+//        public void setIsSponsored(boolean isSponsored) {
+//            this.isSponsored = isSponsored;
+//        }
+//
+//        public boolean isIsDeliver() {
+//            return isDeliver;
+//        }
+//
+//        public void setIsDeliver(boolean isDeliver) {
+//            this.isDeliver = isDeliver;
+//        }
+//
+//        public boolean isIsAdult() {
+//            return isAdult;
+//        }
+//
+//        public void setIsAdult(boolean isAdult) {
+//            this.isAdult = isAdult;
+//        }
+//
+//        public Object getTraceCode() {
+//            return traceCode;
+//        }
+//
+//        public void setTraceCode(Object traceCode) {
+//            this.traceCode = traceCode;
+//        }
+//
+//        public String getStatus() {
+//            return status;
+//        }
+//
+//        public void setStatus(String status) {
+//            this.status = status;
+//        }
+//
+//        public String getType() {
+//            return type;
+//        }
+//
+//        public void setType(String type) {
+//            this.type = type;
+//        }
+//
+//        public String getStartedAt() {
+//            return startedAt;
+//        }
+//
+//        public void setStartedAt(String startedAt) {
+//            this.startedAt = startedAt;
+//        }
+//
+//        public Object getFreeContent() {
+//            return freeContent;
+//        }
+//
+//        public void setFreeContent(Object freeContent) {
+//            this.freeContent = freeContent;
+//        }
+//
+//        public String getContent() {
+//            return content;
+//        }
+//
+//        public void setContent(String content) {
+//            this.content = content;
+//        }
+//
+//        public MainVideoBean getMainVideo() {
+//            return MainVideo;
+//        }
+//
+//        public void setMainVideo(MainVideoBean MainVideo) {
+//            this.MainVideo = MainVideo;
+//        }
+//
+//        public MainPhotoBean getMainPhoto() {
+//            return MainPhoto;
+//        }
+//
+//        public void setMainPhoto(MainPhotoBean MainPhoto) {
+//            this.MainPhoto = MainPhoto;
+//        }
+//
+//        public MainMenuBean getMainMenu() {
+//            return MainMenu;
+//        }
+//
+//        public void setMainMenu(MainMenuBean MainMenu) {
+//            this.MainMenu = MainMenu;
+//        }
+//
+//        public String getSummary() {
+//            return summary;
+//        }
+//
+//        public void setSummary(String summary) {
+//            this.summary = summary;
+//        }
+//
+//        public String getShortTitle() {
+//            return shortTitle;
+//        }
+//
+//        public void setShortTitle(String shortTitle) {
+//            this.shortTitle = shortTitle;
+//        }
+//
+//        public String getFormatStartedAt() {
+//            return formatStartedAt;
+//        }
+//
+//        public void setFormatStartedAt(String formatStartedAt) {
+//            this.formatStartedAt = formatStartedAt;
+//        }
+//
+//        public String getFormatUpdatedAt() {
+//            return formatUpdatedAt;
+//        }
+//
+//        public void setFormatUpdatedAt(String formatUpdatedAt) {
+//            this.formatUpdatedAt = formatUpdatedAt;
+//        }
+//
+//        public String getFormatCreatedAt() {
+//            return formatCreatedAt;
+//        }
+//
+//        public void setFormatCreatedAt(String formatCreatedAt) {
+//            this.formatCreatedAt = formatCreatedAt;
+//        }
+//
+//        public String getParseUrl() {
+//            return parseUrl;
+//        }
+//
+//        public void setParseUrl(String parseUrl) {
+//            this.parseUrl = parseUrl;
+//        }
+//
+//        public String getId() {
+//            return id;
+//        }
+//
+//        public void setId(String id) {
+//            this.id = id;
+//        }
+//
+//        public List<Double> getLocation() {
+//            return location;
+//        }
+//
+//        public void setLocation(List<Double> location) {
+//            this.location = location;
+//        }
+//
+//        public List<String> getTags() {
+//            return Tags;
+//        }
+//
+//        public void setTags(List<String> Tags) {
+//            this.Tags = Tags;
+//        }
+//
+//        public List<?> getVideos() {
+//            return Videos;
+//        }
+//
+//        public void setVideos(List<?> Videos) {
+//            this.Videos = Videos;
+//        }
+//
+//        public List<?> getPhotos() {
+//            return Photos;
+//        }
+//
+//        public void setPhotos(List<?> Photos) {
+//            this.Photos = Photos;
+//        }
+//
+//        public List<String> getMenus() {
+//            return Menus;
+//        }
+//
+//        public void setMenus(List<String> Menus) {
+//            this.Menus = Menus;
+//        }
+//
+//        public static class MainVideoBean {
+//            /**
+//             * _id : 5952ed139413e266c5ddadae
+//             * sn : 5
+//             * url : https://www.youtube.com/watch?v=EdgLCHIsVQc
+//             * CreatedBy : 59528093b7a05b2fa409c4b6
+//             * UpdatedBy : 59528093b7a05b2fa409c4b6
+//             * updatedAt : 2017-06-28T03:24:38.151Z
+//             * createdAt : 2017-06-27T23:41:07.876Z
+//             * isTrashed : false
+//             * size : null
+//             * Tags : []
+//             * isDeliver : true
+//             * mimetype : null
+//             * mode : NORMAl
+//             * type : NEWS
+//             * format : null
+//             * originalname : null
+//             * videoFrom : EXTERNAL
+//             * keyword : null
+//             * desc : 第28屆金曲獎競爭特別激烈，號稱最有看頭的，就是最佳樂團的爭奪了！五月天、董事長、草東沒有派對、獅子合唱團等等樂團，七搶一大對決，堪稱恐怖的死亡之組！
+//             * title : 最佳樂團七搶一 死亡之組大對決
+//             * formatUpdatedAt : 2017-06-28 11:24:38
+//             * formatCreatedAt : 2017-06-28 07:41:07
+//             * id : 5952ed139413e266c5ddadae
+//             */
+//
+//            private String _id;
+//            private int sn;
+//            private String url;
+//            private String CreatedBy;
+//            private String UpdatedBy;
+//            private String updatedAt;
+//            private String createdAt;
+//            private boolean isTrashed;
+//            private Object size;
+//            private boolean isDeliver;
+//            private Object mimetype;
+//            private String mode;
+//            private String type;
+//            private Object format;
+//            private Object originalname;
+//            private String videoFrom;
+//            private Object keyword;
+//            private String desc;
+//            private String title;
+//            private String formatUpdatedAt;
+//            private String formatCreatedAt;
+//            private String id;
+//            private List<?> Tags;
+//
+//            public String get_id() {
+//                return _id;
+//            }
+//
+//            public void set_id(String _id) {
+//                this._id = _id;
+//            }
+//
+//            public int getSn() {
+//                return sn;
+//            }
+//
+//            public void setSn(int sn) {
+//                this.sn = sn;
+//            }
+//
+//            public String getUrl() {
+//                return url;
+//            }
+//
+//            public void setUrl(String url) {
+//                this.url = url;
+//            }
+//
+//            public String getCreatedBy() {
+//                return CreatedBy;
+//            }
+//
+//            public void setCreatedBy(String CreatedBy) {
+//                this.CreatedBy = CreatedBy;
+//            }
+//
+//            public String getUpdatedBy() {
+//                return UpdatedBy;
+//            }
+//
+//            public void setUpdatedBy(String UpdatedBy) {
+//                this.UpdatedBy = UpdatedBy;
+//            }
+//
+//            public String getUpdatedAt() {
+//                return updatedAt;
+//            }
+//
+//            public void setUpdatedAt(String updatedAt) {
+//                this.updatedAt = updatedAt;
+//            }
+//
+//            public String getCreatedAt() {
+//                return createdAt;
+//            }
+//
+//            public void setCreatedAt(String createdAt) {
+//                this.createdAt = createdAt;
+//            }
+//
+//            public boolean isIsTrashed() {
+//                return isTrashed;
+//            }
+//
+//            public void setIsTrashed(boolean isTrashed) {
+//                this.isTrashed = isTrashed;
+//            }
+//
+//            public Object getSize() {
+//                return size;
+//            }
+//
+//            public void setSize(Object size) {
+//                this.size = size;
+//            }
+//
+//            public boolean isIsDeliver() {
+//                return isDeliver;
+//            }
+//
+//            public void setIsDeliver(boolean isDeliver) {
+//                this.isDeliver = isDeliver;
+//            }
+//
+//            public Object getMimetype() {
+//                return mimetype;
+//            }
+//
+//            public void setMimetype(Object mimetype) {
+//                this.mimetype = mimetype;
+//            }
+//
+//            public String getMode() {
+//                return mode;
+//            }
+//
+//            public void setMode(String mode) {
+//                this.mode = mode;
+//            }
+//
+//            public String getType() {
+//                return type;
+//            }
+//
+//            public void setType(String type) {
+//                this.type = type;
+//            }
+//
+//            public Object getFormat() {
+//                return format;
+//            }
+//
+//            public void setFormat(Object format) {
+//                this.format = format;
+//            }
+//
+//            public Object getOriginalname() {
+//                return originalname;
+//            }
+//
+//            public void setOriginalname(Object originalname) {
+//                this.originalname = originalname;
+//            }
+//
+//            public String getVideoFrom() {
+//                return videoFrom;
+//            }
+//
+//            public void setVideoFrom(String videoFrom) {
+//                this.videoFrom = videoFrom;
+//            }
+//
+//            public Object getKeyword() {
+//                return keyword;
+//            }
+//
+//            public void setKeyword(Object keyword) {
+//                this.keyword = keyword;
+//            }
+//
+//            public String getDesc() {
+//                return desc;
+//            }
+//
+//            public void setDesc(String desc) {
+//                this.desc = desc;
+//            }
+//
+//            public String getTitle() {
+//                return title;
+//            }
+//
+//            public void setTitle(String title) {
+//                this.title = title;
+//            }
+//
+//            public String getFormatUpdatedAt() {
+//                return formatUpdatedAt;
+//            }
+//
+//            public void setFormatUpdatedAt(String formatUpdatedAt) {
+//                this.formatUpdatedAt = formatUpdatedAt;
+//            }
+//
+//            public String getFormatCreatedAt() {
+//                return formatCreatedAt;
+//            }
+//
+//            public void setFormatCreatedAt(String formatCreatedAt) {
+//                this.formatCreatedAt = formatCreatedAt;
+//            }
+//
+//            public String getId() {
+//                return id;
+//            }
+//
+//            public void setId(String id) {
+//                this.id = id;
+//            }
+//
+//            public List<?> getTags() {
+//                return Tags;
+//            }
+//
+//            public void setTags(List<?> Tags) {
+//                this.Tags = Tags;
+//            }
+//        }
+//
+//        public static class MainPhotoBean {
+//            /**
+//             * _id : 5952ed659413e266c5ddadb2
+//             * sn : 810052
+//             * url : https://img.nownews.com/nownews_production/images/5952ed659413e266c5ddadb2_201706280742.jpg
+//             * CreatedBy : 59528093b7a05b2fa409c4b6
+//             * UpdatedBy : 59528093b7a05b2fa409c4b6
+//             * updatedAt : 2017-06-27T23:42:30.323Z
+//             * createdAt : 2017-06-27T23:42:30.323Z
+//             * isTrashed : false
+//             * Tag : null
+//             * isDeliver : true
+//             * height : 646
+//             * width : 970
+//             * mimetype : image/jpeg
+//             * mode : NORMAl
+//             * type : NEWS
+//             * format : jpg
+//             * originalname : 最佳樂團.jpg
+//             * imageFrom : INTERNAL
+//             * keyword : null
+//             * desc : （圖／林調遜攝 , 2017.6.24）
+//             * title : （圖／林調遜攝 , 2017.6.24）
+//             * formatUpdatedAt : 2017-06-28 07:42:30
+//             * formatCreatedAt : 2017-06-28 07:42:30
+//             * thumbnail : https://imgapiv2.nownews.com/?w=300&q=70&src=https%3A%2F%2Fimg.nownews.com%2Fnownews_production%2Fimages%2F5952ed659413e266c5ddadb2_201706280742.jpg
+//             * id : 5952ed659413e266c5ddadb2
+//             */
+//
+//            private String _id;
+//            private int sn;
+//            private String url;
+//            private String CreatedBy;
+//            private String UpdatedBy;
+//            private String updatedAt;
+//            private String createdAt;
+//            private boolean isTrashed;
+//            private Object Tag;
+//            private boolean isDeliver;
+//            private int height;
+//            private int width;
+//            private String mimetype;
+//            private String mode;
+//            private String type;
+//            private String format;
+//            private String originalname;
+//            private String imageFrom;
+//            private Object keyword;
+//            private String desc;
+//            private String title;
+//            private String formatUpdatedAt;
+//            private String formatCreatedAt;
+//            private String thumbnail;
+//            private String id;
+//
+//            public String get_id() {
+//                return _id;
+//            }
+//
+//            public void set_id(String _id) {
+//                this._id = _id;
+//            }
+//
+//            public int getSn() {
+//                return sn;
+//            }
+//
+//            public void setSn(int sn) {
+//                this.sn = sn;
+//            }
+//
+//            public String getUrl() {
+//                return url;
+//            }
+//
+//            public void setUrl(String url) {
+//                this.url = url;
+//            }
+//
+//            public String getCreatedBy() {
+//                return CreatedBy;
+//            }
+//
+//            public void setCreatedBy(String CreatedBy) {
+//                this.CreatedBy = CreatedBy;
+//            }
+//
+//            public String getUpdatedBy() {
+//                return UpdatedBy;
+//            }
+//
+//            public void setUpdatedBy(String UpdatedBy) {
+//                this.UpdatedBy = UpdatedBy;
+//            }
+//
+//            public String getUpdatedAt() {
+//                return updatedAt;
+//            }
+//
+//            public void setUpdatedAt(String updatedAt) {
+//                this.updatedAt = updatedAt;
+//            }
+//
+//            public String getCreatedAt() {
+//                return createdAt;
+//            }
+//
+//            public void setCreatedAt(String createdAt) {
+//                this.createdAt = createdAt;
+//            }
+//
+//            public boolean isIsTrashed() {
+//                return isTrashed;
+//            }
+//
+//            public void setIsTrashed(boolean isTrashed) {
+//                this.isTrashed = isTrashed;
+//            }
+//
+//            public Object getTag() {
+//                return Tag;
+//            }
+//
+//            public void setTag(Object Tag) {
+//                this.Tag = Tag;
+//            }
+//
+//            public boolean isIsDeliver() {
+//                return isDeliver;
+//            }
+//
+//            public void setIsDeliver(boolean isDeliver) {
+//                this.isDeliver = isDeliver;
+//            }
+//
+//            public int getHeight() {
+//                return height;
+//            }
+//
+//            public void setHeight(int height) {
+//                this.height = height;
+//            }
+//
+//            public int getWidth() {
+//                return width;
+//            }
+//
+//            public void setWidth(int width) {
+//                this.width = width;
+//            }
+//
+//            public String getMimetype() {
+//                return mimetype;
+//            }
+//
+//            public void setMimetype(String mimetype) {
+//                this.mimetype = mimetype;
+//            }
+//
+//            public String getMode() {
+//                return mode;
+//            }
+//
+//            public void setMode(String mode) {
+//                this.mode = mode;
+//            }
+//
+//            public String getType() {
+//                return type;
+//            }
+//
+//            public void setType(String type) {
+//                this.type = type;
+//            }
+//
+//            public String getFormat() {
+//                return format;
+//            }
+//
+//            public void setFormat(String format) {
+//                this.format = format;
+//            }
+//
+//            public String getOriginalname() {
+//                return originalname;
+//            }
+//
+//            public void setOriginalname(String originalname) {
+//                this.originalname = originalname;
+//            }
+//
+//            public String getImageFrom() {
+//                return imageFrom;
+//            }
+//
+//            public void setImageFrom(String imageFrom) {
+//                this.imageFrom = imageFrom;
+//            }
+//
+//            public Object getKeyword() {
+//                return keyword;
+//            }
+//
+//            public void setKeyword(Object keyword) {
+//                this.keyword = keyword;
+//            }
+//
+//            public String getDesc() {
+//                return desc;
+//            }
+//
+//            public void setDesc(String desc) {
+//                this.desc = desc;
+//            }
+//
+//            public String getTitle() {
+//                return title;
+//            }
+//
+//            public void setTitle(String title) {
+//                this.title = title;
+//            }
+//
+//            public String getFormatUpdatedAt() {
+//                return formatUpdatedAt;
+//            }
+//
+//            public void setFormatUpdatedAt(String formatUpdatedAt) {
+//                this.formatUpdatedAt = formatUpdatedAt;
+//            }
+//
+//            public String getFormatCreatedAt() {
+//                return formatCreatedAt;
+//            }
+//
+//            public void setFormatCreatedAt(String formatCreatedAt) {
+//                this.formatCreatedAt = formatCreatedAt;
+//            }
+//
+//            public String getThumbnail() {
+//                return thumbnail;
+//            }
+//
+//            public void setThumbnail(String thumbnail) {
+//                this.thumbnail = thumbnail;
+//            }
+//
+//            public String getId() {
+//                return id;
+//            }
+//
+//            public void setId(String id) {
+//                this.id = id;
+//            }
+//        }
+//
+//        public static class MainMenuBean {
+//            /**
+//             * _id : 5952cf6c9c2d7166cb9511d6
+//             * sn : 17
+//             * name : 總覽
+//             * url : /cat/index
+//             * CreatedBy : 59528091b7a05b2fa409c419
+//             * UpdatedBy : 59528091b7a05b2fa409c419
+//             * updatedAt : 2017-06-27T23:00:00.315Z
+//             * createdAt : 2017-06-27T21:34:36.222Z
+//             * isTrashed : false
+//             * status : OPEN
+//             * isPermanented : true
+//             * endedAt : null
+//             * startedAt : null
+//             * weight : 0
+//             * level : 0
+//             * ParentId : null
+//             * hasChild : true
+//             * isAdult : false
+//             * isExternal : false
+//             * categoryName : index
+//             * formatUpdatedAt : 2017-06-28 07:00:00
+//             * formatCreatedAt : 2017-06-28 05:34:36
+//             * id : 5952cf6c9c2d7166cb9511d6
+//             */
+//
+//            private String _id;
+//            private int sn;
+//            private String name;
+//            private String url;
+//            private String CreatedBy;
+//            private String UpdatedBy;
+//            private String updatedAt;
+//            private String createdAt;
+//            private boolean isTrashed;
+//            private String status;
+//            private boolean isPermanented;
+//            private Object endedAt;
+//            private Object startedAt;
+//            private int weight;
+//            private int level;
+//            private Object ParentId;
+//            private boolean hasChild;
+//            private boolean isAdult;
+//            private boolean isExternal;
+//            private String categoryName;
+//            private String formatUpdatedAt;
+//            private String formatCreatedAt;
+//            private String id;
+//
+//            public String get_id() {
+//                return _id;
+//            }
+//
+//            public void set_id(String _id) {
+//                this._id = _id;
+//            }
+//
+//            public int getSn() {
+//                return sn;
+//            }
+//
+//            public void setSn(int sn) {
+//                this.sn = sn;
+//            }
+//
+//            public String getName() {
+//                return name;
+//            }
+//
+//            public void setName(String name) {
+//                this.name = name;
+//            }
+//
+//            public String getUrl() {
+//                return url;
+//            }
+//
+//            public void setUrl(String url) {
+//                this.url = url;
+//            }
+//
+//            public String getCreatedBy() {
+//                return CreatedBy;
+//            }
+//
+//            public void setCreatedBy(String CreatedBy) {
+//                this.CreatedBy = CreatedBy;
+//            }
+//
+//            public String getUpdatedBy() {
+//                return UpdatedBy;
+//            }
+//
+//            public void setUpdatedBy(String UpdatedBy) {
+//                this.UpdatedBy = UpdatedBy;
+//            }
+//
+//            public String getUpdatedAt() {
+//                return updatedAt;
+//            }
+//
+//            public void setUpdatedAt(String updatedAt) {
+//                this.updatedAt = updatedAt;
+//            }
+//
+//            public String getCreatedAt() {
+//                return createdAt;
+//            }
+//
+//            public void setCreatedAt(String createdAt) {
+//                this.createdAt = createdAt;
+//            }
+//
+//            public boolean isIsTrashed() {
+//                return isTrashed;
+//            }
+//
+//            public void setIsTrashed(boolean isTrashed) {
+//                this.isTrashed = isTrashed;
+//            }
+//
+//            public String getStatus() {
+//                return status;
+//            }
+//
+//            public void setStatus(String status) {
+//                this.status = status;
+//            }
+//
+//            public boolean isIsPermanented() {
+//                return isPermanented;
+//            }
+//
+//            public void setIsPermanented(boolean isPermanented) {
+//                this.isPermanented = isPermanented;
+//            }
+//
+//            public Object getEndedAt() {
+//                return endedAt;
+//            }
+//
+//            public void setEndedAt(Object endedAt) {
+//                this.endedAt = endedAt;
+//            }
+//
+//            public Object getStartedAt() {
+//                return startedAt;
+//            }
+//
+//            public void setStartedAt(Object startedAt) {
+//                this.startedAt = startedAt;
+//            }
+//
+//            public int getWeight() {
+//                return weight;
+//            }
+//
+//            public void setWeight(int weight) {
+//                this.weight = weight;
+//            }
+//
+//            public int getLevel() {
+//                return level;
+//            }
+//
+//            public void setLevel(int level) {
+//                this.level = level;
+//            }
+//
+//            public Object getParentId() {
+//                return ParentId;
+//            }
+//
+//            public void setParentId(Object ParentId) {
+//                this.ParentId = ParentId;
+//            }
+//
+//            public boolean isHasChild() {
+//                return hasChild;
+//            }
+//
+//            public void setHasChild(boolean hasChild) {
+//                this.hasChild = hasChild;
+//            }
+//
+//            public boolean isIsAdult() {
+//                return isAdult;
+//            }
+//
+//            public void setIsAdult(boolean isAdult) {
+//                this.isAdult = isAdult;
+//            }
+//
+//            public boolean isIsExternal() {
+//                return isExternal;
+//            }
+//
+//            public void setIsExternal(boolean isExternal) {
+//                this.isExternal = isExternal;
+//            }
+//
+//            public String getCategoryName() {
+//                return categoryName;
+//            }
+//
+//            public void setCategoryName(String categoryName) {
+//                this.categoryName = categoryName;
+//            }
+//
+//            public String getFormatUpdatedAt() {
+//                return formatUpdatedAt;
+//            }
+//
+//            public void setFormatUpdatedAt(String formatUpdatedAt) {
+//                this.formatUpdatedAt = formatUpdatedAt;
+//            }
+//
+//            public String getFormatCreatedAt() {
+//                return formatCreatedAt;
+//            }
+//
+//            public void setFormatCreatedAt(String formatCreatedAt) {
+//                this.formatCreatedAt = formatCreatedAt;
+//            }
+//
+//            public String getId() {
+//                return id;
+//            }
+//
+//            public void setId(String id) {
+//                this.id = id;
+//            }
+//        }
+//    }
+//
+//    public static class SpecialChannelsBean {
+//        /**
+//         * _id : 5952f1aa9c2d7166cb9512af
+//         * sn : 1
+//         * title : 年金改革
+//         * CreatedBy : 59528093b7a05b2fa409c48d
+//         * UpdatedBy : 59528092b7a05b2fa409c468
+//         * updatedAt : 2017-06-28T03:29:53.257Z
+//         * createdAt : 2017-06-28T00:00:42.438Z
+//         * isTrashed : false
+//         * Tag : null
+//         * newsList : ["5952bf0c9d4099ffd8a3a16e","5952bf0c9d4099ffd8a3a094","5952bf0c9d4099ffd8a3a231","5952bf0c9d4099ffd8a3a1b9","59530ff551157d4d2d1fa85b","5952bf0c9d4099ffd8a3a1bf","5952bf0c9d4099ffd8a3a1cd","5952bf0c9d4099ffd8a3a1c9","59531cb6905d7d2ff2546f0d","5952bf0c9d4099ffd8a3a185","5953003351157d4d2d1fa794"]
+//         * MainPhoto : {"_id":"5952b4b6b7a05b2fa414be72","sn":809654,"url":"http://s.nownews.com/30/fd/30fddb0f780108be524f552a408efb83.jpg","CreatedBy":"530000000000000000000003","UpdatedBy":"530000000000000000000003","updatedAt":"2017-06-27T19:40:38.189Z","createdAt":"2017-06-27T19:40:38.189Z","isTrashed":false,"Tag":null,"isDeliver":false,"height":null,"width":null,"mimetype":null,"mode":"NORMAl","type":"NEWS","format":null,"originalname":null,"imageFrom":"INTERNAL","keyword":null,"desc":"立法院26日續審年金改革相關法案，將繼續挑燈夜戰至午夜12時。立法院外抗議民眾欲闖立院，與警推擠，國民黨立院黨團總召廖國棟（前排右3）等人出面與民眾喊話。中央社記者吳家昇攝　106年6月26日","title":"立法院26日續審年金改革相關法案，將繼續挑燈夜戰至午夜12時。立法院外抗議民眾欲闖立院，與警推擠，國民黨立院黨團總召廖國棟（前排右3）等人出面與民眾喊話。中央社記者吳家昇攝　106年6月26日","formatUpdatedAt":"2017-06-28 03:40:38","formatCreatedAt":"2017-06-28 03:40:38","thumbnail":"https://imgapiv2.nownews.com/?w=300&q=70&src=http%3A%2F%2Fs.nownews.com%2F30%2Ffd%2F30fddb0f780108be524f552a408efb83.jpg","id":"5952b4b6b7a05b2fa414be72"}
+//         * formatUpdatedAt : 2017-06-28 11:29:53
+//         * formatCreatedAt : 2017-06-28 08:00:42
+//         * id : 5952f1aa9c2d7166cb9512af
+//         */
+//
+//        private String _id;
+//        private int sn;
+//        private String title;
+//        private String CreatedBy;
+//        private String UpdatedBy;
+//        private String updatedAt;
+//        private String createdAt;
+//        private boolean isTrashed;
+//        private Object Tag;
+//        private MainPhotoBeanX MainPhoto;
+//        private String formatUpdatedAt;
+//        private String formatCreatedAt;
+//        private String id;
+//        private List<String> newsList;
+//
+//        public String get_id() {
+//            return _id;
+//        }
+//
+//        public void set_id(String _id) {
+//            this._id = _id;
+//        }
+//
+//        public int getSn() {
+//            return sn;
+//        }
+//
+//        public void setSn(int sn) {
+//            this.sn = sn;
+//        }
+//
+//        public String getTitle() {
+//            return title;
+//        }
+//
+//        public void setTitle(String title) {
+//            this.title = title;
+//        }
+//
+//        public String getCreatedBy() {
+//            return CreatedBy;
+//        }
+//
+//        public void setCreatedBy(String CreatedBy) {
+//            this.CreatedBy = CreatedBy;
+//        }
+//
+//        public String getUpdatedBy() {
+//            return UpdatedBy;
+//        }
+//
+//        public void setUpdatedBy(String UpdatedBy) {
+//            this.UpdatedBy = UpdatedBy;
+//        }
+//
+//        public String getUpdatedAt() {
+//            return updatedAt;
+//        }
+//
+//        public void setUpdatedAt(String updatedAt) {
+//            this.updatedAt = updatedAt;
+//        }
+//
+//        public String getCreatedAt() {
+//            return createdAt;
+//        }
+//
+//        public void setCreatedAt(String createdAt) {
+//            this.createdAt = createdAt;
+//        }
+//
+//        public boolean isIsTrashed() {
+//            return isTrashed;
+//        }
+//
+//        public void setIsTrashed(boolean isTrashed) {
+//            this.isTrashed = isTrashed;
+//        }
+//
+//        public Object getTag() {
+//            return Tag;
+//        }
+//
+//        public void setTag(Object Tag) {
+//            this.Tag = Tag;
+//        }
+//
+//        public MainPhotoBeanX getMainPhoto() {
+//            return MainPhoto;
+//        }
+//
+//        public void setMainPhoto(MainPhotoBeanX MainPhoto) {
+//            this.MainPhoto = MainPhoto;
+//        }
+//
+//        public String getFormatUpdatedAt() {
+//            return formatUpdatedAt;
+//        }
+//
+//        public void setFormatUpdatedAt(String formatUpdatedAt) {
+//            this.formatUpdatedAt = formatUpdatedAt;
+//        }
+//
+//        public String getFormatCreatedAt() {
+//            return formatCreatedAt;
+//        }
+//
+//        public void setFormatCreatedAt(String formatCreatedAt) {
+//            this.formatCreatedAt = formatCreatedAt;
+//        }
+//
+//        public String getId() {
+//            return id;
+//        }
+//
+//        public void setId(String id) {
+//            this.id = id;
+//        }
+//
+//        public List<String> getNewsList() {
+//            return newsList;
+//        }
+//
+//        public void setNewsList(List<String> newsList) {
+//            this.newsList = newsList;
+//        }
+//
+//        public static class MainPhotoBeanX {
+//            /**
+//             * _id : 5952b4b6b7a05b2fa414be72
+//             * sn : 809654
+//             * url : http://s.nownews.com/30/fd/30fddb0f780108be524f552a408efb83.jpg
+//             * CreatedBy : 530000000000000000000003
+//             * UpdatedBy : 530000000000000000000003
+//             * updatedAt : 2017-06-27T19:40:38.189Z
+//             * createdAt : 2017-06-27T19:40:38.189Z
+//             * isTrashed : false
+//             * Tag : null
+//             * isDeliver : false
+//             * height : null
+//             * width : null
+//             * mimetype : null
+//             * mode : NORMAl
+//             * type : NEWS
+//             * format : null
+//             * originalname : null
+//             * imageFrom : INTERNAL
+//             * keyword : null
+//             * desc : 立法院26日續審年金改革相關法案，將繼續挑燈夜戰至午夜12時。立法院外抗議民眾欲闖立院，與警推擠，國民黨立院黨團總召廖國棟（前排右3）等人出面與民眾喊話。中央社記者吳家昇攝　106年6月26日
+//             * title : 立法院26日續審年金改革相關法案，將繼續挑燈夜戰至午夜12時。立法院外抗議民眾欲闖立院，與警推擠，國民黨立院黨團總召廖國棟（前排右3）等人出面與民眾喊話。中央社記者吳家昇攝　106年6月26日
+//             * formatUpdatedAt : 2017-06-28 03:40:38
+//             * formatCreatedAt : 2017-06-28 03:40:38
+//             * thumbnail : https://imgapiv2.nownews.com/?w=300&q=70&src=http%3A%2F%2Fs.nownews.com%2F30%2Ffd%2F30fddb0f780108be524f552a408efb83.jpg
+//             * id : 5952b4b6b7a05b2fa414be72
+//             */
+//
+//            private String _id;
+//            private int sn;
+//            private String url;
+//            private String CreatedBy;
+//            private String UpdatedBy;
+//            private String updatedAt;
+//            private String createdAt;
+//            private boolean isTrashed;
+//            private Object Tag;
+//            private boolean isDeliver;
+//            private Object height;
+//            private Object width;
+//            private Object mimetype;
+//            private String mode;
+//            private String type;
+//            private Object format;
+//            private Object originalname;
+//            private String imageFrom;
+//            private Object keyword;
+//            private String desc;
+//            private String title;
+//            private String formatUpdatedAt;
+//            private String formatCreatedAt;
+//            private String thumbnail;
+//            private String id;
+//
+//            public String get_id() {
+//                return _id;
+//            }
+//
+//            public void set_id(String _id) {
+//                this._id = _id;
+//            }
+//
+//            public int getSn() {
+//                return sn;
+//            }
+//
+//            public void setSn(int sn) {
+//                this.sn = sn;
+//            }
+//
+//            public String getUrl() {
+//                return url;
+//            }
+//
+//            public void setUrl(String url) {
+//                this.url = url;
+//            }
+//
+//            public String getCreatedBy() {
+//                return CreatedBy;
+//            }
+//
+//            public void setCreatedBy(String CreatedBy) {
+//                this.CreatedBy = CreatedBy;
+//            }
+//
+//            public String getUpdatedBy() {
+//                return UpdatedBy;
+//            }
+//
+//            public void setUpdatedBy(String UpdatedBy) {
+//                this.UpdatedBy = UpdatedBy;
+//            }
+//
+//            public String getUpdatedAt() {
+//                return updatedAt;
+//            }
+//
+//            public void setUpdatedAt(String updatedAt) {
+//                this.updatedAt = updatedAt;
+//            }
+//
+//            public String getCreatedAt() {
+//                return createdAt;
+//            }
+//
+//            public void setCreatedAt(String createdAt) {
+//                this.createdAt = createdAt;
+//            }
+//
+//            public boolean isIsTrashed() {
+//                return isTrashed;
+//            }
+//
+//            public void setIsTrashed(boolean isTrashed) {
+//                this.isTrashed = isTrashed;
+//            }
+//
+//            public Object getTag() {
+//                return Tag;
+//            }
+//
+//            public void setTag(Object Tag) {
+//                this.Tag = Tag;
+//            }
+//
+//            public boolean isIsDeliver() {
+//                return isDeliver;
+//            }
+//
+//            public void setIsDeliver(boolean isDeliver) {
+//                this.isDeliver = isDeliver;
+//            }
+//
+//            public Object getHeight() {
+//                return height;
+//            }
+//
+//            public void setHeight(Object height) {
+//                this.height = height;
+//            }
+//
+//            public Object getWidth() {
+//                return width;
+//            }
+//
+//            public void setWidth(Object width) {
+//                this.width = width;
+//            }
+//
+//            public Object getMimetype() {
+//                return mimetype;
+//            }
+//
+//            public void setMimetype(Object mimetype) {
+//                this.mimetype = mimetype;
+//            }
+//
+//            public String getMode() {
+//                return mode;
+//            }
+//
+//            public void setMode(String mode) {
+//                this.mode = mode;
+//            }
+//
+//            public String getType() {
+//                return type;
+//            }
+//
+//            public void setType(String type) {
+//                this.type = type;
+//            }
+//
+//            public Object getFormat() {
+//                return format;
+//            }
+//
+//            public void setFormat(Object format) {
+//                this.format = format;
+//            }
+//
+//            public Object getOriginalname() {
+//                return originalname;
+//            }
+//
+//            public void setOriginalname(Object originalname) {
+//                this.originalname = originalname;
+//            }
+//
+//            public String getImageFrom() {
+//                return imageFrom;
+//            }
+//
+//            public void setImageFrom(String imageFrom) {
+//                this.imageFrom = imageFrom;
+//            }
+//
+//            public Object getKeyword() {
+//                return keyword;
+//            }
+//
+//            public void setKeyword(Object keyword) {
+//                this.keyword = keyword;
+//            }
+//
+//            public String getDesc() {
+//                return desc;
+//            }
+//
+//            public void setDesc(String desc) {
+//                this.desc = desc;
+//            }
+//
+//            public String getTitle() {
+//                return title;
+//            }
+//
+//            public void setTitle(String title) {
+//                this.title = title;
+//            }
+//
+//            public String getFormatUpdatedAt() {
+//                return formatUpdatedAt;
+//            }
+//
+//            public void setFormatUpdatedAt(String formatUpdatedAt) {
+//                this.formatUpdatedAt = formatUpdatedAt;
+//            }
+//
+//            public String getFormatCreatedAt() {
+//                return formatCreatedAt;
+//            }
+//
+//            public void setFormatCreatedAt(String formatCreatedAt) {
+//                this.formatCreatedAt = formatCreatedAt;
+//            }
+//
+//            public String getThumbnail() {
+//                return thumbnail;
+//            }
+//
+//            public void setThumbnail(String thumbnail) {
+//                this.thumbnail = thumbnail;
+//            }
+//
+//            public String getId() {
+//                return id;
+//            }
+//
+//            public void setId(String id) {
+//                this.id = id;
+//            }
+//        }
+//    }
+//
+//    public static class SpecialTopicsBean {
+//        /**
+//         * _id : 5952eefb9c2d7166cb951285
+//         * sn : 1
+//         * title : 華航罷工周年　重點回顧秒懂始末
+//         * url : /news/20170623/2576802
+//         * CreatedBy : 59528091b7a05b2fa409c419
+//         * UpdatedBy : 59528091b7a05b2fa409c40a
+//         * updatedAt : 2017-06-28T04:28:10.439Z
+//         * createdAt : 2017-06-27T23:49:15.752Z
+//         * isTrashed : false
+//         * Tag : null
+//         * MainPhoto : {"_id":"5952b43eb7a05b2fa414bad9","sn":808734,"url":"http://s.nownews.com/f8/20/f820943e05e664b17662f6f311426af2.png","CreatedBy":"530000000000000000000003","UpdatedBy":"530000000000000000000003","updatedAt":"2017-06-27T19:38:38.749Z","createdAt":"2017-06-27T19:38:38.749Z","isTrashed":false,"Tag":null,"isDeliver":false,"height":null,"width":null,"mimetype":null,"mode":"NORMAl","type":"NEWS","format":null,"originalname":null,"imageFrom":"INTERNAL","keyword":null,"desc":"▲去年6月24日，華航空服員展開罷工，事發至今已經滿一周年。（NOWnews資料照）","title":"▲去年6月24日，華航空服員展開罷工，事發至今已經滿一周年。（NOWnews資料照）","formatUpdatedAt":"2017-06-28 03:38:38","formatCreatedAt":"2017-06-28 03:38:38","thumbnail":"https://imgapiv2.nownews.com/?w=300&q=70&src=http%3A%2F%2Fs.nownews.com%2Ff8%2F20%2Ff820943e05e664b17662f6f311426af2.png","id":"5952b43eb7a05b2fa414bad9"}
+//         * formatUpdatedAt : 2017-06-28 12:28:10
+//         * formatCreatedAt : 2017-06-28 07:49:15
+//         * id : 5952eefb9c2d7166cb951285
+//         */
+//
+//        private String _id;
+//        private int sn;
+//        private String title;
+//        private String url;
+//        private String CreatedBy;
+//        private String UpdatedBy;
+//        private String updatedAt;
+//        private String createdAt;
+//        private boolean isTrashed;
+//        private Object Tag;
+//        private MainPhotoBeanXX MainPhoto;
+//        private String formatUpdatedAt;
+//        private String formatCreatedAt;
+//        private String id;
+//
+//        public String get_id() {
+//            return _id;
+//        }
+//
+//        public void set_id(String _id) {
+//            this._id = _id;
+//        }
+//
+//        public int getSn() {
+//            return sn;
+//        }
+//
+//        public void setSn(int sn) {
+//            this.sn = sn;
+//        }
+//
+//        public String getTitle() {
+//            return title;
+//        }
+//
+//        public void setTitle(String title) {
+//            this.title = title;
+//        }
+//
+//        public String getUrl() {
+//            return url;
+//        }
+//
+//        public void setUrl(String url) {
+//            this.url = url;
+//        }
+//
+//        public String getCreatedBy() {
+//            return CreatedBy;
+//        }
+//
+//        public void setCreatedBy(String CreatedBy) {
+//            this.CreatedBy = CreatedBy;
+//        }
+//
+//        public String getUpdatedBy() {
+//            return UpdatedBy;
+//        }
+//
+//        public void setUpdatedBy(String UpdatedBy) {
+//            this.UpdatedBy = UpdatedBy;
+//        }
+//
+//        public String getUpdatedAt() {
+//            return updatedAt;
+//        }
+//
+//        public void setUpdatedAt(String updatedAt) {
+//            this.updatedAt = updatedAt;
+//        }
+//
+//        public String getCreatedAt() {
+//            return createdAt;
+//        }
+//
+//        public void setCreatedAt(String createdAt) {
+//            this.createdAt = createdAt;
+//        }
+//
+//        public boolean isIsTrashed() {
+//            return isTrashed;
+//        }
+//
+//        public void setIsTrashed(boolean isTrashed) {
+//            this.isTrashed = isTrashed;
+//        }
+//
+//        public Object getTag() {
+//            return Tag;
+//        }
+//
+//        public void setTag(Object Tag) {
+//            this.Tag = Tag;
+//        }
+//
+//        public MainPhotoBeanXX getMainPhoto() {
+//            return MainPhoto;
+//        }
+//
+//        public void setMainPhoto(MainPhotoBeanXX MainPhoto) {
+//            this.MainPhoto = MainPhoto;
+//        }
+//
+//        public String getFormatUpdatedAt() {
+//            return formatUpdatedAt;
+//        }
+//
+//        public void setFormatUpdatedAt(String formatUpdatedAt) {
+//            this.formatUpdatedAt = formatUpdatedAt;
+//        }
+//
+//        public String getFormatCreatedAt() {
+//            return formatCreatedAt;
+//        }
+//
+//        public void setFormatCreatedAt(String formatCreatedAt) {
+//            this.formatCreatedAt = formatCreatedAt;
+//        }
+//
+//        public String getId() {
+//            return id;
+//        }
+//
+//        public void setId(String id) {
+//            this.id = id;
+//        }
+//
+//        public static class MainPhotoBeanXX {
+//            /**
+//             * _id : 5952b43eb7a05b2fa414bad9
+//             * sn : 808734
+//             * url : http://s.nownews.com/f8/20/f820943e05e664b17662f6f311426af2.png
+//             * CreatedBy : 530000000000000000000003
+//             * UpdatedBy : 530000000000000000000003
+//             * updatedAt : 2017-06-27T19:38:38.749Z
+//             * createdAt : 2017-06-27T19:38:38.749Z
+//             * isTrashed : false
+//             * Tag : null
+//             * isDeliver : false
+//             * height : null
+//             * width : null
+//             * mimetype : null
+//             * mode : NORMAl
+//             * type : NEWS
+//             * format : null
+//             * originalname : null
+//             * imageFrom : INTERNAL
+//             * keyword : null
+//             * desc : ▲去年6月24日，華航空服員展開罷工，事發至今已經滿一周年。（NOWnews資料照）
+//             * title : ▲去年6月24日，華航空服員展開罷工，事發至今已經滿一周年。（NOWnews資料照）
+//             * formatUpdatedAt : 2017-06-28 03:38:38
+//             * formatCreatedAt : 2017-06-28 03:38:38
+//             * thumbnail : https://imgapiv2.nownews.com/?w=300&q=70&src=http%3A%2F%2Fs.nownews.com%2Ff8%2F20%2Ff820943e05e664b17662f6f311426af2.png
+//             * id : 5952b43eb7a05b2fa414bad9
+//             */
+//
+//            private String _id;
+//            private int sn;
+//            private String url;
+//            private String CreatedBy;
+//            private String UpdatedBy;
+//            private String updatedAt;
+//            private String createdAt;
+//            private boolean isTrashed;
+//            private Object Tag;
+//            private boolean isDeliver;
+//            private Object height;
+//            private Object width;
+//            private Object mimetype;
+//            private String mode;
+//            private String type;
+//            private Object format;
+//            private Object originalname;
+//            private String imageFrom;
+//            private Object keyword;
+//            private String desc;
+//            private String title;
+//            private String formatUpdatedAt;
+//            private String formatCreatedAt;
+//            private String thumbnail;
+//            private String id;
+//
+//            public String get_id() {
+//                return _id;
+//            }
+//
+//            public void set_id(String _id) {
+//                this._id = _id;
+//            }
+//
+//            public int getSn() {
+//                return sn;
+//            }
+//
+//            public void setSn(int sn) {
+//                this.sn = sn;
+//            }
+//
+//            public String getUrl() {
+//                return url;
+//            }
+//
+//            public void setUrl(String url) {
+//                this.url = url;
+//            }
+//
+//            public String getCreatedBy() {
+//                return CreatedBy;
+//            }
+//
+//            public void setCreatedBy(String CreatedBy) {
+//                this.CreatedBy = CreatedBy;
+//            }
+//
+//            public String getUpdatedBy() {
+//                return UpdatedBy;
+//            }
+//
+//            public void setUpdatedBy(String UpdatedBy) {
+//                this.UpdatedBy = UpdatedBy;
+//            }
+//
+//            public String getUpdatedAt() {
+//                return updatedAt;
+//            }
+//
+//            public void setUpdatedAt(String updatedAt) {
+//                this.updatedAt = updatedAt;
+//            }
+//
+//            public String getCreatedAt() {
+//                return createdAt;
+//            }
+//
+//            public void setCreatedAt(String createdAt) {
+//                this.createdAt = createdAt;
+//            }
+//
+//            public boolean isIsTrashed() {
+//                return isTrashed;
+//            }
+//
+//            public void setIsTrashed(boolean isTrashed) {
+//                this.isTrashed = isTrashed;
+//            }
+//
+//            public Object getTag() {
+//                return Tag;
+//            }
+//
+//            public void setTag(Object Tag) {
+//                this.Tag = Tag;
+//            }
+//
+//            public boolean isIsDeliver() {
+//                return isDeliver;
+//            }
+//
+//            public void setIsDeliver(boolean isDeliver) {
+//                this.isDeliver = isDeliver;
+//            }
+//
+//            public Object getHeight() {
+//                return height;
+//            }
+//
+//            public void setHeight(Object height) {
+//                this.height = height;
+//            }
+//
+//            public Object getWidth() {
+//                return width;
+//            }
+//
+//            public void setWidth(Object width) {
+//                this.width = width;
+//            }
+//
+//            public Object getMimetype() {
+//                return mimetype;
+//            }
+//
+//            public void setMimetype(Object mimetype) {
+//                this.mimetype = mimetype;
+//            }
+//
+//            public String getMode() {
+//                return mode;
+//            }
+//
+//            public void setMode(String mode) {
+//                this.mode = mode;
+//            }
+//
+//            public String getType() {
+//                return type;
+//            }
+//
+//            public void setType(String type) {
+//                this.type = type;
+//            }
+//
+//            public Object getFormat() {
+//                return format;
+//            }
+//
+//            public void setFormat(Object format) {
+//                this.format = format;
+//            }
+//
+//            public Object getOriginalname() {
+//                return originalname;
+//            }
+//
+//            public void setOriginalname(Object originalname) {
+//                this.originalname = originalname;
+//            }
+//
+//            public String getImageFrom() {
+//                return imageFrom;
+//            }
+//
+//            public void setImageFrom(String imageFrom) {
+//                this.imageFrom = imageFrom;
+//            }
+//
+//            public Object getKeyword() {
+//                return keyword;
+//            }
+//
+//            public void setKeyword(Object keyword) {
+//                this.keyword = keyword;
+//            }
+//
+//            public String getDesc() {
+//                return desc;
+//            }
+//
+//            public void setDesc(String desc) {
+//                this.desc = desc;
+//            }
+//
+//            public String getTitle() {
+//                return title;
+//            }
+//
+//            public void setTitle(String title) {
+//                this.title = title;
+//            }
+//
+//            public String getFormatUpdatedAt() {
+//                return formatUpdatedAt;
+//            }
+//
+//            public void setFormatUpdatedAt(String formatUpdatedAt) {
+//                this.formatUpdatedAt = formatUpdatedAt;
+//            }
+//
+//            public String getFormatCreatedAt() {
+//                return formatCreatedAt;
+//            }
+//
+//            public void setFormatCreatedAt(String formatCreatedAt) {
+//                this.formatCreatedAt = formatCreatedAt;
+//            }
+//
+//            public String getThumbnail() {
+//                return thumbnail;
+//            }
+//
+//            public void setThumbnail(String thumbnail) {
+//                this.thumbnail = thumbnail;
+//            }
+//
+//            public String getId() {
+//                return id;
+//            }
+//
+//            public void setId(String id) {
+//                this.id = id;
+//            }
+//        }
+//    }
 
     public static class CarouselsBean {
         /**
@@ -2050,40 +2042,15 @@ public class HeadlineNewsJson {
         private String _id;
         private int sn;
         private String title;
-        private String Author;
-        private String CreatedBy;
-        private String UpdatedBy;
-        private String updatedAt;
         private String createdAt;
-        private boolean isTrashed;
-        private String LastReviewer;
-        private String feedFrom;
-        private boolean isFeed;
-        private String newsBy;
-        private boolean isSponsored;
-        private boolean isDeliver;
-        private boolean isAdult;
-        private Object traceCode;
         private String status;
         private String type;
-        private String startedAt;
-        private Object freeContent;
         private String content;
-        private Object MainVideo;
         private MainPhotoBeanXXX MainPhoto;
         private MainMenuBeanX MainMenu;
-        private String summary;
         private String shortTitle;
         private String formatStartedAt;
-        private String formatUpdatedAt;
-        private String formatCreatedAt;
-        private String parseUrl;
         private String id;
-        private List<Double> location;
-        private List<String> Tags;
-        private List<?> Videos;
-        private List<?> Photos;
-        private List<String> Menus;
 
         public String get_id() {
             return _id;
@@ -2109,116 +2076,12 @@ public class HeadlineNewsJson {
             this.title = title;
         }
 
-        public String getAuthor() {
-            return Author;
-        }
-
-        public void setAuthor(String Author) {
-            this.Author = Author;
-        }
-
-        public String getCreatedBy() {
-            return CreatedBy;
-        }
-
-        public void setCreatedBy(String CreatedBy) {
-            this.CreatedBy = CreatedBy;
-        }
-
-        public String getUpdatedBy() {
-            return UpdatedBy;
-        }
-
-        public void setUpdatedBy(String UpdatedBy) {
-            this.UpdatedBy = UpdatedBy;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-        }
-
         public String getCreatedAt() {
             return createdAt;
         }
 
         public void setCreatedAt(String createdAt) {
             this.createdAt = createdAt;
-        }
-
-        public boolean isIsTrashed() {
-            return isTrashed;
-        }
-
-        public void setIsTrashed(boolean isTrashed) {
-            this.isTrashed = isTrashed;
-        }
-
-        public String getLastReviewer() {
-            return LastReviewer;
-        }
-
-        public void setLastReviewer(String LastReviewer) {
-            this.LastReviewer = LastReviewer;
-        }
-
-        public String getFeedFrom() {
-            return feedFrom;
-        }
-
-        public void setFeedFrom(String feedFrom) {
-            this.feedFrom = feedFrom;
-        }
-
-        public boolean isIsFeed() {
-            return isFeed;
-        }
-
-        public void setIsFeed(boolean isFeed) {
-            this.isFeed = isFeed;
-        }
-
-        public String getNewsBy() {
-            return newsBy;
-        }
-
-        public void setNewsBy(String newsBy) {
-            this.newsBy = newsBy;
-        }
-
-        public boolean isIsSponsored() {
-            return isSponsored;
-        }
-
-        public void setIsSponsored(boolean isSponsored) {
-            this.isSponsored = isSponsored;
-        }
-
-        public boolean isIsDeliver() {
-            return isDeliver;
-        }
-
-        public void setIsDeliver(boolean isDeliver) {
-            this.isDeliver = isDeliver;
-        }
-
-        public boolean isIsAdult() {
-            return isAdult;
-        }
-
-        public void setIsAdult(boolean isAdult) {
-            this.isAdult = isAdult;
-        }
-
-        public Object getTraceCode() {
-            return traceCode;
-        }
-
-        public void setTraceCode(Object traceCode) {
-            this.traceCode = traceCode;
         }
 
         public String getStatus() {
@@ -2237,22 +2100,6 @@ public class HeadlineNewsJson {
             this.type = type;
         }
 
-        public String getStartedAt() {
-            return startedAt;
-        }
-
-        public void setStartedAt(String startedAt) {
-            this.startedAt = startedAt;
-        }
-
-        public Object getFreeContent() {
-            return freeContent;
-        }
-
-        public void setFreeContent(Object freeContent) {
-            this.freeContent = freeContent;
-        }
-
         public String getContent() {
             return content;
         }
@@ -2261,76 +2108,20 @@ public class HeadlineNewsJson {
             this.content = content;
         }
 
-        public Object getMainVideo() {
-            return MainVideo;
-        }
-
-        public void setMainVideo(Object MainVideo) {
-            this.MainVideo = MainVideo;
-        }
-
         public MainPhotoBeanXXX getMainPhoto() {
             return MainPhoto;
-        }
-
-        public void setMainPhoto(MainPhotoBeanXXX MainPhoto) {
-            this.MainPhoto = MainPhoto;
         }
 
         public MainMenuBeanX getMainMenu() {
             return MainMenu;
         }
 
-        public void setMainMenu(MainMenuBeanX MainMenu) {
-            this.MainMenu = MainMenu;
-        }
-
-        public String getSummary() {
-            return summary;
-        }
-
-        public void setSummary(String summary) {
-            this.summary = summary;
-        }
-
         public String getShortTitle() {
             return shortTitle;
         }
 
-        public void setShortTitle(String shortTitle) {
-            this.shortTitle = shortTitle;
-        }
-
         public String getFormatStartedAt() {
             return formatStartedAt;
-        }
-
-        public void setFormatStartedAt(String formatStartedAt) {
-            this.formatStartedAt = formatStartedAt;
-        }
-
-        public String getFormatUpdatedAt() {
-            return formatUpdatedAt;
-        }
-
-        public void setFormatUpdatedAt(String formatUpdatedAt) {
-            this.formatUpdatedAt = formatUpdatedAt;
-        }
-
-        public String getFormatCreatedAt() {
-            return formatCreatedAt;
-        }
-
-        public void setFormatCreatedAt(String formatCreatedAt) {
-            this.formatCreatedAt = formatCreatedAt;
-        }
-
-        public String getParseUrl() {
-            return parseUrl;
-        }
-
-        public void setParseUrl(String parseUrl) {
-            this.parseUrl = parseUrl;
         }
 
         public String getId() {
@@ -2339,46 +2130,6 @@ public class HeadlineNewsJson {
 
         public void setId(String id) {
             this.id = id;
-        }
-
-        public List<Double> getLocation() {
-            return location;
-        }
-
-        public void setLocation(List<Double> location) {
-            this.location = location;
-        }
-
-        public List<String> getTags() {
-            return Tags;
-        }
-
-        public void setTags(List<String> Tags) {
-            this.Tags = Tags;
-        }
-
-        public List<?> getVideos() {
-            return Videos;
-        }
-
-        public void setVideos(List<?> Videos) {
-            this.Videos = Videos;
-        }
-
-        public List<?> getPhotos() {
-            return Photos;
-        }
-
-        public void setPhotos(List<?> Photos) {
-            this.Photos = Photos;
-        }
-
-        public List<String> getMenus() {
-            return Menus;
-        }
-
-        public void setMenus(List<String> Menus) {
-            this.Menus = Menus;
         }
 
         public static class MainPhotoBeanXXX {
@@ -2413,26 +2164,13 @@ public class HeadlineNewsJson {
             private String _id;
             private int sn;
             private String url;
-            private String CreatedBy;
-            private String UpdatedBy;
-            private String updatedAt;
             private String createdAt;
-            private boolean isTrashed;
             private Object Tag;
-            private boolean isDeliver;
             private int height;
             private int width;
-            private String mimetype;
-            private String mode;
             private String type;
             private String format;
-            private String originalname;
-            private String imageFrom;
-            private Object keyword;
-            private String desc;
             private String title;
-            private String formatUpdatedAt;
-            private String formatCreatedAt;
             private String thumbnail;
             private String id;
 
@@ -2460,30 +2198,6 @@ public class HeadlineNewsJson {
                 this.url = url;
             }
 
-            public String getCreatedBy() {
-                return CreatedBy;
-            }
-
-            public void setCreatedBy(String CreatedBy) {
-                this.CreatedBy = CreatedBy;
-            }
-
-            public String getUpdatedBy() {
-                return UpdatedBy;
-            }
-
-            public void setUpdatedBy(String UpdatedBy) {
-                this.UpdatedBy = UpdatedBy;
-            }
-
-            public String getUpdatedAt() {
-                return updatedAt;
-            }
-
-            public void setUpdatedAt(String updatedAt) {
-                this.updatedAt = updatedAt;
-            }
-
             public String getCreatedAt() {
                 return createdAt;
             }
@@ -2492,28 +2206,12 @@ public class HeadlineNewsJson {
                 this.createdAt = createdAt;
             }
 
-            public boolean isIsTrashed() {
-                return isTrashed;
-            }
-
-            public void setIsTrashed(boolean isTrashed) {
-                this.isTrashed = isTrashed;
-            }
-
             public Object getTag() {
                 return Tag;
             }
 
             public void setTag(Object Tag) {
                 this.Tag = Tag;
-            }
-
-            public boolean isIsDeliver() {
-                return isDeliver;
-            }
-
-            public void setIsDeliver(boolean isDeliver) {
-                this.isDeliver = isDeliver;
             }
 
             public int getHeight() {
@@ -2532,22 +2230,6 @@ public class HeadlineNewsJson {
                 this.width = width;
             }
 
-            public String getMimetype() {
-                return mimetype;
-            }
-
-            public void setMimetype(String mimetype) {
-                this.mimetype = mimetype;
-            }
-
-            public String getMode() {
-                return mode;
-            }
-
-            public void setMode(String mode) {
-                this.mode = mode;
-            }
-
             public String getType() {
                 return type;
             }
@@ -2564,60 +2246,12 @@ public class HeadlineNewsJson {
                 this.format = format;
             }
 
-            public String getOriginalname() {
-                return originalname;
-            }
-
-            public void setOriginalname(String originalname) {
-                this.originalname = originalname;
-            }
-
-            public String getImageFrom() {
-                return imageFrom;
-            }
-
-            public void setImageFrom(String imageFrom) {
-                this.imageFrom = imageFrom;
-            }
-
-            public Object getKeyword() {
-                return keyword;
-            }
-
-            public void setKeyword(Object keyword) {
-                this.keyword = keyword;
-            }
-
-            public String getDesc() {
-                return desc;
-            }
-
-            public void setDesc(String desc) {
-                this.desc = desc;
-            }
-
             public String getTitle() {
                 return title;
             }
 
             public void setTitle(String title) {
                 this.title = title;
-            }
-
-            public String getFormatUpdatedAt() {
-                return formatUpdatedAt;
-            }
-
-            public void setFormatUpdatedAt(String formatUpdatedAt) {
-                this.formatUpdatedAt = formatUpdatedAt;
-            }
-
-            public String getFormatCreatedAt() {
-                return formatCreatedAt;
-            }
-
-            public void setFormatCreatedAt(String formatCreatedAt) {
-                this.formatCreatedAt = formatCreatedAt;
             }
 
             public String getThumbnail() {
@@ -2668,24 +2302,9 @@ public class HeadlineNewsJson {
             private int sn;
             private String name;
             private String url;
-            private String CreatedBy;
-            private String UpdatedBy;
-            private String updatedAt;
             private String createdAt;
-            private boolean isTrashed;
             private String status;
-            private boolean isPermanented;
-            private Object endedAt;
-            private Object startedAt;
-            private int weight;
-            private int level;
-            private Object ParentId;
-            private boolean hasChild;
-            private boolean isAdult;
-            private boolean isExternal;
             private String categoryName;
-            private String formatUpdatedAt;
-            private String formatCreatedAt;
             private String id;
 
             public String get_id() {
@@ -2720,44 +2339,12 @@ public class HeadlineNewsJson {
                 this.url = url;
             }
 
-            public String getCreatedBy() {
-                return CreatedBy;
-            }
-
-            public void setCreatedBy(String CreatedBy) {
-                this.CreatedBy = CreatedBy;
-            }
-
-            public String getUpdatedBy() {
-                return UpdatedBy;
-            }
-
-            public void setUpdatedBy(String UpdatedBy) {
-                this.UpdatedBy = UpdatedBy;
-            }
-
-            public String getUpdatedAt() {
-                return updatedAt;
-            }
-
-            public void setUpdatedAt(String updatedAt) {
-                this.updatedAt = updatedAt;
-            }
-
             public String getCreatedAt() {
                 return createdAt;
             }
 
             public void setCreatedAt(String createdAt) {
                 this.createdAt = createdAt;
-            }
-
-            public boolean isIsTrashed() {
-                return isTrashed;
-            }
-
-            public void setIsTrashed(boolean isTrashed) {
-                this.isTrashed = isTrashed;
             }
 
             public String getStatus() {
@@ -2768,100 +2355,12 @@ public class HeadlineNewsJson {
                 this.status = status;
             }
 
-            public boolean isIsPermanented() {
-                return isPermanented;
-            }
-
-            public void setIsPermanented(boolean isPermanented) {
-                this.isPermanented = isPermanented;
-            }
-
-            public Object getEndedAt() {
-                return endedAt;
-            }
-
-            public void setEndedAt(Object endedAt) {
-                this.endedAt = endedAt;
-            }
-
-            public Object getStartedAt() {
-                return startedAt;
-            }
-
-            public void setStartedAt(Object startedAt) {
-                this.startedAt = startedAt;
-            }
-
-            public int getWeight() {
-                return weight;
-            }
-
-            public void setWeight(int weight) {
-                this.weight = weight;
-            }
-
-            public int getLevel() {
-                return level;
-            }
-
-            public void setLevel(int level) {
-                this.level = level;
-            }
-
-            public Object getParentId() {
-                return ParentId;
-            }
-
-            public void setParentId(Object ParentId) {
-                this.ParentId = ParentId;
-            }
-
-            public boolean isHasChild() {
-                return hasChild;
-            }
-
-            public void setHasChild(boolean hasChild) {
-                this.hasChild = hasChild;
-            }
-
-            public boolean isIsAdult() {
-                return isAdult;
-            }
-
-            public void setIsAdult(boolean isAdult) {
-                this.isAdult = isAdult;
-            }
-
-            public boolean isIsExternal() {
-                return isExternal;
-            }
-
-            public void setIsExternal(boolean isExternal) {
-                this.isExternal = isExternal;
-            }
-
             public String getCategoryName() {
                 return categoryName;
             }
 
             public void setCategoryName(String categoryName) {
                 this.categoryName = categoryName;
-            }
-
-            public String getFormatUpdatedAt() {
-                return formatUpdatedAt;
-            }
-
-            public void setFormatUpdatedAt(String formatUpdatedAt) {
-                this.formatUpdatedAt = formatUpdatedAt;
-            }
-
-            public String getFormatCreatedAt() {
-                return formatCreatedAt;
-            }
-
-            public void setFormatCreatedAt(String formatCreatedAt) {
-                this.formatCreatedAt = formatCreatedAt;
             }
 
             public String getId() {
