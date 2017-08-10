@@ -24,13 +24,13 @@
     <string name="clear_cache">清除緩存</string>
     <string name="category_edit">編輯分類</string>
     <string name="about">關於NOWnews</string>
-    <string name="nowvote">議題票選</string>
+    <!--<string name="nowvote">議題票選</string>-->
     <string name="share_app">分享App</string>
     <string-array name="menu_list">
         <item>@string/return_home</item>
         <!--<item>@string/album</item>-->
         <item>@string/favorite_album</item>
-        <item>@string/nowvote</item>
+        <!--<item>@string/nowvote</item>-->
         <item>@string/setting</item>
         <item>@string/version</item>
         <item>@string/notification_setting</item>
@@ -55,6 +55,8 @@
     <string name="web_loading">網頁載入中...請稍候...</string>
     <string name="news_info_loading">新聞載入中...請稍候...</string>
     <string name="loading">載入中...請稍候...</string>
+    <string name="video_loading">影片載入中...請稍候...</string>
+    <string name="rest_time_to_show_ad">剩下%1$d秒鐘 即將播放廣告</string>
 
     <string name="new_version">NEW!!</string>
     <string name="update_dialog_title">更新通知!</string>

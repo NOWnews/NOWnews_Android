@@ -752,6 +752,8 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         Log.d(TAG, "currentVersionName: " + currentVersionName);
         currentVersionName = currentVersionName.replace(".", "");
         Log.d(TAG, "currentVersionName: " + currentVersionName);
+        currentVersionName = currentVersionName.substring(0, currentVersionName.lastIndexOf("("));
+        Log.d(TAG, "currentVersionName: " + currentVersionName);
         int currentVersion = Integer.valueOf(currentVersionName);
         if (currentVersion != 0 && currentVersion < Integer.parseInt(mCheckVersionInfo.getVersion().replace(".", ""))) {
             result = true;

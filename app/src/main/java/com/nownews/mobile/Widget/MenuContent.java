@@ -68,9 +68,11 @@ public class MenuContent extends RelativeLayout {
                 item = new MenuItem(R.drawable.photos, listContent[i], false);
             } else if (listContent[i].equals(this.mContext.getString(R.string.favorite_album))) {
                 item = new MenuItem(R.drawable.love, listContent[i], false);
-            } else if (listContent[i].equals(this.mContext.getString(R.string.nowvote))) {
-                item = new MenuItem(R.drawable.vote, listContent[i], false);
-            } else if (listContent[i].equals(this.mContext.getString(R.string.setting))) {
+            }
+//            else if (listContent[i].equals(this.mContext.getString(R.string.nowvote))) {
+//                item = new MenuItem(R.drawable.vote, listContent[i], false);
+//            }
+            else if (listContent[i].equals(this.mContext.getString(R.string.setting))) {
                 item = new MenuItem(0, listContent[i], false);
                 item.setSecction(true);
             } else if (listContent[i].equals(this.mContext.getString(R.string.version))) {
@@ -113,13 +115,15 @@ public class MenuContent extends RelativeLayout {
             intent.setClass(this.mContext, WebActivity.class);
             intent.putExtra(WebActivity.KEY_URL, url);
             ((Activity)this.mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
-        } else if (itemName != null && itemName.equals(this.mContext.getString(R.string.nowvote))) {
-            String url = "http://vote.nownews.com/";
-            Intent intent = new Intent();
-            intent.setClass(this.mContext, WebActivity.class);
-            intent.putExtra(WebActivity.KEY_URL, url);
-            ((Activity)this.mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
-        } else if (itemName != null && itemName.equals(this.mContext.getString(R.string.share_app))) {
+        }
+//        else if (itemName != null && itemName.equals(this.mContext.getString(R.string.nowvote))) {
+//            String url = "http://vote.nownews.com/";
+//            Intent intent = new Intent();
+//            intent.setClass(this.mContext, WebActivity.class);
+//            intent.putExtra(WebActivity.KEY_URL, url);
+//            ((Activity)this.mContext).startActivityForResult(intent, NewHome.RESULT_CODE);
+//        }
+        else if (itemName != null && itemName.equals(this.mContext.getString(R.string.share_app))) {
             Utility.shareApp(this.mContext);
             return;
         }

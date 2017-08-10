@@ -10,10 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -58,6 +62,8 @@ public class LivePlayer extends AppCompatActivity {
     private ListView vChannelList;
     private List<LiveListJson.DataBean> mLiveList;
     private LinearLayout vAdFragment;
+    private TextView vRestTimeToShowAD;
+    private RelativeLayout vLoadingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +73,11 @@ public class LivePlayer extends AppCompatActivity {
         processIntent();
         processView();
         processMenu();
-        playVM5AD();
+        if(!mVideoAD){
+            play(mChannelIndex);
+        }else{
+            playVM5AD();
+        }
 
     }
 
@@ -89,16 +99,15 @@ public class LivePlayer extends AppCompatActivity {
         vAdFragment = (LinearLayout)findViewById(R.id.ad_fragment);
         vCategoryList = (ListView)findViewById(R.id.category);
         vChannelList = (ListView)findViewById(R.id.channel_list);
+        vRestTimeToShowAD = (TextView)findViewById(R.id.rest_time_to_show_ad);
+        vLoadingLayout = (RelativeLayout)findViewById(R.id.loading_layout);
 
     }
 
     private Fragment mRewardAD;
     private void playVM5AD(){
-        if(!mVideoAD){
-            return;
-        }
-        vAdFragment.setVisibility(View.VISIBLE);
 
+        vAdFragment.setVisibility(View.VISIBLE);
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         mRewardAD = LiveRewardAD.getInstance(mVM5ADListener);
         trans.add(R.id.ad_fragment, mRewardAD).commit();
@@ -186,10 +195,10 @@ public class LivePlayer extends AppCompatActivity {
             long seconds = (spentTime/1000)%60;
             if(Utility.DEBUG)Log.d(TAG, "時間已過: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
 
-            if(minutes>0 && minutes%mWatchTime==0){ //mWatchTime分鐘到
-//            if(minutes>0 && minutes%1==0){ //1分鐘到
-                if(Utility.DEBUG)Log.e(TAG, mWatchTime + "分鐘到");
-//                if(Utility.DEBUG)Log.e(TAG, "1分鐘到");
+//            if(minutes>0 && minutes%mWatchTime==0){ //mWatchTime分鐘到
+            if(minutes>0 && minutes%1==0){ //1分鐘到
+//                if(Utility.DEBUG)Log.e(TAG, mWatchTime + "分鐘到");
+                if(Utility.DEBUG)Log.e(TAG, "1分鐘到");
                 if(!mVideoAD){
                     SharedPreferencesMethods sharedPreferencesMethods = new SharedPreferencesMethods(LivePlayer.this);
                     sharedPreferencesMethods.setLiveStopWatchingTime(currentTime);
@@ -198,8 +207,18 @@ public class LivePlayer extends AppCompatActivity {
                     setResult(NewHome.RESULT_CODE_FROM_LIVE);
                     finish();
                 }else{
+                    vRestTimeToShowAD.setVisibility(View.GONE);
                     vLivePlayer.stopPlayback();
                     playVM5AD();
+                }
+//            }else if(minutes>0 && minutes%mWatchTime==mWatchTime-1 && seconds%60>=54){
+            }else if(minutes%1==1-1 && seconds%60>=54){
+                if(mVideoAD){
+                    if(Utility.DEBUG)Log.d(TAG, "剩下" + Math.abs((seconds%60)-60) + "秒");
+                    showRestTimeToShowVideo(Math.abs((seconds%60)-60));
+                }
+                if(mTimeCounterHandler!=null){
+                    mTimeCounterHandler.postDelayed(this, 1000);
                 }
             }else{
                 if(mTimeCounterHandler!=null){
@@ -209,6 +228,19 @@ public class LivePlayer extends AppCompatActivity {
 
         }
     };
+
+    private Animation mAnimation;
+    private void showRestTimeToShowVideo(long second){
+
+        vRestTimeToShowAD.setText(String.format(getString(R.string.rest_time_to_show_ad), second));
+        if(vRestTimeToShowAD!=null && vRestTimeToShowAD.getVisibility()==View.GONE){
+            mAnimation = new AnimationUtils().loadAnimation(this, R.anim.image_right_in);
+            vRestTimeToShowAD.setAnimation(mAnimation);
+            mAnimation.startNow();
+            vRestTimeToShowAD.setVisibility(View.VISIBLE);
+        }
+
+    }
 
     private void play(int position){
 
@@ -230,6 +262,7 @@ public class LivePlayer extends AppCompatActivity {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
 
+                vLoadingLayout.setVisibility(View.GONE);
                 vLivePlayer.start();
                 hideMenu();
 
@@ -310,6 +343,7 @@ public class LivePlayer extends AppCompatActivity {
         public void onAdLoaded(AdObject adObject) {
             if(Utility.DEBUG)Log.e(TAG, "廣告完成載入");
             if(mRewardAD !=null){
+                vLoadingLayout.setVisibility(View.GONE);
                 ((LiveRewardAD) mRewardAD).showAD();
             }
         }
@@ -317,6 +351,7 @@ public class LivePlayer extends AppCompatActivity {
         @Override
         public void onError(ErrorMessage errorMessage) {
             if(Utility.DEBUG)Log.e(TAG, "SDK 出現錯誤\n errorMessage: " + errorMessage.toString());
+            vAdFragment.setVisibility(View.GONE);
             startVideo();
         }
 
@@ -363,9 +398,11 @@ public class LivePlayer extends AppCompatActivity {
             if(Utility.DEBUG)Log.e(TAG, "廣告關閉");
             startVideo();
         }
+
     };
 
     private void startVideo(){
+        vLoadingLayout.setVisibility(View.VISIBLE);
         startTimer();
         play(mChannelIndex);
     }

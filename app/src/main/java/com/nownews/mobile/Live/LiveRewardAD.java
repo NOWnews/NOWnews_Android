@@ -21,6 +21,7 @@ public class LiveRewardAD extends Fragment {
 //    private String mPlacementName = "placement(reward_video)";
     private String mApiKey = "58d9dc63a42145d817e097fd";
     private String mPlacementName = "58d9dd95a42145d817e09801";
+    private boolean mTestMode = false;
     private AdReward mAdReward;
     private static AdRewardListener mAdRewardListener;
 
@@ -41,14 +42,14 @@ public class LiveRewardAD extends Fragment {
 
         AdProfile mAdProfile = new AdProfile.AdProfileBuilder()
                 .setAuthList(mAuthList)
-                .setTestMode(false)
+                .setTestMode(mTestMode)
                 .build();
 
         mAdReward = new AdReward(getActivity(), mAdProfile, AdRewardType.REWARD);
         if(mAdRewardListener!=null){
             mAdReward.setAdListener(mAdRewardListener);
         }
-        mAdReward.setTestMode(false);
+        mAdReward.setTestMode(mTestMode);
         mAdReward.loadAd();
 
     }

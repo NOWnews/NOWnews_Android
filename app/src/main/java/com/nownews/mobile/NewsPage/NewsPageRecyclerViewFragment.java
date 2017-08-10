@@ -552,6 +552,9 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                         });
                         youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
                         youTubePlayer.loadVideo(aYoutubeId);
+                        if(vActionButton!=null && vActionButton.getVisibility()==View.VISIBLE){
+                            dismissScrollToTopActionButton();
+                        }
                     }
                 }
 
