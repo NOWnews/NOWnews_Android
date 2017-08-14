@@ -741,6 +741,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
 
         private CustomImageTopcrop vImage;
         private TextView vImageText;
+        private TextView vBlank;
         private String mCurrentImageUrl;
 
         public ContextImageViewHolder(View itemView) {
@@ -752,6 +753,7 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
             itemView.setOnClickListener(this);
             vImage = (CustomImageTopcrop) itemView.findViewById(R.id.image);
             vImageText = (TextView) itemView.findViewById(R.id.image_text);
+            vBlank = (TextView) itemView.findViewById(R.id.blank);
 
         }
 
@@ -773,13 +775,16 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 }
                 mBitmapController.loadImageWithOriginalSize(imageUrl, vImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE, 0, 0, null);
                 String imageText = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE_TEXT);
+                imageText.replaceAll(System.getProperty("line.separator"), "");
                 if(Utility.DEBUG)Log.e(TAG, "imageText: " + imageText);
                 if(imageText!=null){
                     vImageText.setVisibility(View.VISIBLE);
                     vImageText.setText(imageText);
                     vImageText.setTextSize(mRefCategoryTextSize);
+                    vBlank.setVisibility(View.GONE);
                 }else{
                     vImageText.setVisibility(View.GONE);
+                    vBlank.setVisibility(View.VISIBLE);
                 }
             }
 

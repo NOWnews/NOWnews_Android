@@ -661,9 +661,6 @@ public class NewsPageRecyclerViewFragment extends Fragment {
 
             Element pContent = paragraph.get(i);
             String p = pContent.text();
-            if(p.contains("(影片擷取自YouTube.com，若遭移除請見諒)")){
-                continue;
-            }
             p = p.replace("$$$", "\n");
             p = p.replace("&&&", "\n");
             if (Utility.DEBUG) Log.w(TAG, "p: " + p);
@@ -715,6 +712,12 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                         map.put(KEY_CONTEXT_IMAGE, imgUrl);
                         if (Utility.DEBUG) Log.w(TAG, "imgUrl in body: " + imgUrl);
                         mImageUrlList.add(imgUrl);
+                        if(j==img.size()-1){
+                            if(citeContent != null && !citeContent.trim().isEmpty() && citeContent.contains("圖／")){
+                                map.put(KEY_CONTEXT_IMAGE_TEXT, citeContent);
+                                citeContent = "";
+                            }
+                        }
                         mContentList.add(map);
                     }
 
