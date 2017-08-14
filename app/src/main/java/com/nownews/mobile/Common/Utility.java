@@ -87,7 +87,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class Utility {
 
     public final static int IMG_QUALITY = 50;
-    public final static boolean DEBUG = true;
+    public final static boolean DEBUG = false;
     public final static boolean SAVE_JSON = false;
     //    private static DisplayImageOptions options;
     public static String mIPAddress = "";

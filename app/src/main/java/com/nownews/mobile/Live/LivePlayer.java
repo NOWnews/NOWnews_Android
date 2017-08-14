@@ -195,10 +195,10 @@ public class LivePlayer extends AppCompatActivity {
             long seconds = (spentTime/1000)%60;
             if(Utility.DEBUG)Log.d(TAG, "時間已過: " + (minutes<10? "0"+minutes:minutes) + ":" +(seconds<10? "0"+seconds:seconds));
 
-//            if(minutes>0 && minutes%mWatchTime==0){ //mWatchTime分鐘到
-            if(minutes>0 && minutes%1==0){ //1分鐘到
-//                if(Utility.DEBUG)Log.e(TAG, mWatchTime + "分鐘到");
-                if(Utility.DEBUG)Log.e(TAG, "1分鐘到");
+            if(minutes>0 && minutes%mWatchTime==0){ //mWatchTime分鐘到
+//            if(minutes>0 && minutes%1==0){ //1分鐘到
+                if(Utility.DEBUG)Log.e(TAG, mWatchTime + "分鐘到");
+//                if(Utility.DEBUG)Log.e(TAG, "1分鐘到");
                 if(!mVideoAD){
                     SharedPreferencesMethods sharedPreferencesMethods = new SharedPreferencesMethods(LivePlayer.this);
                     sharedPreferencesMethods.setLiveStopWatchingTime(currentTime);
@@ -211,8 +211,8 @@ public class LivePlayer extends AppCompatActivity {
                     vLivePlayer.stopPlayback();
                     playVM5AD();
                 }
-//            }else if(minutes>0 && minutes%mWatchTime==mWatchTime-1 && seconds%60>=54){
-            }else if(minutes%1==1-1 && seconds%60>=54){
+            }else if(minutes>0 && minutes%mWatchTime==mWatchTime-1 && seconds%60>=54){
+//            }else if(minutes%1==1-1 && seconds%60>=54){
                 if(mVideoAD){
                     if(Utility.DEBUG)Log.d(TAG, "剩下" + Math.abs((seconds%60)-60) + "秒");
                     showRestTimeToShowVideo(Math.abs((seconds%60)-60));
