@@ -55,7 +55,7 @@ public class WebApi {
         if(statusCode!=HttpURLConnection.HTTP_OK){
             Log.e(TAG, "Error Message: " + connection.getResponseMessage());
             FirebaseCrash.logcat(Log.WARN, TAG, "statusCode: " + statusCode + " / Error Message: " + connection.getResponseMessage() + " / Url: " + aUrl);
-            throw new HttpConnectionException(connection.getResponseMessage());
+            throw new HttpConnectionException(connection.getResponseMessage(), message);
         }
 
         if (statusCode == 200 || statusCode == 400) {
@@ -126,7 +126,7 @@ public class WebApi {
         if(statusCode!=HttpURLConnection.HTTP_OK){
             if (Utility.DEBUG)Log.e(TAG, "Error Message: " + response.message());
             FirebaseCrash.logcat(Log.WARN, TAG, "statusCode: " + statusCode + " / Error Message: " + response.message() + " / Url: " + aUrl);
-            throw new HttpConnectionException(response.message());
+            throw new HttpConnectionException(response.message(), message);
         }
         response.body().close();
         return message;
@@ -176,14 +176,21 @@ public class WebApi {
 
     public static class HttpConnectionException extends Exception {
 
+        private String responseMessage;
+
         //Parameterless Constructor
         public HttpConnectionException() {
         }
 
         //Constructor that accepts a message
-        public HttpConnectionException(String message) {
+        public HttpConnectionException(String message, String responseMessage) {
             super(message);
+            this.responseMessage = responseMessage;
             FirebaseCrash.report(this);
+        }
+
+        public String getResponseMessage(){
+            return responseMessage;
         }
     }
 

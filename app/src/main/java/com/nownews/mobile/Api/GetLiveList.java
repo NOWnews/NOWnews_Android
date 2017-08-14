@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Json.CheckVersionJson;
+import com.nownews.mobile.Json.LiveListErrorJson;
 import com.nownews.mobile.Json.LiveListJson;
 
 import java.net.SocketTimeoutException;
@@ -63,6 +64,11 @@ public class GetLiveList implements Runnable {
         } catch (Exception ex) {
 
             message.what = ParameterSet.GET_LIVE_LIST_FAILED;
+            if(ex instanceof WebApi.HttpConnectionException){
+                String responseMessage = ((WebApi.HttpConnectionException) ex).getResponseMessage();
+                LiveListErrorJson jsonValueClb = new Gson().fromJson(responseMessage, LiveListErrorJson.class);
+                message.obj = jsonValueClb;
+            }
             if (Utility.DEBUG) Log.e(TAG, "GET_LIVE_LIST_FAILED");
             ex.printStackTrace();
 

@@ -68,7 +68,7 @@ public class ReSizeLayoutParams {
         } else {
             //直的 以G3為標準
             ScaleW = (float) dpWidth / 360f;
-            ScaleH = (float) dpHeight / 592f;
+            ScaleH = (float) dpHeight / 598f;
         }
 
         if (DEBUG) Log.e(TAG, "ScaleW: " + ScaleW);
@@ -142,6 +142,10 @@ public class ReSizeLayoutParams {
         aMarginTop = getPixelAfterScale(aMarginTop);
         aMarginR = getPixelAfterScale(aMarginR);
         aMarginBot = getPixelAfterScale(aMarginBot);
+        if (DEBUG) Log.w(TAG, "aMarginL: " + aMarginL);
+        if (DEBUG) Log.w(TAG, "aMarginTop: " + aMarginTop);
+        if (DEBUG) Log.w(TAG, "aMarginR: " + aMarginR);
+        if (DEBUG) Log.w(TAG, "aMarginBot: " + aMarginBot);
 
         ((MarginLayoutParams) params).setMargins(aMarginL, aMarginTop, aMarginR, aMarginBot);
 
