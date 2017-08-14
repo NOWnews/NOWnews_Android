@@ -55,6 +55,8 @@ public class LiveListJson {
         private String iosDownloadLink;
         private String androidDownloadLink;
         private boolean videoAD;
+        private String rightbutton;
+        private String leftbutton;
 
         public int getWatchTime() {
             return watchTime;
@@ -126,6 +128,22 @@ public class LiveListJson {
 
         public void setVideoAD(boolean videoAD) {
             this.videoAD = videoAD;
+        }
+
+        public String getRightbutton(){
+            return rightbutton;
+        }
+
+        public void setRightbutton(String rightbutton){
+            this.rightbutton = rightbutton;
+        }
+
+        public String getLeftbutton(){
+            return leftbutton;
+        }
+
+        public void setLeftbutton(String leftbutton){
+            this.leftbutton = leftbutton;
         }
 
     }

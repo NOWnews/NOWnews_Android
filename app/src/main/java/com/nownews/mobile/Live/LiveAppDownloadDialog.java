@@ -65,6 +65,8 @@ public class LiveAppDownloadDialog extends Dialog {
     private LiveListJson mLiveInfoJson;
     private boolean isCountdownType;
     private boolean videoAD;
+    private String rightButton;
+    private String leftButton;
 
     public LiveAppDownloadDialog(Context context, String aTitle, List<LiveListJson.DataBean> aLiveList, String aPath,
                                  int aCategoryIndex, int aChannelIndex, LiveListJson aLiveInfoJson) {
@@ -84,6 +86,8 @@ public class LiveAppDownloadDialog extends Dialog {
             watchable = mLiveInfoJson.getLiveInfo().isWatchable();
             downloadLink = mLiveInfoJson.getLiveInfo().getAndroidDownloadLink();
             videoAD = mLiveInfoJson.getLiveInfo().isVideoAD();
+            leftButton = mLiveInfoJson.getLiveInfo().getLeftbutton();
+            rightButton = mLiveInfoJson.getLiveInfo().getRightbutton();
         }
         if(mChannelIndex==-1){
             isCountdownType = true;
@@ -277,25 +281,25 @@ public class LiveAppDownloadDialog extends Dialog {
         if(watchable && downloadable && !downloadLink.trim().isEmpty()){
             vButtonsGroup.setVisibility(View.VISIBLE);
             vOnlyOneButton.setVisibility(View.GONE);
-            vWatchNow.setText(mContext.getString(R.string.watch_now));
-            vDownloadNow.setText(mContext.getString(R.string.download_now));
+            vWatchNow.setText((rightButton==null? mContext.getString(R.string.watch_now):rightButton));
+            vDownloadNow.setText((leftButton==null? mContext.getString(R.string.download_now):leftButton));
             vWatchNow.setEnabled(true);
         }else if((watchable && downloadable && downloadLink.trim().isEmpty()) || (watchable && !downloadable)){
             vButtonsGroup.setVisibility(View.GONE);
             vOnlyOneButton.setVisibility(View.VISIBLE);
-            vOnlyOneButton.setText(mContext.getString(R.string.watch_now));
+            vOnlyOneButton.setText((rightButton==null? mContext.getString(R.string.watch_now):rightButton));
             vOnlyOneButton.setOnClickListener(mWatchNowClickListener);
             vOnlyOneButton.setEnabled(true);
         }else if(!watchable && downloadable && !downloadLink.trim().isEmpty()){
             vButtonsGroup.setVisibility(View.VISIBLE);
             vOnlyOneButton.setVisibility(View.GONE);
-            vWatchNow.setText(mContext.getString(R.string.stop_service));
-            vDownloadNow.setText(mContext.getString(R.string.download_now));
+            vWatchNow.setText((rightButton==null? mContext.getString(R.string.watch_now):rightButton));
+            vDownloadNow.setText((leftButton==null? mContext.getString(R.string.download_now):leftButton));
             vWatchNow.setEnabled(false);
         }else{
             vButtonsGroup.setVisibility(View.GONE);
             vOnlyOneButton.setVisibility(View.VISIBLE);
-            vOnlyOneButton.setText(mContext.getString(R.string.stop_service));
+            vOnlyOneButton.setText((rightButton==null? mContext.getString(R.string.watch_now):rightButton));
             vOnlyOneButton.setEnabled(false);
         }
 
