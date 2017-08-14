@@ -617,7 +617,7 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
             return;
         }
         if (this.mNewsPageErrorSnackbar == null) {
-            this.mNewsPageErrorSnackbar = Snackbar.make(this.vCoordinatorLayout, "", Snackbar.LENGTH_SHORT);
+            this.mNewsPageErrorSnackbar = Snackbar.make(this.vCoordinatorLayout, "", Snackbar.LENGTH_LONG);
         }
         this.mNewsPageErrorSnackbar.setText(errorMessage);
         this.mNewsPageErrorSnackbar.show();
@@ -752,7 +752,9 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
         Log.d(TAG, "currentVersionName: " + currentVersionName);
         currentVersionName = currentVersionName.replace(".", "");
         Log.d(TAG, "currentVersionName: " + currentVersionName);
-        currentVersionName = currentVersionName.substring(0, currentVersionName.lastIndexOf("("));
+        if(currentVersionName.contains("(") && currentVersionName.contains(")")){
+            currentVersionName = currentVersionName.substring(0, currentVersionName.lastIndexOf("("));
+        }
         Log.d(TAG, "currentVersionName: " + currentVersionName);
         int currentVersion = Integer.valueOf(currentVersionName);
         if (currentVersion != 0 && currentVersion < Integer.parseInt(mCheckVersionInfo.getVersion().replace(".", ""))) {
