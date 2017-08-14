@@ -22,8 +22,11 @@ import com.nownews.mobile.Common.UserDataInfo;
 import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Controller.ApiController;
 import com.nownews.mobile.Controller.BitmapController;
+import com.nownews.mobile.Json.LiveListErrorJson;
 import com.nownews.mobile.Json.LiveListJson;
+import com.nownews.mobile.NewHome;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -88,6 +91,7 @@ public class LiveFragment extends Fragment {
     }
 
     private LiveListJson mLiveInfoJson;
+    private LiveListErrorJson mLiveInfoErrorJson;
     private List<LiveListJson.DataBean> mLiveList;
     private class ApiHandler extends Handler{
 
@@ -105,6 +109,14 @@ public class LiveFragment extends Fragment {
                     }
                     break;
                 case ParameterSet.GET_LIVE_LIST_FAILED:
+                    mLiveInfoErrorJson = (LiveListErrorJson) msg.obj;
+                    if(mLiveInfoErrorJson!=null){
+                        int statusCode = mLiveInfoErrorJson.getStatus();
+                        String message = mLiveInfoErrorJson.getMessage();
+                        if(statusCode==HttpURLConnection.HTTP_FORBIDDEN){
+                            ((NewHome)getActivity()).showSnackBarWhenError(message);
+                        }
+                    }
                     break;
             }
 

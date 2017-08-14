@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.nownews.mobile.Baselibs.Jsonserialize;
 import com.nownews.mobile.Baselibs.RequestCacheUtil;
+import com.nownews.mobile.Common.Utility;
 import com.nownews.mobile.Config.Constants;
 
 import java.io.BufferedReader;
@@ -49,7 +50,7 @@ public class CustomHttpURLConnection {
                     "application/json");
             conn.setRequestProperty("X-NOWnews-api",
                     authorization);
-            Log.e(TAG, "Authorization:" + authorization);
+            if(Utility.DEBUG)Log.e(TAG, "Authorization:" + authorization);
             conn.setRequestProperty("locale", getLocale());
             // 連接，從上述第2條中url.openConnection()至此的配置必須要在connect之前完成
             conn.connect();
@@ -126,7 +127,7 @@ public class CustomHttpURLConnection {
                     "application/json");
             conn.setRequestProperty("Accept-Charset", "UTF-8");
             conn.setRequestProperty("X-NOWnews-api", authorization);
-            Log.e(TAG, "Authorization:" + authorization);
+            if(Utility.DEBUG)Log.e(TAG, "Authorization:" + authorization);
             conn.setRequestProperty("locale", getLocale());
 
             Map<String, List<String>> headerFields1 = conn.getRequestProperties();
@@ -209,7 +210,7 @@ public class CustomHttpURLConnection {
                     "application/json");
             conn.setRequestProperty("X-NOWnews-api",
                     authorization);
-            Log.e(TAG, "Authorization:" + authorization);
+            if(Utility.DEBUG)Log.e(TAG, "Authorization:" + authorization);
             conn.setRequestProperty("locale", getLocale());
             // 連接，從上述第2條中url.openConnection()至此的配置必須要在connect之前完成
             conn.connect();
