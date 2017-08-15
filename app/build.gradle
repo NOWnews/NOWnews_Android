@@ -29,8 +29,8 @@ android {
         applicationId "com.nownews"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 2017081401
-        versionName "8.3.6"
+        versionCode 2017081501
+        versionName "8.3.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
