@@ -357,20 +357,26 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
             TextView title = (TextView) view.findViewById(R.id.title);
             RelativeLayout newsLayout = (RelativeLayout) view.findViewById(R.id.news_layout);
             final List<InstantNewsJson.NewsListBean> instantNewsList = UserDataInfo.getInstantNewsContent();
-            for(InstantNewsJson.NewsListBean bean : instantNewsList){
-                Log.w(TAG, "bean: " + bean);
-                Log.i(TAG, "bean.getMainPhoto(): " + bean.getShortTitle());
-                Log.e(TAG, "bean.getMainPhoto(): " + bean.getMainPhoto());
+            if(instantNewsList==null){
+                onBackPressed();
+                return;
             }
-            Log.e(TAG, "instantNewsList: " + instantNewsList);
+            if(Utility.DEBUG){
+                Log.e(TAG, "instantNewsList: " + instantNewsList);
+                for(InstantNewsJson.NewsListBean bean : instantNewsList){
+                    Log.w(TAG, "bean: " + bean);
+                    Log.i(TAG, "bean.getMainPhoto(): " + bean.getShortTitle());
+                    Log.e(TAG, "bean.getMainPhoto(): " + bean.getMainPhoto());
+                }
+            }
             if (instantNewsList != null && instantNewsList.size() > 0) {
                 Random random = new Random();
                 final int index = random.nextInt(instantNewsList.size());
-                Log.e(TAG, "index: " + index);
+                if(Utility.DEBUG)Log.e(TAG, "index: " + index);
                 if (instantNewsList.get(index) != null
                         && instantNewsList.get(index).getMainPhoto() != null) {
                     String imageUrl = instantNewsList.get(index).getMainPhoto().getThumbnail();
-                    Log.e(TAG, "imageUrl: " + imageUrl);
+                    if(Utility.DEBUG)Log.e(TAG, "imageUrl: " + imageUrl);
                     if (imageUrl != null) {
                         BitmapController.getInstance(NewHome.this).loadImageWithOriginalSize(imageUrl, image, BitmapController.IMAGE_SRC, 0, 0, null);
                     }
@@ -395,6 +401,9 @@ public class NewHome extends BaseSideActivity implements AHBottomNavigation.OnTa
                 } else {
                     newsLayout.setVisibility(View.GONE);
                 }
+            }else{
+                onBackPressed();
+                return;
             }
         }
         if (dialog == this.mNotificationSwitchDialog) {
