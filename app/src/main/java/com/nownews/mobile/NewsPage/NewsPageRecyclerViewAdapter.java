@@ -775,9 +775,8 @@ public class NewsPageRecyclerViewAdapter extends RecyclerView.Adapter{
                 }
                 mBitmapController.loadImageWithOriginalSize(imageUrl, vImage, BitmapController.IMAGE_SRC_FROM_NEWS_PAGE, 0, 0, null);
                 String imageText = (String) map.get(NewsPageRecyclerViewFragment.KEY_CONTEXT_IMAGE_TEXT);
-                imageText.replaceAll(System.getProperty("line.separator"), "");
-                if(Utility.DEBUG)Log.e(TAG, "imageText: " + imageText);
                 if(imageText!=null){
+                    if(Utility.DEBUG)Log.e(TAG, "imageText: " + imageText);
                     vImageText.setVisibility(View.VISIBLE);
                     vImageText.setText(imageText);
                     vImageText.setTextSize(mRefCategoryTextSize);
