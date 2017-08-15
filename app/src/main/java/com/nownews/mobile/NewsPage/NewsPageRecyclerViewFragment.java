@@ -677,7 +677,7 @@ public class NewsPageRecyclerViewFragment extends Fragment {
                 }
             }
 
-            if (p.contains("▲")) {
+            if (p.contains("▲") || p.contains("圖／")) {
                 citeContent = p;
             }
 
