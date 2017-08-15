@@ -193,7 +193,7 @@ public class LiveAppDownloadDialog extends Dialog {
                     vButtonsGroup.setVisibility(View.VISIBLE);
                     vOnlyOneButton.setVisibility(View.GONE);
                     vWatchNow.setText(mContext.getString(R.string.click_me_share));
-                    vDownloadNow.setText(mContext.getString(R.string.download_now));
+                    vDownloadNow.setText((leftButton==null? mContext.getString(R.string.download_now):leftButton));
                     vWatchNow.setEnabled(true);
                     vWatchNow.setOnClickListener(new View.OnClickListener() {
                         @Override
